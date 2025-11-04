@@ -16,9 +16,9 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-toast": "^1.1.5",
     "@remix-run/css-bundle": "2.9.2",
-    "@remix-run/node": "2.9.2",
-    "@remix-run/react": "2.9.2",
-    "@remix-run/serve": "2.9.2",
+    "@remix-run/node": "^2.16.7",
+    "@remix-run/react": "^2.16.7",
+    "@remix-run/serve": "^2.16.7",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-table": "^8.11.3",
     "@vercel/remix": "^2.16.7",
@@ -40,7 +40,7 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "@remix-run/dev": "2.9.2",
+    "@remix-run/dev": "^2.16.7",
     "@remix-run/eslint-config": "2.9.2",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
