@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../app/lib/dates.utils.ts"],
-  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app/lib/dates.utils.ts\"\n);\nimport.meta.hot.lastModified = \"1757765166870.972\";\n}\n// REMIX HMR END\n\nexport function parseDateForInput(date = new Date().toISOString()) {\r\n    return date.split('T')[0]\r\n}\r\n\r\n\r\nexport function formatDate(date?: number | Date, options: Intl.DateTimeFormatOptions = {}) {\r\n    return new Intl.DateTimeFormat('en-NG', options).format(date)\r\n}"],
-  "mappings": ";;;;;AAEA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;AAGO,SAAS,kBAAkB,QAAO,oBAAI,KAAK,GAAE,YAAY,GAAG;AAC/D,SAAO,KAAK,MAAM,GAAG,EAAE,CAAC;AAC5B;AAGO,SAAS,WAAW,MAAsB,UAAsC,CAAC,GAAG;AACvF,SAAO,IAAI,KAAK,eAAe,SAAS,OAAO,EAAE,OAAO,IAAI;AAChE;",
-  "names": []
-}
