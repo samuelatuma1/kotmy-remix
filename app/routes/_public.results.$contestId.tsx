@@ -20,6 +20,7 @@ export default function ContestResult() {
     const {  contest } = useLoaderData<typeof loader>()
     if(!contest) throw redirect(`/results`)
     
+    console.log(contest)
     const color = contest.status === 'registering'
         ? 'yellow' : contest.status === 'ongoing'
             ? 'green' : contest.status === 'completed'

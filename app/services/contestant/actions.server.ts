@@ -13,7 +13,7 @@ export class ContestantServer{
 
 export async function editContestant(payload: { dto: FormData, contestantId: string }, request: Request) {
     const dto = prepareContestantDTO(payload.dto)
-
+    
     const { data, error } = await contestantRepo.editContestantAdmin({ dto, contestantId: payload.contestantId })
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contestant info has been updated::${Date.now()}` })
@@ -101,7 +101,8 @@ export function prepareContestantDTO(formData: FormData) {
             "state_of_residence": formData.get("state") as string,
             // "whatsapp_no": formData.get("whatsapp_no") as string
         },
-        "social_media_url": formData.get("name") as string,
+        // "social_media_url": formData.get("name") as string ,
+        "social_media_url": formData.get("social_media_url") as string ,
         "vote": {
             "social_media": +(formData.get("social_media_vote") as string),
             "judge": +(formData.get("judge_vote") as string),

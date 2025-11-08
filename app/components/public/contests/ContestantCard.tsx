@@ -12,6 +12,7 @@ export default function ContestantCard({ contestant, socialMedia }: { contestant
             <div className="p-4 bg-secondary">
                 <span className='block text-[#5F6D7E] text-sm font-medium mb-2'>Vote now for your favorite contestant</span>
                 <span className='block font-black uppercase mb-4'>{fullName}</span>
+                <span className='block text-[#5F6D7E] text-sm font-medium mb-2'>{contestant.category}</span>
                 <div className="grid grid-cols-2 gap-4">
                     {socialMedia === "kotmy"
                         ? <SocialLink
