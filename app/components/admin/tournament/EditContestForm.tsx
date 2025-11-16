@@ -4,7 +4,7 @@ import FormControl from '~/components/reusables/FormControl'
 import Select from '~/components/reusables/Select'
 import CategoryInputs from './CategoryInputs'
 import StageInputs from './StageInputs'
-import { parseDateForInput } from '~/lib/dates.utils'
+import { parseDateTimeForInput } from '~/lib/dates.utils'
 import { useState } from 'react'
 import useFilePreview from '~/hooks/useFilePreview'
 import Svg from '~/components/reusables/Svg'
@@ -16,6 +16,7 @@ import { noImage } from '~/assets/images'
 export default function EditContestForm({ tournaments, contest }: { tournaments: Pick<ITournament, 'id'>[], contest: IContestWStage }) {
     const [fileList, setFileList] = useState<FileList | null>(null)
     const { filePreview, clearFilePreview, fileName } = useFilePreview(fileList)
+    console.log(contest)
     return (
         <Form className='max-w-[700px] mx-auto grid gap-6 sm:gap-12 text-sm' method='post' encType='multipart/form-data'>
             <h1 className='text-2xl font-bold text-primary'>Contest Details</h1>
@@ -48,9 +49,9 @@ export default function EditContestForm({ tournaments, contest }: { tournaments:
                 <FormControl as='input' labelText='Contest Name' placeholder='Enter contest name' id='name' name='name' defaultValue={contest.name} required />
                 <FormControl as='textarea' rows={3} labelClassNames='sm:col-span-2' labelText='Contest Description' placeholder='Enter contest description' id='description' name='description' defaultValue={contest.desc} required />
                 <FormControl as='input' labelText='Unique Contest ID' placeholder='Enter unique ID' id='uniqueId' name='uniqueId' defaultValue={contest.id} required />
-                <FormControl as='input' type='date' labelText='Registration Deadline' id='reg_deadline' name='reg_deadline' defaultValue={parseDateForInput(contest.reg_deadline)} required />
-                <FormControl as='input' type='date' labelText='Contest Start Date' id='start_date' name='start_date' defaultValue={parseDateForInput(contest.start_date)} required />
-                <FormControl as='input' type='date' labelText='Contest End Date' id='end_date' name='end_date' defaultValue={parseDateForInput(contest.end_date)} required />
+                <FormControl as='input' type='datetime-local' labelText='Registration Deadline' id='reg_deadline' name='reg_deadline' defaultValue={parseDateTimeForInput(contest.reg_deadline)} required />
+                <FormControl as='input' type='datetime-local' labelText='Contest Start Date' id='start_date' name='start_date' defaultValue={parseDateTimeForInput(contest.start_date)} required />
+                <FormControl as='input' type='datetime-local' labelText='Contest End Date' id='end_date' name='end_date' defaultValue={parseDateTimeForInput(contest.end_date)} required />
                 <FormControl as='textarea' rows={2} labelText='Contest Prizes' labelClassNames='sm:col-span-2' placeholder='Enter contest prizes' id='prizes' name='prizes' defaultValue={contest.prizes} required />
             </fieldset>
 

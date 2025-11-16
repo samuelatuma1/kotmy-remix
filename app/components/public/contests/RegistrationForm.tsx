@@ -70,6 +70,10 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                         </SelectContent>
                     </Select>
                 </label>
+
+                <FormControl as="textarea" labelClassNames="col-span-2" labelText="What would you like your voters to know?" id="info" name="info"
+                    placeholder="" 
+                />
             </div>
             <DragnDrop labelText="Upload Image" name="contestant_image" multiple required />
             <input type="hidden" name="contestId" value={contest._id} />

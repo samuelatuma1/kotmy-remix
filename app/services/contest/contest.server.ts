@@ -17,6 +17,7 @@ export class ContestRepository implements IContestRepository {
     constructor() {
     }
     async createContest(contest: FormData,  token = TOKEN): Promise<TFetcherResponse<IContest>> {
+        console.log("Damn, that's interesting")
         contest.entries().forEach(([key, value]) => {
             console.log(`${key}: ${value}`)
         })
@@ -167,6 +168,7 @@ export function prepareContestPayload(formData: FormData) {
             }
         })
     }
+    
     const payloadObj: ICreateContestDTO = {
         name: formData.get('name') as string,
         contest_unique_id: formData.get('uniqueId') as string,
@@ -179,7 +181,7 @@ export function prepareContestPayload(formData: FormData) {
         add_info: formData.get('add_info') as string,
         sub_req: formData.get('sub_req') as string,
         terms_cond: formData.get('tnc') as string,
-        image: formData.get('image') ?  null: (formData.get('image') as File).size === 0 ? null : formData.get('image') as File,
+        image:  !formData.get('image') ?  null: (formData.get('image') as File).size === 0 ? null : formData.get('image') as File,
         categories: JSON.stringify(formData.getAll('category')),
         no_of_stages: no_of_stages,
         stages: JSON.stringify(stages)
