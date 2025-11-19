@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../app/lib/data/socials.ts"],
-  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app/lib/data/socials.ts\"\n);\nimport.meta.hot.lastModified = \"1757765166870.7917\";\n}\n// REMIX HMR END\n\nimport { icons } from \"~/assets/icons\"\r\n\r\nexport const socials = [\"kotmy\", \"facebook\", \"instagram\", \"twitter\"] as const\r\n\r\nexport const socialIcons = {\r\n    \"kotmy\": icons.logoIcon,\r\n    \"facebook\": icons.facebookSolidIcon,\r\n    \"instagram\": icons.instagramSolidIcon,\r\n    \"twitter\": icons.twitterSolidIcon,\r\n    \"tally\": icons.tallyIcon,\r\n    \"givaah\": icons.givaahIcon\r\n}"],
-  "mappings": ";;;;;;;;AAEA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;AAKO,IAAM,UAAU,CAAC,SAAS,YAAY,aAAa,SAAS;AAE5D,IAAM,cAAc;AAAA,EACvB,SAAS,MAAM;AAAA,EACf,YAAY,MAAM;AAAA,EAClB,aAAa,MAAM;AAAA,EACnB,WAAW,MAAM;AAAA,EACjB,SAAS,MAAM;AAAA,EACf,UAAU,MAAM;AACpB;",
-  "names": []
-}
