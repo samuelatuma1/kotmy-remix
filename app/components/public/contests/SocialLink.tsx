@@ -28,6 +28,7 @@ export default React.forwardRef(function SocialLink(
     const props = url
         ? { element: "link", to: url, ...rest } as const
         : { element: "button", ref, ...rest } as const
+    
     const fetcher = useFetcher()
     return type === "kotmy"
         ? <fetcher.Form method="POST">

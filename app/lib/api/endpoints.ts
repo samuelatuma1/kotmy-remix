@@ -116,6 +116,10 @@ export class ApiEndPoints {
     }
 
     static userContestantDeets(contestantId: string){
-        return `/v2/api/contestant/details/${contestantId}`;
+        return `/v2/api/contestant/stage/details/${contestantId}`;
+    }
+
+    static getContestantDetailsForContest(contestant_code: string, stage_id: string){
+        return `v2/api/contestant/contest/details/?contestant_code=${contestant_code}&stage_id=${stage_id}`
     }
 }

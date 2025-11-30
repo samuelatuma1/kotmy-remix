@@ -8,8 +8,9 @@ import { IContestWStageWContestant } from "~/services/contest/types/contest.inte
 import { StageMediaType, StageStatus } from "~/lib/types/contest.interface";
 import StageMediaUpload from "./_public.contests.$tournamentId.$contestId.stage_upload";
 import { toast } from "~/components/reusables/use-toast";
-import { IPendingContestantUpload } from "~/services/user/types/user.interface";
+import { EnrichedContestant } from "~/services/contestant/types/contestant.interface";
 import { noImage } from "~/assets/images";
+import { contestantHelper } from "~/lib/helpers/contestant.helper";
 
 
 export async function loader({request}: LoaderFunctionArgs){
@@ -30,45 +31,6 @@ export async function loader({request}: LoaderFunctionArgs){
   return json({data, error, authRequired})
 }
 
-
-export class UserHelper {
-        flattenToContestantUpload(contestWStageWContetant: IContestWStageWContestant): IPendingContestantUpload[]{
-        const contestantsUpload: IPendingContestantUpload[] = []
-
-        for(const stage of contestWStageWContetant.stages){
-        for(const contestant of stage.contestants){
-            
-            const contestantUpload: IPendingContestantUpload = {
-                fullName : `${contestant.contestant_biodata?.first_name} ${contestant.contestant_biodata?.last_name}`,
-                contestantCode: contestant.code,
-                contestName: contestWStageWContetant.name,
-                stage: stage.stage,
-                status: stage.status,
-                stageMediaType: stage.media_type ?? "image",
-                contestImage: contestWStageWContetant.image_url ?? '',
-                contestantId: contestant._id
-            }
-
-            contestantsUpload.push(contestantUpload)
-        }
-        }
-
-        return contestantsUpload
-    }
-
-    flattenToContestantsPendingUpload(contestsWStageWContetant: IContestWStageWContestant[]): IPendingContestantUpload[]{
-
-        let pendingUploads: IPendingContestantUpload[] = []
-        for(const contest of contestsWStageWContetant){
-            const flattenedContest = this.flattenToContestantUpload(contest)
-            pendingUploads.push(...flattenedContest)
-        }
-
-        return pendingUploads
-    }
-}
-
-const userHelper = new UserHelper();
 
 
 
@@ -111,7 +73,7 @@ export function useUserPendingsUploadController(){
 
   const {data, error, authRequired} = useLoaderData<typeof loader>()
 
-  const [pendingUploads, setPendingUploads] = useState<IPendingContestantUpload[]>([]);
+  const [pendingUploads, setPendingUploads] = useState<EnrichedContestant[]>([]);
 
    if(error){
       toast({
@@ -123,7 +85,7 @@ export function useUserPendingsUploadController(){
 
   useEffect(() => {
     if (data) {
-        let flattenedUploads = userHelper.flattenToContestantsPendingUpload(data);
+        let flattenedUploads = contestantHelper.enrichContestsContestantsData(data);
         setPendingUploads(flattenedUploads);
         console.log({flattenedUploads})
     }

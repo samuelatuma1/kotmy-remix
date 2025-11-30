@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { IContestWStageWContestant } from "~/services/contest/types/contest.interface";
+import { IContestWStageWContestant, IStage, Social } from "~/services/contest/types/contest.interface";
 
 export interface IContestant {
   _id: string;
@@ -38,7 +38,8 @@ export interface IContestant {
   };
   contestant_biodata: IContestantBiodata
   pin?: string
-  allow_update?: boolean
+  allow_update?: boolean,
+  info?: string
 }
 
 export interface IContestantBiodata {
@@ -142,4 +143,24 @@ export interface IContestantRepository {
     fingerprint: string;
   }): Promise<TFetcherResponse<ILeanContestant>>;
   getContestantViaHash(hash: string): Promise<TFetcherResponse<IContestWStageWContestant>>;
+}
+
+import { StageMediaType, StageStatus } from "~/lib/types/contest.interface"
+
+export interface EnrichedContestant{
+  id: string
+  fullName: string
+  contestantCode: string
+  contestName: string
+  stage: number
+  stageStatus: StageStatus,
+  stageMediaType: StageMediaType | string
+  contestImage: string
+  contestantId: string,
+  contestantImage?: string,
+  originalContestantData: IContestant,
+  code: string,
+  stageSocialMedia: Social,
+  info: string,
+  is_evicted: boolean
 }

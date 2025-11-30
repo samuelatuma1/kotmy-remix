@@ -1,7 +1,7 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { IContestWStageWContestant } from "../contest/types/contest.interface";
-import { IPendingContestantUpload as IPendingContestantUpload } from "./types/user.interface";
+import { EnrichedContestant as EnrichedContestant } from "./types/user.interface";
 import { contestRepo, ContestRepository } from "../contest/contest.server";
 import { IEditContestantDTO } from "../contestant/types/contestant.interface";
 import { contestantRepo, ContestantRepository } from "../contestant/contestant.server";

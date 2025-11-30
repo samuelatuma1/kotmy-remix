@@ -12,6 +12,10 @@ export type CtaProps = (
 }
 
 export default React.forwardRef(function Cta({ variant = 'solid', kind = 'primary', ...props }: CtaProps, ref: React.ForwardedRef<HTMLButtonElement>) {
+    if('voted' in props){
+        delete props['voted'] // Quick fix. Please remove if it causes other issues
+    }
+    
     if (props.element === 'button') {
         return <button ref={ref} {...props} className={cn(`border whitespace-nowrap text-center`, {
             'border-disabled text-inherit': props.disabled,

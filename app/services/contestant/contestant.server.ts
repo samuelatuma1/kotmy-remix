@@ -110,6 +110,16 @@ export class ContestantRepository implements IContestantRepository {
 
         return {data, error, authRequired}
     }
+
+    async getContestantDetailsForContest(contestant_code: string, stage_id: string) {
+        // call contestant server to get contestant data
+        const {data, error} = await ApiCall.call<IContestWStageWContestant, unknown>({
+            method: MethodsEnum.GET,
+            url: ApiEndPoints.getContestantDetailsForContest(contestant_code, stage_id),
+        })
+
+        return {data, error}
+    }
 }
 
 export const contestantRepo = new ContestantRepository()
