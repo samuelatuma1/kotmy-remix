@@ -11,13 +11,13 @@ import { UserAtom } from '~/lib/store/atoms/token'
 
 //TODO: Replace with user navs
 const primaryNavs = [
-    { label: 'Home', icon: icons.adminHomeIcon, url: '/admin/overview' },
-    { label: 'User Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts' },
-    { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
-    { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests' },
+    { label: 'Contests', icon: icons.adminHomeIcon, url: '/user/all-tournaments' },
+    { label: 'Winners', icon: icons.adminContestIcon, url: '/winners' },
+    { label: 'Results', icon: icons.adminUsersIcon, url: '/results' },
+    
     {
-        label: 'Transactions', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Tally Votes', url: 'transactions/tally-votes' },
+        label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
+            { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
             { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
             { label: 'Income History', url: 'transactions/income-history' },
         ]

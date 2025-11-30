@@ -33,7 +33,6 @@ export async function action({request}:ActionFunctionArgs) {
         return { error: error.detail?.toString() || "An error occurred during login.", data: null};
     }
 
-    console.log(data)
     console.log("God abeg o, HEADERS", headers)
 
     let responseHeaders : Record<string, string> = {};

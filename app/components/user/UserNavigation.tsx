@@ -6,17 +6,17 @@ import Toggletip from '../reusables/ToggleTip'
 import { cn } from '~/lib/utils'
 
 const navs = [
-    { label: 'Home', icon: icons.adminHomeIcon, url: '/' },
-    { label: 'Unused 1', icon: icons.adminUsersIcon, url: '/' },
-    { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
-    { label: 'Unused 2', icon: icons.adminTournamentIcon, url: '/' },
-    { label: 'Unused 3', icon: icons.adminContestIcon, url: '/' },
+    { label: 'Home', icon: icons.adminHomeIcon, url: '/user/all-tournaments' },
+    { label: 'Winners', icon: icons.adminContestIcon, url: '/winners' },
+    { label: 'Results', icon: icons.adminUsersIcon, url: '/results' },
+   
+    
 ]
 
 const navsWSubs = [
     {
-        label: 'Unused 4', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Tally Votes', url: 'transactions/tally-votes' },
+        label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
+            { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
             { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
             { label: 'Income History', url: 'transactions/income-history' },
         ]
