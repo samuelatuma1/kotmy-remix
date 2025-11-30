@@ -30,7 +30,7 @@ export default function MobileNavigation({ show, onClose }: { show: boolean, onC
                     </NavLink></li>
                     <li><NavLink onClick={onClose} to="/#contact" className=''>Contact</NavLink></li>
                 </ul>
-                <Button element='a' onClick={onClose} href={'/contests'} className='block w-full sm:w-auto'>Join Now</Button>
+                <Button element='a' onClick={onClose} href={'/login'} className='block w-full sm:w-auto'>Join Now</Button>
             </nav>
         </header>
         <aside className='wrapper py-5'>

@@ -61,7 +61,7 @@ function useLoginController(){
         // try to get user
         const user = getUserStoreManager();
         if(user){
-            navigate(searchQuery.get("redirectTo") || '/user');
+            navigate(searchQuery.get("redirectTo") || '/user/all-tournaments');
         }
         // if user is signed in already, redirect to dashboard
 
@@ -80,7 +80,7 @@ function useLoginController(){
     useEffect(() => {
         if(actionData?.data){
             setUserStoreManager(actionData.data, true);
-            navigate(searchQuery.get("redirectTo") || '/user');
+            navigate(searchQuery.get("redirectTo") || '/user/all-tournaments');
             return;
         }
     }, [actionData?.data])
