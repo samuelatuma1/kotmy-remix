@@ -1,0 +1,1 @@
+import{b as n}from"/build/_shared/chunk-653BTUZP.js";import{c as e}from"/build/_shared/chunk-W5DRAD4K.js";var p=e(n(),1);function r({className:t,checked:o=!1,onCheckedChange:c=()=>{},...a}){return(0,p.jsx)("input",{type:"checkbox",checked:o,className:`cursor-pointer ${t}`,onChange:()=>c(o),...a})}export{r as a};
