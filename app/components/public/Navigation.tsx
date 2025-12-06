@@ -24,9 +24,10 @@ export default function Navigation() {
                     <li><NavLink to="/results" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/results') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Results
                     </NavLink></li>
-                    <li><NavLink to="/#contact" className=''>Contact</NavLink></li>
+                    {/* <li><NavLink to="/#contact" className=''>Contact</NavLink></li> */}
+                    <li><NavLink to="/login" className=''>Sign In</NavLink></li>
                 </ul>
-                <Button element='a' href={'/login'}>Join Now</Button>
+                <Button element='a' href={'/signup'}>Join Now</Button>
             </nav>
             <button
                 onClick={() => { setShowNav(true) }}

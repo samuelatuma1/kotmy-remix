@@ -78,6 +78,7 @@ function useLoginController(){
     }, [actionData?.error]);
 
     useEffect(() => {
+        // save user to store
         if(actionData?.data){
             setUserStoreManager(actionData.data, true);
             navigate(searchQuery.get("redirectTo") || '/user/all-tournaments');

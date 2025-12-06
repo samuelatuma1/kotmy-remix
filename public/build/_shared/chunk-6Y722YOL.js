@@ -1,1 +1,0 @@
-import{a as o}from"/build/_shared/chunk-7ERNTC7H.js";var a=["kotmy","facebook","instagram","twitter"],c={kotmy:o.logoIcon,facebook:o.facebookSolidIcon,instagram:o.instagramSolidIcon,twitter:o.twitterSolidIcon,tally:o.tallyIcon,givaah:o.givaahIcon};export{a,c as b};

@@ -122,4 +122,15 @@ export class ApiEndPoints {
     static getContestantDetailsForContest(contestant_code: string, stage_id: string){
         return `v2/api/contestant/contest/details/?contestant_code=${contestant_code}&stage_id=${stage_id}`
     }
+
+    static get signup(){
+        return `/v2/api/users/signup`
+    }
+
+    static get me() {
+        return "/v2/api/users/me";
+    }
+    static get updateProfile() {
+        return "/v2/api/users/updateprofile/";
+    }
 }
