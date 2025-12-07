@@ -16,4 +16,5 @@ export class ILoginResponseDTO {
     token: string = "";
     permissions: string[] = [];
     user_profile?: UserProfile; 
+    
 }
