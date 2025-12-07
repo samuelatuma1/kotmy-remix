@@ -16,7 +16,7 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { jsxDEV } from "react/jsx-dev-runtime";
+import { jsx } from "react/jsx-runtime";
 var ABORT_DELAY = 5e3;
 function handleRequest(request, responseStatusCode, responseHeaders, remixContext, loadContext) {
   return isbot(request.headers.get("user-agent")) ? handleBotRequest(
@@ -34,21 +34,13 @@ function handleRequest(request, responseStatusCode, responseHeaders, remixContex
 function handleBotRequest(request, responseStatusCode, responseHeaders, remixContext) {
   return new Promise((resolve, reject) => {
     let shellRendered = !1, { pipe, abort } = renderToPipeableStream(
-      /* @__PURE__ */ jsxDEV(
+      /* @__PURE__ */ jsx(
         RemixServer,
         {
           context: remixContext,
           url: request.url,
           abortDelay: ABORT_DELAY
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/entry.server.tsx",
-          lineNumber: 48,
-          columnNumber: 7
-        },
-        this
+        }
       ),
       {
         onAllReady() {
@@ -75,21 +67,13 @@ function handleBotRequest(request, responseStatusCode, responseHeaders, remixCon
 function handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext) {
   return new Promise((resolve, reject) => {
     let shellRendered = !1, { pipe, abort } = renderToPipeableStream(
-      /* @__PURE__ */ jsxDEV(
+      /* @__PURE__ */ jsx(
         RemixServer,
         {
           context: remixContext,
           url: request.url,
           abortDelay: ABORT_DELAY
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/entry.server.tsx",
-          lineNumber: 98,
-          columnNumber: 7
-        },
-        this
+        }
       ),
       {
         onShellReady() {
@@ -137,10 +121,10 @@ import {
 } from "@remix-run/react";
 
 // app/global.css
-var global_default = "/build/_assets/global-JIHUVC5X.css";
+var global_default = "/build/_assets/global-CL3ECOYL.css";
 
 // app/autoplaycarousel.css
-var autoplaycarousel_default = "/build/_assets/autoplaycarousel-WQPXPBOV.css";
+var autoplaycarousel_default = "/build/_assets/autoplaycarousel-UE5MKUNL.css";
 
 // app/lib/session.server.ts
 import { randomUUID } from "crypto";
@@ -188,7 +172,7 @@ function cn(...inputs) {
 }
 
 // app/components/reusables/PageProgress.tsx
-import { jsxDEV as jsxDEV2 } from "react/jsx-dev-runtime";
+import { jsx as jsx2 } from "react/jsx-runtime";
 function PageTransitionProgressBar() {
   let ref = useRef(null), [hasAnimationCompleted, setHasAnimationCompleted] = useState(!0), navigation = useNavigation(), isTransitioning = navigation.state !== "idle";
   return useEffect(() => {
@@ -201,14 +185,14 @@ function PageTransitionProgressBar() {
       await Promise.allSettled(animationPromises), setHasAnimationCompleted(!0);
     }
     setHasAnimationCompleted(!1), awaitAnimationCompletion();
-  }, [isTransitioning]), /* @__PURE__ */ jsxDEV2(
+  }, [isTransitioning]), /* @__PURE__ */ jsx2(
     "div",
     {
       role: "progressbar",
       "aria-hidden": !isTransitioning,
       "aria-valuetext": isTransitioning ? "Loading" : void 0,
       className: "fixed inset-x-0 top-0 left-0 z-50 h-1 animate-pulse",
-      children: /* @__PURE__ */ jsxDEV2(
+      children: /* @__PURE__ */ jsx2(
         "div",
         {
           ref,
@@ -219,25 +203,9 @@ function PageTransitionProgressBar() {
             navigation.state === "loading" && "w-10/12",
             navigation.state === "idle" && !hasAnimationCompleted && "w-full"
           )
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/reusables/PageProgress.tsx",
-          lineNumber: 36,
-          columnNumber: 7
-        },
-        this
+        }
       )
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/components/reusables/PageProgress.tsx",
-      lineNumber: 30,
-      columnNumber: 5
-    },
-    this
+    }
   );
 }
 
@@ -245,9 +213,9 @@ function PageTransitionProgressBar() {
 import React from "react";
 import { Link } from "@remix-run/react";
 import cn2 from "classnames";
-import { jsxDEV as jsxDEV3 } from "react/jsx-dev-runtime";
+import { jsx as jsx3 } from "react/jsx-runtime";
 var Cta_default = React.forwardRef(function({ variant = "solid", kind = "primary", ...props }, ref) {
-  return "voted" in props && delete props.voted, props.element === "button" ? /* @__PURE__ */ jsxDEV3("button", { ref, ...props, className: cn2("border whitespace-nowrap text-center", {
+  return "voted" in props && delete props.voted, props.element === "button" ? /* @__PURE__ */ jsx3("button", { ref, ...props, className: cn2("border whitespace-nowrap text-center", {
     "border-disabled text-inherit": props.disabled,
     "bg-accent border-accent hover:bg-accent/90 text-secondary": variant === "solid",
     "bg-red-600 border-red-600 hover:bg-red-400 text-secondary": variant === "solid" && kind === "danger",
@@ -255,20 +223,12 @@ var Cta_default = React.forwardRef(function({ variant = "solid", kind = "primary
     "text-accent border-accent border-2": variant === "outline",
     "border-red-400 text-red-400": kind === "danger" && !props.disabled,
     "border-none": variant === "ghost"
-  }, props.className), children: props.children }, void 0, !1, {
-    fileName: "app/components/reusables/Cta.tsx",
-    lineNumber: 20,
-    columnNumber: 16
-  }, this) : /* @__PURE__ */ jsxDEV3(Link, { ...props, className: cn2("border whitespace-nowrap text-center", {
+  }, props.className), children: props.children }) : /* @__PURE__ */ jsx3(Link, { ...props, className: cn2("border whitespace-nowrap text-center", {
     "bg-accent border-accent hover:bg-accent/90 text-secondary": variant === "solid",
     "text-accent border-accent border-2": variant === "outline",
     "border-red-400": kind === "danger",
     "text-red-400": kind === "danger"
-  }, props.className), children: props.children }, void 0, !1, {
-    fileName: "app/components/reusables/Cta.tsx",
-    lineNumber: 30,
-    columnNumber: 12
-  }, this);
+  }, props.className), children: props.children });
 });
 
 // app/components/reusables/toast.tsx
@@ -276,8 +236,8 @@ import * as React2 from "react";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva } from "class-variance-authority";
-import { jsxDEV as jsxDEV4 } from "react/jsx-dev-runtime";
-var ToastProvider = ToastPrimitives.Provider, ToastViewport = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+import { jsx as jsx4 } from "react/jsx-runtime";
+var ToastProvider = ToastPrimitives.Provider, ToastViewport = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Viewport,
   {
     ref,
@@ -286,15 +246,7 @@ var ToastProvider = ToastPrimitives.Provider, ToastViewport = React2.forwardRef(
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 14,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 var toastVariants = cva(
@@ -311,24 +263,16 @@ var toastVariants = cva(
       variant: "default"
     }
   }
-), Toast = React2.forwardRef(({ className, variant, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+), Toast = React2.forwardRef(({ className, variant, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Root,
   {
     ref,
     className: cn(toastVariants({ variant }), className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 48,
-    columnNumber: 5
-  },
-  this
+  }
 ));
 Toast.displayName = ToastPrimitives.Root.displayName;
-var ToastAction = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+var ToastAction = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Action,
   {
     ref,
@@ -337,18 +281,10 @@ var ToastAction = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 61,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 ToastAction.displayName = ToastPrimitives.Action.displayName;
-var ToastClose = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+var ToastClose = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Close,
   {
     ref,
@@ -358,54 +294,26 @@ var ToastClose = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE_
     ),
     "toast-close": "",
     ...props,
-    children: /* @__PURE__ */ jsxDEV4(Cross2Icon, { className: "h-4 w-4" }, void 0, !1, {
-      fileName: "app/components/reusables/toast.tsx",
-      lineNumber: 85,
-      columnNumber: 5
-    }, this)
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 76,
-    columnNumber: 3
-  },
-  this
+    children: /* @__PURE__ */ jsx4(Cross2Icon, { className: "h-4 w-4" })
+  }
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;
-var ToastTitle = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+var ToastTitle = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Title,
   {
     ref,
     className: cn("text-sm font-semibold [&+div]:text-xs", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 94,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 ToastTitle.displayName = ToastPrimitives.Title.displayName;
-var ToastDescription = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV4(
+var ToastDescription = React2.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx4(
   ToastPrimitives.Description,
   {
     ref,
     className: cn("text-sm opacity-90", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/toast.tsx",
-    lineNumber: 106,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
 
@@ -503,54 +411,26 @@ function useToast() {
 }
 
 // app/components/reusables/toaster.tsx
-import { jsxDEV as jsxDEV5 } from "react/jsx-dev-runtime";
+import { jsx as jsx5, jsxs } from "react/jsx-runtime";
 function Toaster() {
   let { toasts } = useToast();
-  return /* @__PURE__ */ jsxDEV5(ToastProvider, { children: [
+  return /* @__PURE__ */ jsxs(ToastProvider, { children: [
     toasts.map(function({ id, title, description, action: action20, ...props }) {
-      return /* @__PURE__ */ jsxDEV5(Toast, { ...props, children: [
-        /* @__PURE__ */ jsxDEV5("div", { className: "grid gap-1", children: [
-          title && /* @__PURE__ */ jsxDEV5(ToastTitle, { children: title }, void 0, !1, {
-            fileName: "app/components/reusables/toaster.tsx",
-            lineNumber: 20,
-            columnNumber: 25
-          }, this),
-          description && /* @__PURE__ */ jsxDEV5(ToastDescription, { children: description }, void 0, !1, {
-            fileName: "app/components/reusables/toaster.tsx",
-            lineNumber: 22,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/reusables/toaster.tsx",
-          lineNumber: 19,
-          columnNumber: 13
-        }, this),
+      return /* @__PURE__ */ jsxs(Toast, { ...props, children: [
+        /* @__PURE__ */ jsxs("div", { className: "grid gap-1", children: [
+          title && /* @__PURE__ */ jsx5(ToastTitle, { children: title }),
+          description && /* @__PURE__ */ jsx5(ToastDescription, { children: description })
+        ] }),
         action20,
-        /* @__PURE__ */ jsxDEV5(ToastClose, {}, void 0, !1, {
-          fileName: "app/components/reusables/toaster.tsx",
-          lineNumber: 26,
-          columnNumber: 13
-        }, this)
-      ] }, id, !0, {
-        fileName: "app/components/reusables/toaster.tsx",
-        lineNumber: 18,
-        columnNumber: 11
-      }, this);
+        /* @__PURE__ */ jsx5(ToastClose, {})
+      ] }, id);
     }),
-    /* @__PURE__ */ jsxDEV5(ToastViewport, {}, void 0, !1, {
-      fileName: "app/components/reusables/toaster.tsx",
-      lineNumber: 30,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/toaster.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+    /* @__PURE__ */ jsx5(ToastViewport, {})
+  ] });
 }
 
 // app/root.tsx
-import { jsxDEV as jsxDEV6 } from "react/jsx-dev-runtime";
+import { jsx as jsx6, jsxs as jsxs2 } from "react/jsx-runtime";
 var links = () => [
   ...void 0 ? [{ rel: "stylesheet", href: void 0 }] : [],
   { rel: "stylesheet", href: global_default },
@@ -561,65 +441,21 @@ async function loader({ request }) {
   return json({ toast: toast5 }, { headers });
 }
 function Document({ children }) {
-  return /* @__PURE__ */ jsxDEV6("html", { lang: "en", className: "scroll-smooth", children: [
-    /* @__PURE__ */ jsxDEV6("head", { children: [
-      /* @__PURE__ */ jsxDEV6("meta", { charSet: "utf-8" }, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 40,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV6("meta", { name: "viewport", content: "width=device-width, initial-scale=1" }, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 41,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV6(Meta, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 42,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV6(Links, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 43,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/root.tsx",
-      lineNumber: 39,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV6("body", { className: "font-satoshi text-primary", children: [
-      /* @__PURE__ */ jsxDEV6(PageTransitionProgressBar, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 46,
-        columnNumber: 9
-      }, this),
+  return /* @__PURE__ */ jsxs2("html", { lang: "en", className: "scroll-smooth", children: [
+    /* @__PURE__ */ jsxs2("head", { children: [
+      /* @__PURE__ */ jsx6("meta", { charSet: "utf-8" }),
+      /* @__PURE__ */ jsx6("meta", { name: "viewport", content: "width=device-width, initial-scale=1" }),
+      /* @__PURE__ */ jsx6(Meta, {}),
+      /* @__PURE__ */ jsx6(Links, {})
+    ] }),
+    /* @__PURE__ */ jsxs2("body", { className: "font-satoshi text-primary", children: [
+      /* @__PURE__ */ jsx6(PageTransitionProgressBar, {}),
       children,
-      /* @__PURE__ */ jsxDEV6(ScrollRestoration, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 48,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV6(Scripts, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 49,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV6(LiveReload, {}, void 0, !1, {
-        fileName: "app/root.tsx",
-        lineNumber: 50,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/root.tsx",
-      lineNumber: 45,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/root.tsx",
-    lineNumber: 38,
-    columnNumber: 5
-  }, this);
+      /* @__PURE__ */ jsx6(ScrollRestoration, {}),
+      /* @__PURE__ */ jsx6(Scripts, {}),
+      /* @__PURE__ */ jsx6(LiveReload, {})
+    ] })
+  ] });
 }
 function App() {
   let { toast: toastMsg } = useLoaderData(), { toast: toast5 } = useToast();
@@ -632,22 +468,10 @@ function App() {
         description: message
       });
     }
-  }, [toastMsg]), /* @__PURE__ */ jsxDEV6(Document, { children: [
-    /* @__PURE__ */ jsxDEV6(Outlet, {}, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 72,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV6(Toaster, {}, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 73,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/root.tsx",
-    lineNumber: 71,
-    columnNumber: 5
-  }, this);
+  }, [toastMsg]), /* @__PURE__ */ jsxs2(Document, { children: [
+    /* @__PURE__ */ jsx6(Outlet, {}),
+    /* @__PURE__ */ jsx6(Toaster, {})
+  ] });
 }
 function ErrorBoundary() {
   let error = useRouteError(), heading = "Unexpected Error", message = "We are very sorry. An unexpected error occurred. Please try again or contact us if the problem persists.";
@@ -661,43 +485,15 @@ function ErrorBoundary() {
         break;
     }
   let errorMessage = error instanceof Error ? error.message : null;
-  return /* @__PURE__ */ jsxDEV6(Document, { children: /* @__PURE__ */ jsxDEV6("section", { className: "h-dvh p-5 grid gap-5 place-content-center text-center", children: [
-    /* @__PURE__ */ jsxDEV6("h1", { className: "text-xl font-bold text-red-500", children: heading }, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 99,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV6("p", { children: message }, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 100,
-      columnNumber: 9
-    }, this),
-    errorMessage && /* @__PURE__ */ jsxDEV6("div", { className: "border-4 border-red-500 p-10", children: /* @__PURE__ */ jsxDEV6("p", { children: [
+  return /* @__PURE__ */ jsx6(Document, { children: /* @__PURE__ */ jsxs2("section", { className: "h-dvh p-5 grid gap-5 place-content-center text-center", children: [
+    /* @__PURE__ */ jsx6("h1", { className: "text-xl font-bold text-red-500", children: heading }),
+    /* @__PURE__ */ jsx6("p", { children: message }),
+    errorMessage && /* @__PURE__ */ jsx6("div", { className: "border-4 border-red-500 p-10", children: /* @__PURE__ */ jsxs2("p", { children: [
       "Error message: ",
       errorMessage
-    ] }, void 0, !0, {
-      fileName: "app/root.tsx",
-      lineNumber: 103,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 102,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV6(Cta_default, { element: "link", to: "/", className: "px-4 py-1 rounded-md", children: "Back to homepage" }, void 0, !1, {
-      fileName: "app/root.tsx",
-      lineNumber: 106,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/root.tsx",
-    lineNumber: 98,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/root.tsx",
-    lineNumber: 97,
-    columnNumber: 5
-  }, this);
+    ] }) }),
+    /* @__PURE__ */ jsx6(Cta_default, { element: "link", to: "/", className: "px-4 py-1 rounded-md", children: "Back to homepage" })
+  ] }) });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx
@@ -735,93 +531,33 @@ function useDuration(deadline) {
 }
 
 // app/components/public/contests/ContestTimer.tsx
-import { jsxDEV as jsxDEV7 } from "react/jsx-dev-runtime";
+import { jsx as jsx7, jsxs as jsxs3 } from "react/jsx-runtime";
 function ContestTimer({ deadline, title }) {
   let { days, hours, minutes, seconds } = useDuration(deadline);
-  return /* @__PURE__ */ jsxDEV7("div", { className: "my-6", children: [
-    /* @__PURE__ */ jsxDEV7("p", { className: "font-satoshi-bold uppercase mb-2 text-sm", children: title }, void 0, !1, {
-      fileName: "app/components/public/contests/ContestTimer.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV7("div", { className: "flex gap-2", children: [
-      /* @__PURE__ */ jsxDEV7("div", { className: "grid text-center", children: [
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: days }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 10,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "DAYS" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 11,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestTimer.tsx",
-        lineNumber: 9,
-        columnNumber: 17
-      }, this),
+  return /* @__PURE__ */ jsxs3("div", { className: "my-6", children: [
+    /* @__PURE__ */ jsx7("p", { className: "font-satoshi-bold uppercase mb-2 text-sm", children: title }),
+    /* @__PURE__ */ jsxs3("div", { className: "flex gap-2", children: [
+      /* @__PURE__ */ jsxs3("div", { className: "grid text-center", children: [
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: days }),
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "DAYS" })
+      ] }),
       ":",
-      /* @__PURE__ */ jsxDEV7("div", { className: "grid text-center", children: [
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: hours }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 15,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "HOURS" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 16,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestTimer.tsx",
-        lineNumber: 14,
-        columnNumber: 17
-      }, this),
+      /* @__PURE__ */ jsxs3("div", { className: "grid text-center", children: [
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: hours }),
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "HOURS" })
+      ] }),
       ":",
-      /* @__PURE__ */ jsxDEV7("div", { className: "grid text-center", children: [
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: minutes }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 20,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "MINUTES" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 21,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestTimer.tsx",
-        lineNumber: 19,
-        columnNumber: 17
-      }, this),
+      /* @__PURE__ */ jsxs3("div", { className: "grid text-center", children: [
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: minutes }),
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "MINUTES" })
+      ] }),
       ":",
-      /* @__PURE__ */ jsxDEV7("div", { className: "grid text-center", children: [
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: seconds }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 25,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "SECONDS" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestTimer.tsx",
-          lineNumber: 26,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestTimer.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestTimer.tsx",
-      lineNumber: 8,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ContestTimer.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+      /* @__PURE__ */ jsxs3("div", { className: "grid text-center", children: [
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-black text-xl lg:text-2xl", children: seconds }),
+        /* @__PURE__ */ jsx7("span", { className: "font-satoshi-bold text-xs lg:text-base", children: "SECONDS" })
+      ] })
+    ] })
+  ] });
 }
 
 // app/assets/images/birthday_present.png
@@ -862,22 +598,14 @@ var no_image_default = "/build/_assets/no-image-EJT7WJZ2.webp";
 
 // app/components/reusables/StatusTag.tsx
 import cn3 from "classnames";
-import { jsxDEV as jsxDEV8 } from "react/jsx-dev-runtime";
+import { jsx as jsx8 } from "react/jsx-runtime";
 function StatusTag({ status, className, color = "gray" }) {
-  return /* @__PURE__ */ jsxDEV8("span", { className: cn3(`w-fit px-4 pl-7 py-1.5 rounded-md text-sm capitalize font-satoshi-medium flex items-center ${className}`, {
+  return /* @__PURE__ */ jsx8("span", { className: cn3(`w-fit px-4 pl-7 py-1.5 rounded-md text-sm capitalize font-satoshi-medium flex items-center ${className}`, {
     "bg-green-100 text-green-700": color === "green",
     "bg-yellow-100 text-yellow-700": color === "yellow",
     "bg-red-100 text-red-700": color === "red",
     "bg-gray-100 text-gray-700": color === "gray"
-  }), children: /* @__PURE__ */ jsxDEV8("span", { className: "before:content-['\u2022'] before:absolute relative before:-left-4 before:top-[10%] before:text-2xl before:leading-3 whitespace-nowrap", children: status }, void 0, !1, {
-    fileName: "app/components/reusables/StatusTag.tsx",
-    lineNumber: 12,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/components/reusables/StatusTag.tsx",
-    lineNumber: 6,
-    columnNumber: 12
-  }, this);
+  }), children: /* @__PURE__ */ jsx8("span", { className: "before:content-['\u2022'] before:absolute relative before:-left-4 before:top-[10%] before:text-2xl before:leading-3 whitespace-nowrap", children: status }) });
 }
 
 // app/lib/api/fetcher.ts
@@ -1346,125 +1074,65 @@ var icons = {
 };
 
 // app/components/reusables/Svg.tsx
-import { jsxDEV as jsxDEV9 } from "react/jsx-dev-runtime";
+import { jsx as jsx9 } from "react/jsx-runtime";
 function Svg({ src, width = "1.2em", height = "1.2em", use_width = "100%", className, onClick }) {
-  return /* @__PURE__ */ jsxDEV9(
+  return /* @__PURE__ */ jsx9(
     "svg",
     {
       onClick,
       className,
       width,
       height,
-      children: /* @__PURE__ */ jsxDEV9("use", { width: use_width, height: "100%", href: src }, void 0, !1, {
-        fileName: "app/components/reusables/Svg.tsx",
-        lineNumber: 14,
-        columnNumber: 13
-      }, this)
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/components/reusables/Svg.tsx",
-      lineNumber: 10,
-      columnNumber: 9
-    },
-    this
+      children: /* @__PURE__ */ jsx9("use", { width: use_width, height: "100%", href: src })
+    }
   );
 }
 
 // app/components/reusables/FormControl.tsx
-import { Fragment, jsxDEV as jsxDEV10 } from "react/jsx-dev-runtime";
+import { Fragment, jsx as jsx10, jsxs as jsxs4 } from "react/jsx-runtime";
 function FormControl({ labelClassNames, labelText, error, ...props }) {
   let [showPassword, setShowPassword] = useState4(!1), formControlClasses = cn(
     "p-3 py-2 rounded-lg cursor-text w-full font-medium outline outline-1 outline-secondary hover:outline-accent focus-within:outline",
     "flex gap-2 items-center",
     { "outline-red-400 hover:outline-red-400": error },
     props.className
-  ), errorElement = /* @__PURE__ */ jsxDEV10("span", { className: cn("mt-1 text-red-400 font-semibold leading-none flex gap-1.5 items-end", { hidden: !error }), children: [
-    /* @__PURE__ */ jsxDEV10(Svg, { src: icons.warningIcon }, void 0, !1, {
-      fileName: "app/components/reusables/FormControl.tsx",
-      lineNumber: 27,
-      columnNumber: 5
-    }, this),
+  ), errorElement = /* @__PURE__ */ jsxs4("span", { className: cn("mt-1 text-red-400 font-semibold leading-none flex gap-1.5 items-end", { hidden: !error }), children: [
+    /* @__PURE__ */ jsx10(Svg, { src: icons.warningIcon }),
     error
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/FormControl.tsx",
-    lineNumber: 26,
-    columnNumber: 24
-  }, this);
-  return /* @__PURE__ */ jsxDEV10("label", { htmlFor: props.id, className: `block font-bold ${labelClassNames}`, children: [
+  ] });
+  return /* @__PURE__ */ jsxs4("label", { htmlFor: props.id, className: `block font-bold ${labelClassNames}`, children: [
     labelText,
-    props.as === "input" ? /* @__PURE__ */ jsxDEV10(Fragment, { children: [
-      /* @__PURE__ */ jsxDEV10("div", { "aria-invalid": !!error, className: formControlClasses, children: [
-        /* @__PURE__ */ jsxDEV10(Svg, { src: props.icon ?? "", className: cn("basis-6", { hidden: !props.icon }) }, void 0, !1, {
-          fileName: "app/components/reusables/FormControl.tsx",
-          lineNumber: 34,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV10(
+    props.as === "input" ? /* @__PURE__ */ jsxs4(Fragment, { children: [
+      /* @__PURE__ */ jsxs4("div", { "aria-invalid": !!error, className: formControlClasses, children: [
+        /* @__PURE__ */ jsx10(Svg, { src: props.icon ?? "", className: cn("basis-6", { hidden: !props.icon }) }),
+        /* @__PURE__ */ jsx10(
           "input",
           {
             ...props,
             type: props.type === "password" && showPassword ? "text" : props.type,
             className: cn("bg-transparent autofill:bg-transparent outline-none grow shrink min-w-0 h-6")
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/reusables/FormControl.tsx",
-            lineNumber: 35,
-            columnNumber: 13
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV10(
+        /* @__PURE__ */ jsx10(
           Svg,
           {
             src: showPassword ? icons.hiddenIcon : icons.viewIcon,
             onClick: () => setShowPassword((prev) => !prev),
             className: cn("basis-6 cursor-pointer", { hidden: props.type !== "password" })
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/reusables/FormControl.tsx",
-            lineNumber: 37,
-            columnNumber: 13
-          },
-          this
+          }
         )
-      ] }, void 0, !0, {
-        fileName: "app/components/reusables/FormControl.tsx",
-        lineNumber: 33,
-        columnNumber: 11
-      }, this),
+      ] }),
       errorElement
-    ] }, void 0, !0, {
-      fileName: "app/components/reusables/FormControl.tsx",
-      lineNumber: 32,
-      columnNumber: 11
-    }, this) : /* @__PURE__ */ jsxDEV10(Fragment, { children: [
-      /* @__PURE__ */ jsxDEV10("textarea", { cols: 30, rows: 6, ...props, className: `${formControlClasses} ${props.className}` }, void 0, !1, {
-        fileName: "app/components/reusables/FormControl.tsx",
-        lineNumber: 44,
-        columnNumber: 11
-      }, this),
+    ] }) : /* @__PURE__ */ jsxs4(Fragment, { children: [
+      /* @__PURE__ */ jsx10("textarea", { cols: 30, rows: 6, ...props, className: `${formControlClasses} ${props.className}` }),
       errorElement
-    ] }, void 0, !0, {
-      fileName: "app/components/reusables/FormControl.tsx",
-      lineNumber: 43,
-      columnNumber: 11
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/FormControl.tsx",
-    lineNumber: 30,
-    columnNumber: 5
-  }, this);
+    ] })
+  ] });
 }
 
 // app/components/reusables/Button.tsx
 import cn4 from "classnames";
-import { jsxDEV as jsxDEV11 } from "react/jsx-dev-runtime";
+import { jsx as jsx11 } from "react/jsx-runtime";
 function Button({
   children,
   element,
@@ -1473,22 +1141,18 @@ function Button({
   kind = "primary",
   ...props
 }) {
-  return /* @__PURE__ */ jsxDEV11(element, { ...props, className: cn4(`py-4 px-8 text-lg border border-accent rounded-md font-black whitespace-nowrap leading-4 text-center ${className}`, {
+  return /* @__PURE__ */ jsx11(element, { ...props, className: cn4(`py-4 px-8 text-lg border border-accent rounded-md font-black whitespace-nowrap leading-4 text-center ${className}`, {
     "bg-accent text-secondary": variant === "solid",
     "text-accent border-2": variant === "outline",
     "border-red-400": kind === "danger",
     "text-red-400": kind === "danger"
-  }), children }, void 0, !1, {
-    fileName: "app/components/reusables/Button.tsx",
-    lineNumber: 18,
-    columnNumber: 9
-  }, this);
+  }), children });
 }
 
 // app/components/public/contests/DragnDrop.tsx
 import { useState as useState5 } from "react";
 import { FileUploader } from "react-drag-drop-files";
-import { jsxDEV as jsxDEV12 } from "react/jsx-dev-runtime";
+import { jsx as jsx12, jsxs as jsxs5 } from "react/jsx-runtime";
 var FILE_TYPES = ["JPG", "PNG"];
 function DragnDrop({
   className = "",
@@ -1502,13 +1166,9 @@ function DragnDrop({
     let selectedFile = Array.isArray(file) ? file[0] : file;
     selectedFile && selectedFile.type.startsWith("image/") ? setPreview(URL.createObjectURL(selectedFile)) : setPreview(null);
   };
-  return /* @__PURE__ */ jsxDEV12("div", { className: `w-full max-w-full overflow-hidden ${className}`, children: [
-    /* @__PURE__ */ jsxDEV12("span", { className: "font-bold", children: labelText }, void 0, !1, {
-      fileName: "app/components/public/contests/DragnDrop.tsx",
-      lineNumber: 28,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV12(
+  return /* @__PURE__ */ jsxs5("div", { className: `w-full max-w-full overflow-hidden ${className}`, children: [
+    /* @__PURE__ */ jsx12("span", { className: "font-bold", children: labelText }),
+    /* @__PURE__ */ jsx12(
       FileUploader,
       {
         name,
@@ -1516,80 +1176,24 @@ function DragnDrop({
         multiple,
         required,
         handleChange,
-        children: /* @__PURE__ */ jsxDEV12("div", { className: "flex flex-col gap-4 items-center p-6 border-2 hover:border-primary border-dashed rounded-lg", children: [
-          /* @__PURE__ */ jsxDEV12("div", { className: "border-2 border-black p-4 rounded-full w-fit", children: /* @__PURE__ */ jsxDEV12(Svg, { src: icons.imageIcon }, void 0, !1, {
-            fileName: "app/components/public/contests/DragnDrop.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/DragnDrop.tsx",
-            lineNumber: 37,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV12("div", { className: "flex flex-col items-center", children: [
-            /* @__PURE__ */ jsxDEV12("p", { className: "text-center", children: [
-              /* @__PURE__ */ jsxDEV12("span", { className: "underline underline-offset-4 font-bold cursor-pointer", children: "Click here to upload" }, void 0, !1, {
-                fileName: "app/components/public/contests/DragnDrop.tsx",
-                lineNumber: 42,
-                columnNumber: 29
-              }, this),
+        children: /* @__PURE__ */ jsxs5("div", { className: "flex flex-col gap-4 items-center p-6 border-2 hover:border-primary border-dashed rounded-lg", children: [
+          /* @__PURE__ */ jsx12("div", { className: "border-2 border-black p-4 rounded-full w-fit", children: /* @__PURE__ */ jsx12(Svg, { src: icons.imageIcon }) }),
+          /* @__PURE__ */ jsxs5("div", { className: "flex flex-col items-center", children: [
+            /* @__PURE__ */ jsxs5("p", { className: "text-center", children: [
+              /* @__PURE__ */ jsx12("span", { className: "underline underline-offset-4 font-bold cursor-pointer", children: "Click here to upload" }),
               " ",
-              /* @__PURE__ */ jsxDEV12("span", { children: "or drag and drop" }, void 0, !1, {
-                fileName: "app/components/public/contests/DragnDrop.tsx",
-                lineNumber: 42,
-                columnNumber: 129
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/public/contests/DragnDrop.tsx",
-              lineNumber: 41,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV12("span", { className: "font-bold text-gray-400", children: "JPG, PNG (max. 5mb)" }, void 0, !1, {
-              fileName: "app/components/public/contests/DragnDrop.tsx",
-              lineNumber: 44,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/DragnDrop.tsx",
-            lineNumber: 40,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/DragnDrop.tsx",
-          lineNumber: 36,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/public/contests/DragnDrop.tsx",
-        lineNumber: 29,
-        columnNumber: 13
-      },
-      this
+              /* @__PURE__ */ jsx12("span", { children: "or drag and drop" })
+            ] }),
+            /* @__PURE__ */ jsx12("span", { className: "font-bold text-gray-400", children: "JPG, PNG (max. 5mb)" })
+          ] })
+        ] })
+      }
     ),
-    preview && /* @__PURE__ */ jsxDEV12("div", { className: "mt-4 flex flex-col items-center", children: [
-      /* @__PURE__ */ jsxDEV12("span", { className: "text-xs text-gray-500 mb-1", children: "Image Preview:" }, void 0, !1, {
-        fileName: "app/components/public/contests/DragnDrop.tsx",
-        lineNumber: 51,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV12("img", { src: preview, alt: "Preview", className: "max-h-40 rounded shadow" }, void 0, !1, {
-        fileName: "app/components/public/contests/DragnDrop.tsx",
-        lineNumber: 52,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/DragnDrop.tsx",
-      lineNumber: 50,
-      columnNumber: 17
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/DragnDrop.tsx",
-    lineNumber: 27,
-    columnNumber: 9
-  }, this);
+    preview && /* @__PURE__ */ jsxs5("div", { className: "mt-4 flex flex-col items-center", children: [
+      /* @__PURE__ */ jsx12("span", { className: "text-xs text-gray-500 mb-1", children: "Image Preview:" }),
+      /* @__PURE__ */ jsx12("img", { src: preview, alt: "Preview", className: "max-h-40 rounded shadow" })
+    ] })
+  ] });
 }
 
 // app/components/reusables/select-shad.tsx
@@ -1601,9 +1205,9 @@ import {
   ChevronUpIcon
 } from "@radix-ui/react-icons";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { jsxDEV as jsxDEV13 } from "react/jsx-dev-runtime";
+import { jsx as jsx13, jsxs as jsxs6 } from "react/jsx-runtime";
 var Select = SelectPrimitive.Root;
-var SelectValue = SelectPrimitive.Value, SelectTrigger = React4.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectValue = SelectPrimitive.Value, SelectTrigger = React4.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs6(
   SelectPrimitive.Trigger,
   {
     ref,
@@ -1614,28 +1218,12 @@ var SelectValue = SelectPrimitive.Value, SelectTrigger = React4.forwardRef(({ cl
     ...props,
     children: [
       children,
-      /* @__PURE__ */ jsxDEV13(SelectPrimitive.Icon, { asChild: !0, children: /* @__PURE__ */ jsxDEV13(CaretSortIcon, { className: "h-4 w-4 opacity-50" }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 32,
-        columnNumber: 7
-      }, this) }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 31,
-        columnNumber: 5
-      }, this)
+      /* @__PURE__ */ jsx13(SelectPrimitive.Icon, { asChild: !0, children: /* @__PURE__ */ jsx13(CaretSortIcon, { className: "h-4 w-4 opacity-50" }) })
     ]
-  },
-  void 0,
-  !0,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 22,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
-var SelectScrollUpButton = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectScrollUpButton = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx13(
   SelectPrimitive.ScrollUpButton,
   {
     ref,
@@ -1644,23 +1232,11 @@ var SelectScrollUpButton = React4.forwardRef(({ className, ...props }, ref) => /
       className
     ),
     ...props,
-    children: /* @__PURE__ */ jsxDEV13(ChevronUpIcon, {}, void 0, !1, {
-      fileName: "app/components/reusables/select-shad.tsx",
-      lineNumber: 50,
-      columnNumber: 5
-    }, this)
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 42,
-    columnNumber: 3
-  },
-  this
+    children: /* @__PURE__ */ jsx13(ChevronUpIcon, {})
+  }
 ));
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
-var SelectScrollDownButton = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectScrollDownButton = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx13(
   SelectPrimitive.ScrollDownButton,
   {
     ref,
@@ -1669,23 +1245,11 @@ var SelectScrollDownButton = React4.forwardRef(({ className, ...props }, ref) =>
       className
     ),
     ...props,
-    children: /* @__PURE__ */ jsxDEV13(ChevronDownIcon, {}, void 0, !1, {
-      fileName: "app/components/reusables/select-shad.tsx",
-      lineNumber: 67,
-      columnNumber: 5
-    }, this)
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 59,
-    columnNumber: 3
-  },
-  this
+    children: /* @__PURE__ */ jsx13(ChevronDownIcon, {})
+  }
 ));
 SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName;
-var SelectContent = React4.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsxDEV13(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsxDEV13(
+var SelectContent = React4.forwardRef(({ className, children, position = "popper", ...props }, ref) => /* @__PURE__ */ jsx13(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsxs6(
   SelectPrimitive.Content,
   {
     ref,
@@ -1697,12 +1261,8 @@ var SelectContent = React4.forwardRef(({ className, children, position = "popper
     position,
     ...props,
     children: [
-      /* @__PURE__ */ jsxDEV13(SelectScrollUpButton, {}, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 89,
-        columnNumber: 7
-      }, this),
-      /* @__PURE__ */ jsxDEV13(
+      /* @__PURE__ */ jsx13(SelectScrollUpButton, {}),
+      /* @__PURE__ */ jsx13(
         SelectPrimitive.Viewport,
         {
           className: cn(
@@ -1710,55 +1270,23 @@ var SelectContent = React4.forwardRef(({ className, children, position = "popper
             position === "popper" && "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
           ),
           children
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/reusables/select-shad.tsx",
-          lineNumber: 90,
-          columnNumber: 7
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV13(SelectScrollDownButton, {}, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 99,
-        columnNumber: 7
-      }, this)
+      /* @__PURE__ */ jsx13(SelectScrollDownButton, {})
     ]
-  },
-  void 0,
-  !0,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 78,
-    columnNumber: 5
-  },
-  this
-) }, void 0, !1, {
-  fileName: "app/components/reusables/select-shad.tsx",
-  lineNumber: 77,
-  columnNumber: 3
-}, this));
+  }
+) }));
 SelectContent.displayName = SelectPrimitive.Content.displayName;
-var SelectLabel = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectLabel = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx13(
   SelectPrimitive.Label,
   {
     ref,
     className: cn("px-2 py-1.5 text-sm font-semibold", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 109,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 SelectLabel.displayName = SelectPrimitive.Label.displayName;
-var SelectItem = React4.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectItem = React4.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs6(
   SelectPrimitive.Item,
   {
     ref,
@@ -1768,51 +1296,19 @@ var SelectItem = React4.forwardRef(({ className, children, ...props }, ref) => /
     ),
     ...props,
     children: [
-      /* @__PURE__ */ jsxDEV13("span", { className: "absolute right-2 flex h-3.5 w-3.5 items-center justify-center", children: /* @__PURE__ */ jsxDEV13(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsxDEV13(CheckIcon, { className: "h-4 w-4" }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 131,
-        columnNumber: 9
-      }, this) }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 130,
-        columnNumber: 7
-      }, this) }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 129,
-        columnNumber: 5
-      }, this),
-      /* @__PURE__ */ jsxDEV13(SelectPrimitive.ItemText, { children }, void 0, !1, {
-        fileName: "app/components/reusables/select-shad.tsx",
-        lineNumber: 134,
-        columnNumber: 5
-      }, this)
+      /* @__PURE__ */ jsx13("span", { className: "absolute right-2 flex h-3.5 w-3.5 items-center justify-center", children: /* @__PURE__ */ jsx13(SelectPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx13(CheckIcon, { className: "h-4 w-4" }) }) }),
+      /* @__PURE__ */ jsx13(SelectPrimitive.ItemText, { children })
     ]
-  },
-  void 0,
-  !0,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 121,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;
-var SelectSeparator = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV13(
+var SelectSeparator = React4.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx13(
   SelectPrimitive.Separator,
   {
     ref,
     className: cn("-mx-1 my-1 h-px bg-muted", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/select-shad.tsx",
-    lineNumber: 143,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
@@ -1858,16 +1354,12 @@ var nigerianStates = {
 };
 
 // app/components/public/contests/StageUploadForm.tsx
-import { jsxDEV as jsxDEV14 } from "react/jsx-dev-runtime";
+import { jsx as jsx14, jsxs as jsxs7 } from "react/jsx-runtime";
 function StageUploadForm({ contest, contestant, hash }) {
-  return /* @__PURE__ */ jsxDEV14(Form, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
-    /* @__PURE__ */ jsxDEV14("p", { className: "text-2xl font-satoshi-bold", children: "Upload your photo for the next stage." }, void 0, !1, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 14,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV14(
+  return /* @__PURE__ */ jsxs7(Form, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+    /* @__PURE__ */ jsx14("p", { className: "text-2xl font-satoshi-bold", children: "Upload your photo for the next stage." }),
+    /* @__PURE__ */ jsxs7("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx14(
         FormControl,
         {
           as: "input",
@@ -1878,17 +1370,9 @@ function StageUploadForm({ contest, contestant, hash }) {
           placeholder: "Enter your first name",
           required: !0,
           defaultValue: contestant?.contestant_biodata?.first_name
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 18,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV14(
+      /* @__PURE__ */ jsx14(
         FormControl,
         {
           as: "input",
@@ -1899,23 +1383,11 @@ function StageUploadForm({ contest, contestant, hash }) {
           placeholder: "Enter your last name",
           required: !0,
           defaultValue: contestant?.contestant_biodata?.last_name
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 21,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV14(
+    ] }),
+    /* @__PURE__ */ jsxs7("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx14(
         FormControl,
         {
           as: "input",
@@ -1926,17 +1398,9 @@ function StageUploadForm({ contest, contestant, hash }) {
           placeholder: "Enter your email address",
           required: !0,
           defaultValue: contestant?.contestant_biodata?.email
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 26,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV14(
+      /* @__PURE__ */ jsx14(
         FormControl,
         {
           as: "input",
@@ -1949,98 +1413,30 @@ function StageUploadForm({ contest, contestant, hash }) {
           max: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
           required: !0,
           defaultValue: contestant?.contestant_biodata?.dob?.split("T")[0]
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 29,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 25,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV14("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
+    ] }),
+    /* @__PURE__ */ jsxs7("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs7("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
         "Gender",
-        /* @__PURE__ */ jsxDEV14(Select, { name: "sex", required: !0, value: contestant?.contestant_biodata?.sex, disabled: !0, children: [
-          /* @__PURE__ */ jsxDEV14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV14(SelectValue, { placeholder: "Gender" }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 37,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 36,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV14(SelectContent, { children: [
-            /* @__PURE__ */ jsxDEV14(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }, void 0, !1, {
-              fileName: "app/components/public/contests/StageUploadForm.tsx",
-              lineNumber: 40,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV14(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" }, void 0, !1, {
-              fileName: "app/components/public/contests/StageUploadForm.tsx",
-              lineNumber: 41,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 39,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 35,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/StageUploadForm.tsx",
-        lineNumber: 34,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV14("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs7(Select, { name: "sex", required: !0, value: contestant?.contestant_biodata?.sex, disabled: !0, children: [
+          /* @__PURE__ */ jsx14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx14(SelectValue, { placeholder: "Gender" }) }),
+          /* @__PURE__ */ jsxs7(SelectContent, { children: [
+            /* @__PURE__ */ jsx14(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+            /* @__PURE__ */ jsx14(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs7("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
         "State of Residence",
-        /* @__PURE__ */ jsxDEV14(Select, { name: "state_of_residence", required: !0, value: contestant?.contestant_biodata?.state_of_residence, disabled: !0, children: [
-          /* @__PURE__ */ jsxDEV14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV14(SelectValue, { placeholder: "Select a state" }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 48,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 47,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV14(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsxDEV14(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 52,
-            columnNumber: 33
-          }, this)) }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 50,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 46,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/StageUploadForm.tsx",
-        lineNumber: 45,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 33,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV14(
+        /* @__PURE__ */ jsxs7(Select, { name: "state_of_residence", required: !0, value: contestant?.contestant_biodata?.state_of_residence, disabled: !0, children: [
+          /* @__PURE__ */ jsx14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx14(SelectValue, { placeholder: "Select a state" }) }),
+          /* @__PURE__ */ jsx14(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx14(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs7("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx14(
         FormControl,
         {
           as: "input",
@@ -2052,76 +1448,24 @@ function StageUploadForm({ contest, contestant, hash }) {
           placeholder: "Enter your whatsapp number",
           required: !0,
           defaultValue: contestant?.contestant_biodata?.whatsapp_no
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 59,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV14("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
+      /* @__PURE__ */ jsxs7("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
         "Category",
-        /* @__PURE__ */ jsxDEV14(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, disabled: !0, children: [
-          /* @__PURE__ */ jsxDEV14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV14(SelectValue, { placeholder: "Select a category" }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 65,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 64,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV14(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV14(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 69,
-            columnNumber: 33
-          }, this)) }, void 0, !1, {
-            fileName: "app/components/public/contests/StageUploadForm.tsx",
-            lineNumber: 67,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/StageUploadForm.tsx",
-          lineNumber: 63,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/StageUploadForm.tsx",
-        lineNumber: 62,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 58,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14(DragnDrop, { labelText: "Upload Image", name: "contestant_image", required: !0 }, void 0, !1, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 75,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14("input", { type: "hidden", name: "hash", value: hash }, void 0, !1, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 76,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV14(Button, { element: "button", type: "submit", name: "intent", value: "stage_upload", className: "md:self-end", children: "Submit" }, void 0, !1, {
-      fileName: "app/components/public/contests/StageUploadForm.tsx",
-      lineNumber: 77,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/StageUploadForm.tsx",
-    lineNumber: 13,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsxs7(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, disabled: !0, children: [
+          /* @__PURE__ */ jsx14(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx14(SelectValue, { placeholder: "Select a category" }) }),
+          /* @__PURE__ */ jsx14(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx14(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx14(DragnDrop, { labelText: "Upload Image", name: "contestant_image", required: !0 }),
+    /* @__PURE__ */ jsx14("input", { type: "hidden", name: "hash", value: hash }),
+    /* @__PURE__ */ jsx14(Button, { element: "button", type: "submit", name: "intent", value: "stage_upload", className: "md:self-end", children: "Submit" })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx
-import { Fragment as Fragment2, jsxDEV as jsxDEV15 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment2, jsx as jsx15, jsxs as jsxs8 } from "react/jsx-runtime";
 async function loader2({ request }) {
   let hash = new URL(request.url).searchParams.get("hash");
   if (!hash)
@@ -2148,175 +1492,63 @@ async function action({ request }) {
 }
 function StageMediaUpload() {
   let contestFromCode = useLoaderData2(), contest = contestFromCode?.contest, stage = contestFromCode?.contest?.stages[0], hash = contestFromCode?.hash ?? "", color = contest?.status === "registering" ? "yellow" : contest?.status === "ongoing" ? "green" : contest?.status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxDEV15("main", { className: "grow", children: contest ? /* @__PURE__ */ jsxDEV15(Fragment2, { children: [
-    /* @__PURE__ */ jsxDEV15("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxDEV15("div", { className: "grid", children: [
-        /* @__PURE__ */ jsxDEV15("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsxDEV15("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }, void 0, !1, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 65,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV15("p", { className: "font-satoshi-medium", children: contest.desc }, void 0, !1, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 68,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-          lineNumber: 64,
-          columnNumber: 15
-        }, this),
-        /* @__PURE__ */ jsxDEV15("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
-          /* @__PURE__ */ jsxDEV15("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV15("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 72,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV15(StatusTag, { status: contest.status, color }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 73,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 71,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV15("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV15("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 76,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV15("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV15("span", { children: [
+  return /* @__PURE__ */ jsx15("main", { className: "grow", children: contest ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
+    /* @__PURE__ */ jsxs8("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs8("div", { className: "grid", children: [
+        /* @__PURE__ */ jsxs8("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx15("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
+          /* @__PURE__ */ jsx15("p", { className: "font-satoshi-medium", children: contest.desc })
+        ] }),
+        /* @__PURE__ */ jsxs8("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
+          /* @__PURE__ */ jsxs8("div", { className: "", children: [
+            /* @__PURE__ */ jsx15("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+            /* @__PURE__ */ jsx15(StatusTag, { status: contest.status, color })
+          ] }),
+          /* @__PURE__ */ jsxs8("div", { className: "", children: [
+            /* @__PURE__ */ jsx15("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx15("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs8("span", { children: [
               "~ ",
               category
-            ] }, category, !0, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 81,
-              columnNumber: 23
-            }, this)) }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 79,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 75,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV15("div", { className: "col-span-2", children: [
-            /* @__PURE__ */ jsxDEV15("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 86,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV15("span", { className: "block", children: contest.prizes }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-              lineNumber: 87,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 85,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-          lineNumber: 70,
-          columnNumber: 15
-        }, this),
-        /* @__PURE__ */ jsxDEV15(
+            ] }, category)) })
+          ] }),
+          /* @__PURE__ */ jsxs8("div", { className: "col-span-2", children: [
+            /* @__PURE__ */ jsx15("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx15("span", { className: "block", children: contest.prizes })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx15(
           ContestTimer,
           {
             deadline: new Date(contest.end_date),
             title: "contest ends in"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-            lineNumber: 90,
-            columnNumber: 15
-          },
-          this
+          }
         )
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-        lineNumber: 63,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV15(
+      ] }),
+      /* @__PURE__ */ jsx15(
         "img",
         {
           src: contest.image || no_image_default,
           alt: "kid smiling",
           className: "w-full rounded-3xl h-[350px] object-cover"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-          lineNumber: 95,
-          columnNumber: 13
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-      lineNumber: 62,
-      columnNumber: 11
-    }, this),
-    /* @__PURE__ */ jsxDEV15("section", { className: "my-10 flex flex-col gap-6", children: [
-      /* @__PURE__ */ jsxDEV15("div", { className: "wrapper", children: /* @__PURE__ */ jsxDEV15("h2", { className: "font-bold text-2xl textacc", children: [
+    ] }),
+    /* @__PURE__ */ jsxs8("section", { className: "my-10 flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx15("div", { className: "wrapper", children: /* @__PURE__ */ jsxs8("h2", { className: "font-bold text-2xl textacc", children: [
         "Stage ",
         stage?.stage,
         " Form"
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-        lineNumber: 103,
-        columnNumber: 15
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-        lineNumber: 102,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV15("div", { className: "wrapper flex", children: /* @__PURE__ */ jsxDEV15(
+      ] }) }),
+      /* @__PURE__ */ jsx15("div", { className: "wrapper flex", children: /* @__PURE__ */ jsx15(
         StageUploadForm,
         {
           contest,
           contestant: contest.stages[0]?.contestants?.[0],
           hash
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-          lineNumber: 108,
-          columnNumber: 15
-        },
-        this
-      ) }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-        lineNumber: 107,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-      lineNumber: 101,
-      columnNumber: 11
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-    lineNumber: 61,
-    columnNumber: 9
-  }, this) : null }, void 0, !1, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId.stage_upload.tsx",
-    lineNumber: 59,
-    columnNumber: 5
-  }, this);
+        }
+      ) })
+    ] })
+  ] }) : null });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx
@@ -2417,76 +1649,32 @@ function prepareContestantDTO(formData) {
 
 // app/components/public/contests/ProgressBar.tsx
 import { useEffect as useEffect5, useRef as useRef2 } from "react";
-import { jsxDEV as jsxDEV16 } from "react/jsx-dev-runtime";
+import { jsx as jsx16, jsxs as jsxs9 } from "react/jsx-runtime";
 function ProgressBar({ percentage }) {
   let progressBar = useRef2(null);
   return useEffect5(() => {
     progressBar.current?.style.setProperty("--progress", `${percentage}%`);
-  }, []), /* @__PURE__ */ jsxDEV16("div", { className: "flex items-center gap-2", children: [
-    /* @__PURE__ */ jsxDEV16("div", { ref: progressBar, className: "progressBar w-full sm:min-w-[70px] h-2 bg-[#EAEBF0] rounded", children: /* @__PURE__ */ jsxDEV16("div", { className: "progress h-full w-[--progress] bg-[#6246EA] rounded" }, void 0, !1, {
-      fileName: "app/components/public/contests/ProgressBar.tsx",
-      lineNumber: 11,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/ProgressBar.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV16("span", { className: "text-sm font-bold", children: [
+  }, []), /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2", children: [
+    /* @__PURE__ */ jsx16("div", { ref: progressBar, className: "progressBar w-full sm:min-w-[70px] h-2 bg-[#EAEBF0] rounded", children: /* @__PURE__ */ jsx16("div", { className: "progress h-full w-[--progress] bg-[#6246EA] rounded" }) }),
+    /* @__PURE__ */ jsxs9("span", { className: "text-sm font-bold", children: [
       percentage.toFixed(1),
       "%"
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ProgressBar.tsx",
-      lineNumber: 13,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ProgressBar.tsx",
-    lineNumber: 9,
-    columnNumber: 9
-  }, this);
+    ] })
+  ] });
 }
 
 // app/components/public/contests/Grade.tsx
-import { jsxDEV as jsxDEV17 } from "react/jsx-dev-runtime";
+import { jsx as jsx17, jsxs as jsxs10 } from "react/jsx-runtime";
 function Grade({ grade }) {
   let cleanedGrade = grade ? grade.toUpperCase() : "F";
-  return /* @__PURE__ */ jsxDEV17("div", { className: "grid grid-cols-6 rounded-md overflow-hidden text-white text-xs font-black", children: [
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("bg-grade-F h-full px-2 py-1 text-center"), children: cleanedGrade === "F" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-E": cleanedGrade <= "E", "bg-grade-Ea": cleanedGrade > "E" }), children: cleanedGrade === "E" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-D": cleanedGrade <= "D", "bg-grade-Da": cleanedGrade > "D" }), children: cleanedGrade === "D" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 13,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-C": cleanedGrade <= "C", "bg-grade-Ca": cleanedGrade > "C" }), children: cleanedGrade === "C" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-B": cleanedGrade <= "B", "bg-grade-Ba": cleanedGrade > "B" }), children: cleanedGrade === "B" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 19,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-A": cleanedGrade <= "A", "bg-grade-Aa": cleanedGrade > "A" }), children: cleanedGrade === "A" ? cleanedGrade : null }, void 0, !1, {
-      fileName: "app/components/public/contests/Grade.tsx",
-      lineNumber: 22,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/Grade.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs10("div", { className: "grid grid-cols-6 rounded-md overflow-hidden text-white text-xs font-black", children: [
+    /* @__PURE__ */ jsx17("div", { className: cn("bg-grade-F h-full px-2 py-1 text-center"), children: cleanedGrade === "F" ? cleanedGrade : null }),
+    /* @__PURE__ */ jsx17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-E": cleanedGrade <= "E", "bg-grade-Ea": cleanedGrade > "E" }), children: cleanedGrade === "E" ? cleanedGrade : null }),
+    /* @__PURE__ */ jsx17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-D": cleanedGrade <= "D", "bg-grade-Da": cleanedGrade > "D" }), children: cleanedGrade === "D" ? cleanedGrade : null }),
+    /* @__PURE__ */ jsx17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-C": cleanedGrade <= "C", "bg-grade-Ca": cleanedGrade > "C" }), children: cleanedGrade === "C" ? cleanedGrade : null }),
+    /* @__PURE__ */ jsx17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-B": cleanedGrade <= "B", "bg-grade-Ba": cleanedGrade > "B" }), children: cleanedGrade === "B" ? cleanedGrade : null }),
+    /* @__PURE__ */ jsx17("div", { className: cn("h-full px-2 py-1 text-center", { "bg-grade-A": cleanedGrade <= "A", "bg-grade-Aa": cleanedGrade > "A" }), children: cleanedGrade === "A" ? cleanedGrade : null })
+  ] });
 }
 
 // app/components/public/contests/VoteLink.tsx
@@ -2503,41 +1691,25 @@ var socials = ["kotmy", "facebook", "instagram", "twitter"], socialIcons = {
 };
 
 // app/components/public/contests/VoteLink.tsx
-import { jsxDEV as jsxDEV18 } from "react/jsx-dev-runtime";
+import { jsx as jsx18, jsxs as jsxs11 } from "react/jsx-runtime";
 var VoteLink_default = React5.forwardRef(function({ type, url, count: count2, className = "", ...rest }, ref) {
   let props = url ? { element: "link", to: url, ...rest } : { element: "button", ref, ...rest };
-  return /* @__PURE__ */ jsxDEV18(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
+  return /* @__PURE__ */ jsxs11(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
     "border-facebook text-facebook bg-facebookBG hover:bg-facebook/15": type === "facebook",
     "border-instagram text-instagram bg-instagramBG hover:bg-instagram/15": type === "instagram",
     "border-twitter text-twitter bg-twitterBG hover:bg-twitter/15": type === "twitter",
     "border-tally text-tally bg-tallyBG hover:bg-tally/15": type === "tally",
     "border-givaah text-givaah bg-givaahBG hover:bg-givaah/15": type === "givaah"
   }, className), children: [
-    /* @__PURE__ */ jsxDEV18("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
+    /* @__PURE__ */ jsx18("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
       "bg-facebook": type === "facebook",
       "bg-instagram": type === "instagram",
       "bg-twitter": type === "twitter",
       "bg-tally": type === "tally",
       "bg-givaah": type === "givaah"
-    }), children: /* @__PURE__ */ jsxDEV18(Svg, { src: socialIcons[type] }, void 0, !1, {
-      fileName: "app/components/public/contests/VoteLink.tsx",
-      lineNumber: 34,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/VoteLink.tsx",
-      lineNumber: 27,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV18("span", { className: "grow text-xs font-bold text-center mr-2", children: count2 }, void 0, !1, {
-      fileName: "app/components/public/contests/VoteLink.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/VoteLink.tsx",
-    lineNumber: 20,
-    columnNumber: 9
-  }, this);
+    }), children: /* @__PURE__ */ jsx18(Svg, { src: socialIcons[type] }) }),
+    /* @__PURE__ */ jsx18("span", { className: "grow text-xs font-bold text-center mr-2", children: count2 })
+  ] });
 });
 
 // app/lib/numbers.utils.ts
@@ -2556,8 +1728,8 @@ import { useRef as useRef3 } from "react";
 import * as React6 from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Cross2Icon as Cross2Icon2 } from "@radix-ui/react-icons";
-import { jsxDEV as jsxDEV19 } from "react/jsx-dev-runtime";
-var Dialog = DialogPrimitive.Root, DialogTrigger = DialogPrimitive.Trigger, DialogPortal = DialogPrimitive.Portal, DialogClose = DialogPrimitive.Close, DialogOverlay = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV19(
+import { jsx as jsx19, jsxs as jsxs12 } from "react/jsx-runtime";
+var Dialog = DialogPrimitive.Root, DialogTrigger = DialogPrimitive.Trigger, DialogPortal = DialogPrimitive.Portal, DialogClose = DialogPrimitive.Close, DialogOverlay = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx19(
   DialogPrimitive.Overlay,
   {
     ref,
@@ -2566,24 +1738,12 @@ var Dialog = DialogPrimitive.Root, DialogTrigger = DialogPrimitive.Trigger, Dial
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 19,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
-var DialogContent = React6.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxDEV19(DialogPortal, { children: [
-  /* @__PURE__ */ jsxDEV19(DialogOverlay, {}, void 0, !1, {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 35,
-    columnNumber: 5
-  }, this),
-  /* @__PURE__ */ jsxDEV19(
+var DialogContent = React6.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs12(DialogPortal, { children: [
+  /* @__PURE__ */ jsx19(DialogOverlay, {}),
+  /* @__PURE__ */ jsxs12(
     DialogPrimitive.Content,
     {
       ref,
@@ -2594,43 +1754,19 @@ var DialogContent = React6.forwardRef(({ className, children, ...props }, ref) =
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsxDEV19(DialogPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground", children: [
-          /* @__PURE__ */ jsxDEV19(Cross2Icon2, { className: "h-4 w-4" }, void 0, !1, {
-            fileName: "app/components/reusables/Dialog.tsx",
-            lineNumber: 46,
-            columnNumber: 9
-          }, this),
-          /* @__PURE__ */ jsxDEV19("span", { className: "sr-only", children: "Close" }, void 0, !1, {
-            fileName: "app/components/reusables/Dialog.tsx",
-            lineNumber: 47,
-            columnNumber: 9
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/reusables/Dialog.tsx",
-          lineNumber: 45,
-          columnNumber: 7
-        }, this)
+        /* @__PURE__ */ jsxs12(DialogPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground", children: [
+          /* @__PURE__ */ jsx19(Cross2Icon2, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx19("span", { className: "sr-only", children: "Close" })
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/reusables/Dialog.tsx",
-      lineNumber: 36,
-      columnNumber: 5
-    },
-    this
+    }
   )
-] }, void 0, !0, {
-  fileName: "app/components/reusables/Dialog.tsx",
-  lineNumber: 34,
-  columnNumber: 3
-}, this));
+] }));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 var DialogHeader = ({
   className,
   ...props
-}) => /* @__PURE__ */ jsxDEV19(
+}) => /* @__PURE__ */ jsx19(
   "div",
   {
     className: cn(
@@ -2638,21 +1774,13 @@ var DialogHeader = ({
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 58,
-    columnNumber: 3
-  },
-  this
+  }
 );
 DialogHeader.displayName = "DialogHeader";
 var DialogFooter = ({
   className,
   ...props
-}) => /* @__PURE__ */ jsxDEV19(
+}) => /* @__PURE__ */ jsx19(
   "div",
   {
     className: cn(
@@ -2660,18 +1788,10 @@ var DialogFooter = ({
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 72,
-    columnNumber: 3
-  },
-  this
+  }
 );
 DialogFooter.displayName = "DialogFooter";
-var DialogTitle = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV19(
+var DialogTitle = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx19(
   DialogPrimitive.Title,
   {
     ref,
@@ -2680,32 +1800,16 @@ var DialogTitle = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE
       className
     ),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 86,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
-var DialogDescription = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV19(
+var DialogDescription = React6.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx19(
   DialogPrimitive.Description,
   {
     ref,
     className: cn("text-sm text-muted-foreground", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Dialog.tsx",
-    lineNumber: 101,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
@@ -2713,11 +1817,11 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName;
 var providers = [{ label: "Flutterwave", value: "flutterwave" }];
 
 // app/components/public/contests/TallyVoteDialog.tsx
-import { jsxDEV as jsxDEV20 } from "react/jsx-dev-runtime";
+import { jsx as jsx20, jsxs as jsxs13 } from "react/jsx-runtime";
 function TallyVoteDialog({ contestant, disabled, children }) {
   let stageContestants = useRouteLoaderData2("routes/_public.contests.$tournamentId.$contestId"), formRef = useRef3(null), { pathname, search } = useLocation(), redirectUrl = `${stageContestants?.baseUrl}${pathname}${search}`;
-  return /* @__PURE__ */ jsxDEV20(Dialog, { modal: !0, children: [
-    /* @__PURE__ */ jsxDEV20(
+  return /* @__PURE__ */ jsxs13(Dialog, { modal: !0, children: [
+    /* @__PURE__ */ jsx20(
       DialogTrigger,
       {
         asChild: !0,
@@ -2726,509 +1830,153 @@ function TallyVoteDialog({ contestant, disabled, children }) {
         className: cn("rounded-full outline-none", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: children ?? /* @__PURE__ */ jsxDEV20(VoteLink_default, { type: "tally", count: numberSlang(contestant.vote.tally), className: "w-full" }, void 0, !1, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 34,
-          columnNumber: 30
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-        lineNumber: 30,
-        columnNumber: 13
-      },
-      this
+        children: children ?? /* @__PURE__ */ jsx20(VoteLink_default, { type: "tally", count: numberSlang(contestant.vote.tally), className: "w-full" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV20(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV20(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV20(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV20("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV20(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 40,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 39,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV20("p", { children: [
-            /* @__PURE__ */ jsxDEV20("span", { className: "block", children: "Vote for contestant" }, void 0, !1, {
-              fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-              lineNumber: 43,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV20("span", { className: "font-normal text-base text-admin-pry", children: `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}` }, void 0, !1, {
-              fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-              lineNumber: 44,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 42,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 38,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV20(DialogDescription, { asChild: !0, className: "border-y p-4", children: /* @__PURE__ */ jsxDEV20(Form2, { ref: formRef, method: "post", className: "grid sm:grid-cols-2 gap-4", children: [
-          /* @__PURE__ */ jsxDEV20(FormControl, { as: "input", id: "email", name: "email", labelText: "Email Address", labelClassNames: "text-left", required: !0 }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 49,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20(FormControl, { as: "input", id: "phone", name: "phone", labelText: "Phone Number", labelClassNames: "text-left" }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 50,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20(FormControl, { as: "input", id: "vote_quantity", name: "vote_quantity", labelText: "Vote Quantity", type: "number", labelClassNames: "text-left", defaultValue: 1, min: 1, required: !0 }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 51,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20("label", { htmlFor: "provider", className: "font-bold flex flex-col text-left", children: [
+    /* @__PURE__ */ jsxs13(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs13(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs13(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx20("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx20(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs13("p", { children: [
+            /* @__PURE__ */ jsx20("span", { className: "block", children: "Vote for contestant" }),
+            /* @__PURE__ */ jsx20("span", { className: "font-normal text-base text-admin-pry", children: `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}` })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx20(DialogDescription, { asChild: !0, className: "border-y p-4", children: /* @__PURE__ */ jsxs13(Form2, { ref: formRef, method: "post", className: "grid sm:grid-cols-2 gap-4", children: [
+          /* @__PURE__ */ jsx20(FormControl, { as: "input", id: "email", name: "email", labelText: "Email Address", labelClassNames: "text-left", required: !0 }),
+          /* @__PURE__ */ jsx20(FormControl, { as: "input", id: "phone", name: "phone", labelText: "Phone Number", labelClassNames: "text-left" }),
+          /* @__PURE__ */ jsx20(FormControl, { as: "input", id: "vote_quantity", name: "vote_quantity", labelText: "Vote Quantity", type: "number", labelClassNames: "text-left", defaultValue: 1, min: 1, required: !0 }),
+          /* @__PURE__ */ jsxs13("label", { htmlFor: "provider", className: "font-bold flex flex-col text-left", children: [
             "Payment Provider",
-            /* @__PURE__ */ jsxDEV20(Select, { name: "provider", required: !0, children: [
-              /* @__PURE__ */ jsxDEV20(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV20(SelectValue, { placeholder: "Select payment provider" }, void 0, !1, {
-                fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-                lineNumber: 55,
-                columnNumber: 41
-              }, this) }, void 0, !1, {
-                fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-                lineNumber: 54,
-                columnNumber: 37
-              }, this),
-              /* @__PURE__ */ jsxDEV20(SelectContent, { children: providers.map(({ label, value }) => /* @__PURE__ */ jsxDEV20(SelectItem, { value, className: "focus:bg-blue-700/25", children: label }, value, !1, {
-                fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-                lineNumber: 59,
-                columnNumber: 45
-              }, this)) }, void 0, !1, {
-                fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-                lineNumber: 57,
-                columnNumber: 37
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-              lineNumber: 53,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 52,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20("input", { type: "hidden", name: "contestant_id", value: contestant._id }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 64,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20("input", { type: "hidden", name: "redirect_url", value: redirectUrl }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 65,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV20("input", { type: "hidden", name: "intent", value: "tally_vote" }, void 0, !1, {
-            fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-            lineNumber: 66,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 48,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 47,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV20(DialogFooter, { className: "flex justify-end gap-6 p-4", children: [
-        /* @__PURE__ */ jsxDEV20(DialogClose, { type: "submit", name: "intent", value: "delete", className: "px-10 py-2 rounded-md font-bold min-w-[90px] outline outline-1", children: "Cancel" }, void 0, !1, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 71,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV20("button", { type: "submit", onClick: () => formRef.current?.submit(), className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-          lineNumber: 74,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-        lineNumber: 70,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/TallyVoteDialog.tsx",
-    lineNumber: 29,
-    columnNumber: 9
-  }, this);
+            /* @__PURE__ */ jsxs13(Select, { name: "provider", required: !0, children: [
+              /* @__PURE__ */ jsx20(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx20(SelectValue, { placeholder: "Select payment provider" }) }),
+              /* @__PURE__ */ jsx20(SelectContent, { children: providers.map(({ label, value }) => /* @__PURE__ */ jsx20(SelectItem, { value, className: "focus:bg-blue-700/25", children: label }, value)) })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx20("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
+          /* @__PURE__ */ jsx20("input", { type: "hidden", name: "redirect_url", value: redirectUrl }),
+          /* @__PURE__ */ jsx20("input", { type: "hidden", name: "intent", value: "tally_vote" })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxs13(DialogFooter, { className: "flex justify-end gap-6 p-4", children: [
+        /* @__PURE__ */ jsx20(DialogClose, { type: "submit", name: "intent", value: "delete", className: "px-10 py-2 rounded-md font-bold min-w-[90px] outline outline-1", children: "Cancel" }),
+        /* @__PURE__ */ jsx20("button", { type: "submit", onClick: () => formRef.current?.submit(), className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] })
+    ] })
+  ] });
 }
 
 // app/components/public/contests/MobileScoreboard.tsx
 import { useFetcher } from "@remix-run/react";
-import { jsxDEV as jsxDEV21 } from "react/jsx-dev-runtime";
+import { jsx as jsx21, jsxs as jsxs14 } from "react/jsx-runtime";
 function MobileScoreboard({ contestants, socialMediaType }) {
   let fetcher = useFetcher();
-  return /* @__PURE__ */ jsxDEV21("div", { className: "grid gap-6 sm:hidden", children: contestants.map((contestant) => /* @__PURE__ */ jsxDEV21("article", { className: "bg-secondary border border-primary rounded-xl p-3 w-full", children: [
-    /* @__PURE__ */ jsxDEV21("div", { className: "flex gap-4 mb-4 items-center", children: [
-      /* @__PURE__ */ jsxDEV21("span", { className: "font-satoshi-bold", children: [
+  return /* @__PURE__ */ jsx21("div", { className: "grid gap-6 sm:hidden", children: contestants.map((contestant) => /* @__PURE__ */ jsxs14("article", { className: "bg-secondary border border-primary rounded-xl p-3 w-full", children: [
+    /* @__PURE__ */ jsxs14("div", { className: "flex gap-4 mb-4 items-center", children: [
+      /* @__PURE__ */ jsxs14("span", { className: "font-satoshi-bold", children: [
         contestant.result.position,
         "."
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/MobileScoreboard.tsx",
-        lineNumber: 18,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV21("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 90, height: 90, className: "rounded-full aspect-square object-cover" }, void 0, !1, {
-        fileName: "app/components/public/contests/MobileScoreboard.tsx",
-        lineNumber: 19,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV21("div", { className: "flex flex-col gap-2 grow", children: [
-        /* @__PURE__ */ jsxDEV21("p", { className: "uppercase text-sm font-satoshi-medium text-ellipsis overflow-hidden", children: `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}` }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 21,
-          columnNumber: 29
-        }, this),
-        /* @__PURE__ */ jsxDEV21(ProgressBar, { percentage: contestant.result.overall_vote_percentage }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 24,
-          columnNumber: 29
-        }, this),
-        /* @__PURE__ */ jsxDEV21(Grade, { grade: contestant.result.grade }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 25,
-          columnNumber: 29
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/MobileScoreboard.tsx",
-        lineNumber: 20,
-        columnNumber: 25
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/MobileScoreboard.tsx",
-      lineNumber: 17,
-      columnNumber: 21
-    }, this),
-    /* @__PURE__ */ jsxDEV21("p", { className: "mb-2 text-xs font-satoshi-bold text-[#5F6D7E]", children: "Vote for this contestant" }, void 0, !1, {
-      fileName: "app/components/public/contests/MobileScoreboard.tsx",
-      lineNumber: 28,
-      columnNumber: 21
-    }, this),
-    /* @__PURE__ */ jsxDEV21("div", { className: "grid grid-cols-3 gap-3", children: [
-      socialMediaType === "kotmy" ? /* @__PURE__ */ jsxDEV21(fetcher.Form, { method: "POST", children: [
-        /* @__PURE__ */ jsxDEV21("input", { type: "hidden", name: "contestant_id", value: contestant._id }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 32,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV21("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 33,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV21("input", { type: "hidden", name: "intent", value: "kotmy_vote" }, void 0, !1, {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 34,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV21(
+      ] }),
+      /* @__PURE__ */ jsx21("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 90, height: 90, className: "rounded-full aspect-square object-cover" }),
+      /* @__PURE__ */ jsxs14("div", { className: "flex flex-col gap-2 grow", children: [
+        /* @__PURE__ */ jsx21("p", { className: "uppercase text-sm font-satoshi-medium text-ellipsis overflow-hidden", children: `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}` }),
+        /* @__PURE__ */ jsx21(ProgressBar, { percentage: contestant.result.overall_vote_percentage }),
+        /* @__PURE__ */ jsx21(Grade, { grade: contestant.result.grade })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx21("p", { className: "mb-2 text-xs font-satoshi-bold text-[#5F6D7E]", children: "Vote for this contestant" }),
+    /* @__PURE__ */ jsxs14("div", { className: "grid grid-cols-3 gap-3", children: [
+      socialMediaType === "kotmy" ? /* @__PURE__ */ jsxs14(fetcher.Form, { method: "POST", children: [
+        /* @__PURE__ */ jsx21("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
+        /* @__PURE__ */ jsx21("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }),
+        /* @__PURE__ */ jsx21("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
+        /* @__PURE__ */ jsx21(
           VoteLink_default,
           {
             className: "w-full",
             type: socialMediaType,
             url: contestant.social_media_url,
             count: numberSlang(contestant.vote.social_media)
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/public/contests/MobileScoreboard.tsx",
-            lineNumber: 35,
-            columnNumber: 33
-          },
-          this
+          }
         )
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/MobileScoreboard.tsx",
-        lineNumber: 31,
-        columnNumber: 29
-      }, this) : /* @__PURE__ */ jsxDEV21(
+      ] }) : /* @__PURE__ */ jsx21(
         VoteLink_default,
         {
           type: socialMediaType,
           url: contestant.social_media_url,
           count: numberSlang(contestant.vote.social_media)
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/MobileScoreboard.tsx",
-          lineNumber: 41,
-          columnNumber: 29
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV21(TallyVoteDialog, { contestant }, void 0, !1, {
-        fileName: "app/components/public/contests/MobileScoreboard.tsx",
-        lineNumber: 46,
-        columnNumber: 25
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/MobileScoreboard.tsx",
-      lineNumber: 29,
-      columnNumber: 21
-    }, this)
-  ] }, contestant._id, !0, {
-    fileName: "app/components/public/contests/MobileScoreboard.tsx",
-    lineNumber: 16,
-    columnNumber: 17
-  }, this)) }, void 0, !1, {
-    fileName: "app/components/public/contests/MobileScoreboard.tsx",
-    lineNumber: 14,
-    columnNumber: 9
-  }, this);
+      /* @__PURE__ */ jsx21(TallyVoteDialog, { contestant })
+    ] })
+  ] }, contestant._id)) });
 }
 
 // app/components/public/contests/ScoreboardTable.tsx
 import { useFetcher as useFetcher2 } from "@remix-run/react";
-import { jsxDEV as jsxDEV22 } from "react/jsx-dev-runtime";
+import { jsx as jsx22, jsxs as jsxs15 } from "react/jsx-runtime";
 function ScoreboardTable({ contestants, socialMediaType }) {
   let fetcher = useFetcher2();
-  return /* @__PURE__ */ jsxDEV22("table", { className: "w-full table-auto hidden sm:table", children: [
-    /* @__PURE__ */ jsxDEV22("thead", { children: /* @__PURE__ */ jsxDEV22("tr", { className: "border-b border-secondary", children: [
-      /* @__PURE__ */ jsxDEV22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "position" }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 17,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "name" }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 18,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell", children: "progress" }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 19,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell", children: "grade" }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 20,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "votes (SM, tally, givaah)" }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 21,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ScoreboardTable.tsx",
-      lineNumber: 16,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/ScoreboardTable.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV22("tbody", { children: contestants.map((contestant) => /* @__PURE__ */ jsxDEV22("tr", { className: "border-b border-secondary", children: [
-      /* @__PURE__ */ jsxDEV22("td", { className: "px-6 py-3", children: contestant.result.position }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 27,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV22("td", { className: "px-6 py-3 font-satoshi-medium max-w-[300px] truncate uppercase", children: /* @__PURE__ */ jsxDEV22("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsxDEV22("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 48, className: "rounded-full aspect-square object-cover" }, void 0, !1, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 30,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV22("div", { className: "truncate uppercase grow", children: [
+  return /* @__PURE__ */ jsxs15("table", { className: "w-full table-auto hidden sm:table", children: [
+    /* @__PURE__ */ jsx22("thead", { children: /* @__PURE__ */ jsxs15("tr", { className: "border-b border-secondary", children: [
+      /* @__PURE__ */ jsx22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "position" }),
+      /* @__PURE__ */ jsx22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "name" }),
+      /* @__PURE__ */ jsx22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell", children: "progress" }),
+      /* @__PURE__ */ jsx22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell", children: "grade" }),
+      /* @__PURE__ */ jsx22("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "votes (SM, tally, givaah)" })
+    ] }) }),
+    /* @__PURE__ */ jsx22("tbody", { children: contestants.map((contestant) => /* @__PURE__ */ jsxs15("tr", { className: "border-b border-secondary", children: [
+      /* @__PURE__ */ jsx22("td", { className: "px-6 py-3", children: contestant.result.position }),
+      /* @__PURE__ */ jsx22("td", { className: "px-6 py-3 font-satoshi-medium max-w-[300px] truncate uppercase", children: /* @__PURE__ */ jsxs15("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx22("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 48, className: "rounded-full aspect-square object-cover" }),
+        /* @__PURE__ */ jsxs15("div", { className: "truncate uppercase grow", children: [
           `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`,
-          /* @__PURE__ */ jsxDEV22("dl", { className: "lg:hidden", children: [
-            /* @__PURE__ */ jsxDEV22("dt", { className: "sr-only", children: "progress" }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 34,
-              columnNumber: 41
-            }, this),
-            /* @__PURE__ */ jsxDEV22("dd", { children: /* @__PURE__ */ jsxDEV22(ProgressBar, { percentage: contestant.result.overall_vote_percentage }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 35,
-              columnNumber: 45
-            }, this) }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 35,
-              columnNumber: 41
-            }, this),
-            /* @__PURE__ */ jsxDEV22("dt", { className: "sr-only", children: "grade" }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 36,
-              columnNumber: 41
-            }, this),
-            /* @__PURE__ */ jsxDEV22("dd", { children: /* @__PURE__ */ jsxDEV22(Grade, { grade: contestant.result.grade }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 37,
-              columnNumber: 45
-            }, this) }, void 0, !1, {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 37,
-              columnNumber: 41
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 33,
-            columnNumber: 37
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 31,
-          columnNumber: 33
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 29,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 28,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV22("td", { className: "px-6 py-3 hidden lg:table-cell", children: [
-        /* @__PURE__ */ jsxDEV22(ProgressBar, { percentage: contestant.result.overall_vote_percentage }, void 0, !1, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 43,
-          columnNumber: 29
-        }, this),
-        /* @__PURE__ */ jsxDEV22("dl", { className: "xl:hidden", children: [
-          /* @__PURE__ */ jsxDEV22("dt", { className: "sr-only", children: "grade" }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 45,
-            columnNumber: 33
-          }, this),
-          /* @__PURE__ */ jsxDEV22("dd", { children: /* @__PURE__ */ jsxDEV22(Grade, { grade: contestant.result.grade }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 46,
-            columnNumber: 37
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 46,
-            columnNumber: 33
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 44,
-          columnNumber: 29
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 42,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV22("td", { className: "px-6 py-3 hidden xl:table-cell", children: /* @__PURE__ */ jsxDEV22(Grade, { grade: contestant.result.grade }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 49,
-        columnNumber: 72
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 49,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV22("td", { className: "px-6 py-3 grid grid-cols-2 gap-2", children: [
-        socialMediaType === "kotmy" ? /* @__PURE__ */ jsxDEV22(fetcher.Form, { method: "POST", children: [
-          /* @__PURE__ */ jsxDEV22("input", { type: "hidden", name: "contestant_id", value: contestant._id }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 53,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV22("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 54,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV22("input", { type: "hidden", name: "intent", value: "kotmy_vote" }, void 0, !1, {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 55,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV22(
+          /* @__PURE__ */ jsxs15("dl", { className: "lg:hidden", children: [
+            /* @__PURE__ */ jsx22("dt", { className: "sr-only", children: "progress" }),
+            /* @__PURE__ */ jsx22("dd", { children: /* @__PURE__ */ jsx22(ProgressBar, { percentage: contestant.result.overall_vote_percentage }) }),
+            /* @__PURE__ */ jsx22("dt", { className: "sr-only", children: "grade" }),
+            /* @__PURE__ */ jsx22("dd", { children: /* @__PURE__ */ jsx22(Grade, { grade: contestant.result.grade }) })
+          ] })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsxs15("td", { className: "px-6 py-3 hidden lg:table-cell", children: [
+        /* @__PURE__ */ jsx22(ProgressBar, { percentage: contestant.result.overall_vote_percentage }),
+        /* @__PURE__ */ jsxs15("dl", { className: "xl:hidden", children: [
+          /* @__PURE__ */ jsx22("dt", { className: "sr-only", children: "grade" }),
+          /* @__PURE__ */ jsx22("dd", { children: /* @__PURE__ */ jsx22(Grade, { grade: contestant.result.grade }) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx22("td", { className: "px-6 py-3 hidden xl:table-cell", children: /* @__PURE__ */ jsx22(Grade, { grade: contestant.result.grade }) }),
+      /* @__PURE__ */ jsxs15("td", { className: "px-6 py-3 grid grid-cols-2 gap-2", children: [
+        socialMediaType === "kotmy" ? /* @__PURE__ */ jsxs15(fetcher.Form, { method: "POST", children: [
+          /* @__PURE__ */ jsx22("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
+          /* @__PURE__ */ jsx22("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }),
+          /* @__PURE__ */ jsx22("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
+          /* @__PURE__ */ jsx22(
             VoteLink_default,
             {
               className: "w-full",
               type: socialMediaType,
               url: contestant.social_media_url,
               count: numberSlang(contestant.vote.social_media)
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/components/public/contests/ScoreboardTable.tsx",
-              lineNumber: 56,
-              columnNumber: 37
-            },
-            this
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 52,
-          columnNumber: 33
-        }, this) : /* @__PURE__ */ jsxDEV22(
+        ] }) : /* @__PURE__ */ jsx22(
           VoteLink_default,
           {
             type: socialMediaType,
             url: contestant.social_media_url,
             count: numberSlang(contestant.vote.social_media)
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/public/contests/ScoreboardTable.tsx",
-            lineNumber: 62,
-            columnNumber: 33
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV22(TallyVoteDialog, { contestant }, void 0, !1, {
-          fileName: "app/components/public/contests/ScoreboardTable.tsx",
-          lineNumber: 67,
-          columnNumber: 29
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ScoreboardTable.tsx",
-        lineNumber: 50,
-        columnNumber: 25
-      }, this)
-    ] }, contestant._id, !0, {
-      fileName: "app/components/public/contests/ScoreboardTable.tsx",
-      lineNumber: 26,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/components/public/contests/ScoreboardTable.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ScoreboardTable.tsx",
-    lineNumber: 14,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx22(TallyVoteDialog, { contestant })
+      ] })
+    ] }, contestant._id)) })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx
-import { jsxDEV as jsxDEV23 } from "react/jsx-dev-runtime";
+import { jsx as jsx23, jsxs as jsxs16 } from "react/jsx-runtime";
 async function action2({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "tally_vote")
@@ -3243,188 +1991,56 @@ function Scoreboard() {
   if (!stageContestants)
     throw new Error("Could not load stage contestants");
   let { contest, stage } = stageContestants, [_, setUrlSearchParams] = useSearchParams(), color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxDEV23("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV23("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxDEV23("div", { className: "grid", children: [
-        /* @__PURE__ */ jsxDEV23("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsxDEV23("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }, void 0, !1, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV23("p", { className: "font-satoshi-medium", children: contest.desc }, void 0, !1, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 39,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 37,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV23("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
-          /* @__PURE__ */ jsxDEV23("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV23("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 43,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV23(StatusTag, { status: contest.status, color }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 44,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 42,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV23("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV23("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 47,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV23("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV23("span", { children: [
+  return /* @__PURE__ */ jsxs16("main", { className: "grow", children: [
+    /* @__PURE__ */ jsxs16("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs16("div", { className: "grid", children: [
+        /* @__PURE__ */ jsxs16("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx23("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
+          /* @__PURE__ */ jsx23("p", { className: "font-satoshi-medium", children: contest.desc })
+        ] }),
+        /* @__PURE__ */ jsxs16("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
+          /* @__PURE__ */ jsxs16("div", { className: "", children: [
+            /* @__PURE__ */ jsx23("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+            /* @__PURE__ */ jsx23(StatusTag, { status: contest.status, color })
+          ] }),
+          /* @__PURE__ */ jsxs16("div", { className: "", children: [
+            /* @__PURE__ */ jsx23("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx23("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs16("span", { children: [
               "~ ",
               category
-            ] }, category, !0, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 49,
-              columnNumber: 71
-            }, this)) }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 48,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 46,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV23("div", { className: "col-span-2", children: [
-            /* @__PURE__ */ jsxDEV23("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 53,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV23("span", { className: "block", children: contest.prizes }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 54,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 52,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 41,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV23(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" }, void 0, !1, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 57,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-        lineNumber: 36,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV23("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-        lineNumber: 59,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV23("section", { className: "sm:bg-white", children: /* @__PURE__ */ jsxDEV23("div", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxDEV23("div", { className: "flex flex-col sm:flex-row justify-between sm:items-center gap-y-4 gap-x-6 sm:gap-x-8 py-6 flex-wrap", children: [
-        /* @__PURE__ */ jsxDEV23("span", { className: "font-satoshi-medium text-xl", children: [
+            ] }, category)) })
+          ] }),
+          /* @__PURE__ */ jsxs16("div", { className: "col-span-2", children: [
+            /* @__PURE__ */ jsx23("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx23("span", { className: "block", children: contest.prizes })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx23(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
+      ] }),
+      /* @__PURE__ */ jsx23("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
+    ] }),
+    /* @__PURE__ */ jsx23("section", { className: "sm:bg-white", children: /* @__PURE__ */ jsxs16("div", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxs16("div", { className: "flex flex-col sm:flex-row justify-between sm:items-center gap-y-4 gap-x-6 sm:gap-x-8 py-6 flex-wrap", children: [
+        /* @__PURE__ */ jsxs16("span", { className: "font-satoshi-medium text-xl", children: [
           stage?.contestants.length ?? 0,
           " Contestants"
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 64,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV23("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-          /* @__PURE__ */ jsxDEV23(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search contestant by name" }, void 0, !1, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 66,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV23(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
-            /* @__PURE__ */ jsxDEV23(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsxDEV23(SelectValue, { placeholder: "Stage 1" }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 69,
-              columnNumber: 37
-            }, this) }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 68,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV23(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxDEV23(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
+        ] }),
+        /* @__PURE__ */ jsxs16("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+          /* @__PURE__ */ jsx23(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search contestant by name" }),
+          /* @__PURE__ */ jsxs16(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
+            /* @__PURE__ */ jsx23(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx23(SelectValue, { placeholder: "Stage 1" }) }),
+            /* @__PURE__ */ jsx23(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs16(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
               "Stage ",
               stage2.stage
-            ] }, stage2.stage, !0, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 73,
-              columnNumber: 41
-            }, this)) }, void 0, !1, {
-              fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-              lineNumber: 71,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-            lineNumber: 67,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 65,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV23(Link2, { to: `/results/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See result table" }, void 0, !1, {
-          fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-          lineNumber: 78,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-        lineNumber: 63,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV23(ScoreboardTable, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-        lineNumber: 80,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV23(MobileScoreboard, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-        lineNumber: 81,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-      lineNumber: 62,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-      lineNumber: 61,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx",
-    lineNumber: 34,
-    columnNumber: 9
-  }, this);
+            ] }, stage2.stage)) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx23(Link2, { to: `/results/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See result table" })
+      ] }),
+      /* @__PURE__ */ jsx23(ScoreboardTable, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" }),
+      /* @__PURE__ */ jsx23(MobileScoreboard, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" })
+    ] }) })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId._index.tsx
@@ -3443,96 +2059,44 @@ import { useSearchParams as useSearchParams2 } from "@remix-run/react";
 // app/components/public/contests/SocialLink.tsx
 import React7 from "react";
 import { useFetcher as useFetcher3 } from "@remix-run/react";
-import { jsxDEV as jsxDEV24 } from "react/jsx-dev-runtime";
+import { jsx as jsx24, jsxs as jsxs17 } from "react/jsx-runtime";
 var SocialLink_default = React7.forwardRef(function({ type, url, className = "", ...rest }, ref) {
   let props = url ? { element: "link", to: url, ...rest } : { element: "button", ref, ...rest }, fetcher = useFetcher3();
-  return type === "kotmy" ? /* @__PURE__ */ jsxDEV24(fetcher.Form, { method: "POST", children: [
-    /* @__PURE__ */ jsxDEV24("input", { type: "hidden", name: "contestant_id", value: rest.contestantId }, void 0, !1, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV24("input", { type: "hidden", name: "stage_id", value: rest.stageId }, void 0, !1, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV24(Cta_default, { element: "button", name: "intent", value: "kotmy_vote", variant: "outline", className: cn("p-2 flex items-center border rounded-full w-full", className), children: [
-      /* @__PURE__ */ jsxDEV24("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1"), children: /* @__PURE__ */ jsxDEV24(Svg, { src: socialIcons[type] }, void 0, !1, {
-        fileName: "app/components/public/contests/SocialLink.tsx",
-        lineNumber: 39,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/contests/SocialLink.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV24("span", { className: "grow text-xs font-bold text-center mr-2", children: [
-        rest.voted ? null : /* @__PURE__ */ jsxDEV24("span", { className: "capitalize", children: type }, void 0, !1, {
-          fileName: "app/components/public/contests/SocialLink.tsx",
-          lineNumber: 42,
-          columnNumber: 42
-        }, this),
+  return type === "kotmy" ? /* @__PURE__ */ jsxs17(fetcher.Form, { method: "POST", children: [
+    /* @__PURE__ */ jsx24("input", { type: "hidden", name: "contestant_id", value: rest.contestantId }),
+    /* @__PURE__ */ jsx24("input", { type: "hidden", name: "stage_id", value: rest.stageId }),
+    /* @__PURE__ */ jsxs17(Cta_default, { element: "button", name: "intent", value: "kotmy_vote", variant: "outline", className: cn("p-2 flex items-center border rounded-full w-full", className), children: [
+      /* @__PURE__ */ jsx24("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1"), children: /* @__PURE__ */ jsx24(Svg, { src: socialIcons[type] }) }),
+      /* @__PURE__ */ jsxs17("span", { className: "grow text-xs font-bold text-center mr-2", children: [
+        rest.voted ? null : /* @__PURE__ */ jsx24("span", { className: "capitalize", children: type }),
         rest.voted ? "Voted" : " vote"
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/SocialLink.tsx",
-        lineNumber: 41,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 37,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/SocialLink.tsx",
-    lineNumber: 34,
-    columnNumber: 11
-  }, this) : /* @__PURE__ */ jsxDEV24(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
+      ] })
+    ] })
+  ] }) : /* @__PURE__ */ jsxs17(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
     "border-facebook text-facebook bg-facebookBG hover:bg-facebook/15": type === "facebook",
     "border-instagram text-instagram bg-instagramBG hover:bg-instagram/15": type === "instagram",
     "border-twitter text-twitter bg-twitterBG hover:bg-twitter/15": type === "twitter",
     "border-tally text-tally bg-tallyBG hover:bg-tally/15": type === "tally",
     "border-givaah text-givaah bg-givaahBG hover:bg-givaah/15": type === "givaah"
   }, className), children: [
-    /* @__PURE__ */ jsxDEV24("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
+    /* @__PURE__ */ jsx24("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
       "bg-facebook": type === "facebook",
       "bg-instagram": type === "instagram",
       "bg-twitter": type === "twitter",
       "bg-tally": type === "tally",
       "bg-givaah": type === "givaah"
-    }), children: /* @__PURE__ */ jsxDEV24(Svg, { src: socialIcons[type] }, void 0, !1, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 61,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 54,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV24("span", { className: "grow text-xs font-bold text-center mr-2", children: [
-      /* @__PURE__ */ jsxDEV24("span", { className: "capitalize", children: type }, void 0, !1, {
-        fileName: "app/components/public/contests/SocialLink.tsx",
-        lineNumber: 63,
-        columnNumber: 71
-      }, this),
+    }), children: /* @__PURE__ */ jsx24(Svg, { src: socialIcons[type] }) }),
+    /* @__PURE__ */ jsxs17("span", { className: "grow text-xs font-bold text-center mr-2", children: [
+      /* @__PURE__ */ jsx24("span", { className: "capitalize", children: type }),
       " vote"
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/SocialLink.tsx",
-      lineNumber: 63,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/SocialLink.tsx",
-    lineNumber: 47,
-    columnNumber: 11
-  }, this);
+    ] })
+  ] });
 });
 
 // app/components/public/contests/ContestantCard.tsx
 import { Link as Link3 } from "@remix-run/react";
 import { useState as useState6 } from "react";
-import { jsxDEV as jsxDEV25 } from "react/jsx-dev-runtime";
+import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
 function ContestantStatisticsCard({ contestant }) {
   let [totalVotes, setTotalVotes] = useState6(getContestantTotalVotes(contestant));
   function getContestantTotalVotes(contestant2) {
@@ -3544,253 +2108,77 @@ function ContestantStatisticsCard({ contestant }) {
     }), computedTotalVotes;
   }
   let { fullName, contestName, stage, stageStatus, contestImage, is_evicted, originalContestantData, stageSocialMedia } = contestant, vote = originalContestantData.vote, result = originalContestantData.result;
-  return console.log(contestant), /* @__PURE__ */ jsxDEV25("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
-    /* @__PURE__ */ jsxDEV25(Link3, { to: `/contest/contestant/${originalContestantData._id}?stageId=${originalContestantData.stage_id}&contestantCode=${originalContestantData.code}`, children: /* @__PURE__ */ jsxDEV25("img", { src: originalContestantData.image_url || no_image_default, alt: fullName, className: "w-full h-80 object-cover object-top" }, void 0, !1, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 37,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 36,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV25("div", { className: "p-4 bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV25("span", { className: "block font-black uppercase mb-2", children: fullName }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 40,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestName }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 41,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV25("span", { className: "block text-[#5F6D7E] text-xs font-medium mb-2", children: [
+  return console.log(contestant), /* @__PURE__ */ jsxs18("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
+    /* @__PURE__ */ jsx25(Link3, { to: `/contest/contestant/${originalContestantData._id}?stageId=${originalContestantData.stage_id}&contestantCode=${originalContestantData.code}`, children: /* @__PURE__ */ jsx25("img", { src: originalContestantData.image_url || no_image_default, alt: fullName, className: "w-full h-80 object-cover object-top" }) }),
+    /* @__PURE__ */ jsxs18("div", { className: "p-4 bg-secondary", children: [
+      /* @__PURE__ */ jsx25("span", { className: "block font-black uppercase mb-2", children: fullName }),
+      /* @__PURE__ */ jsx25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestName }),
+      /* @__PURE__ */ jsxs18("span", { className: "block text-[#5F6D7E] text-xs font-medium mb-2", children: [
         "Stage ",
         stage,
         " \u2022 ",
         stageStatus.replace(/_/g, " ")
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 42,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV25("div", { className: "grid grid-cols-2 gap-4 mb-4", children: [
-        /* @__PURE__ */ jsxDEV25("div", { children: [
-          /* @__PURE__ */ jsxDEV25("span", { className: "text-xs text-gray-500", children: "Total Votes" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 45,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "text-xl font-bold text-indigo-700", children: totalVotes }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 46,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 44,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV25("div", { children: [
-          /* @__PURE__ */ jsxDEV25("span", { className: "text-xs text-gray-500", children: "Rank" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 49,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "text-xl font-bold text-green-700", children: originalContestantData.rank ?? "N/A" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 50,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 48,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV25("div", { children: [
-          /* @__PURE__ */ jsxDEV25("span", { className: "text-xs text-gray-500", children: "Grade" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 53,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "text-lg font-semibold text-gray-800", children: result?.grade ?? "N/A" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 54,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 52,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV25("div", { children: [
-          /* @__PURE__ */ jsxDEV25("span", { className: "text-xs text-gray-500", children: "Vote %" }, void 0, !1, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 57,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "text-lg font-semibold text-blue-600", children: [
+      ] }),
+      /* @__PURE__ */ jsxs18("div", { className: "grid grid-cols-2 gap-4 mb-4", children: [
+        /* @__PURE__ */ jsxs18("div", { children: [
+          /* @__PURE__ */ jsx25("span", { className: "text-xs text-gray-500", children: "Total Votes" }),
+          /* @__PURE__ */ jsx25("div", { className: "text-xl font-bold text-indigo-700", children: totalVotes })
+        ] }),
+        /* @__PURE__ */ jsxs18("div", { children: [
+          /* @__PURE__ */ jsx25("span", { className: "text-xs text-gray-500", children: "Rank" }),
+          /* @__PURE__ */ jsx25("div", { className: "text-xl font-bold text-green-700", children: originalContestantData.rank ?? "N/A" })
+        ] }),
+        /* @__PURE__ */ jsxs18("div", { children: [
+          /* @__PURE__ */ jsx25("span", { className: "text-xs text-gray-500", children: "Grade" }),
+          /* @__PURE__ */ jsx25("div", { className: "text-lg font-semibold text-gray-800", children: result?.grade ?? "N/A" })
+        ] }),
+        /* @__PURE__ */ jsxs18("div", { children: [
+          /* @__PURE__ */ jsx25("span", { className: "text-xs text-gray-500", children: "Vote %" }),
+          /* @__PURE__ */ jsxs18("div", { className: "text-lg font-semibold text-blue-600", children: [
             result?.overall_vote_percentage ?? 0,
             "%"
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 58,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 56,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 43,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV25("div", { className: "mb-4", children: [
-        /* @__PURE__ */ jsxDEV25("span", { className: "block text-xs text-gray-500 mb-1", children: "Votes by Channel" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 62,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV25("div", { className: "grid grid-cols-2 gap-2", children: [
-          /* @__PURE__ */ jsxDEV25("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-xs font-semibold capitalize", children: stageSocialMedia }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 66,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-sm font-bold", children: vote.social_media }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 67,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 65,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-xs font-semibold", children: "Tally" }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 72,
-              columnNumber: 15
-            }, this),
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-sm font-bold", children: vote.tally ?? result?.weighted_scores?.tally ?? 0 }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 73,
-              columnNumber: 15
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 71,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-xs font-semibold", children: "Judge" }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 76,
-              columnNumber: 15
-            }, this),
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-sm font-bold", children: vote.judge ?? result?.weighted_scores?.judge ?? 0 }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 77,
-              columnNumber: 15
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 75,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-xs font-semibold", children: "Givaah" }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 80,
-              columnNumber: 15
-            }, this),
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-sm font-bold", children: vote.givaah ?? result?.weighted_scores?.givaah ?? 0 }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 81,
-              columnNumber: 15
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 79,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV25("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-xs font-semibold", children: "Bonus" }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 84,
-              columnNumber: 15
-            }, this),
-            /* @__PURE__ */ jsxDEV25("span", { className: "text-sm font-bold", children: vote.bonus ?? result?.weighted_scores?.bonus ?? 0 }, void 0, !1, {
-              fileName: "app/components/public/contests/ContestantCard.tsx",
-              lineNumber: 85,
-              columnNumber: 15
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 83,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 63,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 61,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV25("span", { className: `inline-block px-3 py-1 rounded-full text-xs font-bold ${is_evicted ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`, children: is_evicted ? "Evicted" : "Active" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 89,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 39,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ContestantCard.tsx",
-    lineNumber: 35,
-    columnNumber: 5
-  }, this);
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs18("div", { className: "mb-4", children: [
+        /* @__PURE__ */ jsx25("span", { className: "block text-xs text-gray-500 mb-1", children: "Votes by Channel" }),
+        /* @__PURE__ */ jsxs18("div", { className: "grid grid-cols-2 gap-2", children: [
+          /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "text-xs font-semibold capitalize", children: stageSocialMedia }),
+            /* @__PURE__ */ jsx25("span", { className: "text-sm font-bold", children: vote.social_media })
+          ] }),
+          /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "text-xs font-semibold", children: "Tally" }),
+            /* @__PURE__ */ jsx25("span", { className: "text-sm font-bold", children: vote.tally ?? result?.weighted_scores?.tally ?? 0 })
+          ] }),
+          /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "text-xs font-semibold", children: "Judge" }),
+            /* @__PURE__ */ jsx25("span", { className: "text-sm font-bold", children: vote.judge ?? result?.weighted_scores?.judge ?? 0 })
+          ] }),
+          /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "text-xs font-semibold", children: "Givaah" }),
+            /* @__PURE__ */ jsx25("span", { className: "text-sm font-bold", children: vote.givaah ?? result?.weighted_scores?.givaah ?? 0 })
+          ] }),
+          /* @__PURE__ */ jsxs18("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "text-xs font-semibold", children: "Bonus" }),
+            /* @__PURE__ */ jsx25("span", { className: "text-sm font-bold", children: vote.bonus ?? result?.weighted_scores?.bonus ?? 0 })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx25("span", { className: `inline-block px-3 py-1 rounded-full text-xs font-bold ${is_evicted ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`, children: is_evicted ? "Evicted" : "Active" })
+    ] })
+  ] });
 }
 function ContestantCard({ contestant, socialMedia }) {
   let fullName = `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`;
-  return console.log({ contestant }), /* @__PURE__ */ jsxDEV25("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
-    /* @__PURE__ */ jsxDEV25(Link3, { to: `/contest/contestant/${contestant._id}?stageId=${contestant.stage_id}&contestantCode=${contestant.code}`, children: /* @__PURE__ */ jsxDEV25("img", { src: contestant.image_url || no_image_default, alt: "person smiling", className: "w-full h-80 object-cover object-top" }, void 0, !1, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 104,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 103,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV25("div", { className: "p-4 bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: "Vote now for your favorite contestant" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 107,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV25("span", { className: "block font-black uppercase mb-4", children: fullName }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 108,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestant.category }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 109,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV25("div", { className: "grid grid-cols-2 gap-4", children: [
-        socialMedia === "kotmy" ? /* @__PURE__ */ jsxDEV25(
+  return console.log({ contestant }), /* @__PURE__ */ jsxs18("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
+    /* @__PURE__ */ jsx25(Link3, { to: `/contest/contestant/${contestant._id}?stageId=${contestant.stage_id}&contestantCode=${contestant.code}`, children: /* @__PURE__ */ jsx25("img", { src: contestant.image_url || no_image_default, alt: "person smiling", className: "w-full h-80 object-cover object-top" }) }),
+    /* @__PURE__ */ jsxs18("div", { className: "p-4 bg-secondary", children: [
+      /* @__PURE__ */ jsx25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: "Vote now for your favorite contestant" }),
+      /* @__PURE__ */ jsx25("span", { className: "block font-black uppercase mb-4", children: fullName }),
+      /* @__PURE__ */ jsx25("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestant.category }),
+      /* @__PURE__ */ jsxs18("div", { className: "grid grid-cols-2 gap-4", children: [
+        socialMedia === "kotmy" ? /* @__PURE__ */ jsx25(
           SocialLink_default,
           {
             type: socialMedia,
@@ -3798,521 +2186,169 @@ function ContestantCard({ contestant, socialMedia }) {
             voted: contestant.result.device_voted_for_contestant,
             contestantId: contestant._id,
             stageId: contestant.stage_id
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 112,
-            columnNumber: 27
-          },
-          this
-        ) : /* @__PURE__ */ jsxDEV25(
+          }
+        ) : /* @__PURE__ */ jsx25(
           SocialLink_default,
           {
             type: socialMedia,
             url: contestant.social_media_url,
             voted: contestant.result.device_voted_for_contestant
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/public/contests/ContestantCard.tsx",
-            lineNumber: 119,
-            columnNumber: 27
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV25(TallyVoteDialog, { contestant, children: /* @__PURE__ */ jsxDEV25(SocialLink_default, { type: "tally", className: "w-full" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 126,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestantCard.tsx",
-          lineNumber: 125,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestantCard.tsx",
-        lineNumber: 110,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestantCard.tsx",
-      lineNumber: 106,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ContestantCard.tsx",
-    lineNumber: 102,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx25(TallyVoteDialog, { contestant, children: /* @__PURE__ */ jsx25(SocialLink_default, { type: "tally", className: "w-full" }) })
+      ] })
+    ] })
+  ] });
 }
 
 // app/components/public/contests/OngoingContest.tsx
-import { Fragment as Fragment3, jsxDEV as jsxDEV26 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment3, jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
 function OngoingContest({ contest, stage }) {
   let [searchParams, setUrlSearchParams] = useSearchParams2(), status = contest.status, color = status === "ongoing" ? "green" : status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxDEV26(Fragment3, { children: [
-    /* @__PURE__ */ jsxDEV26("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxDEV26("div", { className: "grid", children: [
-        /* @__PURE__ */ jsxDEV26("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsxDEV26("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }, void 0, !1, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 24,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV26("p", { className: "font-satoshi-medium", children: contest.desc }, void 0, !1, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 25,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/OngoingContest.tsx",
-          lineNumber: 23,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV26("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
-          /* @__PURE__ */ jsxDEV26("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV26("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 29,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV26(StatusTag, { status, color }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 30,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 28,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV26("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV26("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 33,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV26("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV26("span", { children: [
+  return /* @__PURE__ */ jsxs19(Fragment3, { children: [
+    /* @__PURE__ */ jsxs19("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs19("div", { className: "grid", children: [
+        /* @__PURE__ */ jsxs19("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx26("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
+          /* @__PURE__ */ jsx26("p", { className: "font-satoshi-medium", children: contest.desc })
+        ] }),
+        /* @__PURE__ */ jsxs19("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
+          /* @__PURE__ */ jsxs19("div", { className: "", children: [
+            /* @__PURE__ */ jsx26("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+            /* @__PURE__ */ jsx26(StatusTag, { status, color })
+          ] }),
+          /* @__PURE__ */ jsxs19("div", { className: "", children: [
+            /* @__PURE__ */ jsx26("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx26("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs19("span", { children: [
               "~ ",
               category
-            ] }, category, !0, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 35,
-              columnNumber: 70
-            }, this)) }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 34,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 32,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV26("div", { className: "col-span-2", children: [
-            /* @__PURE__ */ jsxDEV26("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 39,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV26("span", { className: "block", children: contest.prizes }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 40,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/OngoingContest.tsx",
-          lineNumber: 27,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV26(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" }, void 0, !1, {
-          fileName: "app/components/public/contests/OngoingContest.tsx",
-          lineNumber: 43,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 22,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV26("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }, void 0, !1, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 45,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/OngoingContest.tsx",
-      lineNumber: 21,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV26("section", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxDEV26("h2", { className: "text-accent text-lg lg:text-2xl font-satoshi-bold mb-3 sm:mb-6 uppercase", children: [
+            ] }, category)) })
+          ] }),
+          /* @__PURE__ */ jsxs19("div", { className: "col-span-2", children: [
+            /* @__PURE__ */ jsx26("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx26("span", { className: "block", children: contest.prizes })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx26(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
+      ] }),
+      /* @__PURE__ */ jsx26("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
+    ] }),
+    /* @__PURE__ */ jsxs19("section", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxs19("h2", { className: "text-accent text-lg lg:text-2xl font-satoshi-bold mb-3 sm:mb-6 uppercase", children: [
         contest.name,
         " contestants"
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 48,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV26("div", { className: "flex flex-col sm:flex-row justify-between sm:items-end gap-6 sm:gap-8", children: [
-        /* @__PURE__ */ jsxDEV26("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-          /* @__PURE__ */ jsxDEV26(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white py-2 text-sm", placeholder: "Search contestant by name" }, void 0, !1, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 51,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV26(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
-            /* @__PURE__ */ jsxDEV26(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsxDEV26(SelectValue, { placeholder: "Stage 1" }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 54,
-              columnNumber: 33
-            }, this) }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 53,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV26(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxDEV26(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
+      ] }),
+      /* @__PURE__ */ jsxs19("div", { className: "flex flex-col sm:flex-row justify-between sm:items-end gap-6 sm:gap-8", children: [
+        /* @__PURE__ */ jsxs19("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+          /* @__PURE__ */ jsx26(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white py-2 text-sm", placeholder: "Search contestant by name" }),
+          /* @__PURE__ */ jsxs19(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
+            /* @__PURE__ */ jsx26(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx26(SelectValue, { placeholder: "Stage 1" }) }),
+            /* @__PURE__ */ jsx26(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs19(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
               "Stage ",
               stage2.stage
-            ] }, stage2.stage, !0, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 58,
-              columnNumber: 37
-            }, this)) }, void 0, !1, {
-              fileName: "app/components/public/contests/OngoingContest.tsx",
-              lineNumber: 56,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/OngoingContest.tsx",
-            lineNumber: 52,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/OngoingContest.tsx",
-          lineNumber: 50,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV26(Link4, { to: `scoreboard?${searchParams.toString()}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See scoreboard" }, void 0, !1, {
-          fileName: "app/components/public/contests/OngoingContest.tsx",
-          lineNumber: 63,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 49,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV26("div", { className: "my-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16", children: stage?.contestants.map((contestant) => /* @__PURE__ */ jsxDEV26(ContestantCard, { contestant, socialMedia: stage.rates.social_media.type }, contestant.code, !1, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 67,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/public/contests/OngoingContest.tsx",
-        lineNumber: 65,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/OngoingContest.tsx",
-      lineNumber: 47,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/OngoingContest.tsx",
-    lineNumber: 20,
-    columnNumber: 9
-  }, this);
+            ] }, stage2.stage)) })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx26(Link4, { to: `scoreboard?${searchParams.toString()}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See scoreboard" })
+      ] }),
+      /* @__PURE__ */ jsx26("div", { className: "my-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16", children: stage?.contestants.map((contestant) => /* @__PURE__ */ jsx26(ContestantCard, { contestant, socialMedia: stage.rates.social_media.type }, contestant.code)) })
+    ] })
+  ] });
 }
 
 // app/components/public/contests/RegisteringContest.tsx
 import { useActionData } from "@remix-run/react";
 
 // app/components/public/contests/ContestGuidelines.tsx
-import { jsxDEV as jsxDEV27 } from "react/jsx-dev-runtime";
+import { jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
 function ContestGuidelines({ contest }) {
-  return /* @__PURE__ */ jsxDEV27("div", { className: "wrapper sm:max-w-lg sm:mx-0", children: [
-    /* @__PURE__ */ jsxDEV27("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxDEV27("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 8,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV27(StatusTag, { status: "registering", color: "yellow" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 9,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestGuidelines.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV27("div", { className: "grid gap-4 sm:grid-cols-2 my-8", children: [
-      /* @__PURE__ */ jsxDEV27("div", { className: "", children: [
-        /* @__PURE__ */ jsxDEV27("span", { className: "block font-satoshi-bold mb-1", children: "Age Categories" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 13,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV27("div", { className: "flex flex-wrap gap-x-4 capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV27("span", { children: [
+  return /* @__PURE__ */ jsxs20("div", { className: "wrapper sm:max-w-lg sm:mx-0", children: [
+    /* @__PURE__ */ jsxs20("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+      /* @__PURE__ */ jsx27(StatusTag, { status: "registering", color: "yellow" })
+    ] }),
+    /* @__PURE__ */ jsxs20("div", { className: "grid gap-4 sm:grid-cols-2 my-8", children: [
+      /* @__PURE__ */ jsxs20("div", { className: "", children: [
+        /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Age Categories" }),
+        /* @__PURE__ */ jsx27("div", { className: "flex flex-wrap gap-x-4 capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs20("span", { children: [
           "~ ",
           category
-        ] }, category, !0, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 15,
-          columnNumber: 62
-        }, this)) }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 14,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 12,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV27("div", { className: "", children: [
-        /* @__PURE__ */ jsxDEV27("span", { className: "block font-satoshi-bold mb-1", children: "Submission Guideline" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 19,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV27("span", { className: "block", children: contest.sub_req }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 20,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV27("div", { className: "", children: [
-        /* @__PURE__ */ jsxDEV27("span", { className: "block font-satoshi-bold mb-1", children: "Submission Deadline" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 23,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV27("span", { className: "block", children: [
+        ] }, category)) })
+      ] }),
+      /* @__PURE__ */ jsxs20("div", { className: "", children: [
+        /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Submission Guideline" }),
+        /* @__PURE__ */ jsx27("span", { className: "block", children: contest.sub_req })
+      ] }),
+      /* @__PURE__ */ jsxs20("div", { className: "", children: [
+        /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Submission Deadline" }),
+        /* @__PURE__ */ jsxs20("span", { className: "block", children: [
           "All entries must be submitted by ",
           new Date(contest.reg_deadline).toLocaleString("en-US", { timeStyle: "short", dateStyle: "long" }),
           "."
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 24,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 22,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV27("div", { className: "", children: [
-        /* @__PURE__ */ jsxDEV27("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 29,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV27("span", { className: "block", children: contest.prizes }, void 0, !1, {
-          fileName: "app/components/public/contests/ContestGuidelines.tsx",
-          lineNumber: 30,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 28,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestGuidelines.tsx",
-      lineNumber: 11,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV27("div", { className: "flex flex-col gap-2 my-8", children: [
-      /* @__PURE__ */ jsxDEV27("span", { className: "font-satoshi-bold", children: "Terms & Conditions" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 34,
-        columnNumber: 17
-      }, this),
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs20("div", { className: "", children: [
+        /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+        /* @__PURE__ */ jsx27("span", { className: "block", children: contest.prizes })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs20("div", { className: "flex flex-col gap-2 my-8", children: [
+      /* @__PURE__ */ jsx27("span", { className: "font-satoshi-bold", children: "Terms & Conditions" }),
       contest.terms_cond
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestGuidelines.tsx",
-      lineNumber: 33,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV27("div", { className: "flex flex-col gap-2 my-8", children: [
-      /* @__PURE__ */ jsxDEV27("span", { className: "font-satoshi-bold", children: "Additional Notes" }, void 0, !1, {
-        fileName: "app/components/public/contests/ContestGuidelines.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
+    ] }),
+    /* @__PURE__ */ jsxs20("div", { className: "flex flex-col gap-2 my-8", children: [
+      /* @__PURE__ */ jsx27("span", { className: "font-satoshi-bold", children: "Additional Notes" }),
       contest.add_info
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/ContestGuidelines.tsx",
-      lineNumber: 37,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/ContestGuidelines.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+    ] })
+  ] });
 }
 
 // app/components/public/contests/RegistrationSuccess.tsx
-import { jsxDEV as jsxDEV28 } from "react/jsx-dev-runtime";
+import { jsx as jsx28, jsxs as jsxs21 } from "react/jsx-runtime";
 function RegistrationSuccess({ contestant, contest }) {
   let fullName = `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`, formattedDob = new Date(contestant.contestant_biodata.dob).toDateString();
-  return /* @__PURE__ */ jsxDEV28("div", { className: "bg-secondary p-10 sm:rounded-3xl flex flex-col max-w-xl gap-10", children: [
-    /* @__PURE__ */ jsxDEV28("aside", { className: "border-2 border-success-700 bg-success-500 rounded-xl p-6 flex items-start gap-4", children: [
-      /* @__PURE__ */ jsxDEV28("img", { src: icons.alertCheckIcon, width: 30, height: 30, className: "mt-1" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-        lineNumber: 11,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV28("p", { children: [
-        /* @__PURE__ */ jsxDEV28("span", { className: "block font-bold mb-2", children: "Dear Esteemed Contestant/Guardian" }, void 0, !1, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 13,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV28("span", { className: "font-medium", children: [
+  return /* @__PURE__ */ jsxs21("div", { className: "bg-secondary p-10 sm:rounded-3xl flex flex-col max-w-xl gap-10", children: [
+    /* @__PURE__ */ jsxs21("aside", { className: "border-2 border-success-700 bg-success-500 rounded-xl p-6 flex items-start gap-4", children: [
+      /* @__PURE__ */ jsx28("img", { src: icons.alertCheckIcon, width: 30, height: 30, className: "mt-1" }),
+      /* @__PURE__ */ jsxs21("p", { children: [
+        /* @__PURE__ */ jsx28("span", { className: "block font-bold mb-2", children: "Dear Esteemed Contestant/Guardian" }),
+        /* @__PURE__ */ jsxs21("span", { className: "font-medium", children: [
           "Congratulations, ",
           fullName,
           "! Your submission to ",
           contest.name,
           " has been received successfully. Your code is ",
-          /* @__PURE__ */ jsxDEV28("span", { className: "font-semibold", children: contestant.code }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 17,
-            columnNumber: 38
-          }, this),
+          /* @__PURE__ */ jsx28("span", { className: "font-semibold", children: contestant.code }),
           "."
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 14,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-        lineNumber: 12,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV28("div", { className: "grid sm:grid-cols-2 justify-between gap-6 sm:gap-10", children: [
-      /* @__PURE__ */ jsxDEV28("img", { src: contestant.image_url, alt: "kid smiling", className: "rounded-3xl" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-        lineNumber: 22,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV28("div", { className: "grid gap-1 leading-tight", children: [
-        /* @__PURE__ */ jsxDEV28("p", { className: "", children: [
-          /* @__PURE__ */ jsxDEV28("span", { className: "block font-satoshi-bold", children: "Full Name" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 25,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV28("span", { className: "block capitalize", children: fullName }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 26,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 24,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV28("p", { className: "", children: [
-          /* @__PURE__ */ jsxDEV28("span", { className: "block font-satoshi-bold", children: "Date of Birth" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 29,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV28("span", { className: "block", children: formattedDob }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 30,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 28,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV28("p", { className: "", children: [
-          /* @__PURE__ */ jsxDEV28("span", { className: "block font-satoshi-bold", children: "Gender" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 33,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV28("span", { className: "block capitalize", children: contestant.contestant_biodata.sex.toLowerCase() }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 32,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV28("p", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsxDEV28("span", { className: "block font-satoshi-bold", children: "Email Address" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 37,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV28("span", { className: "block truncate ...", children: contestant.contestant_biodata.email }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 36,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV28("p", { className: "", children: [
-          /* @__PURE__ */ jsxDEV28("span", { className: "block font-satoshi-bold", children: "State of Residence" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 41,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV28("span", { className: "block capitalize", children: contestant.contestant_biodata.state_of_residence }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-            lineNumber: 42,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-          lineNumber: 40,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-        lineNumber: 23,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-      lineNumber: 21,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/RegistrationSuccess.tsx",
-    lineNumber: 9,
-    columnNumber: 9
-  }, this);
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs21("div", { className: "grid sm:grid-cols-2 justify-between gap-6 sm:gap-10", children: [
+      /* @__PURE__ */ jsx28("img", { src: contestant.image_url, alt: "kid smiling", className: "rounded-3xl" }),
+      /* @__PURE__ */ jsxs21("div", { className: "grid gap-1 leading-tight", children: [
+        /* @__PURE__ */ jsxs21("p", { className: "", children: [
+          /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold", children: "Full Name" }),
+          /* @__PURE__ */ jsx28("span", { className: "block capitalize", children: fullName })
+        ] }),
+        /* @__PURE__ */ jsxs21("p", { className: "", children: [
+          /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold", children: "Date of Birth" }),
+          /* @__PURE__ */ jsx28("span", { className: "block", children: formattedDob })
+        ] }),
+        /* @__PURE__ */ jsxs21("p", { className: "", children: [
+          /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold", children: "Gender" }),
+          /* @__PURE__ */ jsx28("span", { className: "block capitalize", children: contestant.contestant_biodata.sex.toLowerCase() })
+        ] }),
+        /* @__PURE__ */ jsxs21("p", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold", children: "Email Address" }),
+          /* @__PURE__ */ jsx28("span", { className: "block truncate ...", children: contestant.contestant_biodata.email })
+        ] }),
+        /* @__PURE__ */ jsxs21("p", { className: "", children: [
+          /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold", children: "State of Residence" }),
+          /* @__PURE__ */ jsx28("span", { className: "block capitalize", children: contestant.contestant_biodata.state_of_residence })
+        ] })
+      ] })
+    ] })
+  ] });
 }
 
 // app/components/public/contests/RegistrationForm.tsx
@@ -4344,62 +2380,26 @@ var useUserManager = () => {
 };
 
 // app/components/public/contests/RegistrationForm.tsx
-import { jsxDEV as jsxDEV29 } from "react/jsx-dev-runtime";
+import { jsx as jsx29, jsxs as jsxs22 } from "react/jsx-runtime";
 function RegistrationForm({ contest }) {
   let { setUserStoreManager, getUserStoreManager } = useUserManager(), navigate = useNavigate(), user = getUserStoreManager(), location = useLocation2();
   if (!user) {
     let pathname = location.pathname, search = location.search, hash = location.hash, fullPath = pathname + search + hash;
-    return /* @__PURE__ */ jsxDEV29("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-12 px-6 sm:px-12 text-center", children: [
-      /* @__PURE__ */ jsxDEV29("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsxDEV29("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 25,
-        columnNumber: 114
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 25,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29("p", { className: "text-gray-700 text-base max-w-md", children: "You must be signed in to register for this contest. Please sign in to continue and unlock the registration form." }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 27,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29(Button, { element: "button", onClick: () => navigate(`/login?redirectTo=${encodeURIComponent(fullPath)}`), className: "mt-2 px-8 py-3 text-lg rounded-lg font-bold bg-accent text-white hover:bg-accent/90 transition", children: "Sign In" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 28,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29("p", { className: "text-sm text-gray-400 mt-2", children: [
+    return /* @__PURE__ */ jsxs22("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-12 px-6 sm:px-12 text-center", children: [
+      /* @__PURE__ */ jsx29("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx29("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
+      /* @__PURE__ */ jsx29("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
+      /* @__PURE__ */ jsx29("p", { className: "text-gray-700 text-base max-w-md", children: "You must be signed in to register for this contest. Please sign in to continue and unlock the registration form." }),
+      /* @__PURE__ */ jsx29(Button, { element: "button", onClick: () => navigate(`/login?redirectTo=${encodeURIComponent(fullPath)}`), className: "mt-2 px-8 py-3 text-lg rounded-lg font-bold bg-accent text-white hover:bg-accent/90 transition", children: "Sign In" }),
+      /* @__PURE__ */ jsxs22("p", { className: "text-sm text-gray-400 mt-2", children: [
         "Don't have an account? ",
-        /* @__PURE__ */ jsxDEV29("span", { className: "underline text-accent cursor-pointer", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(fullPath)}`), children: "Sign up here" }, void 0, !1, {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 29,
-          columnNumber: 82
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 29,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this);
+        /* @__PURE__ */ jsx29("span", { className: "underline text-accent cursor-pointer", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(fullPath)}`), children: "Sign up here" })
+      ] })
+    ] });
   }
-  return /* @__PURE__ */ jsxDEV29(Form3, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
-    /* @__PURE__ */ jsxDEV29("p", { className: "text-2xl font-satoshi-bold", children: 'Participate by filling in your basic information below and clicking "Submit".' }, void 0, !1, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV29(
+  return /* @__PURE__ */ jsxs22(Form3, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+    /* @__PURE__ */ jsx29("p", { className: "text-2xl font-satoshi-bold", children: 'Participate by filling in your basic information below and clicking "Submit".' }),
+    /* @__PURE__ */ jsxs22("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "input",
@@ -4408,17 +2408,9 @@ function RegistrationForm({ contest }) {
           name: "first_name",
           placeholder: "Enter your first name",
           required: !0
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 39,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV29(
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "input",
@@ -4427,23 +2419,11 @@ function RegistrationForm({ contest }) {
           name: "last_name",
           placeholder: "Enter your last name",
           required: !0
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 42,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 38,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV29(
+    ] }),
+    /* @__PURE__ */ jsxs22("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "input",
@@ -4454,17 +2434,9 @@ function RegistrationForm({ contest }) {
           readOnly: !0,
           placeholder: "Enter your email address",
           required: !0
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 47,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV29(
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "input",
@@ -4475,98 +2447,30 @@ function RegistrationForm({ contest }) {
           placeholder: "dd/mm/yyyy",
           max: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
           required: !0
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 50,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV29("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
+    ] }),
+    /* @__PURE__ */ jsxs22("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs22("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
         "Gender",
-        /* @__PURE__ */ jsxDEV29(Select, { name: "sex", required: !0, children: [
-          /* @__PURE__ */ jsxDEV29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV29(SelectValue, { placeholder: "Gender" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 58,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 57,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV29(SelectContent, { children: [
-            /* @__PURE__ */ jsxDEV29(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }, void 0, !1, {
-              fileName: "app/components/public/contests/RegistrationForm.tsx",
-              lineNumber: 61,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV29(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" }, void 0, !1, {
-              fileName: "app/components/public/contests/RegistrationForm.tsx",
-              lineNumber: 62,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 60,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 56,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 55,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs22(Select, { name: "sex", required: !0, children: [
+          /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Gender" }) }),
+          /* @__PURE__ */ jsxs22(SelectContent, { children: [
+            /* @__PURE__ */ jsx29(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+            /* @__PURE__ */ jsx29(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs22("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
         "State of Residence",
-        /* @__PURE__ */ jsxDEV29(Select, { name: "state_of_residence", required: !0, children: [
-          /* @__PURE__ */ jsxDEV29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV29(SelectValue, { placeholder: "Select a state" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 69,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 68,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV29(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsxDEV29(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 73,
-            columnNumber: 33
-          }, this)) }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 71,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 67,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 66,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 54,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV29(
+        /* @__PURE__ */ jsxs22(Select, { name: "state_of_residence", required: !0, children: [
+          /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Select a state" }) }),
+          /* @__PURE__ */ jsx29(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx29(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs22("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "input",
@@ -4576,48 +2480,16 @@ function RegistrationForm({ contest }) {
           name: "whatsapp_no",
           placeholder: "Enter your whatsapp number",
           required: !0
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 80,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV29("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
+      /* @__PURE__ */ jsxs22("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
         "Category",
-        /* @__PURE__ */ jsxDEV29(Select, { name: "category", required: !!contest.categories.length, children: [
-          /* @__PURE__ */ jsxDEV29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV29(SelectValue, { placeholder: "Select a category" }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 86,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 85,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV29(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV29(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 90,
-            columnNumber: 33
-          }, this)) }, void 0, !1, {
-            fileName: "app/components/public/contests/RegistrationForm.tsx",
-            lineNumber: 88,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 84,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegistrationForm.tsx",
-        lineNumber: 83,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV29(
+        /* @__PURE__ */ jsxs22(Select, { name: "category", required: !!contest.categories.length, children: [
+          /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Select a category" }) }),
+          /* @__PURE__ */ jsx29(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx29(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx29(
         FormControl,
         {
           as: "textarea",
@@ -4626,208 +2498,72 @@ function RegistrationForm({ contest }) {
           id: "info",
           name: "info",
           placeholder: ""
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/contests/RegistrationForm.tsx",
-          lineNumber: 96,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 79,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29(DragnDrop, { labelText: "Upload Image", name: "contestant_image", multiple: !0, required: !0 }, void 0, !1, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 100,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29("input", { type: "hidden", name: "contestId", value: contest._id }, void 0, !1, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 101,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV29(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Submit" }, void 0, !1, {
-      fileName: "app/components/public/contests/RegistrationForm.tsx",
-      lineNumber: 102,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/RegistrationForm.tsx",
-    lineNumber: 34,
-    columnNumber: 9
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsx29(DragnDrop, { labelText: "Upload Image", name: "contestant_image", multiple: !0, required: !0 }),
+    /* @__PURE__ */ jsx29("input", { type: "hidden", name: "contestId", value: contest._id }),
+    /* @__PURE__ */ jsx29(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Submit" })
+  ] });
 }
 
 // app/components/reusables/AutoplayCarousel.tsx
 import { useEffect as useEffect6, useRef as useRef4, useState as useState7 } from "react";
-import { jsxDEV as jsxDEV30 } from "react/jsx-dev-runtime";
+import { jsx as jsx30, jsxs as jsxs23 } from "react/jsx-runtime";
 function AutoplayCarousel({ children, containerClass = "", trackClass = "", slideDuration, reverse = !1 }) {
   let [fillAmount, setFillAmount] = useState7(1), container = useRef4(null), track = useRef4(null);
   return useEffect6(() => {
     let containerWidth = container.current?.offsetWidth ?? 0, trackWidth = track.current?.offsetWidth ?? 0, soln = Math.min(Math.ceil(containerWidth / trackWidth));
     container.current?.style.setProperty("--timing", `${slideDuration ?? soln * 3}s`), setFillAmount(soln);
-  }, []), /* @__PURE__ */ jsxDEV30("div", { ref: container, className: `carousel-container ${containerClass}`, children: [
-    /* @__PURE__ */ jsxDEV30("div", { ref: track, className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) }, void 0, !1, {
-      fileName: "app/components/reusables/AutoplayCarousel.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV30("div", { className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) }, void 0, !1, {
-      fileName: "app/components/reusables/AutoplayCarousel.tsx",
-      lineNumber: 27,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/AutoplayCarousel.tsx",
-    lineNumber: 23,
-    columnNumber: 9
-  }, this);
+  }, []), /* @__PURE__ */ jsxs23("div", { ref: container, className: `carousel-container ${containerClass}`, children: [
+    /* @__PURE__ */ jsx30("div", { ref: track, className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) }),
+    /* @__PURE__ */ jsx30("div", { className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) })
+  ] });
 }
 
 // app/components/reusables/CarouselItem.tsx
-import { jsxDEV as jsxDEV31 } from "react/jsx-dev-runtime";
+import { jsx as jsx31 } from "react/jsx-runtime";
 function CarouselItem({ children, className = "", ...props }) {
-  return /* @__PURE__ */ jsxDEV31("div", { className: `carousel-card sm:mx-2 ${className}`, ...props, children }, void 0, !1, {
-    fileName: "app/components/reusables/CarouselItem.tsx",
-    lineNumber: 3,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsx31("div", { className: `carousel-card sm:mx-2 ${className}`, ...props, children });
 }
 
 // app/components/public/ContestantSlider.tsx
-import { Fragment as Fragment4, jsxDEV as jsxDEV32 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment4, jsx as jsx32, jsxs as jsxs24 } from "react/jsx-runtime";
 function ContestantSlider({ contestants }) {
-  return /* @__PURE__ */ jsxDEV32(Fragment4, { children: [
-    /* @__PURE__ */ jsxDEV32(AutoplayCarousel, { slideDuration: 30, children: contestants.map((contestant) => /* @__PURE__ */ jsxDEV32(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsxDEV32("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }, void 0, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 10,
-      columnNumber: 25
-    }, this) }, contestant.id, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 9,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV32(AutoplayCarousel, { slideDuration: 30, reverse: !0, children: contestants.map((contestant) => /* @__PURE__ */ jsxDEV32(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsxDEV32("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }, void 0, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 17,
-      columnNumber: 25
-    }, this) }, contestant.id, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 16,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/components/public/ContestantSlider.tsx",
-      lineNumber: 14,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/ContestantSlider.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs24(Fragment4, { children: [
+    /* @__PURE__ */ jsx32(AutoplayCarousel, { slideDuration: 30, children: contestants.map((contestant) => /* @__PURE__ */ jsx32(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx32("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) }),
+    /* @__PURE__ */ jsx32(AutoplayCarousel, { slideDuration: 30, reverse: !0, children: contestants.map((contestant) => /* @__PURE__ */ jsx32(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx32("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) })
+  ] });
 }
 
 // app/components/public/contests/RegisteringContest.tsx
-import { Fragment as Fragment5, jsxDEV as jsxDEV33 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment5, jsx as jsx33, jsxs as jsxs25 } from "react/jsx-runtime";
 function RegisteringContest({ contest }) {
   let actionRes = useActionData();
-  return /* @__PURE__ */ jsxDEV33(Fragment5, { children: [
-    /* @__PURE__ */ jsxDEV33("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxDEV33("div", { className: "flex flex-col justify-around", children: [
-        /* @__PURE__ */ jsxDEV33("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsxDEV33("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }, void 0, !1, {
-            fileName: "app/components/public/contests/RegisteringContest.tsx",
-            lineNumber: 19,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV33("p", { className: "font-satoshi-medium", children: contest.desc }, void 0, !1, {
-            fileName: "app/components/public/contests/RegisteringContest.tsx",
-            lineNumber: 20,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/contests/RegisteringContest.tsx",
-          lineNumber: 18,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV33(ContestTimer, { deadline: new Date(contest.reg_deadline), title: "registration ends in" }, void 0, !1, {
-          fileName: "app/components/public/contests/RegisteringContest.tsx",
-          lineNumber: 22,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 17,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV33("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegisteringContest.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV33("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxDEV33("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
-      /* @__PURE__ */ jsxDEV33(ContestGuidelines, { contest }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 28,
-        columnNumber: 21
-      }, this),
-      actionRes?.data ? /* @__PURE__ */ jsxDEV33(RegistrationSuccess, { contestant: actionRes.data, contest }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 31,
-        columnNumber: 27
-      }, this) : /* @__PURE__ */ jsxDEV33(RegistrationForm, { contest }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 32,
-        columnNumber: 27
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegisteringContest.tsx",
-      lineNumber: 27,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/contests/RegisteringContest.tsx",
-      lineNumber: 26,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV33("section", { className: "my-8 md:my-16", children: [
-      /* @__PURE__ */ jsxDEV33("h2", { className: "text-2xl sm:text-[40px] leading-snug font-satoshi-black w-4/5 max-w-lg text-center mx-auto my-10", children: "Over 500 registered participants and counting" }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV33(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] }, void 0, !1, {
-        fileName: "app/components/public/contests/RegisteringContest.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/contests/RegisteringContest.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/contests/RegisteringContest.tsx",
-    lineNumber: 15,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs25(Fragment5, { children: [
+    /* @__PURE__ */ jsxs25("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs25("div", { className: "flex flex-col justify-around", children: [
+        /* @__PURE__ */ jsxs25("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx33("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
+          /* @__PURE__ */ jsx33("p", { className: "font-satoshi-medium", children: contest.desc })
+        ] }),
+        /* @__PURE__ */ jsx33(ContestTimer, { deadline: new Date(contest.reg_deadline), title: "registration ends in" })
+      ] }),
+      /* @__PURE__ */ jsx33("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
+    ] }),
+    /* @__PURE__ */ jsx33("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs25("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
+      /* @__PURE__ */ jsx33(ContestGuidelines, { contest }),
+      actionRes?.data ? /* @__PURE__ */ jsx33(RegistrationSuccess, { contestant: actionRes.data, contest }) : /* @__PURE__ */ jsx33(RegistrationForm, { contest })
+    ] }) }),
+    /* @__PURE__ */ jsxs25("section", { className: "my-8 md:my-16", children: [
+      /* @__PURE__ */ jsx33("h2", { className: "text-2xl sm:text-[40px] leading-snug font-satoshi-black w-4/5 max-w-lg text-center mx-auto my-10", children: "Over 500 registered participants and counting" }),
+      /* @__PURE__ */ jsx33(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] })
+    ] })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId._index.tsx
-import { jsxDEV as jsxDEV34 } from "react/jsx-dev-runtime";
+import { jsx as jsx34 } from "react/jsx-runtime";
 async function action3({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "register")
@@ -4844,19 +2580,7 @@ function ContestPage() {
   if (!stageContestants)
     throw new Error("Could not load stage contestants");
   let { contest, stage } = stageContestants;
-  return /* @__PURE__ */ jsxDEV34("main", { className: "grow", children: contest.status === "registering" ? /* @__PURE__ */ jsxDEV34(RegisteringContest, { contest }, void 0, !1, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId._index.tsx",
-    lineNumber: 29,
-    columnNumber: 19
-  }, this) : /* @__PURE__ */ jsxDEV34(OngoingContest, { contest, stage }, void 0, !1, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId._index.tsx",
-    lineNumber: 30,
-    columnNumber: 19
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId._index.tsx",
-    lineNumber: 27,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsx34("main", { className: "grow", children: contest.status === "registering" ? /* @__PURE__ */ jsx34(RegisteringContest, { contest }) : /* @__PURE__ */ jsx34(OngoingContest, { contest, stage }) });
 }
 
 // app/routes/_public.contest.contestant.$contestantId._index.tsx
@@ -4909,7 +2633,7 @@ var ContestantHelper = class {
 
 // app/routes/_public.contest.contestant.$contestantId._index.tsx
 import { useLocation as useLocation3 } from "@remix-run/react";
-import { jsxDEV as jsxDEV35 } from "react/jsx-dev-runtime";
+import { jsx as jsx35, jsxs as jsxs26 } from "react/jsx-runtime";
 async function loader3({ request }) {
   let url = new URL(request.url), { fingerprint } = await getFingerprint({ request }), contestantCode = url.searchParams.get("contestantCode") ?? "", stageId = url.searchParams.get("stageId") ?? "", { data, error } = await contestantRepo.getContestantDetailsForContest(contestantCode, stageId);
   return { data, error, url: request.url };
@@ -4939,72 +2663,28 @@ function useContestContestantController() {
 function ContestContestant() {
   let { enrichedContestants, contestantDetailsForActiveStage, handleCopy, whatsappUrl } = useContestContestantController(), profileContestant = contestantDetailsForActiveStage || enrichedContestants[0];
   if (!profileContestant)
-    return /* @__PURE__ */ jsxDEV35("div", { className: "min-h-screen flex items-center justify-center ", children: /* @__PURE__ */ jsxDEV35("p", { className: "text-xl text-gray-500", children: "Loading or no contestant data found..." }, void 0, !1, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 81,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 80,
-      columnNumber: 9
-    }, this);
+    return /* @__PURE__ */ jsx35("div", { className: "min-h-screen flex items-center justify-center ", children: /* @__PURE__ */ jsx35("p", { className: "text-xl text-gray-500", children: "Loading or no contestant data found..." }) });
   let { originalContestantData, stageSocialMedia, fullName, info, stage, is_evicted } = profileContestant;
-  return /* @__PURE__ */ jsxDEV35("div", { className: "min-h-screen text-gray-900", children: [
-    /* @__PURE__ */ jsxDEV35("header", { className: " pt-24 pb-16 border-b border-gray-200", children: /* @__PURE__ */ jsxDEV35("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV35("div", { className: "flex flex-col lg:flex-row items-start lg:space-x-12", children: [
-      /* @__PURE__ */ jsxDEV35("div", { className: "w-full lg:w-96 flex-shrink-0 mb-8 lg:mb-0", children: /* @__PURE__ */ jsxDEV35(
+  return /* @__PURE__ */ jsxs26("div", { className: "min-h-screen text-gray-900", children: [
+    /* @__PURE__ */ jsx35("header", { className: " pt-24 pb-16 border-b border-gray-200", children: /* @__PURE__ */ jsx35("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs26("div", { className: "flex flex-col lg:flex-row items-start lg:space-x-12", children: [
+      /* @__PURE__ */ jsx35("div", { className: "w-full lg:w-96 flex-shrink-0 mb-8 lg:mb-0", children: /* @__PURE__ */ jsx35(
         ContestantCard,
         {
           contestant: originalContestantData,
           socialMedia: stageSocialMedia
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 102,
-          columnNumber: 15
-        },
-        this
-      ) }, void 0, !1, {
-        fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-        lineNumber: 99,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV35("div", { className: "flex-grow pt-4", children: [
-        /* @__PURE__ */ jsxDEV35("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxDEV35("div", { children: [
-          /* @__PURE__ */ jsxDEV35("div", { className: "flex items-center mb-2", children: [
-            /* @__PURE__ */ jsxDEV35("h1", { className: "text-5xl font-extrabold text-gray-900", children: fullName }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 113,
-              columnNumber: 27
-            }, this),
-            /* @__PURE__ */ jsxDEV35("span", { className: "ml-4 inline-flex items-center px-4 py-1.5 rounded-full text-base font-semibold tracking-wide bg-indigo-50 text-indigo-800", children: is_evicted ? "EVICTED" : "ACTIVE" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 116,
-              columnNumber: 27
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 112,
-            columnNumber: 23
-          }, this),
-          /* @__PURE__ */ jsxDEV35("p", { className: "text-xl text-gray-600 mb-6 font-light", children: info }, void 0, !1, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 120,
-            columnNumber: 23
-          }, this),
-          /* @__PURE__ */ jsxDEV35("p", { className: "text-lg text-gray-700 mb-8 max-w-2xl", children: contestantDetailsForActiveStage?.info ?? "No stage-specific bio available. Displaying general contestant info." }, void 0, !1, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 121,
-            columnNumber: 23
-          }, this),
-          /* @__PURE__ */ jsxDEV35("div", { className: "flex space-x-4 mb-8", children: [
-            /* @__PURE__ */ jsxDEV35("button", { onClick: () => handleCopy(), className: "bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.02]", children: "Share Link" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 125,
-              columnNumber: 27
-            }, this),
-            /* @__PURE__ */ jsxDEV35(
+        }
+      ) }),
+      /* @__PURE__ */ jsxs26("div", { className: "flex-grow pt-4", children: [
+        /* @__PURE__ */ jsx35("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs26("div", { children: [
+          /* @__PURE__ */ jsxs26("div", { className: "flex items-center mb-2", children: [
+            /* @__PURE__ */ jsx35("h1", { className: "text-5xl font-extrabold text-gray-900", children: fullName }),
+            /* @__PURE__ */ jsx35("span", { className: "ml-4 inline-flex items-center px-4 py-1.5 rounded-full text-base font-semibold tracking-wide bg-indigo-50 text-indigo-800", children: is_evicted ? "EVICTED" : "ACTIVE" })
+          ] }),
+          /* @__PURE__ */ jsx35("p", { className: "text-xl text-gray-600 mb-6 font-light", children: info }),
+          /* @__PURE__ */ jsx35("p", { className: "text-lg text-gray-700 mb-8 max-w-2xl", children: contestantDetailsForActiveStage?.info ?? "No stage-specific bio available. Displaying general contestant info." }),
+          /* @__PURE__ */ jsxs26("div", { className: "flex space-x-4 mb-8", children: [
+            /* @__PURE__ */ jsx35("button", { onClick: () => handleCopy(), className: "bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.02]", children: "Share Link" }),
+            /* @__PURE__ */ jsx35(
               "a",
               {
                 href: whatsappUrl,
@@ -5012,159 +2692,44 @@ function ContestContestant() {
                 rel: "noopener noreferrer",
                 className: "bg-white border border-gray-300 text-gray-900 font-semibold py-3 px-8 rounded-lg hover:bg-gray-100 transition duration-150 transform hover:scale-[1.02]",
                 children: "Share via WhatsApp"
-              },
-              void 0,
-              !1,
-              {
-                fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-                lineNumber: 128,
-                columnNumber: 27
-              },
-              this
+              }
             )
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 124,
-            columnNumber: 23
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 111,
-          columnNumber: 19
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 110,
-          columnNumber: 15
-        }, this),
-        /* @__PURE__ */ jsxDEV35("div", { className: "grid grid-cols-3 gap-8 pt-6 mt-6 border-t border-gray-200", children: [
-          /* @__PURE__ */ jsxDEV35("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-5xl font-extrabold text-indigo-600", children: enrichedContestants.length }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 144,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Total Stages" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 145,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 143,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV35("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-5xl font-extrabold text-gray-900", children: stage }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 148,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Current Stage" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 149,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 147,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV35("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-5xl font-extrabold text-gray-900", children: is_evicted ? "No" : "Yes" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 152,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "In Contest" }, void 0, !1, {
-              fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-              lineNumber: 153,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-            lineNumber: 151,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 142,
-          columnNumber: 15
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-        lineNumber: 109,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 96,
-      columnNumber: 11
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 94,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 93,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV35("main", { className: "max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8", children: [
-      /* @__PURE__ */ jsxDEV35("div", { className: " z-10 border-b border-gray-200 mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 pb-3", children: [
-        /* @__PURE__ */ jsxDEV35("h2", { className: "text-3xl font-bold text-gray-900 mb-4", children: "Contest Stages History" }, void 0, !1, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 167,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV35("nav", { children: /* @__PURE__ */ jsxDEV35("ul", { className: "flex space-x-10 text-lg font-medium", children: /* @__PURE__ */ jsxDEV35("li", { className: "text-indigo-600 border-b-2 border-indigo-600 pb-2 cursor-pointer", children: [
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs26("div", { className: "grid grid-cols-3 gap-8 pt-6 mt-6 border-t border-gray-200", children: [
+          /* @__PURE__ */ jsxs26("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx35("span", { className: "text-5xl font-extrabold text-indigo-600", children: enrichedContestants.length }),
+            /* @__PURE__ */ jsx35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Total Stages" })
+          ] }),
+          /* @__PURE__ */ jsxs26("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx35("span", { className: "text-5xl font-extrabold text-gray-900", children: stage }),
+            /* @__PURE__ */ jsx35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Current Stage" })
+          ] }),
+          /* @__PURE__ */ jsxs26("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx35("span", { className: "text-5xl font-extrabold text-gray-900", children: is_evicted ? "No" : "Yes" }),
+            /* @__PURE__ */ jsx35("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "In Contest" })
+          ] })
+        ] })
+      ] })
+    ] }) }) }),
+    /* @__PURE__ */ jsxs26("main", { className: "max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8", children: [
+      /* @__PURE__ */ jsxs26("div", { className: " z-10 border-b border-gray-200 mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 pb-3", children: [
+        /* @__PURE__ */ jsx35("h2", { className: "text-3xl font-bold text-gray-900 mb-4", children: "Contest Stages History" }),
+        /* @__PURE__ */ jsx35("nav", { children: /* @__PURE__ */ jsx35("ul", { className: "flex space-x-10 text-lg font-medium", children: /* @__PURE__ */ jsxs26("li", { className: "text-indigo-600 border-b-2 border-indigo-600 pb-2 cursor-pointer", children: [
           "All Stages (",
           enrichedContestants.length,
           ")"
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 171,
-          columnNumber: 21
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 170,
-          columnNumber: 17
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 169,
-          columnNumber: 13
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-        lineNumber: 166,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV35("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3", children: enrichedContestants.map((contestant) => /* @__PURE__ */ jsxDEV35(
+        ] }) }) })
+      ] }),
+      /* @__PURE__ */ jsx35("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3", children: enrichedContestants.map((contestant) => /* @__PURE__ */ jsx35(
         ContestantStatisticsCard,
         {
           contestant
         },
-        `${contestant.code}-${contestant.id}`,
-        !1,
-        {
-          fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-          lineNumber: 182,
-          columnNumber: 13
-        },
-        this
-      )) }, void 0, !1, {
-        fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-        lineNumber: 180,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-      lineNumber: 163,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.contest.contestant.$contestantId._index.tsx",
-    lineNumber: 90,
-    columnNumber: 5
-  }, this);
+        `${contestant.code}-${contestant.id}`
+      )) })
+    ] })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.tsx
@@ -5439,7 +3004,7 @@ async function getFinalResultForContest(contestUniqueId) {
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.tsx
-import { jsxDEV as jsxDEV36 } from "react/jsx-dev-runtime";
+import { jsx as jsx36 } from "react/jsx-runtime";
 async function loader4({ params, request }) {
   let { tournamentId, contestId } = params;
   if (!contestId)
@@ -5459,11 +3024,7 @@ async function loader4({ params, request }) {
   return json7({ contest, stage, baseUrl: process.env._BASE_URL }, { headers });
 }
 function ContestLayout() {
-  return /* @__PURE__ */ jsxDEV36(Outlet2, {}, void 0, !1, {
-    fileName: "app/routes/_public.contests.$tournamentId.$contestId.tsx",
-    lineNumber: 50,
-    columnNumber: 13
-  }, this);
+  return /* @__PURE__ */ jsx36(Outlet2, {});
 }
 
 // app/routes/admin.transactions.contest-registrations.tsx
@@ -5485,7 +3046,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { jsxDEV as jsxDEV37 } from "react/jsx-dev-runtime";
+import { jsx as jsx37, jsxs as jsxs27 } from "react/jsx-runtime";
 function DataTable({
   data,
   columns: columns6,
@@ -5505,164 +3066,61 @@ function DataTable({
     onRowSelectionChange: setRowSelection,
     ...expandOptions
   });
-  return /* @__PURE__ */ jsxDEV37("div", { className: "", children: [
-    TableActions ? /* @__PURE__ */ jsxDEV37(TableActions, { table }, void 0, !1, {
-      fileName: "app/components/reusables/DataTable.tsx",
-      lineNumber: 42,
-      columnNumber: 29
-    }, this) : null,
-    /* @__PURE__ */ jsxDEV37("table", { className: `w-full ${className}`, children: [
-      /* @__PURE__ */ jsxDEV37("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsxDEV37("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsxDEV37("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 48,
-        columnNumber: 33
-      }, this)) }, headerGroup.id, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 46,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 44,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV37("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxDEV37(React10.Fragment, { children: [
-        /* @__PURE__ */ jsxDEV37(
+  return /* @__PURE__ */ jsxs27("div", { className: "", children: [
+    TableActions ? /* @__PURE__ */ jsx37(TableActions, { table }) : null,
+    /* @__PURE__ */ jsxs27("table", { className: `w-full ${className}`, children: [
+      /* @__PURE__ */ jsx37("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsx37("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsx37("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id)) }, headerGroup.id)) }),
+      /* @__PURE__ */ jsx37("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxs27(React10.Fragment, { children: [
+        /* @__PURE__ */ jsx37(
           "tr",
           {
             className: "border-b border-secondary hover:bg-secondary",
             "data-state": row.getIsSelected() && "selected",
-            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsxDEV37("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id, !1, {
-              fileName: "app/components/reusables/DataTable.tsx",
-              lineNumber: 65,
-              columnNumber: 48
-            }, this))
+            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx37("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
           },
-          row.id,
-          !1,
-          {
-            fileName: "app/components/reusables/DataTable.tsx",
-            lineNumber: 60,
-            columnNumber: 33
-          },
-          this
+          row.id
         ),
-        /* @__PURE__ */ jsxDEV37("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsxDEV37("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsxDEV37(SubComponent, { row }, void 0, !1, {
-          fileName: "app/components/reusables/DataTable.tsx",
-          lineNumber: 73,
-          columnNumber: 79
-        }, this) }, void 0, !1, {
-          fileName: "app/components/reusables/DataTable.tsx",
-          lineNumber: 72,
-          columnNumber: 37
-        }, this) }, void 0, !1, {
-          fileName: "app/components/reusables/DataTable.tsx",
-          lineNumber: 70,
-          columnNumber: 33
-        }, this)
-      ] }, row.id, !0, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 58,
-        columnNumber: 29
-      }, this)) : /* @__PURE__ */ jsxDEV37("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsxDEV37("td", { className: "p-3 text-center", colSpan: columns6.length, children: "No data to display" }, void 0, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 79,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 78,
-        columnNumber: 27
-      }, this) }, void 0, !1, {
-        fileName: "app/components/reusables/DataTable.tsx",
-        lineNumber: 55,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/reusables/DataTable.tsx",
-      lineNumber: 43,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/DataTable.tsx",
-    lineNumber: 41,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx37("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsx37("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsx37(SubComponent, { row }) }) })
+      ] }, row.id)) : /* @__PURE__ */ jsx37("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsx37("td", { className: "p-3 text-center", colSpan: columns6.length, children: "No data to display" }) }) })
+    ] })
+  ] });
 }
 
 // app/components/reusables/DataTableColumnHeader.tsx
-import { jsxDEV as jsxDEV38 } from "react/jsx-dev-runtime";
+import { jsx as jsx38, jsxs as jsxs28 } from "react/jsx-runtime";
 function DataTableColumnHeader({
   column,
   title,
   className
 }) {
-  return column.getCanSort() ? /* @__PURE__ */ jsxDEV38(
+  return column.getCanSort() ? /* @__PURE__ */ jsxs28(
     "span",
     {
       "data-sortable": !0,
       className: `flex items-center ${className}`,
       onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       children: [
-        /* @__PURE__ */ jsxDEV38("span", { children: title }, void 0, !1, {
-          fileName: "app/components/reusables/DataTableColumnHeader.tsx",
-          lineNumber: 20,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV38(Svg, { src: icons.arrowUpDownIcon }, void 0, !1, {
-          fileName: "app/components/reusables/DataTableColumnHeader.tsx",
-          lineNumber: 21,
-          columnNumber: 13
-        }, this)
+        /* @__PURE__ */ jsx38("span", { children: title }),
+        /* @__PURE__ */ jsx38(Svg, { src: icons.arrowUpDownIcon })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/reusables/DataTableColumnHeader.tsx",
-      lineNumber: 18,
-      columnNumber: 9
-    },
-    this
+    }
   ) : title;
 }
 
 // app/components/reusables/Pagination.tsx
-import { jsxDEV as jsxDEV39 } from "react/jsx-dev-runtime";
+import { jsx as jsx39, jsxs as jsxs29 } from "react/jsx-runtime";
 function Pagination({ className = "" }) {
-  return /* @__PURE__ */ jsxDEV39("div", { className: `flex gap-6 md:gap-8 justify-center items-center font-semibold ${className}`, children: [
-    /* @__PURE__ */ jsxDEV39("button", { className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
-      /* @__PURE__ */ jsxDEV39(Svg, { src: icons.arrowPrevIcon }, void 0, !1, {
-        fileName: "app/components/reusables/Pagination.tsx",
-        lineNumber: 8,
-        columnNumber: 17
-      }, this),
+  return /* @__PURE__ */ jsxs29("div", { className: `flex gap-6 md:gap-8 justify-center items-center font-semibold ${className}`, children: [
+    /* @__PURE__ */ jsxs29("button", { className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
+      /* @__PURE__ */ jsx39(Svg, { src: icons.arrowPrevIcon }),
       " Prev"
-    ] }, void 0, !0, {
-      fileName: "app/components/reusables/Pagination.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV39("span", { className: "whitespace-nowrap", children: "1 of 20" }, void 0, !1, {
-      fileName: "app/components/reusables/Pagination.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV39("button", { className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
+    ] }),
+    /* @__PURE__ */ jsx39("span", { className: "whitespace-nowrap", children: "1 of 20" }),
+    /* @__PURE__ */ jsxs29("button", { className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
       "Next ",
-      /* @__PURE__ */ jsxDEV39(Svg, { src: icons.arrowNextIcon }, void 0, !1, {
-        fileName: "app/components/reusables/Pagination.tsx",
-        lineNumber: 12,
-        columnNumber: 22
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/reusables/Pagination.tsx",
-      lineNumber: 11,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/Pagination.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+      /* @__PURE__ */ jsx39(Svg, { src: icons.arrowNextIcon })
+    ] })
+  ] });
 }
 
 // app/lib/dates.utils.ts
@@ -5678,7 +3136,7 @@ function formatDate(date, options = {}) {
 }
 
 // app/components/admin/transactions/ContestRegistrationsTable.tsx
-import { Fragment as Fragment6, jsxDEV as jsxDEV40 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment6, jsx as jsx40, jsxs as jsxs30 } from "react/jsx-runtime";
 var numberFormatterOptions = { style: "currency", currency: "NGN" }, dateOptions = {
   year: "numeric",
   month: "short",
@@ -5694,129 +3152,57 @@ var numberFormatterOptions = { style: "currency", currency: "NGN" }, dateOptions
   },
   {
     accessorKey: "tx_ref",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "trx ref" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 31,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "trx ref" })
   },
   {
     accessorKey: "contest",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "contest" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "contest" })
   },
   {
     accessorKey: "contestant",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "contestant" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 41,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "contestant" })
   },
   {
     accessorKey: "sender",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "sender" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "sender" })
   },
   {
     accessorKey: "amount",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions)
   },
   {
     accessorKey: "date",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "date" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 57,
-      columnNumber: 13
-    }, this),
-    cell: ({ getValue }) => /* @__PURE__ */ jsxDEV40("span", { children: [
-      /* @__PURE__ */ jsxDEV40("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-        lineNumber: 61,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV40("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-        lineNumber: 62,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 60,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "date" }),
+    cell: ({ getValue }) => /* @__PURE__ */ jsxs30("span", { children: [
+      /* @__PURE__ */ jsx40("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions) }),
+      /* @__PURE__ */ jsx40("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions) })
+    ] })
   },
   {
     accessorKey: "status",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV40(DataTableColumnHeader, { column, title: "status" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 68,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx40(DataTableColumnHeader, { column, title: "status" }),
     cell: ({ getValue }) => {
       let status = getValue();
-      return /* @__PURE__ */ jsxDEV40(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-        lineNumber: 76,
-        columnNumber: 20
-      }, this);
+      return /* @__PURE__ */ jsx40(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" });
     }
   }
 ];
 function ContestRegistrationsTable({ data }) {
-  return /* @__PURE__ */ jsxDEV40(Fragment6, { children: [
-    /* @__PURE__ */ jsxDEV40("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV40(DataTable, { data, columns, className: "text-xs" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 85,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 84,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV40("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-      /* @__PURE__ */ jsxDEV40("label", { className: "flex gap-2", children: [
+  return /* @__PURE__ */ jsxs30(Fragment6, { children: [
+    /* @__PURE__ */ jsx40("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx40(DataTable, { data, columns, className: "text-xs" }) }),
+    /* @__PURE__ */ jsxs30("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+      /* @__PURE__ */ jsxs30("label", { className: "flex gap-2", children: [
         "Rows per page",
-        /* @__PURE__ */ jsxDEV40("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 }, void 0, !1, {
-          fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-          lineNumber: 89,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-        lineNumber: 88,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV40(Pagination, {}, void 0, !1, {
-        fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-        lineNumber: 91,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-      lineNumber: 87,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/ContestRegistrationsTable.tsx",
-    lineNumber: 83,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx40("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx40(Pagination, {})
+    ] })
+  ] });
 }
 
 // app/routes/admin.transactions.contest-registrations.tsx
-import { jsxDEV as jsxDEV41 } from "react/jsx-dev-runtime";
+import { jsx as jsx41, jsxs as jsxs31 } from "react/jsx-runtime";
 async function loader5({}) {
   let tranasctions = [{
     tx_ref: "KCRUSHIP4HIYGM72VL",
@@ -5853,30 +3239,10 @@ async function action4({ request }) {
 }
 function ContestRegistrations() {
   let { tranasctions } = useLoaderData4();
-  return /* @__PURE__ */ jsxDEV41("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV41("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsxDEV41("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Registration Transactions" }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.contest-registrations.tsx",
-      lineNumber: 50,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.contest-registrations.tsx",
-      lineNumber: 49,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV41("section", { className: "my-12", children: /* @__PURE__ */ jsxDEV41(ContestRegistrationsTable, { data: tranasctions }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.contest-registrations.tsx",
-      lineNumber: 53,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.contest-registrations.tsx",
-      lineNumber: 52,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.transactions.contest-registrations.tsx",
-    lineNumber: 48,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs31("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsx41("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsx41("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Registration Transactions" }) }),
+    /* @__PURE__ */ jsx41("section", { className: "my-12", children: /* @__PURE__ */ jsx41(ContestRegistrationsTable, { data: tranasctions }) })
+  ] });
 }
 
 // app/routes/_public.contests.$tournamentId._index.tsx
@@ -5892,35 +3258,15 @@ import { useState as useState9 } from "react";
 
 // app/components/reusables/ContestCard.tsx
 import { Link as Link5 } from "@remix-run/react";
-import { jsxDEV as jsxDEV42 } from "react/jsx-dev-runtime";
+import { jsx as jsx42, jsxs as jsxs32 } from "react/jsx-runtime";
 function ContestCard({ contest, to, withTag, withCategory }) {
   let status = withTag ? contest.status : null, color = status === "registering" ? "yellow" : status === "ongoing" ? "green" : status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxDEV42(Link5, { to, className: "flex flex-col gap-2 max-w-lg relative w-full", children: [
-    /* @__PURE__ */ jsxDEV42("img", { src: contest.image || no_image_default, alt: "contest image", className: "rounded-3xl h-56 object-cover" }, void 0, !1, {
-      fileName: "app/components/reusables/ContestCard.tsx",
-      lineNumber: 23,
-      columnNumber: 13
-    }, this),
-    withTag ? /* @__PURE__ */ jsxDEV42(StatusTag, { status: contest.status, className: "absolute top-4 left-4", color }, void 0, !1, {
-      fileName: "app/components/reusables/ContestCard.tsx",
-      lineNumber: 24,
-      columnNumber: 24
-    }, this) : null,
-    withCategory ? /* @__PURE__ */ jsxDEV42("span", { className: "text-sm", children: "Category" }, void 0, !1, {
-      fileName: "app/components/reusables/ContestCard.tsx",
-      lineNumber: 25,
-      columnNumber: 29
-    }, this) : null,
-    /* @__PURE__ */ jsxDEV42("p", { className: "text-2xl font-bold capitalize", children: contest.name }, void 0, !1, {
-      fileName: "app/components/reusables/ContestCard.tsx",
-      lineNumber: 26,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/ContestCard.tsx",
-    lineNumber: 22,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs32(Link5, { to, className: "flex flex-col gap-2 max-w-lg relative w-full", children: [
+    /* @__PURE__ */ jsx42("img", { src: contest.image || no_image_default, alt: "contest image", className: "rounded-3xl h-56 object-cover" }),
+    withTag ? /* @__PURE__ */ jsx42(StatusTag, { status: contest.status, className: "absolute top-4 left-4", color }) : null,
+    withCategory ? /* @__PURE__ */ jsx42("span", { className: "text-sm", children: "Category" }) : null,
+    /* @__PURE__ */ jsx42("p", { className: "text-2xl font-bold capitalize", children: contest.name })
+  ] });
 }
 
 // app/services/tournament/types/tournament.interface.ts
@@ -5995,7 +3341,7 @@ function prepareTournamentDto(formData) {
 }
 
 // app/routes/_public.contests.$tournamentId._index.tsx
-import { jsxDEV as jsxDEV43 } from "react/jsx-dev-runtime";
+import { jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
 async function loader6({ params }) {
   let { tournamentId } = params;
   if (!tournamentId)
@@ -6020,69 +3366,17 @@ function TournamentPage() {
   function getAllContestsInTournament(e) {
     setActiveId(e.currentTarget.id), setFilteredContests(tournament.contests);
   }
-  return /* @__PURE__ */ jsxDEV43("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV43("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsxDEV43("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-bold max-w-3xl", children: tournament.name }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 47,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV43("section", { className: "wrapper", children: /* @__PURE__ */ jsxDEV43("div", { className: "p-2 rounded-full bg-secondary flex w-fit text-xs sm:text-base", children: [
-      /* @__PURE__ */ jsxDEV43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "all" ? "bg-accent text-white" : ""}`, id: "all", onClick: (e) => getAllContestsInTournament(e), children: "All KOTM" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-        lineNumber: 53,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "ongoing" ? "bg-accent text-white" : ""}`, id: "ongoing", onClick: (e) => handleFilterStatus(e, "ongoing"), children: "Ongoing" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-        lineNumber: 54,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "registering" ? "bg-accent text-white" : ""}`, id: "registering", onClick: (e) => handleFilterStatus(e, "registering"), children: "Registering" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-        lineNumber: 55,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "completed" ? "bg-accent text-white" : ""}`, id: "completed", onClick: (e) => handleFilterStatus(e, "completed"), children: "Completed" }, void 0, !1, {
-        fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-        lineNumber: 56,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 52,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV43("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: filteredContests.map((contest) => /* @__PURE__ */ jsxDEV43(ContestCard, { contest, to: contest.id, withTag: !0 }, contest.id, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 61,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 59,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV43("div", { className: "wrapper my-20 flex justify-center", children: /* @__PURE__ */ jsxDEV43(Button, { element: "button", variant: "outline", children: "See more contests" }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 65,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-      lineNumber: 64,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.contests.$tournamentId._index.tsx",
-    lineNumber: 45,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs33("main", { className: "grow", children: [
+    /* @__PURE__ */ jsx43("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx43("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-bold max-w-3xl", children: tournament.name }) }),
+    /* @__PURE__ */ jsx43("section", { className: "wrapper", children: /* @__PURE__ */ jsxs33("div", { className: "p-2 rounded-full bg-secondary flex w-fit text-xs sm:text-base", children: [
+      /* @__PURE__ */ jsx43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "all" ? "bg-accent text-white" : ""}`, id: "all", onClick: (e) => getAllContestsInTournament(e), children: "All KOTM" }),
+      /* @__PURE__ */ jsx43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "ongoing" ? "bg-accent text-white" : ""}`, id: "ongoing", onClick: (e) => handleFilterStatus(e, "ongoing"), children: "Ongoing" }),
+      /* @__PURE__ */ jsx43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "registering" ? "bg-accent text-white" : ""}`, id: "registering", onClick: (e) => handleFilterStatus(e, "registering"), children: "Registering" }),
+      /* @__PURE__ */ jsx43("span", { className: `cursor-pointer whitespace-nowrap p-2 sm:px-4 sm:py-3 rounded-full font-satoshi-medium ${activeId === "completed" ? "bg-accent text-white" : ""}`, id: "completed", onClick: (e) => handleFilterStatus(e, "completed"), children: "Completed" })
+    ] }) }),
+    /* @__PURE__ */ jsx43("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: filteredContests.map((contest) => /* @__PURE__ */ jsx43(ContestCard, { contest, to: contest.id, withTag: !0 }, contest.id)) }),
+    /* @__PURE__ */ jsx43("div", { className: "wrapper my-20 flex justify-center", children: /* @__PURE__ */ jsx43(Button, { element: "button", variant: "outline", children: "See more contests" }) })
+  ] });
 }
 
 // app/routes/admin.contests.$contestId.$stageId.tsx
@@ -6096,10 +3390,10 @@ import { json as json10, redirect as redirect4 } from "@remix-run/node";
 import { useLoaderData as useLoaderData7, useNavigate as useNavigate2 } from "@remix-run/react";
 
 // app/components/reusables/Checkbox.tsx
-import { jsxDEV as jsxDEV44 } from "react/jsx-dev-runtime";
+import { jsx as jsx44 } from "react/jsx-runtime";
 function Checkbox({ className, checked = !1, onCheckedChange = () => {
 }, ...props }) {
-  return /* @__PURE__ */ jsxDEV44(
+  return /* @__PURE__ */ jsx44(
     "input",
     {
       type: "checkbox",
@@ -6107,15 +3401,7 @@ function Checkbox({ className, checked = !1, onCheckedChange = () => {
       className: `cursor-pointer ${className}`,
       onChange: () => onCheckedChange(checked),
       ...props
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/components/reusables/Checkbox.tsx",
-      lineNumber: 8,
-      columnNumber: 9
-    },
-    this
+    }
   );
 }
 
@@ -6127,28 +3413,12 @@ import { useState as useState11 } from "react";
 import React11 from "react";
 import { Link as Link6 } from "@remix-run/react";
 import cn5 from "classnames";
-import { jsxDEV as jsxDEV45 } from "react/jsx-dev-runtime";
+import { jsx as jsx45 } from "react/jsx-runtime";
 var RoundCta_default = React11.forwardRef(function({ icon, className = "", iconClass = "", ...props }, ref) {
   let disabled = props.element === "link" ? props["aria-disabled"] : props.disabled || props["aria-disabled"], classNames = cn5(`flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full ${className}`, {
     "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
   });
-  return props.element === "link" ? /* @__PURE__ */ jsxDEV45(Link6, { ...props, className: classNames, children: /* @__PURE__ */ jsxDEV45(Svg, { src: icon, className: iconClass }, void 0, !1, {
-    fileName: "app/components/reusables/RoundCta.tsx",
-    lineNumber: 19,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/reusables/RoundCta.tsx",
-    lineNumber: 18,
-    columnNumber: 16
-  }, this) : /* @__PURE__ */ jsxDEV45("button", { ref, ...props, className: classNames, children: /* @__PURE__ */ jsxDEV45(Svg, { src: icon, className: iconClass }, void 0, !1, {
-    fileName: "app/components/reusables/RoundCta.tsx",
-    lineNumber: 24,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/reusables/RoundCta.tsx",
-    lineNumber: 23,
-    columnNumber: 9
-  }, this);
+  return props.element === "link" ? /* @__PURE__ */ jsx45(Link6, { ...props, className: classNames, children: /* @__PURE__ */ jsx45(Svg, { src: icon, className: iconClass }) }) : /* @__PURE__ */ jsx45("button", { ref, ...props, className: classNames, children: /* @__PURE__ */ jsx45(Svg, { src: icon, className: iconClass }) });
 });
 
 // app/hooks/useFilePreview.ts
@@ -6169,13 +3439,13 @@ function useFilePreview(fileList) {
 }
 
 // app/components/admin/contest/EditContestantDialog.tsx
-import { jsxDEV as jsxDEV46 } from "react/jsx-dev-runtime";
+import { jsx as jsx46, jsxs as jsxs34 } from "react/jsx-runtime";
 function EditContestantDialog({ disabled, contestant }) {
   let { stage } = useLoaderData6(), isKotmy = stage.rates.social_media.type === "kotmy", [files, setFiles] = useState11(null), { filePreview, clearFilePreview } = useFilePreview(files);
-  return /* @__PURE__ */ jsxDEV46(Dialog, { onOpenChange: (open) => {
+  return /* @__PURE__ */ jsxs34(Dialog, { onOpenChange: (open) => {
     open || clearFilePreview();
   }, children: [
-    /* @__PURE__ */ jsxDEV46(
+    /* @__PURE__ */ jsx46(
       DialogTrigger,
       {
         disabled,
@@ -6183,42 +3453,18 @@ function EditContestantDialog({ disabled, contestant }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-[#262626] bg-[#F7F7F8] text-primary", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV46(Svg, { src: icons.editIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-          lineNumber: 36,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-        lineNumber: 32,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx46(Svg, { src: icons.editIcon, className: "w-3" })
+      }
     ),
-    disabled ? null : /* @__PURE__ */ jsxDEV46(DialogContent, { className: "bg-secondary max-h-screen overflow-y-auto", children: /* @__PURE__ */ jsxDEV46(DialogHeader, { children: [
-      /* @__PURE__ */ jsxDEV46(DialogTitle, { children: "Edit Contestant Data" }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-        lineNumber: 41,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV46(DialogDescription, { children: /* @__PURE__ */ jsxDEV46(Form4, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 mt-3", encType: "multipart/form-data", children: [
-        /* @__PURE__ */ jsxDEV46("fieldset", { className: "py-1 grid grid-cols-2 gap-3", children: [
-          /* @__PURE__ */ jsxDEV46("legend", { className: "text-gray-400 font-medium", children: "Biodata" }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 45,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46("div", { className: "relative max-sm:col-span-2 row-span-3 flex flex-col max-h-56 overflow-y-hidden rounded text-left font-semibold", children: [
+    disabled ? null : /* @__PURE__ */ jsx46(DialogContent, { className: "bg-secondary max-h-screen overflow-y-auto", children: /* @__PURE__ */ jsxs34(DialogHeader, { children: [
+      /* @__PURE__ */ jsx46(DialogTitle, { children: "Edit Contestant Data" }),
+      /* @__PURE__ */ jsx46(DialogDescription, { children: /* @__PURE__ */ jsxs34(Form4, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 mt-3", encType: "multipart/form-data", children: [
+        /* @__PURE__ */ jsxs34("fieldset", { className: "py-1 grid grid-cols-2 gap-3", children: [
+          /* @__PURE__ */ jsx46("legend", { className: "text-gray-400 font-medium", children: "Biodata" }),
+          /* @__PURE__ */ jsxs34("div", { className: "relative max-sm:col-span-2 row-span-3 flex flex-col max-h-56 overflow-y-hidden rounded text-left font-semibold", children: [
             "Image",
-            /* @__PURE__ */ jsxDEV46("img", { src: filePreview || contestant.image_url || no_image_default, alt: "contestant image", width: 300, height: 300, className: "bg-neutral-200 size-full object-cover rounded" }, void 0, !1, {
-              fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-              lineNumber: 47,
-              columnNumber: 41
-            }, this),
-            /* @__PURE__ */ jsxDEV46(
+            /* @__PURE__ */ jsx46("img", { src: filePreview || contestant.image_url || no_image_default, alt: "contestant image", width: 300, height: 300, className: "bg-neutral-200 size-full object-cover rounded" }),
+            /* @__PURE__ */ jsx46(
               RoundCta_default,
               {
                 icon: icons.closeIcon,
@@ -6226,169 +3472,45 @@ function EditContestantDialog({ disabled, contestant }) {
                 type: "button",
                 onClick: () => clearFilePreview(),
                 className: cn("absolute bottom-2 right-2 bg-white/80 p-2 rounded-full hover:bg-red-50 hover:text-red-400 transition-colors", { hidden: !filePreview })
-              },
-              void 0,
-              !1,
-              {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 48,
-                columnNumber: 41
-              },
-              this
+              }
             ),
-            /* @__PURE__ */ jsxDEV46("label", { htmlFor: "media", className: cn("absolute bottom-2 right-2 bg-white/80 p-2 rounded-full hover:bg-white transition-colors cursor-pointer", { hidden: filePreview }), children: [
-              /* @__PURE__ */ jsxDEV46("input", { type: "file", name: "media", id: "media", hidden: !0, onChange: (e) => setFiles(e.target.files) }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 52,
-                columnNumber: 45
-              }, this),
-              /* @__PURE__ */ jsxDEV46(Svg, { src: icons.imageIcon }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 53,
-                columnNumber: 45
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-              lineNumber: 51,
-              columnNumber: 41
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 46,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.first_name }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 56,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.last_name }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 57,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "email", name: "email", labelText: "Email Address", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.email }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 58,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46("label", { htmlFor: "gender", className: "font-bold flex flex-col text-left", children: [
+            /* @__PURE__ */ jsxs34("label", { htmlFor: "media", className: cn("absolute bottom-2 right-2 bg-white/80 p-2 rounded-full hover:bg-white transition-colors cursor-pointer", { hidden: filePreview }), children: [
+              /* @__PURE__ */ jsx46("input", { type: "file", name: "media", id: "media", hidden: !0, onChange: (e) => setFiles(e.target.files) }),
+              /* @__PURE__ */ jsx46(Svg, { src: icons.imageIcon })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.first_name }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.last_name }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "email", name: "email", labelText: "Email Address", labelClassNames: "text-left", defaultValue: contestant.contestant_biodata.email }),
+          /* @__PURE__ */ jsxs34("label", { htmlFor: "gender", className: "font-bold flex flex-col text-left", children: [
             "Gender",
-            /* @__PURE__ */ jsxDEV46(Select, { name: "sex", required: !0, defaultValue: contestant.contestant_biodata.sex, children: [
-              /* @__PURE__ */ jsxDEV46(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV46(SelectValue, { placeholder: "Gender" }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 62,
-                columnNumber: 49
-              }, this) }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 61,
-                columnNumber: 45
-              }, this),
-              /* @__PURE__ */ jsxDEV46(SelectContent, { children: [
-                /* @__PURE__ */ jsxDEV46(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }, void 0, !1, {
-                  fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                  lineNumber: 65,
-                  columnNumber: 49
-                }, this),
-                /* @__PURE__ */ jsxDEV46(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" }, void 0, !1, {
-                  fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                  lineNumber: 66,
-                  columnNumber: 49
-                }, this)
-              ] }, void 0, !0, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 64,
-                columnNumber: 45
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-              lineNumber: 60,
-              columnNumber: 41
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 59,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", type: "date", labelText: "Date of Birth", id: "dob", name: "dob", labelClassNames: "text-left", defaultValue: parseDateForInput(contestant.contestant_biodata.dob), max: (/* @__PURE__ */ new Date()).toISOString().split("T")[0] }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 70,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46("label", { htmlFor: "gender", className: "font-bold flex flex-col text-left", children: [
+            /* @__PURE__ */ jsxs34(Select, { name: "sex", required: !0, defaultValue: contestant.contestant_biodata.sex, children: [
+              /* @__PURE__ */ jsx46(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx46(SelectValue, { placeholder: "Gender" }) }),
+              /* @__PURE__ */ jsxs34(SelectContent, { children: [
+                /* @__PURE__ */ jsx46(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+                /* @__PURE__ */ jsx46(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", type: "date", labelText: "Date of Birth", id: "dob", name: "dob", labelClassNames: "text-left", defaultValue: parseDateForInput(contestant.contestant_biodata.dob), max: (/* @__PURE__ */ new Date()).toISOString().split("T")[0] }),
+          /* @__PURE__ */ jsxs34("label", { htmlFor: "gender", className: "font-bold flex flex-col text-left", children: [
             "State of Residence",
-            /* @__PURE__ */ jsxDEV46(Select, { name: "state", required: !0, defaultValue: contestant.contestant_biodata.state_of_residence, children: [
-              /* @__PURE__ */ jsxDEV46(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV46(SelectValue, { placeholder: "State" }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 74,
-                columnNumber: 49
-              }, this) }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 73,
-                columnNumber: 45
-              }, this),
-              /* @__PURE__ */ jsxDEV46(SelectContent, { children: Object.entries(nigerianStates).map(([key, label]) => /* @__PURE__ */ jsxDEV46(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: label }, key, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 78,
-                columnNumber: 53
-              }, this)) }, void 0, !1, {
-                fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-                lineNumber: 76,
-                columnNumber: 45
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-              lineNumber: 72,
-              columnNumber: 41
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 71,
-            columnNumber: 37
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-          lineNumber: 44,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV46("fieldset", { className: "py-1 grid grid-cols-2 gap-3", children: [
-          /* @__PURE__ */ jsxDEV46("legend", { className: "text-gray-400 font-medium", children: "Voting" }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 85,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "social_media_url", name: "social_media_url", labelText: "Social Media Link", labelClassNames: "text-left", defaultValue: contestant.social_media_url, disabled: isKotmy }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 86,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "social_media_vote", name: "social_media_vote", labelText: "Social Media Vote", labelClassNames: "text-left", type: "number", min: 0, defaultValue: contestant?.vote.social_media }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 87,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "stage_bonus", name: "stage_bonus", labelText: "Stage Bonus", type: "number", labelClassNames: "text-left", min: 0, defaultValue: contestant.vote.bonus }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 88,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(FormControl, { as: "input", id: "judge_vote", name: "judge_vote", labelText: "Judge Vote", type: "number", labelClassNames: "text-left", min: 0, defaultValue: contestant.vote.judge }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 89,
-            columnNumber: 37
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-          lineNumber: 84,
-          columnNumber: 33
-        }, this),
-        /* @__PURE__ */ jsxDEV46("div", { className: "flex justify-end gap-6", children: [
-          /* @__PURE__ */ jsxDEV46("input", { type: "hidden", name: "contestant_id", value: contestant._id }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 93,
-            columnNumber: 37
-          }, this),
-          /* @__PURE__ */ jsxDEV46(
+            /* @__PURE__ */ jsxs34(Select, { name: "state", required: !0, defaultValue: contestant.contestant_biodata.state_of_residence, children: [
+              /* @__PURE__ */ jsx46(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx46(SelectValue, { placeholder: "State" }) }),
+              /* @__PURE__ */ jsx46(SelectContent, { children: Object.entries(nigerianStates).map(([key, label]) => /* @__PURE__ */ jsx46(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: label }, key)) })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs34("fieldset", { className: "py-1 grid grid-cols-2 gap-3", children: [
+          /* @__PURE__ */ jsx46("legend", { className: "text-gray-400 font-medium", children: "Voting" }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "social_media_url", name: "social_media_url", labelText: "Social Media Link", labelClassNames: "text-left", defaultValue: contestant.social_media_url, disabled: isKotmy }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "social_media_vote", name: "social_media_vote", labelText: "Social Media Vote", labelClassNames: "text-left", type: "number", min: 0, defaultValue: contestant?.vote.social_media }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "stage_bonus", name: "stage_bonus", labelText: "Stage Bonus", type: "number", labelClassNames: "text-left", min: 0, defaultValue: contestant.vote.bonus }),
+          /* @__PURE__ */ jsx46(FormControl, { as: "input", id: "judge_vote", name: "judge_vote", labelText: "Judge Vote", type: "number", labelClassNames: "text-left", min: 0, defaultValue: contestant.vote.judge })
+        ] }),
+        /* @__PURE__ */ jsxs34("div", { className: "flex justify-end gap-6", children: [
+          /* @__PURE__ */ jsx46("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
+          /* @__PURE__ */ jsx46(
             Cta_default,
             {
               element: "button",
@@ -6396,56 +3518,20 @@ function EditContestantDialog({ disabled, contestant }) {
               variant: "outline",
               className: "px-3 py-2 rounded-md font-bold min-w-[90px] border-secondary hover:border-slate-400 text-primary",
               children: "Reset"
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-              lineNumber: 94,
-              columnNumber: 37
-            },
-            this
+            }
           ),
-          /* @__PURE__ */ jsxDEV46(DialogClose, { type: "submit", name: "intent", value: "edit", className: "bg-accent px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" }, void 0, !1, {
-            fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-            lineNumber: 96,
-            columnNumber: 37
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-          lineNumber: 92,
-          columnNumber: 33
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-        lineNumber: 43,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-        lineNumber: 42,
-        columnNumber: 25
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-      lineNumber: 40,
-      columnNumber: 21
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-      lineNumber: 39,
-      columnNumber: 19
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/EditContestantDialog.tsx",
-    lineNumber: 31,
-    columnNumber: 9
-  }, this);
+          /* @__PURE__ */ jsx46(DialogClose, { type: "submit", name: "intent", value: "edit", className: "bg-accent px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" })
+        ] })
+      ] }) })
+    ] }) })
+  ] });
 }
 
 // app/components/admin/contest/DeleteContestantDialog.tsx
-import { jsxDEV as jsxDEV47 } from "react/jsx-dev-runtime";
+import { jsx as jsx47, jsxs as jsxs35 } from "react/jsx-runtime";
 function DeleteContestantDialog({ disabled }) {
-  return /* @__PURE__ */ jsxDEV47(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV47(
+  return /* @__PURE__ */ jsxs35(Dialog, { children: [
+    /* @__PURE__ */ jsx47(
       DialogTrigger,
       {
         disabled,
@@ -6453,66 +3539,26 @@ function DeleteContestantDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV47(Svg, { src: icons.trashIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-          lineNumber: 22,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-        lineNumber: 18,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx47(Svg, { src: icons.trashIcon, className: "w-3" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV47(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV47(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV47(DialogTitle, { children: "Delete contestant" }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-          lineNumber: 26,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV47(DialogDescription, { children: "This contestant will be deleted from the records. Are you sure you want to proceed?" }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-          lineNumber: 27,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-        lineNumber: 25,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV47(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV47(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-        fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-        lineNumber: 32,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-        lineNumber: 31,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/DeleteContestantDialog.tsx",
-    lineNumber: 17,
-    columnNumber: 9
-  }, this);
+    /* @__PURE__ */ jsxs35(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs35(DialogHeader, { children: [
+        /* @__PURE__ */ jsx47(DialogTitle, { children: "Delete contestant" }),
+        /* @__PURE__ */ jsx47(DialogDescription, { children: "This contestant will be deleted from the records. Are you sure you want to proceed?" })
+      ] }),
+      /* @__PURE__ */ jsx47(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx47(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/contest/EvictContestantDialog.tsx
 import { useFetcher as useFetcher4 } from "@remix-run/react";
-import { jsxDEV as jsxDEV48 } from "react/jsx-dev-runtime";
+import { jsx as jsx48, jsxs as jsxs36 } from "react/jsx-runtime";
 function EvictContestantDialog({ disabled, contestants }) {
   let fetcher = useFetcher4(), ids = contestants.map((contestant) => contestant._id).join("|");
-  return /* @__PURE__ */ jsxDEV48(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV48(
+  return /* @__PURE__ */ jsxs36(Dialog, { children: [
+    /* @__PURE__ */ jsx48(
       DialogTrigger,
       {
         disabled,
@@ -6520,112 +3566,36 @@ function EvictContestantDialog({ disabled, contestants }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV48(Svg, { src: icons.downArrowIcon, className: "size-3.5" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 26,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-        lineNumber: 22,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx48(Svg, { src: icons.downArrowIcon, className: "size-3.5" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV48(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV48(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV48(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV48("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV48(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-            lineNumber: 32,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV48("p", { children: [
-            /* @__PURE__ */ jsxDEV48("span", { className: "block", children: "Evict Contestants" }, void 0, !1, {
-              fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-              lineNumber: 35,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV48("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the eviction of these contestants" }, void 0, !1, {
-              fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-              lineNumber: 36,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 30,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV48(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsxDEV48("span", { className: "text-primary mb-2 block", children: "The selected contestants will not proceed to the next stage. Are you sure you want to proceed?" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 40,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 39,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-        lineNumber: 29,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV48(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV48(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV48("input", { type: "hidden", name: "contestants_ids", value: ids }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 45,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV48("input", { type: "hidden", name: "stage_id", value: contestants[0]?.stage_id }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 46,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV48(DialogClose, { type: "submit", name: "intent", value: "evict", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-          lineNumber: 47,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-        lineNumber: 44,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-      lineNumber: 28,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/EvictContestantDialog.tsx",
-    lineNumber: 21,
-    columnNumber: 9
-  }, this);
+    /* @__PURE__ */ jsxs36(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs36(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs36(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx48("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx48(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs36("p", { children: [
+            /* @__PURE__ */ jsx48("span", { className: "block", children: "Evict Contestants" }),
+            /* @__PURE__ */ jsx48("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the eviction of these contestants" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx48(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsx48("span", { className: "text-primary mb-2 block", children: "The selected contestants will not proceed to the next stage. Are you sure you want to proceed?" }) })
+      ] }),
+      /* @__PURE__ */ jsx48(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxs36(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsx48("input", { type: "hidden", name: "contestants_ids", value: ids }),
+        /* @__PURE__ */ jsx48("input", { type: "hidden", name: "stage_id", value: contestants[0]?.stage_id }),
+        /* @__PURE__ */ jsx48(DialogClose, { type: "submit", name: "intent", value: "evict", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/contest/AdmitContestantDialog.tsx
 import { useFetcher as useFetcher5 } from "@remix-run/react";
-import { jsxDEV as jsxDEV49 } from "react/jsx-dev-runtime";
+import { jsx as jsx49, jsxs as jsxs37 } from "react/jsx-runtime";
 function AdmitContestantDialog({ disabled, contestants }) {
   let fetcher = useFetcher5(), ids = contestants.map((contestant) => contestant._id).join("|");
-  return /* @__PURE__ */ jsxDEV49(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV49(
+  return /* @__PURE__ */ jsxs37(Dialog, { children: [
+    /* @__PURE__ */ jsx49(
       DialogTrigger,
       {
         disabled,
@@ -6633,143 +3603,47 @@ function AdmitContestantDialog({ disabled, contestants }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-green-500 bg-green-50 text-green-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV49(Svg, { src: icons.upArrowIcon, className: "size-3.5" }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 26,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-        lineNumber: 22,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx49(Svg, { src: icons.upArrowIcon, className: "size-3.5" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV49(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV49(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV49(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV49("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV49(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-            lineNumber: 32,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV49("p", { children: [
-            /* @__PURE__ */ jsxDEV49("span", { className: "block", children: "Admit Contestants" }, void 0, !1, {
-              fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-              lineNumber: 35,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV49("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the promotion of these contestants" }, void 0, !1, {
-              fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-              lineNumber: 36,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 30,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV49(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsxDEV49("span", { className: "text-primary mb-2 block", children: "The selected contestants will be marked for promotion to the next stage." }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 40,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 39,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-        lineNumber: 29,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV49(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV49(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV49("input", { type: "hidden", name: "contestants_ids", value: ids }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 45,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV49("input", { type: "hidden", name: "stage_id", value: contestants[0]?.stage_id }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 46,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV49(DialogClose, { type: "submit", name: "intent", value: "admit", className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-          lineNumber: 47,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-        lineNumber: 44,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-      lineNumber: 28,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/AdmitContestantDialog.tsx",
-    lineNumber: 21,
-    columnNumber: 9
-  }, this);
+    /* @__PURE__ */ jsxs37(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs37(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs37(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx49("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx49(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs37("p", { children: [
+            /* @__PURE__ */ jsx49("span", { className: "block", children: "Admit Contestants" }),
+            /* @__PURE__ */ jsx49("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the promotion of these contestants" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx49(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsx49("span", { className: "text-primary mb-2 block", children: "The selected contestants will be marked for promotion to the next stage." }) })
+      ] }),
+      /* @__PURE__ */ jsx49(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxs37(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsx49("input", { type: "hidden", name: "contestants_ids", value: ids }),
+        /* @__PURE__ */ jsx49("input", { type: "hidden", name: "stage_id", value: contestants[0]?.stage_id }),
+        /* @__PURE__ */ jsx49(DialogClose, { type: "submit", name: "intent", value: "admit", className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/contest/ContestantTableActions.tsx
-import { jsxDEV as jsxDEV50 } from "react/jsx-dev-runtime";
+import { jsx as jsx50, jsxs as jsxs38 } from "react/jsx-runtime";
 function ContestantTableActions({ table }) {
   let singleRowSelected = table.getFilteredSelectedRowModel().rows.length === 1, rowsSelected = table.getFilteredSelectedRowModel().rows.length >= 1, contestants = table.getSelectedRowModel().rows.map((row) => row.original), contestant = contestants.at(0) ?? {};
-  return /* @__PURE__ */ jsxDEV50("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
-    /* @__PURE__ */ jsxDEV50(EditContestantDialog, { disabled: !singleRowSelected, contestant }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTableActions.tsx",
-      lineNumber: 15,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV50(DeleteContestantDialog, { disabled: !rowsSelected }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTableActions.tsx",
-      lineNumber: 16,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV50(EvictContestantDialog, { disabled: !rowsSelected, contestants }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTableActions.tsx",
-      lineNumber: 17,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV50(AdmitContestantDialog, { disabled: !rowsSelected, contestants }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTableActions.tsx",
-      lineNumber: 18,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/ContestantTableActions.tsx",
-    lineNumber: 14,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsxs38("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
+    /* @__PURE__ */ jsx50(EditContestantDialog, { disabled: !singleRowSelected, contestant }),
+    /* @__PURE__ */ jsx50(DeleteContestantDialog, { disabled: !rowsSelected }),
+    /* @__PURE__ */ jsx50(EvictContestantDialog, { disabled: !rowsSelected, contestants }),
+    /* @__PURE__ */ jsx50(AdmitContestantDialog, { disabled: !rowsSelected, contestants })
+  ] });
 }
 
 // app/components/admin/contest/ContestantTable.tsx
-import { Fragment as Fragment7, jsxDEV as jsxDEV51 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment7, jsx as jsx51 } from "react/jsx-runtime";
 var columns2 = [
   {
     id: "select",
-    header: ({ table }) => /* @__PURE__ */ jsxDEV51("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsxDEV51(
+    header: ({ table }) => /* @__PURE__ */ jsx51("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx51(
       Checkbox,
       {
         className: "h-4 w-4",
@@ -6778,51 +3652,23 @@ var columns2 = [
           table.toggleAllPageRowsSelected(!value);
         },
         "aria-label": "Select all"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/ContestantTable.tsx",
-        lineNumber: 16,
-        columnNumber: 17
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this),
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV51("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsxDEV51(
+      }
+    ) }),
+    cell: ({ row }) => /* @__PURE__ */ jsx51("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx51(
       Checkbox,
       {
         className: "h-4 w-4",
         checked: row.getIsSelected(),
         onCheckedChange: (value) => row.toggleSelected(!value),
         "aria-label": "Select row"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/ContestantTable.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 25,
-      columnNumber: 13
-    }, this),
+      }
+    ) }),
     enableSorting: !1,
     enableHiding: !1
   },
   {
     id: "contestant",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "contestant" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 40,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "contestant" }),
     accessorFn: (row) => `${row.contestant_biodata.first_name} ${row.contestant_biodata.last_name}`
   },
   {
@@ -6835,83 +3681,43 @@ var columns2 = [
   },
   {
     accessorKey: "code",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "code" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 55,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "code" })
   },
   {
     id: "s-media",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "s-media" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 61,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "s-media" }),
     accessorFn: (row) => row.vote.social_media
   },
   {
     id: "tally",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "tally" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 68,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "tally" }),
     accessorFn: (row) => row.vote.tally
   },
   {
     id: "givaah",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "givaah" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 75,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "givaah" }),
     accessorFn: (row) => row.vote.givaah
   },
   {
     accessorKey: "grade",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "grade" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 82,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "grade" }),
     accessorFn: (row) => row.result.grade || "-"
   },
   {
     accessorKey: "is_evicted",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV51(DataTableColumnHeader, { column, title: "status" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestantTable.tsx",
-      lineNumber: 88,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx51(DataTableColumnHeader, { column, title: "status" }),
     cell: ({ row }) => {
       let status = row.getValue("is_evicted");
-      return /* @__PURE__ */ jsxDEV51(StatusTag, { status: status ? "Evicted" : "Safe", color: status ? "red" : "green" }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestantTable.tsx",
-        lineNumber: 93,
-        columnNumber: 20
-      }, this);
+      return /* @__PURE__ */ jsx51(StatusTag, { status: status ? "Evicted" : "Safe", color: status ? "red" : "green" });
     }
   }
 ];
 function ContestantTable({ data }) {
-  return /* @__PURE__ */ jsxDEV51(Fragment7, { children: /* @__PURE__ */ jsxDEV51("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV51(DataTable, { data, columns: columns2, className: "text-sm", TableActions: ContestantTableActions }, void 0, !1, {
-    fileName: "app/components/admin/contest/ContestantTable.tsx",
-    lineNumber: 102,
-    columnNumber: 17
-  }, this) }, void 0, !1, {
-    fileName: "app/components/admin/contest/ContestantTable.tsx",
-    lineNumber: 101,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/admin/contest/ContestantTable.tsx",
-    lineNumber: 100,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsx51(Fragment7, { children: /* @__PURE__ */ jsx51("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx51(DataTable, { data, columns: columns2, className: "text-sm", TableActions: ContestantTableActions }) }) });
 }
 
 // app/routes/admin.contests.$contestId.$stageId.tsx
-import { jsxDEV as jsxDEV52 } from "react/jsx-dev-runtime";
+import { jsx as jsx52, jsxs as jsxs39 } from "react/jsx-runtime";
 async function loader7({ params, request }) {
   let { contestId, stageId } = params;
   if (!contestId || !stageId)
@@ -6946,42 +3752,18 @@ async function action5({ params, request }) {
 }
 function StageContestants() {
   let { contest, stage } = useLoaderData7(), navigate = useNavigate2();
-  return /* @__PURE__ */ jsxDEV52("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV52("div", { className: "flex items-start mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV52(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-        lineNumber: 56,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV52("h1", { className: "text-lg xs:text-xl font-black text-primary capitalize", children: [
+  return /* @__PURE__ */ jsxs39("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs39("div", { className: "flex items-start mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx52(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsxs39("h1", { className: "text-lg xs:text-xl font-black text-primary capitalize", children: [
         contest.name,
         " - Stage ",
         stage.stage,
         " contestants"
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-        lineNumber: 57,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-      lineNumber: 55,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV52("section", { className: "my-12", children: /* @__PURE__ */ jsxDEV52(ContestantTable, { data: stage.contestants }, void 0, !1, {
-      fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-      lineNumber: 60,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-      lineNumber: 59,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.contests.$contestId.$stageId.tsx",
-    lineNumber: 54,
-    columnNumber: 9
-  }, this);
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx52("section", { className: "my-12", children: /* @__PURE__ */ jsx52(ContestantTable, { data: stage.contestants }) })
+  ] });
 }
 
 // app/routes/admin.transactions.income-history.tsx
@@ -6995,7 +3777,7 @@ import { json as json11 } from "@remix-run/node";
 import { useLoaderData as useLoaderData8 } from "@remix-run/react";
 
 // app/components/admin/transactions/IncomeHistoryTable.tsx
-import { Fragment as Fragment8, jsxDEV as jsxDEV53 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment8, jsx as jsx53, jsxs as jsxs40 } from "react/jsx-runtime";
 var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, columns3 = [
   {
     header: "S/N",
@@ -7003,90 +3785,42 @@ var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, columns3 =
   },
   {
     accessorKey: "contest",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV53(DataTableColumnHeader, { column, title: "contest" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx53(DataTableColumnHeader, { column, title: "contest" })
   },
   {
     accessorKey: "description",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV53(DataTableColumnHeader, { column, title: "description" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 22,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx53(DataTableColumnHeader, { column, title: "description" })
   },
   {
     accessorKey: "session",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV53(DataTableColumnHeader, { column, title: "session" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 27,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx53(DataTableColumnHeader, { column, title: "session" })
   },
   {
     accessorKey: "paystack",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV53(DataTableColumnHeader, { column, title: "paystack" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 32,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx53(DataTableColumnHeader, { column, title: "paystack" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions2)
   },
   {
     accessorKey: "bank",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV53(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "bank" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 38,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx53(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "bank" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions2)
   }
 ];
 function IncomeHistoryTable({ data }) {
-  return /* @__PURE__ */ jsxDEV53(Fragment8, { children: [
-    /* @__PURE__ */ jsxDEV53("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV53(DataTable, { data, columns: columns3, className: "text-xs" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 49,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 48,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV53("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-      /* @__PURE__ */ jsxDEV53("label", { className: "flex gap-2", children: [
+  return /* @__PURE__ */ jsxs40(Fragment8, { children: [
+    /* @__PURE__ */ jsx53("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx53(DataTable, { data, columns: columns3, className: "text-xs" }) }),
+    /* @__PURE__ */ jsxs40("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+      /* @__PURE__ */ jsxs40("label", { className: "flex gap-2", children: [
         "Rows per page",
-        /* @__PURE__ */ jsxDEV53("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 }, void 0, !1, {
-          fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-          lineNumber: 53,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-        lineNumber: 52,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV53(Pagination, {}, void 0, !1, {
-        fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-        lineNumber: 55,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/IncomeHistoryTable.tsx",
-    lineNumber: 47,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx53("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx53(Pagination, {})
+    ] })
+  ] });
 }
 
 // app/routes/admin.transactions.income-history.tsx
-import { jsxDEV as jsxDEV54 } from "react/jsx-dev-runtime";
+import { jsx as jsx54, jsxs as jsxs41 } from "react/jsx-runtime";
 async function loader8({}) {
   return json11({ tranasctions: [{
     contest: "kotm01",
@@ -7116,30 +3850,10 @@ async function action6({ request }) {
 }
 function IncomeHistory() {
   let { tranasctions } = useLoaderData8();
-  return /* @__PURE__ */ jsxDEV54("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV54("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsxDEV54("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Income History Summary" }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 43,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 42,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV54("section", { className: "my-12", children: /* @__PURE__ */ jsxDEV54(IncomeHistoryTable, { data: tranasctions }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 46,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 45,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 41,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs41("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsx54("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsx54("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Income History Summary" }) }),
+    /* @__PURE__ */ jsx54("section", { className: "my-12", children: /* @__PURE__ */ jsx54(IncomeHistoryTable, { data: tranasctions }) })
+  ] });
 }
 
 // app/routes/admin.contests.$contestId._index.tsx
@@ -7156,29 +3870,17 @@ import { useLoaderData as useLoaderData9, useNavigate as useNavigate3 } from "@r
 import { Form as Form5 } from "@remix-run/react";
 
 // app/components/reusables/Select.tsx
-import { jsxDEV as jsxDEV55 } from "react/jsx-dev-runtime";
+import { jsx as jsx55, jsxs as jsxs42 } from "react/jsx-runtime";
 function Select2({ children, containerClass, className, label, ...selectProps }) {
-  return /* @__PURE__ */ jsxDEV55("label", { className: "font-bold", children: [
+  return /* @__PURE__ */ jsxs42("label", { className: "font-bold", children: [
     label,
-    /* @__PURE__ */ jsxDEV55("div", { className: `border hover:border-primary rounded-lg font-normal overflow-hidden ${containerClass}`, children: /* @__PURE__ */ jsxDEV55("select", { className: `bg-transparent focus:outline-none p-3 mr-2 cursor-pointer w-[98%] ${className}`, ...selectProps, children }, void 0, !1, {
-      fileName: "app/components/reusables/Select.tsx",
-      lineNumber: 7,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/reusables/Select.tsx",
-      lineNumber: 6,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/Select.tsx",
-    lineNumber: 5,
-    columnNumber: 9
-  }, this);
+    /* @__PURE__ */ jsx55("div", { className: `border hover:border-primary rounded-lg font-normal overflow-hidden ${containerClass}`, children: /* @__PURE__ */ jsx55("select", { className: `bg-transparent focus:outline-none p-3 mr-2 cursor-pointer w-[98%] ${className}`, ...selectProps, children }) })
+  ] });
 }
 
 // app/components/admin/tournament/CategoryInputs.tsx
 import { useState as useState12 } from "react";
-import { jsxDEV as jsxDEV56 } from "react/jsx-dev-runtime";
+import { jsx as jsx56, jsxs as jsxs43 } from "react/jsx-runtime";
 function CategoryInputs({ categories }) {
   let [newCategory, setNewCategory] = useState12(""), [catogories, setCategories] = useState12(categories ?? []);
   function addCategory() {
@@ -7187,95 +3889,43 @@ function CategoryInputs({ categories }) {
   function removeCategory(category) {
     setCategories((prev) => prev.filter((cat) => cat !== category));
   }
-  return /* @__PURE__ */ jsxDEV56("div", { children: [
-    /* @__PURE__ */ jsxDEV56("span", { className: "font-bold", children: "Categories" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-      lineNumber: 19,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV56("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-3 border border-secondary p-3 rounded-lg", children: [
-      catogories.map((category) => /* @__PURE__ */ jsxDEV56("div", { className: "p-3 rounded-lg border border-secondary flex items-center", children: [
-        /* @__PURE__ */ jsxDEV56("input", { type: "text", className: "grow pointer-events-none bg-transparent", name: "category", defaultValue: category }, void 0, !1, {
-          fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-          lineNumber: 23,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV56("button", { type: "button", children: /* @__PURE__ */ jsxDEV56(
+  return /* @__PURE__ */ jsxs43("div", { children: [
+    /* @__PURE__ */ jsx56("span", { className: "font-bold", children: "Categories" }),
+    /* @__PURE__ */ jsxs43("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-3 border border-secondary p-3 rounded-lg", children: [
+      catogories.map((category) => /* @__PURE__ */ jsxs43("div", { className: "p-3 rounded-lg border border-secondary flex items-center", children: [
+        /* @__PURE__ */ jsx56("input", { type: "text", className: "grow pointer-events-none bg-transparent", name: "category", defaultValue: category }),
+        /* @__PURE__ */ jsx56("button", { type: "button", children: /* @__PURE__ */ jsx56(
           Svg,
           {
             src: icons.closeIcon,
             width: ".9em",
             className: "hover:text-red-400",
             onClick: () => removeCategory(category)
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-            lineNumber: 25,
-            columnNumber: 29
-          },
-          this
-        ) }, void 0, !1, {
-          fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-          lineNumber: 24,
-          columnNumber: 25
-        }, this)
-      ] }, category, !0, {
-        fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-        lineNumber: 22,
-        columnNumber: 21
-      }, this)),
-      /* @__PURE__ */ jsxDEV56("div", { className: "flex max-sm:flex-col gap-3 sm:gap-6 sm:items-end sm:col-span-3", children: [
-        /* @__PURE__ */ jsxDEV56(FormControl, { as: "input", placeholder: "Enter new category", id: "new_catogory", value: newCategory, onChange: (e) => setNewCategory(e.target.value) }, void 0, !1, {
-          fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-          lineNumber: 31,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV56(
+          }
+        ) })
+      ] }, category)),
+      /* @__PURE__ */ jsxs43("div", { className: "flex max-sm:flex-col gap-3 sm:gap-6 sm:items-end sm:col-span-3", children: [
+        /* @__PURE__ */ jsx56(FormControl, { as: "input", placeholder: "Enter new category", id: "new_catogory", value: newCategory, onChange: (e) => setNewCategory(e.target.value) }),
+        /* @__PURE__ */ jsxs43(
           "button",
           {
             type: "button",
             onClick: addCategory,
             className: "flex gap-2 items-center whitespace-nowrap px-8 py-3 rounded-lg border border-secondary hover:border-slate-400",
             children: [
-              /* @__PURE__ */ jsxDEV56(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-                fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-                lineNumber: 34,
-                columnNumber: 25
-              }, this),
+              /* @__PURE__ */ jsx56(Svg, { src: icons.addIcon, width: ".9em" }),
               "Add Category"
             ]
-          },
-          void 0,
-          !0,
-          {
-            fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-            lineNumber: 32,
-            columnNumber: 21
-          },
-          this
+          }
         )
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-        lineNumber: 30,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-      lineNumber: 20,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/CategoryInputs.tsx",
-    lineNumber: 18,
-    columnNumber: 9
-  }, this);
+      ] })
+    ] })
+  ] });
 }
 
 // app/components/admin/tournament/StageInputs.tsx
 import { useReducer } from "react";
-import { jsxDEV as jsxDEV57 } from "react/jsx-dev-runtime";
+import { jsx as jsx57, jsxs as jsxs44 } from "react/jsx-runtime";
 function reducer2(stages, action20) {
   return action20.type === "add" ? [...stages, {
     stage: (stages.at(-1)?.stage ?? 0) + 1,
@@ -7285,294 +3935,90 @@ function reducer2(stages, action20) {
 }
 function StageInputs({ stages }) {
   let [stagesState, dispatch2] = useReducer(reducer2, stages ?? []);
-  return /* @__PURE__ */ jsxDEV57("div", { children: [
-    /* @__PURE__ */ jsxDEV57("span", { className: "font-bold", children: [
+  return /* @__PURE__ */ jsxs44("div", { children: [
+    /* @__PURE__ */ jsxs44("span", { className: "font-bold", children: [
       "Stages ",
-      /* @__PURE__ */ jsxDEV57("span", { className: "font-normal", children: "(weights must sum up to 100%)" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/StageInputs.tsx",
-        lineNumber: 45,
-        columnNumber: 48
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/StageInputs.tsx",
-      lineNumber: 45,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV57("div", { className: "grid gap-4 border border-secondary p-3 rounded-lg", children: [
-      stagesState.map((stage, index) => /* @__PURE__ */ jsxDEV57("div", { className: "flex gap-4 items-end", children: [
-        /* @__PURE__ */ jsxDEV57("fieldset", { className: "grow grid gap-3 sm:gap-6 sm:grid-cols-3", children: [
-          /* @__PURE__ */ jsxDEV57(FormControl, { as: "input", type: "number", labelText: "Stage", id: `Stage_${index + 1}`, value: stage.stage, onChange: (e) => dispatch2({ type: "edit_stage_number", stageNumber: stage.stage, value: +e.target.value }) }, void 0, !1, {
-            fileName: "app/components/admin/tournament/StageInputs.tsx",
-            lineNumber: 50,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV57(FormControl, { as: "input", type: "number", labelText: "Stage Weight (%)", id: `weight_${index + 1}`, name: `weight_${index + 1}`, value: stage?.weight ?? 0, min: 0, onChange: (e) => dispatch2({ type: "edit_stage_weight", stageNumber: stage.stage, value: +e.target.value }) }, void 0, !1, {
-            fileName: "app/components/admin/tournament/StageInputs.tsx",
-            lineNumber: 51,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV57(Select2, { label: "Social Media", id: `social_media_${index + 1}`, name: `social_media_${index + 1}`, className: "capitalize", value: stage?.rates?.social_media.type ?? "", onChange: (e) => dispatch2({ type: "edit_sm_type", stageNumber: stage.stage, value: e.target.value }), children: socials.map((social) => /* @__PURE__ */ jsxDEV57("option", { value: social, children: social }, social, !1, {
-            fileName: "app/components/admin/tournament/StageInputs.tsx",
-            lineNumber: 54,
-            columnNumber: 37
-          }, this)) }, void 0, !1, {
-            fileName: "app/components/admin/tournament/StageInputs.tsx",
-            lineNumber: 52,
-            columnNumber: 29
-          }, this),
-          stage._id ? /* @__PURE__ */ jsxDEV57("input", { type: "hidden", name: `stage_${index + 1}_id`, value: stage._id }, void 0, !1, {
-            fileName: "app/components/admin/tournament/StageInputs.tsx",
-            lineNumber: 57,
-            columnNumber: 42
-          }, this) : null
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 49,
-          columnNumber: 25
-        }, this),
-        stage._id ? /* @__PURE__ */ jsxDEV57("button", { type: "submit", className: "m-4", title: "delete stage", name: "intent", value: stage._id, children: /* @__PURE__ */ jsxDEV57(Svg, { src: icons.closeIcon, width: ".9em", className: "hover:text-red-400" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 61,
-          columnNumber: 33
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 60,
-          columnNumber: 31
-        }, this) : /* @__PURE__ */ jsxDEV57("button", { type: "button", className: "m-4", value: stage._id, onClick: () => dispatch2({ type: "remove", stageNumber: stage.stage }), children: /* @__PURE__ */ jsxDEV57(Svg, { src: icons.closeIcon, width: ".9em", className: "hover:text-red-400" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 64,
-          columnNumber: 33
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 63,
-          columnNumber: 31
-        }, this)
-      ] }, stage.stage, !0, {
-        fileName: "app/components/admin/tournament/StageInputs.tsx",
-        lineNumber: 48,
-        columnNumber: 21
-      }, this)),
-      /* @__PURE__ */ jsxDEV57(
+      /* @__PURE__ */ jsx57("span", { className: "font-normal", children: "(weights must sum up to 100%)" })
+    ] }),
+    /* @__PURE__ */ jsxs44("div", { className: "grid gap-4 border border-secondary p-3 rounded-lg", children: [
+      stagesState.map((stage, index) => /* @__PURE__ */ jsxs44("div", { className: "flex gap-4 items-end", children: [
+        /* @__PURE__ */ jsxs44("fieldset", { className: "grow grid gap-3 sm:gap-6 sm:grid-cols-3", children: [
+          /* @__PURE__ */ jsx57(FormControl, { as: "input", type: "number", labelText: "Stage", id: `Stage_${index + 1}`, value: stage.stage, onChange: (e) => dispatch2({ type: "edit_stage_number", stageNumber: stage.stage, value: +e.target.value }) }),
+          /* @__PURE__ */ jsx57(FormControl, { as: "input", type: "number", labelText: "Stage Weight (%)", id: `weight_${index + 1}`, name: `weight_${index + 1}`, value: stage?.weight ?? 0, min: 0, onChange: (e) => dispatch2({ type: "edit_stage_weight", stageNumber: stage.stage, value: +e.target.value }) }),
+          /* @__PURE__ */ jsx57(Select2, { label: "Social Media", id: `social_media_${index + 1}`, name: `social_media_${index + 1}`, className: "capitalize", value: stage?.rates?.social_media.type ?? "", onChange: (e) => dispatch2({ type: "edit_sm_type", stageNumber: stage.stage, value: e.target.value }), children: socials.map((social) => /* @__PURE__ */ jsx57("option", { value: social, children: social }, social)) }),
+          stage._id ? /* @__PURE__ */ jsx57("input", { type: "hidden", name: `stage_${index + 1}_id`, value: stage._id }) : null
+        ] }),
+        stage._id ? /* @__PURE__ */ jsx57("button", { type: "submit", className: "m-4", title: "delete stage", name: "intent", value: stage._id, children: /* @__PURE__ */ jsx57(Svg, { src: icons.closeIcon, width: ".9em", className: "hover:text-red-400" }) }) : /* @__PURE__ */ jsx57("button", { type: "button", className: "m-4", value: stage._id, onClick: () => dispatch2({ type: "remove", stageNumber: stage.stage }), children: /* @__PURE__ */ jsx57(Svg, { src: icons.closeIcon, width: ".9em", className: "hover:text-red-400" }) })
+      ] }, stage.stage)),
+      /* @__PURE__ */ jsxs44(
         "button",
         {
           type: "button",
           onClick: () => dispatch2({ type: "add" }),
           className: "flex gap-2 place-self-start items-center whitespace-nowrap px-6 py-2 rounded-lg border border-secondary hover:border-slate-400",
           children: [
-            /* @__PURE__ */ jsxDEV57(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/StageInputs.tsx",
-              lineNumber: 70,
-              columnNumber: 21
-            }, this),
+            /* @__PURE__ */ jsx57(Svg, { src: icons.addIcon, width: ".9em" }),
             "Add Stage"
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/tournament/StageInputs.tsx",
-          lineNumber: 68,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/StageInputs.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV57("input", { type: "hidden", name: "no_of_stages", value: stagesState.length }, void 0, !1, {
-      fileName: "app/components/admin/tournament/StageInputs.tsx",
-      lineNumber: 74,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/StageInputs.tsx",
-    lineNumber: 44,
-    columnNumber: 9
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsx57("input", { type: "hidden", name: "no_of_stages", value: stagesState.length })
+  ] });
 }
 
 // app/components/admin/tournament/EditContestForm.tsx
 import { useState as useState13 } from "react";
-import { jsxDEV as jsxDEV58 } from "react/jsx-dev-runtime";
+import { jsx as jsx58, jsxs as jsxs45 } from "react/jsx-runtime";
 function EditContestForm({ tournaments, contest }) {
   let [fileList, setFileList] = useState13(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
-  return console.log(contest), /* @__PURE__ */ jsxDEV58(Form5, { className: "max-w-[700px] mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsxDEV58("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 22,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58("div", { className: "flex items-center gap-x-5", children: [
-      filePreview ? /* @__PURE__ */ jsxDEV58("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 25,
-        columnNumber: 23
-      }, this) : /* @__PURE__ */ jsxDEV58("img", { className: "w-20 h-20 rounded-lg object-cover", src: contest.image || no_image_default, alt: "Contest banner" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 26,
-        columnNumber: 23
-      }, this),
-      /* @__PURE__ */ jsxDEV58("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
-        /* @__PURE__ */ jsxDEV58("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
+  return console.log(contest), /* @__PURE__ */ jsxs45(Form5, { className: "max-w-[700px] mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx58("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
+    /* @__PURE__ */ jsxs45("div", { className: "flex items-center gap-x-5", children: [
+      filePreview ? /* @__PURE__ */ jsx58("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }) : /* @__PURE__ */ jsx58("img", { className: "w-20 h-20 rounded-lg object-cover", src: contest.image || no_image_default, alt: "Contest banner" }),
+      /* @__PURE__ */ jsxs45("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
+        /* @__PURE__ */ jsxs45("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
           "Change Photo",
-          /* @__PURE__ */ jsxDEV58("input", { id: "image", name: "image", type: "file", onChange: (e) => {
+          /* @__PURE__ */ jsx58("input", { id: "image", name: "image", type: "file", onChange: (e) => {
             setFileList(e.currentTarget.files);
-          }, className: "hidden" }, void 0, !1, {
-            fileName: "app/components/admin/tournament/EditContestForm.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/EditContestForm.tsx",
-          lineNumber: 29,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV58("span", { className: "flex items-center gap-3", children: [
-          /* @__PURE__ */ jsxDEV58("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }, void 0, !1, {
-            fileName: "app/components/admin/tournament/EditContestForm.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this),
-          fileName ? /* @__PURE__ */ jsxDEV58(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }, void 0, !1, {
-            fileName: "app/components/admin/tournament/EditContestForm.tsx",
-            lineNumber: 36,
-            columnNumber: 31
-          }, this) : null
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/EditContestForm.tsx",
-          lineNumber: 33,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 28,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 23,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV58(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: contest.tournament_unique_id, required: !0, children: [
-        /* @__PURE__ */ jsxDEV58("option", { value: "", children: "Select a tournament" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/EditContestForm.tsx",
-          lineNumber: 44,
-          columnNumber: 21
-        }, this),
-        tournaments.map((tournament) => /* @__PURE__ */ jsxDEV58("option", { value: tournament.id, children: tournament.id }, tournament.id, !1, {
-          fileName: "app/components/admin/tournament/EditContestForm.tsx",
-          lineNumber: 46,
-          columnNumber: 25
-        }, this))
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", defaultValue: contest.name, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 49,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", defaultValue: contest.desc, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 50,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: contest.id, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 51,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", defaultValue: parseDateTimeForInput(contest.reg_deadline), required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 52,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", defaultValue: parseDateTimeForInput(contest.start_date), required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 53,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", defaultValue: parseDateTimeForInput(contest.end_date), required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 54,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", defaultValue: contest.prizes, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 55,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 42,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58(CategoryInputs, { categories: Object.values(contest.categories) }, void 0, !1, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 58,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58(StageInputs, { stages: contest.stages }, contest.stages.length, !1, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 59,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58("fieldset", { className: "grid gap-6", children: [
-      /* @__PURE__ */ jsxDEV58("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 62,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", defaultValue: contest.sub_req, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 63,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", defaultValue: contest.terms_cond, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 64,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", defaultValue: contest.add_info, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 65,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 61,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV58("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV58(Cta_default, { element: "button", type: "reset", onClick: clearFilePreview, className: "px-8 py-2 rounded-lg font-medium border-secondary hover:border-slate-400 text-primary", variant: "outline", children: "Reset Form" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 69,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV58(Cta_default, { element: "button", type: "submit", name: "contestId", value: contest._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Contest" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditContestForm.tsx",
-        lineNumber: 70,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditContestForm.tsx",
-      lineNumber: 68,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/EditContestForm.tsx",
-    lineNumber: 21,
-    columnNumber: 9
-  }, this);
+          }, className: "hidden" })
+        ] }),
+        /* @__PURE__ */ jsxs45("span", { className: "flex items-center gap-3", children: [
+          /* @__PURE__ */ jsx58("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }),
+          fileName ? /* @__PURE__ */ jsx58(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }) : null
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs45("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs45(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: contest.tournament_unique_id, required: !0, children: [
+        /* @__PURE__ */ jsx58("option", { value: "", children: "Select a tournament" }),
+        tournaments.map((tournament) => /* @__PURE__ */ jsx58("option", { value: tournament.id, children: tournament.id }, tournament.id))
+      ] }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", defaultValue: contest.name, required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", defaultValue: contest.desc, required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: contest.id, required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", defaultValue: parseDateTimeForInput(contest.reg_deadline), required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", defaultValue: parseDateTimeForInput(contest.start_date), required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", defaultValue: parseDateTimeForInput(contest.end_date), required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", defaultValue: contest.prizes, required: !0 })
+    ] }),
+    /* @__PURE__ */ jsx58(CategoryInputs, { categories: Object.values(contest.categories) }),
+    /* @__PURE__ */ jsx58(StageInputs, { stages: contest.stages }, contest.stages.length),
+    /* @__PURE__ */ jsxs45("fieldset", { className: "grid gap-6", children: [
+      /* @__PURE__ */ jsx58("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", defaultValue: contest.sub_req, required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", defaultValue: contest.terms_cond, required: !0 }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", defaultValue: contest.add_info, required: !0 })
+    ] }),
+    /* @__PURE__ */ jsxs45("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx58(Cta_default, { element: "button", type: "reset", onClick: clearFilePreview, className: "px-8 py-2 rounded-lg font-medium border-secondary hover:border-slate-400 text-primary", variant: "outline", children: "Reset Form" }),
+      /* @__PURE__ */ jsx58(Cta_default, { element: "button", type: "submit", name: "contestId", value: contest._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Contest" })
+    ] })
+  ] });
 }
 
 // app/routes/admin.contests.$contestId._index.tsx
-import { jsxDEV as jsxDEV59 } from "react/jsx-dev-runtime";
+import { jsx as jsx59, jsxs as jsxs46 } from "react/jsx-runtime";
 async function loader9({ params, request }) {
   let { data: tournaments = [] } = await tournamentRepo.getTournaments(), { data: contest, error } = await contestRepo.getContestById(params.contestId);
   if (error) {
@@ -7607,33 +4053,13 @@ async function action7({ request }) {
 }
 function EditContest() {
   let { tournaments, contest } = useLoaderData9(), navigate = useNavigate3();
-  return /* @__PURE__ */ jsxDEV59("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV59("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV59(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.contests.$contestId._index.tsx",
-        lineNumber: 55,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV59("span", { className: "font-black text-primary", children: "Edit Contest" }, void 0, !1, {
-        fileName: "app/routes/admin.contests.$contestId._index.tsx",
-        lineNumber: 56,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.contests.$contestId._index.tsx",
-      lineNumber: 54,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV59(EditContestForm, { contest, tournaments }, void 0, !1, {
-      fileName: "app/routes/admin.contests.$contestId._index.tsx",
-      lineNumber: 58,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.contests.$contestId._index.tsx",
-    lineNumber: 53,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs46("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs46("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx59(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx59("span", { className: "font-black text-primary", children: "Edit Contest" })
+    ] }),
+    /* @__PURE__ */ jsx59(EditContestForm, { contest, tournaments })
+  ] });
 }
 
 // app/routes/admin.transactions.tally-votes.tsx
@@ -7648,125 +4074,45 @@ import { useLoaderData as useLoaderData10 } from "@remix-run/react";
 
 // app/components/admin/transactions/AddTallyDialog.tsx
 import { Form as Form6 } from "@remix-run/react";
-import { jsxDEV as jsxDEV60 } from "react/jsx-dev-runtime";
+import { jsx as jsx60, jsxs as jsxs47 } from "react/jsx-runtime";
 function AddTallyDialog() {
-  return /* @__PURE__ */ jsxDEV60(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV60(
+  return /* @__PURE__ */ jsxs47(Dialog, { children: [
+    /* @__PURE__ */ jsxs47(
       DialogTrigger,
       {
         title: "add tally transaction",
         className: cn("flex items-center justify-center gap-2 rounded-lg px-3 py-2 bg-accent text-secondary"),
         children: [
-          /* @__PURE__ */ jsxDEV60(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 21,
-            columnNumber: 13
-          }, this),
+          /* @__PURE__ */ jsx60(Svg, { src: icons.addIcon, width: ".9em" }),
           "Add Payment"
         ]
-      },
-      void 0,
-      !0,
-      {
-        fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-        lineNumber: 19,
-        columnNumber: 9
-      },
-      this
+      }
     ),
-    /* @__PURE__ */ jsxDEV60(DialogContent, { className: "bg-secondary", children: /* @__PURE__ */ jsxDEV60(DialogHeader, { children: [
-      /* @__PURE__ */ jsxDEV60(DialogTitle, { children: "Add Tally Transaction" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV60(DialogDescription, { children: /* @__PURE__ */ jsxDEV60(Form6, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
-        /* @__PURE__ */ jsxDEV60("fieldset", { className: "py-4 grid sm:grid-cols-3 gap-3", children: [
-          /* @__PURE__ */ jsxDEV60(FormControl, { as: "input", id: "sender", name: "sender", labelText: "Sender" }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 30,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV60(Select2, { label: "Contest", name: "contest", children: [
-            /* @__PURE__ */ jsxDEV60("option", { value: "", children: "Select a contest" }, void 0, !1, {
-              fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-              lineNumber: 32,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV60("option", { value: "KOTM01", children: "Kotm01" }, void 0, !1, {
-              fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-              lineNumber: 33,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 31,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV60(FormControl, { as: "input", id: "code", name: "code", labelText: "Code" }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 35,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV60(FormControl, { as: "input", type: "number", id: "vote", name: "vote", labelText: "Vote", min: 0, defaultValue: 0 }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 36,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV60(FormControl, { as: "input", type: "number", id: "amount", name: "amount", labelText: "Amount (NGN)", min: 0, defaultValue: 0 }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 37,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV60(FormControl, { as: "input", type: "number", id: "fee", name: "fee", labelText: "Fee (NGN)", min: 0, defaultValue: 0 }, void 0, !1, {
-            fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-            lineNumber: 38,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-          lineNumber: 29,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV60("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV60(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-          lineNumber: 41,
-          columnNumber: 29
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-          lineNumber: 40,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-        lineNumber: 28,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-        lineNumber: 27,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-      lineNumber: 25,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-      lineNumber: 24,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/AddTallyDialog.tsx",
-    lineNumber: 18,
-    columnNumber: 12
-  }, this);
+    /* @__PURE__ */ jsx60(DialogContent, { className: "bg-secondary", children: /* @__PURE__ */ jsxs47(DialogHeader, { children: [
+      /* @__PURE__ */ jsx60(DialogTitle, { children: "Add Tally Transaction" }),
+      /* @__PURE__ */ jsx60(DialogDescription, { children: /* @__PURE__ */ jsxs47(Form6, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
+        /* @__PURE__ */ jsxs47("fieldset", { className: "py-4 grid sm:grid-cols-3 gap-3", children: [
+          /* @__PURE__ */ jsx60(FormControl, { as: "input", id: "sender", name: "sender", labelText: "Sender" }),
+          /* @__PURE__ */ jsxs47(Select2, { label: "Contest", name: "contest", children: [
+            /* @__PURE__ */ jsx60("option", { value: "", children: "Select a contest" }),
+            /* @__PURE__ */ jsx60("option", { value: "KOTM01", children: "Kotm01" })
+          ] }),
+          /* @__PURE__ */ jsx60(FormControl, { as: "input", id: "code", name: "code", labelText: "Code" }),
+          /* @__PURE__ */ jsx60(FormControl, { as: "input", type: "number", id: "vote", name: "vote", labelText: "Vote", min: 0, defaultValue: 0 }),
+          /* @__PURE__ */ jsx60(FormControl, { as: "input", type: "number", id: "amount", name: "amount", labelText: "Amount (NGN)", min: 0, defaultValue: 0 }),
+          /* @__PURE__ */ jsx60(FormControl, { as: "input", type: "number", id: "fee", name: "fee", labelText: "Fee (NGN)", min: 0, defaultValue: 0 })
+        ] }),
+        /* @__PURE__ */ jsx60("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx60(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" }) })
+      ] }) })
+    ] }) })
+  ] });
 }
 
 // app/components/admin/transactions/VerifyTransactionDialog.tsx
-import { jsxDEV as jsxDEV61 } from "react/jsx-dev-runtime";
+import { jsx as jsx61, jsxs as jsxs48 } from "react/jsx-runtime";
 function VerifyTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxDEV61(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV61(
+  return /* @__PURE__ */ jsxs48(Dialog, { children: [
+    /* @__PURE__ */ jsx61(
       DialogTrigger,
       {
         disabled,
@@ -7774,64 +4120,24 @@ function VerifyTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-green-500 bg-green-50 text-green-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV61(Svg, { src: icons.checkIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-          lineNumber: 14,
-          columnNumber: 7
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-        lineNumber: 10,
-        columnNumber: 5
-      },
-      this
+        children: /* @__PURE__ */ jsx61(Svg, { src: icons.checkIcon, className: "w-3" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV61(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV61(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV61(DialogTitle, { children: "Verify this transaction" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-          lineNumber: 18,
-          columnNumber: 9
-        }, this),
-        /* @__PURE__ */ jsxDEV61(DialogDescription, { children: "This transaction will be marked as verified. Are you sure you want to proceed?" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-          lineNumber: 19,
-          columnNumber: 9
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-        lineNumber: 17,
-        columnNumber: 7
-      }, this),
-      /* @__PURE__ */ jsxDEV61(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV61(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-        lineNumber: 24,
-        columnNumber: 9
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-        lineNumber: 23,
-        columnNumber: 7
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-      lineNumber: 16,
-      columnNumber: 5
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/VerifyTransactionDialog.tsx",
-    lineNumber: 9,
-    columnNumber: 10
-  }, this);
+    /* @__PURE__ */ jsxs48(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs48(DialogHeader, { children: [
+        /* @__PURE__ */ jsx61(DialogTitle, { children: "Verify this transaction" }),
+        /* @__PURE__ */ jsx61(DialogDescription, { children: "This transaction will be marked as verified. Are you sure you want to proceed?" })
+      ] }),
+      /* @__PURE__ */ jsx61(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx61(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/transactions/RevokeTransactionDialog.tsx
-import { jsxDEV as jsxDEV62 } from "react/jsx-dev-runtime";
+import { jsx as jsx62, jsxs as jsxs49 } from "react/jsx-runtime";
 function RevokeTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxDEV62(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV62(
+  return /* @__PURE__ */ jsxs49(Dialog, { children: [
+    /* @__PURE__ */ jsx62(
       DialogTrigger,
       {
         disabled,
@@ -7839,64 +4145,24 @@ function RevokeTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV62(Svg, { src: icons.doubleArrowDiagonalIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-          lineNumber: 14,
-          columnNumber: 13
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-        lineNumber: 10,
-        columnNumber: 9
-      },
-      this
+        children: /* @__PURE__ */ jsx62(Svg, { src: icons.doubleArrowDiagonalIcon, className: "w-3" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV62(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV62(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV62(DialogTitle, { children: "Revoke this transaction" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-          lineNumber: 18,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV62(DialogDescription, { children: "This transactoin will be marked as revoked. Are you sure you want to proceed?" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-          lineNumber: 19,
-          columnNumber: 17
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-        lineNumber: 17,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV62(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV62(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-        lineNumber: 23,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-      lineNumber: 16,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/RevokeTransactionDialog.tsx",
-    lineNumber: 9,
-    columnNumber: 12
-  }, this);
+    /* @__PURE__ */ jsxs49(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs49(DialogHeader, { children: [
+        /* @__PURE__ */ jsx62(DialogTitle, { children: "Revoke this transaction" }),
+        /* @__PURE__ */ jsx62(DialogDescription, { children: "This transactoin will be marked as revoked. Are you sure you want to proceed?" })
+      ] }),
+      /* @__PURE__ */ jsx62(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx62(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/transactions/DeleteTransactionDialog.tsx
-import { jsxDEV as jsxDEV63 } from "react/jsx-dev-runtime";
+import { jsx as jsx63, jsxs as jsxs50 } from "react/jsx-runtime";
 function DeleteTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxDEV63(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV63(
+  return /* @__PURE__ */ jsxs50(Dialog, { children: [
+    /* @__PURE__ */ jsx63(
       DialogTrigger,
       {
         disabled,
@@ -7904,88 +4170,32 @@ function DeleteTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV63(Svg, { src: icons.trashIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-          lineNumber: 14,
-          columnNumber: 13
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-        lineNumber: 10,
-        columnNumber: 9
-      },
-      this
+        children: /* @__PURE__ */ jsx63(Svg, { src: icons.trashIcon, className: "w-3" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV63(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxDEV63(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV63(DialogTitle, { children: "Delete this transaction" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-          lineNumber: 18,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV63(DialogDescription, { children: "This transactoin will be marked as deleted. Are you sure you want to proceed?" }, void 0, !1, {
-          fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-          lineNumber: 19,
-          columnNumber: 17
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-        lineNumber: 17,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV63(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV63(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-        lineNumber: 23,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-      lineNumber: 16,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/DeleteTransactionDialog.tsx",
-    lineNumber: 9,
-    columnNumber: 12
-  }, this);
+    /* @__PURE__ */ jsxs50(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs50(DialogHeader, { children: [
+        /* @__PURE__ */ jsx63(DialogTitle, { children: "Delete this transaction" }),
+        /* @__PURE__ */ jsx63(DialogDescription, { children: "This transactoin will be marked as deleted. Are you sure you want to proceed?" })
+      ] }),
+      /* @__PURE__ */ jsx63(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx63(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/transactions/TallyTableActions.tsx
-import { jsxDEV as jsxDEV64 } from "react/jsx-dev-runtime";
+import { jsx as jsx64, jsxs as jsxs51 } from "react/jsx-runtime";
 function TallyTableActions({ table }) {
   let rowsSelected = table.getFilteredSelectedRowModel().rows.length >= 1, canVerify = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.status !== "verified"), canRevoke = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.status !== "revoked");
-  return /* @__PURE__ */ jsxDEV64("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
-    /* @__PURE__ */ jsxDEV64(VerifyTransactionDialog, { disabled: !canVerify }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTableActions.tsx",
-      lineNumber: 12,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV64(RevokeTransactionDialog, { disabled: !canRevoke }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTableActions.tsx",
-      lineNumber: 13,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV64(DeleteTransactionDialog, { disabled: !rowsSelected }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTableActions.tsx",
-      lineNumber: 14,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/TallyTableActions.tsx",
-    lineNumber: 11,
-    columnNumber: 13
-  }, this);
+  return /* @__PURE__ */ jsxs51("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
+    /* @__PURE__ */ jsx64(VerifyTransactionDialog, { disabled: !canVerify }),
+    /* @__PURE__ */ jsx64(RevokeTransactionDialog, { disabled: !canRevoke }),
+    /* @__PURE__ */ jsx64(DeleteTransactionDialog, { disabled: !rowsSelected })
+  ] });
 }
 
 // app/components/admin/transactions/TallyTransactionsTable.tsx
-import { Fragment as Fragment9, jsxDEV as jsxDEV65 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment9, jsx as jsx65, jsxs as jsxs52 } from "react/jsx-runtime";
 var numberFormatterOptions3 = { style: "currency", currency: "NGN" }, dateOptions2 = {
   year: "numeric",
   month: "short",
@@ -7997,7 +4207,7 @@ var numberFormatterOptions3 = { style: "currency", currency: "NGN" }, dateOption
 }, columns4 = [
   {
     id: "select",
-    header: ({ table }) => /* @__PURE__ */ jsxDEV65("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsxDEV65(
+    header: ({ table }) => /* @__PURE__ */ jsx65("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx65(
       Checkbox,
       {
         className: "h-4 w-4",
@@ -8006,176 +4216,76 @@ var numberFormatterOptions3 = { style: "currency", currency: "NGN" }, dateOption
         onCheckedChange: (value) => {
           table.toggleAllPageRowsSelected(!value);
         }
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 28,
-        columnNumber: 13
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 27,
-      columnNumber: 33
-    }, this),
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV65("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsxDEV65(
+      }
+    ) }),
+    cell: ({ row }) => /* @__PURE__ */ jsx65("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx65(
       Checkbox,
       {
         className: "h-4 w-4",
         "aria-label": "Select row",
         checked: row.getIsSelected(),
         onCheckedChange: (value) => row.toggleSelected(!value)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 34,
-        columnNumber: 13
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 33,
-      columnNumber: 29
-    }, this)
+      }
+    ) })
   },
   {
     accessorKey: "tx_ref",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "trx ref" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 43,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "trx ref" })
   },
   {
     accessorKey: "sender",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "sender" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 48,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "sender" })
   },
   {
     accessorKey: "code",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "code" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 53,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "code" })
   },
   {
     accessorKey: "votes",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "votes" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 58,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "votes" })
   },
   {
     accessorKey: "amount",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 63,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions3)
   },
   {
     accessorKey: "fee",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "fee" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 69,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "fee" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions3)
   },
   {
     accessorKey: "date",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "date" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 75,
-      columnNumber: 13
-    }, this),
-    cell: ({ getValue }) => /* @__PURE__ */ jsxDEV65("span", { children: [
-      /* @__PURE__ */ jsxDEV65("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions2) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 79,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV65("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions2) }, void 0, !1, {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 80,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 78,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "date" }),
+    cell: ({ getValue }) => /* @__PURE__ */ jsxs52("span", { children: [
+      /* @__PURE__ */ jsx65("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions2) }),
+      /* @__PURE__ */ jsx65("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions2) })
+    ] })
   },
   {
     accessorKey: "status",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV65(DataTableColumnHeader, { column, title: "status" }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 86,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx65(DataTableColumnHeader, { column, title: "status" }),
     cell: ({ getValue }) => {
       let status = getValue();
-      return /* @__PURE__ */ jsxDEV65(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" }, void 0, !1, {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 94,
-        columnNumber: 20
-      }, this);
+      return /* @__PURE__ */ jsx65(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" });
     }
   }
 ];
 function TallyTransactionsTable({ data }) {
-  return /* @__PURE__ */ jsxDEV65(Fragment9, { children: [
-    /* @__PURE__ */ jsxDEV65("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV65(DataTable, { data, columns: columns4, className: "text-xs", TableActions: TallyTableActions }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 103,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 102,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV65("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-      /* @__PURE__ */ jsxDEV65("label", { className: "flex gap-2", children: [
+  return /* @__PURE__ */ jsxs52(Fragment9, { children: [
+    /* @__PURE__ */ jsx65("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx65(DataTable, { data, columns: columns4, className: "text-xs", TableActions: TallyTableActions }) }),
+    /* @__PURE__ */ jsxs52("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+      /* @__PURE__ */ jsxs52("label", { className: "flex gap-2", children: [
         "Rows per page",
-        /* @__PURE__ */ jsxDEV65("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 }, void 0, !1, {
-          fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-          lineNumber: 107,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 106,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV65(Pagination, {}, void 0, !1, {
-        fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-        lineNumber: 109,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-      lineNumber: 105,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/transactions/TallyTransactionsTable.tsx",
-    lineNumber: 101,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx65("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx65(Pagination, {})
+    ] })
+  ] });
 }
 
 // app/routes/admin.transactions.tally-votes.tsx
-import { jsxDEV as jsxDEV66 } from "react/jsx-dev-runtime";
+import { jsx as jsx66, jsxs as jsxs53 } from "react/jsx-runtime";
 async function loader10({}) {
   let tranasctions = [{
     tx_ref: "KCRUSHIP4HIYGM72VL",
@@ -8215,37 +4325,13 @@ async function action8({ request }) {
 }
 function TallyVotes() {
   let { tranasctions } = useLoaderData10();
-  return /* @__PURE__ */ jsxDEV66("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV66("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
-      /* @__PURE__ */ jsxDEV66("h1", { className: "text-2xl font-black text-primary", children: "Tally Votes" }, void 0, !1, {
-        fileName: "app/routes/admin.transactions.tally-votes.tsx",
-        lineNumber: 52,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV66(AddTallyDialog, {}, void 0, !1, {
-        fileName: "app/routes/admin.transactions.tally-votes.tsx",
-        lineNumber: 53,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.transactions.tally-votes.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV66("section", { className: "my-12", children: /* @__PURE__ */ jsxDEV66(TallyTransactionsTable, { data: tranasctions }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.tally-votes.tsx",
-      lineNumber: 56,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.transactions.tally-votes.tsx",
-      lineNumber: 55,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.transactions.tally-votes.tsx",
-    lineNumber: 50,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs53("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs53("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
+      /* @__PURE__ */ jsx66("h1", { className: "text-2xl font-black text-primary", children: "Tally Votes" }),
+      /* @__PURE__ */ jsx66(AddTallyDialog, {})
+    ] }),
+    /* @__PURE__ */ jsx66("section", { className: "my-12", children: /* @__PURE__ */ jsx66(TallyTransactionsTable, { data: tranasctions }) })
+  ] });
 }
 
 // app/routes/user.contestant.$contestantId.tsx
@@ -8279,7 +4365,7 @@ var UserServer = class {
 }, userServer = new UserServer(contestantRepo);
 
 // app/routes/user.contestant.$contestantId.tsx
-import { jsxDEV as jsxDEV67 } from "react/jsx-dev-runtime";
+import { jsx as jsx67, jsxs as jsxs54 } from "react/jsx-runtime";
 async function loader11({ request, params }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   console.log({ cookieHeader }), cookieHeader || redirect7("/login");
@@ -8334,56 +4420,24 @@ function useRegistrationFormController() {
 }
 function RegistrationForm2() {
   let { contest, stage, contestant, actionData } = useRegistrationFormController();
-  return contest ? /* @__PURE__ */ jsxDEV67("section", { children: [
-    /* @__PURE__ */ jsxDEV67("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: /* @__PURE__ */ jsxDEV67("div", { className: "flex flex-col justify-around", children: /* @__PURE__ */ jsxDEV67("div", { className: "max-w-2xl", children: [
-      /* @__PURE__ */ jsxDEV67("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }, void 0, !1, {
-        fileName: "app/routes/user.contestant.$contestantId.tsx",
-        lineNumber: 130,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV67("p", { className: "font-satoshi-medium", children: contest.desc }, void 0, !1, {
-        fileName: "app/routes/user.contestant.$contestantId.tsx",
-        lineNumber: 131,
-        columnNumber: 25
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.contestant.$contestantId.tsx",
-      lineNumber: 129,
-      columnNumber: 21
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.contestant.$contestantId.tsx",
-      lineNumber: 128,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.contestant.$contestantId.tsx",
-      lineNumber: 127,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV67("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxDEV67("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
-      /* @__PURE__ */ jsxDEV67(ContestGuidelines, { contest }, void 0, !1, {
-        fileName: "app/routes/user.contestant.$contestantId.tsx",
-        lineNumber: 139,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV67(Form7, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
-        /* @__PURE__ */ jsxDEV67("p", { className: "text-2xl font-satoshi-bold", children: [
+  return contest ? /* @__PURE__ */ jsxs54("section", { children: [
+    /* @__PURE__ */ jsx67("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: /* @__PURE__ */ jsx67("div", { className: "flex flex-col justify-around", children: /* @__PURE__ */ jsxs54("div", { className: "max-w-2xl", children: [
+      /* @__PURE__ */ jsx67("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
+      /* @__PURE__ */ jsx67("p", { className: "font-satoshi-medium", children: contest.desc })
+    ] }) }) }),
+    /* @__PURE__ */ jsx67("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs54("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
+      /* @__PURE__ */ jsx67(ContestGuidelines, { contest }),
+      /* @__PURE__ */ jsxs54(Form7, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+        /* @__PURE__ */ jsxs54("p", { className: "text-2xl font-satoshi-bold", children: [
           "Welcome, ",
           contestant?.contestant_biodata.first_name,
           ". You can manage your profile for ",
           contest.name,
           " here"
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 141,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("img", { src: contestant?.image_url || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }, void 0, !1, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 144,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsxDEV67(
+        ] }),
+        /* @__PURE__ */ jsx67("img", { src: contestant?.image_url || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }),
+        /* @__PURE__ */ jsxs54("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx67(
             FormControl,
             {
               as: "input",
@@ -8393,17 +4447,9 @@ function RegistrationForm2() {
               defaultValue: contestant?.contestant_biodata?.first_name,
               placeholder: "Enter your first name",
               required: !0
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 146,
-              columnNumber: 29
-            },
-            this
+            }
           ),
-          /* @__PURE__ */ jsxDEV67(
+          /* @__PURE__ */ jsx67(
             FormControl,
             {
               as: "input",
@@ -8413,23 +4459,11 @@ function RegistrationForm2() {
               defaultValue: contestant?.contestant_biodata?.last_name,
               placeholder: "Enter your last name",
               required: !0
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 149,
-              columnNumber: 29
-            },
-            this
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 145,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsxDEV67(
+        ] }),
+        /* @__PURE__ */ jsxs54("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx67(
             FormControl,
             {
               as: "input",
@@ -8439,17 +4473,9 @@ function RegistrationForm2() {
               defaultValue: contestant?.contestant_biodata?.email,
               placeholder: "Enter your email address",
               required: !0
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 154,
-              columnNumber: 29
-            },
-            this
+            }
           ),
-          /* @__PURE__ */ jsxDEV67(
+          /* @__PURE__ */ jsx67(
             FormControl,
             {
               as: "input",
@@ -8461,98 +4487,30 @@ function RegistrationForm2() {
               placeholder: "dd/mm/yyyy",
               max: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
               required: !0
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 157,
-              columnNumber: 29
-            },
-            this
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 153,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsxDEV67("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
+        ] }),
+        /* @__PURE__ */ jsxs54("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsxs54("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
             "Gender",
-            /* @__PURE__ */ jsxDEV67(Select, { name: "sex", required: !0, defaultValue: contestant?.contestant_biodata?.sex, children: [
-              /* @__PURE__ */ jsxDEV67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV67(SelectValue, { placeholder: "Gender" }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 165,
-                columnNumber: 41
-              }, this) }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 164,
-                columnNumber: 37
-              }, this),
-              /* @__PURE__ */ jsxDEV67(SelectContent, { children: [
-                /* @__PURE__ */ jsxDEV67(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }, void 0, !1, {
-                  fileName: "app/routes/user.contestant.$contestantId.tsx",
-                  lineNumber: 168,
-                  columnNumber: 41
-                }, this),
-                /* @__PURE__ */ jsxDEV67(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" }, void 0, !1, {
-                  fileName: "app/routes/user.contestant.$contestantId.tsx",
-                  lineNumber: 169,
-                  columnNumber: 41
-                }, this)
-              ] }, void 0, !0, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 167,
-                columnNumber: 37
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 163,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/user.contestant.$contestantId.tsx",
-            lineNumber: 162,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV67("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
+            /* @__PURE__ */ jsxs54(Select, { name: "sex", required: !0, defaultValue: contestant?.contestant_biodata?.sex, children: [
+              /* @__PURE__ */ jsx67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx67(SelectValue, { placeholder: "Gender" }) }),
+              /* @__PURE__ */ jsxs54(SelectContent, { children: [
+                /* @__PURE__ */ jsx67(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+                /* @__PURE__ */ jsx67(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs54("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
             "State of Residence",
-            /* @__PURE__ */ jsxDEV67(Select, { name: "state_of_residence", required: !0, defaultValue: contestant?.contestant_biodata?.state_of_residence, children: [
-              /* @__PURE__ */ jsxDEV67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV67(SelectValue, { placeholder: "Select a state" }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 176,
-                columnNumber: 41
-              }, this) }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 175,
-                columnNumber: 37
-              }, this),
-              /* @__PURE__ */ jsxDEV67(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsxDEV67(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 180,
-                columnNumber: 45
-              }, this)) }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 178,
-                columnNumber: 37
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 174,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/user.contestant.$contestantId.tsx",
-            lineNumber: 173,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 161,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsxDEV67(
+            /* @__PURE__ */ jsxs54(Select, { name: "state_of_residence", required: !0, defaultValue: contestant?.contestant_biodata?.state_of_residence, children: [
+              /* @__PURE__ */ jsx67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx67(SelectValue, { placeholder: "Select a state" }) }),
+              /* @__PURE__ */ jsx67(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx67(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs54("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx67(
             FormControl,
             {
               as: "input",
@@ -8563,95 +4521,23 @@ function RegistrationForm2() {
               placeholder: "Enter your whatsapp number",
               required: !0,
               defaultValue: contestant?.contestant_biodata?.whatsapp_no
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 187,
-              columnNumber: 29
-            },
-            this
+            }
           ),
-          /* @__PURE__ */ jsxDEV67("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
+          /* @__PURE__ */ jsxs54("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
             "Category",
-            /* @__PURE__ */ jsxDEV67(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, children: [
-              /* @__PURE__ */ jsxDEV67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsxDEV67(SelectValue, { placeholder: "Select a category" }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 194,
-                columnNumber: 41
-              }, this) }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 193,
-                columnNumber: 37
-              }, this),
-              /* @__PURE__ */ jsxDEV67(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsxDEV67(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 198,
-                columnNumber: 45
-              }, this)) }, void 0, !1, {
-                fileName: "app/routes/user.contestant.$contestantId.tsx",
-                lineNumber: 196,
-                columnNumber: 37
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/user.contestant.$contestantId.tsx",
-              lineNumber: 192,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/user.contestant.$contestantId.tsx",
-            lineNumber: 191,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 186,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67(DragnDrop, { labelText: "Upload Image", name: "media", multiple: !0, required: !1 }, void 0, !1, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 204,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("input", { type: "hidden", name: "contestId", value: contest._id }, void 0, !1, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 205,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67("input", { type: "hidden", name: "contestantId", value: contestant?._id }, void 0, !1, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 206,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV67(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Update contestant details" }, void 0, !1, {
-          fileName: "app/routes/user.contestant.$contestantId.tsx",
-          lineNumber: 207,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/user.contestant.$contestantId.tsx",
-        lineNumber: 140,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.contestant.$contestantId.tsx",
-      lineNumber: 138,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.contestant.$contestantId.tsx",
-      lineNumber: 137,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.contestant.$contestantId.tsx",
-    lineNumber: 126,
-    columnNumber: 9
-  }, this) : /* @__PURE__ */ jsxDEV67("div", { children: " Not found" }, void 0, !1, {
-    fileName: "app/routes/user.contestant.$contestantId.tsx",
-    lineNumber: 213,
-    columnNumber: 13
-  }, this);
+            /* @__PURE__ */ jsxs54(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, children: [
+              /* @__PURE__ */ jsx67(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx67(SelectValue, { placeholder: "Select a category" }) }),
+              /* @__PURE__ */ jsx67(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx67(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx67(DragnDrop, { labelText: "Upload Image", name: "media", multiple: !0, required: !1 }),
+        /* @__PURE__ */ jsx67("input", { type: "hidden", name: "contestId", value: contest._id }),
+        /* @__PURE__ */ jsx67("input", { type: "hidden", name: "contestantId", value: contestant?._id }),
+        /* @__PURE__ */ jsx67(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Update contestant details" })
+      ] })
+    ] }) })
+  ] }) : /* @__PURE__ */ jsx67("div", { children: " Not found" });
 }
 
 // app/routes/admin.tournaments.$ID._index.tsx
@@ -8668,11 +4554,11 @@ import { useFetcher as useFetcher8 } from "@remix-run/react";
 
 // app/components/admin/contest/DeleteContestDialog.tsx
 import { useFetcher as useFetcher6 } from "@remix-run/react";
-import { jsxDEV as jsxDEV68 } from "react/jsx-dev-runtime";
+import { jsx as jsx68, jsxs as jsxs55 } from "react/jsx-runtime";
 function DeleteContestDialog({ contest, disabled }) {
   let fetcher = useFetcher6();
-  return /* @__PURE__ */ jsxDEV68(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV68(
+  return /* @__PURE__ */ jsxs55(Dialog, { children: [
+    /* @__PURE__ */ jsx68(
       DialogTrigger,
       {
         disabled,
@@ -8680,262 +4566,82 @@ function DeleteContestDialog({ contest, disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsxDEV68(Svg, { src: icons.trashIcon, className: "w-3" }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-          lineNumber: 16,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-        lineNumber: 12,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx68(Svg, { src: icons.trashIcon, className: "w-3" })
+      }
     ),
-    /* @__PURE__ */ jsxDEV68(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV68(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV68(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV68("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV68(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-            lineNumber: 22,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-            lineNumber: 21,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV68("p", { children: [
-            /* @__PURE__ */ jsxDEV68("span", { className: "block", children: "Delete contest" }, void 0, !1, {
-              fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-              lineNumber: 25,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV68("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this contest" }, void 0, !1, {
-              fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-              lineNumber: 26,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-            lineNumber: 24,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-          lineNumber: 20,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV68(DialogDescription, { className: "border-y p-4", children: [
-          /* @__PURE__ */ jsxDEV68("span", { className: "text-primary mb-2 block", children: [
+    /* @__PURE__ */ jsxs55(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs55(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs55(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx68("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx68(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs55("p", { children: [
+            /* @__PURE__ */ jsx68("span", { className: "block", children: "Delete contest" }),
+            /* @__PURE__ */ jsx68("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this contest" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs55(DialogDescription, { className: "border-y p-4", children: [
+          /* @__PURE__ */ jsxs55("span", { className: "text-primary mb-2 block", children: [
             "Are you sure you want to delete ",
             contest.name,
             " contest?"
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-            lineNumber: 30,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV68("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this contest." }, void 0, !1, {
-            fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-          lineNumber: 29,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-        lineNumber: 19,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV68(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV68(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV68("input", { type: "hidden", name: "contestId", value: contest._id }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-          lineNumber: 36,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV68(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-          lineNumber: 37,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-        lineNumber: 35,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-        lineNumber: 34,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-      lineNumber: 18,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/DeleteContestDialog.tsx",
-    lineNumber: 11,
-    columnNumber: 9
-  }, this);
+          ] }),
+          /* @__PURE__ */ jsx68("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this contest." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx68(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxs55(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsx68("input", { type: "hidden", name: "contestId", value: contest._id }),
+        /* @__PURE__ */ jsx68(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/contest/MigrateStageDialog.tsx
 import { useFetcher as useFetcher7 } from "@remix-run/react";
-import { jsxDEV as jsxDEV69 } from "react/jsx-dev-runtime";
+import { jsx as jsx69, jsxs as jsxs56 } from "react/jsx-runtime";
 function MigrateStageDialog({ contest, disabled }) {
   let fetcher = useFetcher7(), stages = contest.stages.toSorted((a, b) => a.stage - b.stage).reduce((res, stage, idx, arr) => (stage.active && !res[0] && (res[0] = stage, res[1] = arr.at(idx + 1) ?? null), res), [null, null]), activeStageIdx = contest.stages.findIndex((v) => v.active), activeStageNotTheLastStage = activeStageIdx !== -1 && activeStageIdx < contest.stages.length - 1, cannotMigrate = disabled || !stages.at(0) || !stages.at(1) || !activeStageNotTheLastStage;
-  return /* @__PURE__ */ jsxDEV69(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV69(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsxDEV69(RoundCta_default, { disabled: cannotMigrate, icon: icons.doubleArrowRightIcon, className: "border-indigo-700 bg-indigo-100 text-indigo-700", title: "Migrate stage" }, void 0, !1, {
-      fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-      lineNumber: 29,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-      lineNumber: 28,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV69(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV69(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV69(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV69("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV69(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-            lineNumber: 35,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV69("p", { children: [
-            /* @__PURE__ */ jsxDEV69("span", { className: "block", children: "Migrate stage" }, void 0, !1, {
-              fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-              lineNumber: 38,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV69("span", { className: "font-normal text-base text-admin-pry", children: "Confirm migration to the next stage" }, void 0, !1, {
-              fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-              lineNumber: 39,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-            lineNumber: 37,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 33,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV69(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsxDEV69("span", { className: "text-primary block", children: [
+  return /* @__PURE__ */ jsxs56(Dialog, { children: [
+    /* @__PURE__ */ jsx69(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx69(RoundCta_default, { disabled: cannotMigrate, icon: icons.doubleArrowRightIcon, className: "border-indigo-700 bg-indigo-100 text-indigo-700", title: "Migrate stage" }) }),
+    /* @__PURE__ */ jsxs56(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs56(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs56(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx69("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx69(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs56("p", { children: [
+            /* @__PURE__ */ jsx69("span", { className: "block", children: "Migrate stage" }),
+            /* @__PURE__ */ jsx69("span", { className: "font-normal text-base text-admin-pry", children: "Confirm migration to the next stage" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx69(DialogDescription, { className: "border-y p-4", children: /* @__PURE__ */ jsxs56("span", { className: "text-primary block", children: [
           "This will migrate all safe contestants from stage ",
           stages[0]?.stage,
           " to stage ",
           stages[1]?.stage,
           ". Proceed?"
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 43,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 42,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-        lineNumber: 32,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV69(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV69(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV69("input", { type: "hidden", name: "from", value: stages[0]?._id }, void 0, !1, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 50,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV69("input", { type: "hidden", name: "to", value: stages[1]?._id }, void 0, !1, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 51,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV69(DialogClose, { type: "submit", name: "intent", value: "migrate", className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-          lineNumber: 52,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-        lineNumber: 49,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-        lineNumber: 48,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-      lineNumber: 31,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/MigrateStageDialog.tsx",
-    lineNumber: 27,
-    columnNumber: 9
-  }, this);
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsx69(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxs56(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsx69("input", { type: "hidden", name: "from", value: stages[0]?._id }),
+        /* @__PURE__ */ jsx69("input", { type: "hidden", name: "to", value: stages[1]?._id }),
+        /* @__PURE__ */ jsx69(DialogClose, { type: "submit", name: "intent", value: "migrate", className: "bg-accent px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] }) })
+    ] })
+  ] });
 }
 
 // app/components/admin/contest/ContestTableActions.tsx
-import { jsxDEV as jsxDEV70 } from "react/jsx-dev-runtime";
+import { jsx as jsx70, jsxs as jsxs57 } from "react/jsx-runtime";
 function ContestTableActions({ rowData }) {
   let activeStageId = rowData.stages.find((stage) => stage.active || stage.status === "ongoing")?._id ?? rowData.stages.toSorted((prev, next) => next.stage - prev.stage).find((stage) => stage.status === "completed")?._id ?? rowData.stages.toSorted((prev, next) => prev.stage - next.stage).at(0)?._id, linkToContestants = activeStageId ? `/admin/contests/${rowData.id}/${activeStageId}` : "", fetcher = useFetcher8();
-  return /* @__PURE__ */ jsxDEV70("div", { className: "flex gap-4 items-center", children: [
-    /* @__PURE__ */ jsxDEV70(RoundCta_default, { icon: icons.contestantsIcon, element: "link", to: linkToContestants, "aria-disabled": !linkToContestants, className: "border-green-500 bg-green-50 text-green-500", title: "View current stage" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTableActions.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV70(RoundCta_default, { icon: icons.editIcon, element: "link", to: `/admin/contests/${rowData.id}`, className: "border-[#262626] bg-[#F7F7F8] text-primary", title: "Edit contest" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTableActions.tsx",
-      lineNumber: 18,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV70(fetcher.Form, { method: "post", children: [
-      /* @__PURE__ */ jsxDEV70("input", { type: "hidden", name: "contestId", value: rowData._id }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTableActions.tsx",
-        lineNumber: 20,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV70(RoundCta_default, { icon: icons.viewIcon, name: "intent", value: "toggle_registration", className: "border-yellow-700 bg-yellow-100 text-yellow-700", "aria-disabled": fetcher.state != "idle", title: "Open/Close registration" }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTableActions.tsx",
-        lineNumber: 21,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/ContestTableActions.tsx",
-      lineNumber: 19,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV70(MigrateStageDialog, { contest: rowData }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTableActions.tsx",
-      lineNumber: 23,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV70(DeleteContestDialog, { contest: rowData }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTableActions.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/ContestTableActions.tsx",
-    lineNumber: 16,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs57("div", { className: "flex gap-4 items-center", children: [
+    /* @__PURE__ */ jsx70(RoundCta_default, { icon: icons.contestantsIcon, element: "link", to: linkToContestants, "aria-disabled": !linkToContestants, className: "border-green-500 bg-green-50 text-green-500", title: "View current stage" }),
+    /* @__PURE__ */ jsx70(RoundCta_default, { icon: icons.editIcon, element: "link", to: `/admin/contests/${rowData.id}`, className: "border-[#262626] bg-[#F7F7F8] text-primary", title: "Edit contest" }),
+    /* @__PURE__ */ jsxs57(fetcher.Form, { method: "post", children: [
+      /* @__PURE__ */ jsx70("input", { type: "hidden", name: "contestId", value: rowData._id }),
+      /* @__PURE__ */ jsx70(RoundCta_default, { icon: icons.viewIcon, name: "intent", value: "toggle_registration", className: "border-yellow-700 bg-yellow-100 text-yellow-700", "aria-disabled": fetcher.state != "idle", title: "Open/Close registration" })
+    ] }),
+    /* @__PURE__ */ jsx70(MigrateStageDialog, { contest: rowData }),
+    /* @__PURE__ */ jsx70(DeleteContestDialog, { contest: rowData })
+  ] });
 }
 
 // app/components/admin/contest/EditStageForm.tsx
@@ -8945,49 +4651,25 @@ import cn7 from "classnames";
 
 // app/components/admin/contest/GradeInputs.tsx
 import cn6 from "classnames";
-import { jsxDEV as jsxDEV71 } from "react/jsx-dev-runtime";
+import { jsx as jsx71, jsxs as jsxs58 } from "react/jsx-runtime";
 function GradeInputs({ grade }) {
   let [grd, [min, max]] = grade;
-  return /* @__PURE__ */ jsxDEV71("div", { className: "flex gap-2", children: [
-    /* @__PURE__ */ jsxDEV71("div", { className: "flex flex-col", children: [
-      /* @__PURE__ */ jsxDEV71("span", { className: "block font-bold", children: "Grade" }, void 0, !1, {
-        fileName: "app/components/admin/contest/GradeInputs.tsx",
-        lineNumber: 10,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV71("span", { className: cn6(`h-full w-[40px] px-2 py-1 flex items-center justify-center bg-grade-${grd} rounded-md text-white font-black`), children: grd }, void 0, !1, {
-        fileName: "app/components/admin/contest/GradeInputs.tsx",
-        lineNumber: 11,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/GradeInputs.tsx",
-      lineNumber: 9,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV71(FormControl, { as: "input", id: `min_${grd}`, name: `min_${grd}`, labelText: "Min. Score", type: "number", min: 0, defaultValue: min }, void 0, !1, {
-      fileName: "app/components/admin/contest/GradeInputs.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV71(FormControl, { as: "input", id: `max_${grd}`, name: `max_${grd}`, labelText: "Max. Score", type: "number", min: 0, defaultValue: max }, void 0, !1, {
-      fileName: "app/components/admin/contest/GradeInputs.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/GradeInputs.tsx",
-    lineNumber: 8,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs58("div", { className: "flex gap-2", children: [
+    /* @__PURE__ */ jsxs58("div", { className: "flex flex-col", children: [
+      /* @__PURE__ */ jsx71("span", { className: "block font-bold", children: "Grade" }),
+      /* @__PURE__ */ jsx71("span", { className: cn6(`h-full w-[40px] px-2 py-1 flex items-center justify-center bg-grade-${grd} rounded-md text-white font-black`), children: grd })
+    ] }),
+    /* @__PURE__ */ jsx71(FormControl, { as: "input", id: `min_${grd}`, name: `min_${grd}`, labelText: "Min. Score", type: "number", min: 0, defaultValue: min }),
+    /* @__PURE__ */ jsx71(FormControl, { as: "input", id: `max_${grd}`, name: `max_${grd}`, labelText: "Max. Score", type: "number", min: 0, defaultValue: max })
+  ] });
 }
 
 // app/components/admin/contest/EditStageForm.tsx
-import { jsxDEV as jsxDEV72 } from "react/jsx-dev-runtime";
+import { jsx as jsx72, jsxs as jsxs59 } from "react/jsx-runtime";
 function Stages({ row }) {
   let [selectedStage, setSelectedStage] = useState15(row.original.stages[0] ?? null);
-  return /* @__PURE__ */ jsxDEV72("div", { className: "p-6", children: [
-    /* @__PURE__ */ jsxDEV72("div", { className: "p-3 flex gap-2 border border-disabled bg-[#F6F8FA] rounded-md", children: row.original.stages.length ? row.original.stages.map((stage) => /* @__PURE__ */ jsxDEV72(
+  return /* @__PURE__ */ jsxs59("div", { className: "p-6", children: [
+    /* @__PURE__ */ jsx72("div", { className: "p-3 flex gap-2 border border-disabled bg-[#F6F8FA] rounded-md", children: row.original.stages.length ? row.original.stages.map((stage) => /* @__PURE__ */ jsxs59(
       Cta_default,
       {
         element: "button",
@@ -9002,124 +4684,37 @@ function Stages({ row }) {
           stage.stage
         ]
       },
-      stage._id,
-      !0,
-      {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 19,
-        columnNumber: 13
-      },
-      this
-    )) : /* @__PURE__ */ jsxDEV72("span", { children: "There are no stages." }, void 0, !1, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 26,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 16,
-      columnNumber: 7
-    }, this),
-    selectedStage ? /* @__PURE__ */ jsxDEV72(EditStageForm, { stage: selectedStage, contestId: row.original.id, closeForm: row.getToggleExpandedHandler() }, selectedStage._id, !1, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 30,
-      columnNumber: 11
-    }, this) : null
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/EditStageForm.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+      stage._id
+    )) : /* @__PURE__ */ jsx72("span", { children: "There are no stages." }) }),
+    selectedStage ? /* @__PURE__ */ jsx72(EditStageForm, { stage: selectedStage, contestId: row.original.id, closeForm: row.getToggleExpandedHandler() }, selectedStage._id) : null
+  ] });
 }
 function EditStageForm({ stage, contestId, closeForm }) {
-  return /* @__PURE__ */ jsxDEV72(Form8, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
-    /* @__PURE__ */ jsxDEV72("fieldset", { className: "py-4 grid grid-cols-4 gap-3 border-b", children: [
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "start_date", name: "start_date", labelText: "Stage Start Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.start_date) }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 42,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "end_date", name: "end_date", labelText: "Stage End Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.end_date) }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 43,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "weight", name: "weight", labelText: "Stage Weight (%)", type: "number", min: 0, defaultValue: stage.weight }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 44,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "success_count", name: "success_count", labelText: "Success Count", type: "number", min: 0, defaultValue: stage.success_count }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 45,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 41,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV72("fieldset", { className: "pt-2 pb-4 grid grid-cols-4 gap-3 border-b", children: [
-      /* @__PURE__ */ jsxDEV72("legend", { className: "font-bold text-sm text-admin-pry w-max", children: [
+  return /* @__PURE__ */ jsxs59(Form8, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
+    /* @__PURE__ */ jsxs59("fieldset", { className: "py-4 grid grid-cols-4 gap-3 border-b", children: [
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "start_date", name: "start_date", labelText: "Stage Start Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.start_date) }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "end_date", name: "end_date", labelText: "Stage End Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.end_date) }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "weight", name: "weight", labelText: "Stage Weight (%)", type: "number", min: 0, defaultValue: stage.weight }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "success_count", name: "success_count", labelText: "Success Count", type: "number", min: 0, defaultValue: stage.success_count })
+    ] }),
+    /* @__PURE__ */ jsxs59("fieldset", { className: "pt-2 pb-4 grid grid-cols-4 gap-3 border-b", children: [
+      /* @__PURE__ */ jsxs59("legend", { className: "font-bold text-sm text-admin-pry w-max", children: [
         "Stage Rates ",
-        /* @__PURE__ */ jsxDEV72("span", { className: "font-normal", children: "(must sum up to 100%)" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EditStageForm.tsx",
-          lineNumber: 48,
-          columnNumber: 80
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 48,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "social_media_rate", name: "social_media_rate", labelText: "Social Media Rate (%)", type: "number", min: 0, defaultValue: stage.rates.social_media.amount }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 49,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "tally_rate", name: "tally_rate", labelText: "Tally Rate (%)", type: "number", min: 0, defaultValue: stage.rates.tally }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 50,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "givaah_rate", name: "givaah_rate", labelText: "Givaah Rate (%)", type: "number", min: 0, defaultValue: stage.rates.givaah }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 51,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72(FormControl, { as: "input", id: "judge_rate", name: "judge_rate", labelText: "Judge Rate (%)", type: "number", min: 0, defaultValue: stage.rates.judge }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 52,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 47,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV72("fieldset", { className: "pt-2 py-4 grid grid-cols-2 gap-3 border-b", children: [
-      /* @__PURE__ */ jsxDEV72("legend", { className: "font-bold text-sm text-admin-pry", children: "Grades" }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 55,
-        columnNumber: 9
-      }, this),
-      Object.entries(stage.grade).map((grade) => /* @__PURE__ */ jsxDEV72(GradeInputs, { grade }, grade[0], !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 57,
-        columnNumber: 11
-      }, this))
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 54,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV72("div", { className: "flex justify-between items-center gap-6", children: [
-      /* @__PURE__ */ jsxDEV72(Link7, { to: `${contestId}/${stage._id}`, className: "text-accent hover:text-accent/80 font-semibold", children: "View contestants" }, void 0, !1, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 62,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV72("div", { className: "flex justify-end gap-6", children: [
-        /* @__PURE__ */ jsxDEV72(
+        /* @__PURE__ */ jsx72("span", { className: "font-normal", children: "(must sum up to 100%)" })
+      ] }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "social_media_rate", name: "social_media_rate", labelText: "Social Media Rate (%)", type: "number", min: 0, defaultValue: stage.rates.social_media.amount }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "tally_rate", name: "tally_rate", labelText: "Tally Rate (%)", type: "number", min: 0, defaultValue: stage.rates.tally }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "givaah_rate", name: "givaah_rate", labelText: "Givaah Rate (%)", type: "number", min: 0, defaultValue: stage.rates.givaah }),
+      /* @__PURE__ */ jsx72(FormControl, { as: "input", id: "judge_rate", name: "judge_rate", labelText: "Judge Rate (%)", type: "number", min: 0, defaultValue: stage.rates.judge })
+    ] }),
+    /* @__PURE__ */ jsxs59("fieldset", { className: "pt-2 py-4 grid grid-cols-2 gap-3 border-b", children: [
+      /* @__PURE__ */ jsx72("legend", { className: "font-bold text-sm text-admin-pry", children: "Grades" }),
+      Object.entries(stage.grade).map((grade) => /* @__PURE__ */ jsx72(GradeInputs, { grade }, grade[0]))
+    ] }),
+    /* @__PURE__ */ jsxs59("div", { className: "flex justify-between items-center gap-6", children: [
+      /* @__PURE__ */ jsx72(Link7, { to: `${contestId}/${stage._id}`, className: "text-accent hover:text-accent/80 font-semibold", children: "View contestants" }),
+      /* @__PURE__ */ jsxs59("div", { className: "flex justify-end gap-6", children: [
+        /* @__PURE__ */ jsx72(
           Cta_default,
           {
             element: "button",
@@ -9128,143 +4723,59 @@ function EditStageForm({ stage, contestId, closeForm }) {
             onClick: closeForm,
             className: "px-3 py-2 rounded-md font-bold min-w-[90px] border-secondary hover:border-slate-400 text-primary",
             children: "Close Form"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/admin/contest/EditStageForm.tsx",
-            lineNumber: 64,
-            columnNumber: 11
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV72(Cta_default, { element: "button", type: "submit", name: "intent", value: "update_stage", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" }, void 0, !1, {
-          fileName: "app/components/admin/contest/EditStageForm.tsx",
-          lineNumber: 66,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/EditStageForm.tsx",
-        lineNumber: 63,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 61,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV72("input", { type: "hidden", name: "social_media_type", value: stage.rates.social_media.type }, void 0, !1, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 69,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV72("input", { type: "hidden", name: "stageId", value: stage._id }, void 0, !1, {
-      fileName: "app/components/admin/contest/EditStageForm.tsx",
-      lineNumber: 70,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/EditStageForm.tsx",
-    lineNumber: 40,
-    columnNumber: 5
-  }, this);
+        /* @__PURE__ */ jsx72(Cta_default, { element: "button", type: "submit", name: "intent", value: "update_stage", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Submit" })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx72("input", { type: "hidden", name: "social_media_type", value: stage.rates.social_media.type }),
+    /* @__PURE__ */ jsx72("input", { type: "hidden", name: "stageId", value: stage._id })
+  ] });
 }
 
 // app/components/admin/contest/ContestTable.tsx
-import { Fragment as Fragment10, jsxDEV as jsxDEV73 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment10, jsx as jsx73, jsxs as jsxs60 } from "react/jsx-runtime";
 var columns5 = [
   {
     id: "expander",
     header: () => null,
-    cell: ({ row }) => row.getCanExpand() ? /* @__PURE__ */ jsxDEV73("button", { title: "expand row", onClick: row.getToggleExpandedHandler(), children: /* @__PURE__ */ jsxDEV73(Svg, { src: icons.arrowDownIcon, className: row.getIsExpanded() ? "rotate-180" : "" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 18,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 17,
-      columnNumber: 15
-    }, this) : null
+    cell: ({ row }) => row.getCanExpand() ? /* @__PURE__ */ jsx73("button", { title: "expand row", onClick: row.getToggleExpandedHandler(), children: /* @__PURE__ */ jsx73(Svg, { src: icons.arrowDownIcon, className: row.getIsExpanded() ? "rotate-180" : "" }) }) : null
   },
   {
     accessorKey: "id",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV73(DataTableColumnHeader, { column, title: "id" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 26,
-      columnNumber: 13
-    }, this),
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV73("span", { className: "uppercase", children: row.getValue("id") }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 28,
-      columnNumber: 29
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx73(DataTableColumnHeader, { column, title: "id" }),
+    cell: ({ row }) => /* @__PURE__ */ jsx73("span", { className: "uppercase", children: row.getValue("id") })
   },
   {
     accessorKey: "name",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV73(DataTableColumnHeader, { column, title: "contest" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 32,
-      columnNumber: 13
-    }, this),
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV73("span", { className: "uppercase line-clamp-1", children: row.getValue("name") }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 34,
-      columnNumber: 29
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx73(DataTableColumnHeader, { column, title: "contest" }),
+    cell: ({ row }) => /* @__PURE__ */ jsx73("span", { className: "uppercase line-clamp-1", children: row.getValue("name") })
   },
   {
     accessorKey: "timeline",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV73(DataTableColumnHeader, { column, title: "timeline" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 38,
-      columnNumber: 13
-    }, this),
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV73("p", { children: [
-      /* @__PURE__ */ jsxDEV73("span", { className: "block whitespace-nowrap", children: row.original.start_date.split(".")[0].replace("T", ", ") }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 42,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV73("span", { className: "block whitespace-nowrap", children: row.original.end_date.split(".")[0].replace("T", ", ") }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 41,
-      columnNumber: 13
-    }, this)
+    header: ({ column }) => /* @__PURE__ */ jsx73(DataTableColumnHeader, { column, title: "timeline" }),
+    cell: ({ row }) => /* @__PURE__ */ jsxs60("p", { children: [
+      /* @__PURE__ */ jsx73("span", { className: "block whitespace-nowrap", children: row.original.start_date.split(".")[0].replace("T", ", ") }),
+      /* @__PURE__ */ jsx73("span", { className: "block whitespace-nowrap", children: row.original.end_date.split(".")[0].replace("T", ", ") })
+    ] })
   },
   {
     accessorKey: "status",
-    header: ({ column }) => /* @__PURE__ */ jsxDEV73(DataTableColumnHeader, { column, title: "status" }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 49,
-      columnNumber: 13
-    }, this),
+    header: ({ column }) => /* @__PURE__ */ jsx73(DataTableColumnHeader, { column, title: "status" }),
     cell: ({ row }) => {
       let status = row.getValue("status").split("_").join(" ");
-      return /* @__PURE__ */ jsxDEV73(StatusTag, { status, color: status === "registering" ? "yellow" : status === "ongoing" ? "green" : status === "completed" ? "red" : "gray" }, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 57,
-        columnNumber: 20
-      }, this);
+      return /* @__PURE__ */ jsx73(StatusTag, { status, color: status === "registering" ? "yellow" : status === "ongoing" ? "green" : status === "completed" ? "red" : "gray" });
     }
   },
   {
     id: "actions",
     header: "actions",
-    cell: ({ row }) => /* @__PURE__ */ jsxDEV73(ContestTableActions, { rowData: row.original }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 62,
-      columnNumber: 29
-    }, this)
+    cell: ({ row }) => /* @__PURE__ */ jsx73(ContestTableActions, { rowData: row.original })
   }
 ];
 function ContestTable({ data, pagination }) {
-  return /* @__PURE__ */ jsxDEV73(Fragment10, { children: [
-    /* @__PURE__ */ jsxDEV73("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV73(
+  return /* @__PURE__ */ jsxs60(Fragment10, { children: [
+    /* @__PURE__ */ jsx73("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx73(
       DataTable,
       {
         data,
@@ -9273,59 +4784,27 @@ function ContestTable({ data, pagination }) {
         getRowCanExpand: () => !0,
         SubComponent: Stages,
         className: "max-xs:text-xs text-sm"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 70,
-        columnNumber: 17
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 69,
-      columnNumber: 13
-    }, this),
-    pagination ? /* @__PURE__ */ jsxDEV73("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-      /* @__PURE__ */ jsxDEV73("label", { className: "flex gap-2", children: [
+      }
+    ) }),
+    pagination ? /* @__PURE__ */ jsxs60("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+      /* @__PURE__ */ jsxs60("label", { className: "flex gap-2", children: [
         "Rows per page",
-        /* @__PURE__ */ jsxDEV73("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 }, void 0, !1, {
-          fileName: "app/components/admin/contest/ContestTable.tsx",
-          lineNumber: 77,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 76,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV73(Pagination, {}, void 0, !1, {
-        fileName: "app/components/admin/contest/ContestTable.tsx",
-        lineNumber: 79,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/contest/ContestTable.tsx",
-      lineNumber: 75,
-      columnNumber: 19
-    }, this) : null
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/contest/ContestTable.tsx",
-    lineNumber: 68,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx73("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx73(Pagination, {})
+    ] }) : null
+  ] });
 }
 
 // app/components/reusables/ToggleTip.tsx
 import { useEffect as useEffect10, useRef as useRef6, useState as useState16 } from "react";
-import { jsxDEV as jsxDEV74 } from "react/jsx-dev-runtime";
+import { jsx as jsx74, jsxs as jsxs61 } from "react/jsx-runtime";
 function Toggletip({ mainComponent, children, mainContainerClass = "", childContainerClass = "" }) {
   let [open, setOpen] = useState16(!1), toggletip = useRef6(null);
   function handleOutsideClick(e) {
     e.target !== toggletip.current && !toggletip.current?.contains(e.target) && setOpen(!1);
   }
-  return useEffect10(() => (document.addEventListener("click", handleOutsideClick), () => document.removeEventListener("click", handleOutsideClick)), []), /* @__PURE__ */ jsxDEV74(
+  return useEffect10(() => (document.addEventListener("click", handleOutsideClick), () => document.removeEventListener("click", handleOutsideClick)), []), /* @__PURE__ */ jsxs61(
     "div",
     {
       ref: toggletip,
@@ -9335,26 +4814,14 @@ function Toggletip({ mainComponent, children, mainContainerClass = "", childCont
       className: `relative cursor-pointer ${mainContainerClass}`,
       children: [
         mainComponent,
-        /* @__PURE__ */ jsxDEV74("div", { className: `absolute min-w-full rounded-2xl z-10 ${open ? "" : "hidden"} ${childContainerClass}`, children }, void 0, !1, {
-          fileName: "app/components/reusables/ToggleTip.tsx",
-          lineNumber: 26,
-          columnNumber: 13
-        }, this)
+        /* @__PURE__ */ jsx74("div", { className: `absolute min-w-full rounded-2xl z-10 ${open ? "" : "hidden"} ${childContainerClass}`, children })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/reusables/ToggleTip.tsx",
-      lineNumber: 23,
-      columnNumber: 9
-    },
-    this
+    }
   );
 }
 
 // app/routes/admin.tournaments.$ID._index.tsx
-import { jsxDEV as jsxDEV75 } from "react/jsx-dev-runtime";
+import { jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
 async function loader12({ params, request }) {
   let { data: tournament, error: tournamentError } = await tournamentRepo.getTournamentById(params.ID), { data: contests2, error: contestError } = await contestRepo.adminGetContestsInTournament(params.ID);
   if (tournamentError || contestError) {
@@ -9364,46 +4831,18 @@ async function loader12({ params, request }) {
   return json15({ tournament, contests: contests2 });
 }
 function Tournament() {
-  let { tournament, contests: contests2 } = useLoaderData12(), navigate = useNavigate4(), mainComponent = /* @__PURE__ */ jsxDEV75(RoundCta_default, { icon: icons.optionsIcon, className: "border-disabled hover:border-primary" }, void 0, !1, {
-    fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-    lineNumber: 28,
-    columnNumber: 27
-  }, this);
-  return /* @__PURE__ */ jsxDEV75("main", { className: "w-full overflow-y-auto max-xs:p-3 p-6", children: [
-    /* @__PURE__ */ jsxDEV75("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: /* @__PURE__ */ jsxDEV75(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-      lineNumber: 32,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-      lineNumber: 31,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV75("section", { className: "flex items-start gap-4 sm:gap-6 max-w-xl mx-auto max-xs:text-sm", children: [
-      /* @__PURE__ */ jsxDEV75("img", { src: tournament.image ?? "", alt: "tournament banner", className: "max-xs:w-20 w-24 sm:w-[120px] aspect-square object-cover rounded-lg" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-        lineNumber: 35,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV75("div", { className: "flex flex-col gap-4 sm:gap-6 justify-between", children: [
-        /* @__PURE__ */ jsxDEV75("div", { className: "", children: [
-          /* @__PURE__ */ jsxDEV75("h1", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV75("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-            lineNumber: 39,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-          lineNumber: 37,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV75("div", { className: "flex gap-4 sm:gap-6 items-center", children: [
-          /* @__PURE__ */ jsxDEV75(
+  let { tournament, contests: contests2 } = useLoaderData12(), navigate = useNavigate4(), mainComponent = /* @__PURE__ */ jsx75(RoundCta_default, { icon: icons.optionsIcon, className: "border-disabled hover:border-primary" });
+  return /* @__PURE__ */ jsxs62("main", { className: "w-full overflow-y-auto max-xs:p-3 p-6", children: [
+    /* @__PURE__ */ jsx75("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: /* @__PURE__ */ jsx75(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }) }),
+    /* @__PURE__ */ jsxs62("section", { className: "flex items-start gap-4 sm:gap-6 max-w-xl mx-auto max-xs:text-sm", children: [
+      /* @__PURE__ */ jsx75("img", { src: tournament.image ?? "", alt: "tournament banner", className: "max-xs:w-20 w-24 sm:w-[120px] aspect-square object-cover rounded-lg" }),
+      /* @__PURE__ */ jsxs62("div", { className: "flex flex-col gap-4 sm:gap-6 justify-between", children: [
+        /* @__PURE__ */ jsxs62("div", { className: "", children: [
+          /* @__PURE__ */ jsx75("h1", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }),
+          /* @__PURE__ */ jsx75("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description })
+        ] }),
+        /* @__PURE__ */ jsxs62("div", { className: "flex gap-4 sm:gap-6 items-center", children: [
+          /* @__PURE__ */ jsxs62(
             Cta_default,
             {
               element: "link",
@@ -9411,100 +4850,40 @@ function Tournament() {
               variant: "outline",
               className: "flex gap-2 items-center rounded-lg px-3 py-2 border-secondary text-primary font-medium hover:border-primary max-xs:text-xs",
               children: [
-                /* @__PURE__ */ jsxDEV75(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-                  fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-                  lineNumber: 44,
-                  columnNumber: 29
-                }, this),
+                /* @__PURE__ */ jsx75(Svg, { src: icons.addIcon, width: ".9em" }),
                 "Add Contest"
               ]
-            },
-            void 0,
-            !0,
-            {
-              fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-              lineNumber: 42,
-              columnNumber: 25
-            },
-            this
+            }
           ),
-          /* @__PURE__ */ jsxDEV75(
+          /* @__PURE__ */ jsxs62(
             Toggletip,
             {
               mainComponent,
               childContainerClass: "top-[120%] max-sm:right-0 sm:left-0 bg-tertiary p-2 border border-disabled text-xs whitespace-nowrap",
               children: [
-                /* @__PURE__ */ jsxDEV75(
+                /* @__PURE__ */ jsx75(
                   Link8,
                   {
                     to: "edit",
                     className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium",
                     children: "Edit Tournament"
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-                    lineNumber: 50,
-                    columnNumber: 29
-                  },
-                  this
+                  }
                 ),
-                /* @__PURE__ */ jsxDEV75(
+                /* @__PURE__ */ jsx75(
                   "button",
                   {
                     className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium",
                     children: "Delete Tournament"
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-                    lineNumber: 53,
-                    columnNumber: 29
-                  },
-                  this
+                  }
                 )
               ]
-            },
-            void 0,
-            !0,
-            {
-              fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-              lineNumber: 47,
-              columnNumber: 25
-            },
-            this
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-          lineNumber: 41,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-        lineNumber: 36,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-      lineNumber: 34,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV75("section", { className: "my-12", children: /* @__PURE__ */ jsxDEV75(ContestTable, { data: contests2 }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-      lineNumber: 60,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-      lineNumber: 59,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tournaments.$ID._index.tsx",
-    lineNumber: 30,
-    columnNumber: 9
-  }, this);
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx75("section", { className: "my-12", children: /* @__PURE__ */ jsx75(ContestTable, { data: contests2 }) })
+  ] });
 }
 
 // app/routes/_public.results.$contestId.tsx
@@ -9515,7 +4894,7 @@ __export(public_results_contestId_exports, {
 });
 import { redirect as redirect9 } from "@remix-run/node";
 import { useLoaderData as useLoaderData13 } from "@remix-run/react";
-import { jsxDEV as jsxDEV76 } from "react/jsx-dev-runtime";
+import { jsx as jsx76, jsxs as jsxs63 } from "react/jsx-runtime";
 async function loader13({ params }) {
   let { contestId } = params;
   if (!contestId)
@@ -9529,228 +4908,64 @@ function ContestResult() {
     throw redirect9("/results");
   console.log(contest);
   let color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray", headings = [], table_results = [];
-  return contest?.final_result_scores && (headings = contest.final_result_headings, table_results = contest.final_result_scores.map((res) => res.table_data)), /* @__PURE__ */ jsxDEV76("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV76("header", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxDEV76("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl uppercase mb-10", children: [
+  return contest?.final_result_scores && (headings = contest.final_result_headings, table_results = contest.final_result_scores.map((res) => res.table_data)), /* @__PURE__ */ jsxs63("main", { className: "grow", children: [
+    /* @__PURE__ */ jsxs63("header", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxs63("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl uppercase mb-10", children: [
         contest.name,
         " Result Table"
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV76("div", { className: "grid gap-6 max-w-2xl", children: [
-        /* @__PURE__ */ jsxDEV76("div", { className: "", children: [
-          /* @__PURE__ */ jsxDEV76("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 42,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV76(StatusTag, { status: contest.status, color }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 43,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 41,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV76("div", { className: "grid grid-cols-2 gap-14", children: [
-          /* @__PURE__ */ jsxDEV76("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV76("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 47,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV76("span", { className: "block", children: contest.categories.join(", ") }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 48,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 46,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV76("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV76("span", { className: "block font-satoshi-bold mb-1", children: "Stages" }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 51,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV76("span", { className: "block", children: contest.no_of_stages ?? 0 }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 52,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 50,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 45,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV76("div", { className: "grid grid-cols-2 gap-14", children: [
-          /* @__PURE__ */ jsxDEV76("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV76("span", { className: "block font-satoshi-bold mb-1", children: "Duration" }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 57,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV76("span", { className: "block", children: "From May 23 to June 20" }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 58,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 56,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV76("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV76("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 61,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV76("span", { className: "block", children: contest.prizes }, void 0, !1, {
-              fileName: "app/routes/_public.results.$contestId.tsx",
-              lineNumber: 62,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 60,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 55,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 40,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.results.$contestId.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV76("section", { className: "bg-white my-16", children: /* @__PURE__ */ jsxDEV76("div", { className: "wrapper py-6", children: [
-      /* @__PURE__ */ jsxDEV76("div", { className: "flex flex-col md:flex-row-reverse gap-6 md:gap-8 justify-between md:items-center py-6", children: [
-        /* @__PURE__ */ jsxDEV76("fieldset", { className: "flex gap-4 flex-wrap sm:justify-end", children: [
-          /* @__PURE__ */ jsxDEV76(Select2, { name: "stage", id: "stage", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV76("option", { value: "1", children: [
+      ] }),
+      /* @__PURE__ */ jsxs63("div", { className: "grid gap-6 max-w-2xl", children: [
+        /* @__PURE__ */ jsxs63("div", { className: "", children: [
+          /* @__PURE__ */ jsx76("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+          /* @__PURE__ */ jsx76(StatusTag, { status: contest.status, color })
+        ] }),
+        /* @__PURE__ */ jsxs63("div", { className: "grid grid-cols-2 gap-14", children: [
+          /* @__PURE__ */ jsxs63("div", { className: "", children: [
+            /* @__PURE__ */ jsx76("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx76("span", { className: "block", children: contest.categories.join(", ") })
+          ] }),
+          /* @__PURE__ */ jsxs63("div", { className: "", children: [
+            /* @__PURE__ */ jsx76("span", { className: "block font-satoshi-bold mb-1", children: "Stages" }),
+            /* @__PURE__ */ jsx76("span", { className: "block", children: contest.no_of_stages ?? 0 })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs63("div", { className: "grid grid-cols-2 gap-14", children: [
+          /* @__PURE__ */ jsxs63("div", { className: "", children: [
+            /* @__PURE__ */ jsx76("span", { className: "block font-satoshi-bold mb-1", children: "Duration" }),
+            /* @__PURE__ */ jsx76("span", { className: "block", children: "From May 23 to June 20" })
+          ] }),
+          /* @__PURE__ */ jsxs63("div", { className: "", children: [
+            /* @__PURE__ */ jsx76("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx76("span", { className: "block", children: contest.prizes })
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx76("section", { className: "bg-white my-16", children: /* @__PURE__ */ jsxs63("div", { className: "wrapper py-6", children: [
+      /* @__PURE__ */ jsxs63("div", { className: "flex flex-col md:flex-row-reverse gap-6 md:gap-8 justify-between md:items-center py-6", children: [
+        /* @__PURE__ */ jsxs63("fieldset", { className: "flex gap-4 flex-wrap sm:justify-end", children: [
+          /* @__PURE__ */ jsx76(Select2, { name: "stage", id: "stage", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxs63("option", { value: "1", children: [
             contest.name.toUpperCase(),
             " - ",
             "FINAL RESULT TABLE"
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 72,
-            columnNumber: 33
-          }, this) }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 71,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV76(Select2, { name: "category", id: "category", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV76("option", { value: "", children: "Sort by category" }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 75,
-            columnNumber: 33
-          }, this) }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 74,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 70,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV76("span", { className: "whitespace-nowrap font-satoshi-bold", children: "SMV: SOCIAL MEDIA VOTES" }, void 0, !1, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 78,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 69,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV76("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV76("table", { className: "w-full table-auto border border-secondary", children: [
-        /* @__PURE__ */ jsxDEV76("thead", { children: /* @__PURE__ */ jsxDEV76("tr", { children: [
-          /* @__PURE__ */ jsxDEV76("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: "S/N" }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 84,
-            columnNumber: 37
-          }, this),
-          headings.map((heading) => /* @__PURE__ */ jsxDEV76("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: heading }, heading, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 86,
-            columnNumber: 41
-          }, this))
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 83,
-          columnNumber: 33
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 82,
-          columnNumber: 29
-        }, this),
-        /* @__PURE__ */ jsxDEV76("tbody", { children: table_results.map((contestant, index) => /* @__PURE__ */ jsxDEV76("tr", { children: [
-          /* @__PURE__ */ jsxDEV76("td", { className: "border border-secondary px-6 py-4", children: index + 1 }, void 0, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 95,
-            columnNumber: 41
-          }, this),
-          headings.map((heading) => /* @__PURE__ */ jsxDEV76("td", { className: "border border-secondary px-6 py-4", children: contestant[heading] }, heading, !1, {
-            fileName: "app/routes/_public.results.$contestId.tsx",
-            lineNumber: 97,
-            columnNumber: 45
-          }, this))
-        ] }, index, !0, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 94,
-          columnNumber: 37
-        }, this)) }, void 0, !1, {
-          fileName: "app/routes/_public.results.$contestId.tsx",
-          lineNumber: 90,
-          columnNumber: 29
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 81,
-        columnNumber: 25
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 80,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV76(Pagination, { className: "p-6" }, void 0, !1, {
-        fileName: "app/routes/_public.results.$contestId.tsx",
-        lineNumber: 104,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.results.$contestId.tsx",
-      lineNumber: 68,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.results.$contestId.tsx",
-      lineNumber: 67,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.results.$contestId.tsx",
-    lineNumber: 35,
-    columnNumber: 9
-  }, this);
+          ] }) }),
+          /* @__PURE__ */ jsx76(Select2, { name: "category", id: "category", containerClass: "bg-secondary", children: /* @__PURE__ */ jsx76("option", { value: "", children: "Sort by category" }) })
+        ] }),
+        /* @__PURE__ */ jsx76("span", { className: "whitespace-nowrap font-satoshi-bold", children: "SMV: SOCIAL MEDIA VOTES" })
+      ] }),
+      /* @__PURE__ */ jsx76("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxs63("table", { className: "w-full table-auto border border-secondary", children: [
+        /* @__PURE__ */ jsx76("thead", { children: /* @__PURE__ */ jsxs63("tr", { children: [
+          /* @__PURE__ */ jsx76("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: "S/N" }),
+          headings.map((heading) => /* @__PURE__ */ jsx76("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: heading }, heading))
+        ] }) }),
+        /* @__PURE__ */ jsx76("tbody", { children: table_results.map((contestant, index) => /* @__PURE__ */ jsxs63("tr", { children: [
+          /* @__PURE__ */ jsx76("td", { className: "border border-secondary px-6 py-4", children: index + 1 }),
+          headings.map((heading) => /* @__PURE__ */ jsx76("td", { className: "border border-secondary px-6 py-4", children: contestant[heading] }, heading))
+        ] }, index)) })
+      ] }) }),
+      /* @__PURE__ */ jsx76(Pagination, { className: "p-6" })
+    ] }) })
+  ] });
 }
 
 // app/routes/admin.tournaments.$ID.edit.tsx
@@ -9766,112 +4981,40 @@ import { useLoaderData as useLoaderData14, useNavigate as useNavigate5 } from "@
 // app/components/admin/tournament/EditTournamentForm.tsx
 import { Form as Form9 } from "@remix-run/react";
 import { useState as useState17 } from "react";
-import { jsxDEV as jsxDEV77 } from "react/jsx-dev-runtime";
+import { jsx as jsx77, jsxs as jsxs64 } from "react/jsx-runtime";
 function EditTournamentForm({ tournament }) {
   let [fileList, setFileList] = useState17(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
-  return /* @__PURE__ */ jsxDEV77(Form9, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsxDEV77("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV77("div", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV77("div", { className: "flex items-center gap-x-5", children: [
-        filePreview ? /* @__PURE__ */ jsxDEV77("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-          lineNumber: 20,
-          columnNumber: 27
-        }, this) : /* @__PURE__ */ jsxDEV77("img", { className: "w-20 h-20 rounded-lg object-cover", src: tournament.image || no_image_default, alt: "Tournament banner" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-          lineNumber: 21,
-          columnNumber: 27
-        }, this),
-        /* @__PURE__ */ jsxDEV77("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
-          /* @__PURE__ */ jsxDEV77("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
+  return /* @__PURE__ */ jsxs64(Form9, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx77("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }),
+    /* @__PURE__ */ jsxs64("div", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "flex items-center gap-x-5", children: [
+        filePreview ? /* @__PURE__ */ jsx77("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }) : /* @__PURE__ */ jsx77("img", { className: "w-20 h-20 rounded-lg object-cover", src: tournament.image || no_image_default, alt: "Tournament banner" }),
+        /* @__PURE__ */ jsxs64("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
+          /* @__PURE__ */ jsxs64("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
             "Change Photo",
-            /* @__PURE__ */ jsxDEV77("input", { id: "image", name: "image", type: "file", onChange: (e) => {
+            /* @__PURE__ */ jsx77("input", { id: "image", name: "image", type: "file", onChange: (e) => {
               setFileList(e.currentTarget.files);
-            }, className: "hidden" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-              lineNumber: 26,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-            lineNumber: 24,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV77("span", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ jsxDEV77("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-              lineNumber: 29,
-              columnNumber: 29
-            }, this),
-            fileName ? /* @__PURE__ */ jsxDEV77(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-              lineNumber: 31,
-              columnNumber: 35
-            }, this) : null
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-            lineNumber: 28,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-          lineNumber: 23,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV77(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", defaultValue: tournament.name, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV77(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: tournament.id, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV77(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", defaultValue: tournament.description, required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 39,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV77("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV77(Cta_default, { element: "button", onClick: clearFilePreview, type: "reset", className: "px-8 py-2 rounded-lg font-medium border-secondary active:border-accent sm:hover:border-accent", variant: "outline", children: "Reset" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 42,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV77(Cta_default, { element: "button", type: "submit", name: "tournamentId", value: tournament._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Tournament" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-      lineNumber: 41,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
-    lineNumber: 15,
-    columnNumber: 9
-  }, this);
+            }, className: "hidden" })
+          ] }),
+          /* @__PURE__ */ jsxs64("span", { className: "flex items-center gap-3", children: [
+            /* @__PURE__ */ jsx77("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }),
+            fileName ? /* @__PURE__ */ jsx77(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }) : null
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx77(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", defaultValue: tournament.name, required: !0 }),
+      /* @__PURE__ */ jsx77(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: tournament.id, required: !0 }),
+      /* @__PURE__ */ jsx77(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", defaultValue: tournament.description, required: !0 })
+    ] }),
+    /* @__PURE__ */ jsxs64("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx77(Cta_default, { element: "button", onClick: clearFilePreview, type: "reset", className: "px-8 py-2 rounded-lg font-medium border-secondary active:border-accent sm:hover:border-accent", variant: "outline", children: "Reset" }),
+      /* @__PURE__ */ jsx77(Cta_default, { element: "button", type: "submit", name: "tournamentId", value: tournament._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Tournament" })
+    ] })
+  ] });
 }
 
 // app/routes/admin.tournaments.$ID.edit.tsx
-import { jsxDEV as jsxDEV78 } from "react/jsx-dev-runtime";
+import { jsx as jsx78, jsxs as jsxs65 } from "react/jsx-runtime";
 async function loader14({ params, request }) {
   let { data: tournament, error } = await tournamentRepo.getTournamentById(params.ID);
   if (!tournament) {
@@ -9896,33 +5039,13 @@ async function action10({ request }) {
 }
 function EditTournament() {
   let { tournament } = useLoaderData14(), navigate = useNavigate5();
-  return /* @__PURE__ */ jsxDEV78("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV78("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV78(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
-        lineNumber: 43,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV78("span", { className: "font-black text-primary", children: "Edit Tournament" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
-        lineNumber: 44,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
-      lineNumber: 42,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV78(EditTournamentForm, { tournament }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
-    lineNumber: 41,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs65("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs65("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx78(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx78("span", { className: "font-black text-primary", children: "Edit Tournament" })
+    ] }),
+    /* @__PURE__ */ jsx78(EditTournamentForm, { tournament })
+  ] });
 }
 
 // app/routes/_public.winner.$winnerId.tsx
@@ -9932,91 +5055,43 @@ __export(public_winner_winnerId_exports, {
   loader: () => loader15
 });
 import { useLoaderData as useLoaderData15 } from "@remix-run/react";
-import { jsxDEV as jsxDEV79 } from "react/jsx-dev-runtime";
+import { jsx as jsx79, jsxs as jsxs66 } from "react/jsx-runtime";
 async function loader15({ params }) {
   let winnerId = params.winnerId, { data: winner, error } = await contestRepo.getWinnerById(winnerId);
   return { winner, error };
 }
 function WinnerDetailsPage() {
   let { winner, error } = useLoaderData15(), description = `We Are Thrilled To Announce The Triumphant Winner Of Our Recent '${winner?.contest_name}'! Let's Take A Moment To Applaud The Outstanding Creativity And Talent That Graced Our Contest.`;
-  return /* @__PURE__ */ jsxDEV79("div", { className: "min-h-screen bg-[#EFEFFF] flex items-center justify-center p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxDEV79("div", { className: "max-w-6xl mx-auto bg-transparent", children: /* @__PURE__ */ jsxDEV79("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16", children: [
-    /* @__PURE__ */ jsxDEV79("div", { className: "w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl order-2 md:order-1", children: /* @__PURE__ */ jsxDEV79(
+  return /* @__PURE__ */ jsx79("div", { className: "min-h-screen bg-[#EFEFFF] flex items-center justify-center p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsx79("div", { className: "max-w-6xl mx-auto bg-transparent", children: /* @__PURE__ */ jsxs66("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16", children: [
+    /* @__PURE__ */ jsx79("div", { className: "w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl order-2 md:order-1", children: /* @__PURE__ */ jsx79(
       "img",
       {
         src: winner?.image_url,
         alt: winner?.full_name,
         className: "w-full h-full object-cover"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/routes/_public.winner.$winnerId.tsx",
-        lineNumber: 29,
-        columnNumber: 13
-      },
-      this
-    ) }, void 0, !1, {
-      fileName: "app/routes/_public.winner.$winnerId.tsx",
-      lineNumber: 28,
-      columnNumber: 11
-    }, this),
-    /* @__PURE__ */ jsxDEV79("div", { className: "space-y-4 md:space-y-6 order-1 md:order-2", children: [
-      /* @__PURE__ */ jsxDEV79("h1", { className: "text-3xl sm:text-4xl lg:text-4xl font-extrabold text-[#5B50FB] leading-tight", children: [
+      }
+    ) }),
+    /* @__PURE__ */ jsxs66("div", { className: "space-y-4 md:space-y-6 order-1 md:order-2", children: [
+      /* @__PURE__ */ jsxs66("h1", { className: "text-3xl sm:text-4xl lg:text-4xl font-extrabold text-[#5B50FB] leading-tight", children: [
         winner?.contest_name,
         " Winner"
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.winner.$winnerId.tsx",
-        lineNumber: 37,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV79("p", { className: "text-base sm:text-lg text-gray-700 leading-relaxed", children: description }, void 0, !1, {
-        fileName: "app/routes/_public.winner.$winnerId.tsx",
-        lineNumber: 40,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV79("p", { className: "text-lg sm:text-xl font-bold text-gray-900", children: [
+      ] }),
+      /* @__PURE__ */ jsx79("p", { className: "text-base sm:text-lg text-gray-700 leading-relaxed", children: description }),
+      /* @__PURE__ */ jsxs66("p", { className: "text-lg sm:text-xl font-bold text-gray-900", children: [
         "Grand Winner:",
         " ",
-        /* @__PURE__ */ jsxDEV79("span", { className: "text-gray-900", children: winner?.full_name }, void 0, !1, {
-          fileName: "app/routes/_public.winner.$winnerId.tsx",
-          lineNumber: 45,
-          columnNumber: 15
-        }, this),
+        /* @__PURE__ */ jsx79("span", { className: "text-gray-900", children: winner?.full_name }),
         " (",
         winner?.contest_name,
         ")"
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.winner.$winnerId.tsx",
-        lineNumber: 43,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV79("p", { className: "text-sm italic text-gray-600 pt-2", children: [
+      ] }),
+      /* @__PURE__ */ jsxs66("p", { className: "text-sm italic text-gray-600 pt-2", children: [
         `Winner's Note: "`,
         winner?.remark,
         '"'
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.winner.$winnerId.tsx",
-        lineNumber: 48,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.winner.$winnerId.tsx",
-      lineNumber: 36,
-      columnNumber: 11
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.winner.$winnerId.tsx",
-    lineNumber: 26,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/_public.winner.$winnerId.tsx",
-    lineNumber: 23,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/_public.winner.$winnerId.tsx",
-    lineNumber: 22,
-    columnNumber: 5
-  }, this);
+      ] })
+    ] })
+  ] }) }) });
 }
 
 // app/routes/admin.tournaments._index.tsx
@@ -10034,265 +5109,105 @@ import { Link as Link9 } from "@remix-run/react";
 
 // app/components/admin/tournament/DeleteTournamentDialog.tsx
 import { useFetcher as useFetcher9 } from "@remix-run/react";
-import { jsxDEV as jsxDEV80 } from "react/jsx-dev-runtime";
+import { jsx as jsx80, jsxs as jsxs67 } from "react/jsx-runtime";
 function DeleteTournamentDialog({ tournament, disabled }) {
   let fetcher = useFetcher9();
-  return /* @__PURE__ */ jsxDEV80(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV80(
+  return /* @__PURE__ */ jsxs67(Dialog, { children: [
+    /* @__PURE__ */ jsx80(
       DialogTrigger,
       {
         disabled,
         title: "Delete tournament",
         className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium",
         children: "Delete Tournament"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-        lineNumber: 11,
-        columnNumber: 13
-      },
-      this
+      }
     ),
-    /* @__PURE__ */ jsxDEV80(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV80(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV80(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV80("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV80(Svg, { src: icons.questionIcon }, void 0, !1, {
-            fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-            lineNumber: 19,
-            columnNumber: 29
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-            lineNumber: 18,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV80("p", { children: [
-            /* @__PURE__ */ jsxDEV80("span", { className: "block", children: "Delete tournament" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-              lineNumber: 22,
-              columnNumber: 29
-            }, this),
-            /* @__PURE__ */ jsxDEV80("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this tournament" }, void 0, !1, {
-              fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-              lineNumber: 23,
-              columnNumber: 29
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-            lineNumber: 21,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-          lineNumber: 17,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV80(DialogDescription, { className: "border-y p-4", children: [
-          /* @__PURE__ */ jsxDEV80("span", { className: "text-primary mb-2 block", children: [
+    /* @__PURE__ */ jsxs67(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxs67(DialogHeader, { children: [
+        /* @__PURE__ */ jsxs67(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsx80("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsx80(Svg, { src: icons.questionIcon }) }),
+          /* @__PURE__ */ jsxs67("p", { children: [
+            /* @__PURE__ */ jsx80("span", { className: "block", children: "Delete tournament" }),
+            /* @__PURE__ */ jsx80("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this tournament" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs67(DialogDescription, { className: "border-y p-4", children: [
+          /* @__PURE__ */ jsxs67("span", { className: "text-primary mb-2 block", children: [
             "Are you sure you want to delete ",
             tournament.name,
             " tournament?"
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-            lineNumber: 27,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV80("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this tournament." }, void 0, !1, {
-            fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-            lineNumber: 28,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-          lineNumber: 26,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-        lineNumber: 16,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV80(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV80(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV80("input", { type: "hidden", name: "tournamentId", value: tournament._id }, void 0, !1, {
-          fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-          lineNumber: 33,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV80(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-          lineNumber: 34,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-        lineNumber: 32,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-        lineNumber: 31,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
-    lineNumber: 10,
-    columnNumber: 9
-  }, this);
+          ] }),
+          /* @__PURE__ */ jsx80("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this tournament." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx80(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxs67(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsx80("input", { type: "hidden", name: "tournamentId", value: tournament._id }),
+        /* @__PURE__ */ jsx80(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" })
+      ] }) })
+    ] })
+  ] });
 }
 
 // app/components/reusables/LayeredImages.tsx
-import { jsxDEV as jsxDEV81 } from "react/jsx-dev-runtime";
+import { jsx as jsx81, jsxs as jsxs68 } from "react/jsx-runtime";
 function LayeredImages({ images, length = 5 }) {
-  let remaining = images.length - length, lastLayer = remaining > 0 ? /* @__PURE__ */ jsxDEV81("div", { className: "w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-tertiary text-accent font-semibold text-sm", children: [
+  let remaining = images.length - length, lastLayer = remaining > 0 ? /* @__PURE__ */ jsxs68("div", { className: "w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-tertiary text-accent font-semibold text-sm", children: [
     "+",
     remaining
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/LayeredImages.tsx",
-    lineNumber: 6,
-    columnNumber: 11
-  }, this) : null;
-  return /* @__PURE__ */ jsxDEV81("div", { children: [
-    images.slice(0, length).map((image, index) => typeof image == "string" ? /* @__PURE__ */ jsxDEV81("img", { src: image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
-      fileName: "app/components/reusables/LayeredImages.tsx",
-      lineNumber: 12,
-      columnNumber: 28
-    }, this) : /* @__PURE__ */ jsxDEV81("img", { src: image?.image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
-      fileName: "app/components/reusables/LayeredImages.tsx",
-      lineNumber: 14,
-      columnNumber: 24
-    }, this)),
+  ] }) : null;
+  return /* @__PURE__ */ jsxs68("div", { children: [
+    images.slice(0, length).map((image, index) => typeof image == "string" ? /* @__PURE__ */ jsx81("img", { src: image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index) : /* @__PURE__ */ jsx81("img", { src: image?.image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index)),
     lastLayer
-  ] }, void 0, !0, {
-    fileName: "app/components/reusables/LayeredImages.tsx",
-    lineNumber: 9,
-    columnNumber: 9
-  }, this);
+  ] });
 }
 
 // app/components/admin/tournament/TournamentCard.tsx
-import { jsxDEV as jsxDEV82 } from "react/jsx-dev-runtime";
+import { jsx as jsx82, jsxs as jsxs69 } from "react/jsx-runtime";
 function TournamentCard({ tournament, className }) {
-  let mainComponent = /* @__PURE__ */ jsxDEV82(RoundCta_default, { icon: icons.optionsIcon, className: "border-transparent hover:border-disabled" }, void 0, !1, {
-    fileName: "app/components/admin/tournament/TournamentCard.tsx",
-    lineNumber: 14,
-    columnNumber: 27
-  }, this);
-  return /* @__PURE__ */ jsxDEV82("aside", { className: cn("p-6 border border-disabled rounded-xl bg-white shadow overflow-hidden", className), children: [
-    /* @__PURE__ */ jsxDEV82("div", { className: "flex gap-3 items-start justify-between max-xs:flex-wrap", children: [
-      /* @__PURE__ */ jsxDEV82("img", { src: tournament.image || no_image_default, alt: "children smiling", className: "w-24 aspect-square rounded-md object-cover" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/TournamentCard.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV82("div", { className: "self-center grow max-xs:order-1", children: [
-        /* @__PURE__ */ jsxDEV82("h3", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }, void 0, !1, {
-          fileName: "app/components/admin/tournament/TournamentCard.tsx",
-          lineNumber: 20,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV82("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description }, void 0, !1, {
-          fileName: "app/components/admin/tournament/TournamentCard.tsx",
-          lineNumber: 21,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/TournamentCard.tsx",
-        lineNumber: 19,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV82(
+  let mainComponent = /* @__PURE__ */ jsx82(RoundCta_default, { icon: icons.optionsIcon, className: "border-transparent hover:border-disabled" });
+  return /* @__PURE__ */ jsxs69("aside", { className: cn("p-6 border border-disabled rounded-xl bg-white shadow overflow-hidden", className), children: [
+    /* @__PURE__ */ jsxs69("div", { className: "flex gap-3 items-start justify-between max-xs:flex-wrap", children: [
+      /* @__PURE__ */ jsx82("img", { src: tournament.image || no_image_default, alt: "children smiling", className: "w-24 aspect-square rounded-md object-cover" }),
+      /* @__PURE__ */ jsxs69("div", { className: "self-center grow max-xs:order-1", children: [
+        /* @__PURE__ */ jsx82("h3", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }),
+        /* @__PURE__ */ jsx82("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description })
+      ] }),
+      /* @__PURE__ */ jsxs69(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border border-disabled text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsxDEV82(
+            /* @__PURE__ */ jsx82(
               Link9,
               {
                 to: `/admin/tournaments/${tournament.id}/edit`,
                 className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium",
                 children: "Edit Tournament"
-              },
-              void 0,
-              !1,
-              {
-                fileName: "app/components/admin/tournament/TournamentCard.tsx",
-                lineNumber: 26,
-                columnNumber: 21
-              },
-              this
+              }
             ),
-            /* @__PURE__ */ jsxDEV82(DeleteTournamentDialog, { tournament }, void 0, !1, {
-              fileName: "app/components/admin/tournament/TournamentCard.tsx",
-              lineNumber: 29,
-              columnNumber: 21
-            }, this)
+            /* @__PURE__ */ jsx82(DeleteTournamentDialog, { tournament })
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/tournament/TournamentCard.tsx",
-          lineNumber: 23,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/TournamentCard.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV82("hr", { className: "mt-4 mb-1" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/TournamentCard.tsx",
-      lineNumber: 32,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV82("span", { className: "text-primary text-sm font-satoshi-bold mb-3", children: [
+    ] }),
+    /* @__PURE__ */ jsx82("hr", { className: "mt-4 mb-1" }),
+    /* @__PURE__ */ jsxs69("span", { className: "text-primary text-sm font-satoshi-bold mb-3", children: [
       tournament.contests.length,
       " contests created"
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/TournamentCard.tsx",
-      lineNumber: 33,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV82("div", { className: "grid gap-2 xs:flex justify-between items-center", children: [
-      /* @__PURE__ */ jsxDEV82(LayeredImages, { images: tournament.contests }, void 0, !1, {
-        fileName: "app/components/admin/tournament/TournamentCard.tsx",
-        lineNumber: 35,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV82(Link9, { to: `/admin/tournaments/${tournament.id}`, className: "flex gap-2 items-center font-semibold hover:text-accent", children: [
+    ] }),
+    /* @__PURE__ */ jsxs69("div", { className: "grid gap-2 xs:flex justify-between items-center", children: [
+      /* @__PURE__ */ jsx82(LayeredImages, { images: tournament.contests }),
+      /* @__PURE__ */ jsxs69(Link9, { to: `/admin/tournaments/${tournament.id}`, className: "flex gap-2 items-center font-semibold hover:text-accent", children: [
         "View Contests ",
-        /* @__PURE__ */ jsxDEV82(Svg, { src: icons.arrowNextIcon }, void 0, !1, {
-          fileName: "app/components/admin/tournament/TournamentCard.tsx",
-          lineNumber: 36,
-          columnNumber: 148
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/TournamentCard.tsx",
-        lineNumber: 36,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/TournamentCard.tsx",
-      lineNumber: 34,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/TournamentCard.tsx",
-    lineNumber: 16,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx82(Svg, { src: icons.arrowNextIcon })
+      ] })
+    ] })
+  ] });
 }
 
 // app/routes/admin.tournaments._index.tsx
-import { jsxDEV as jsxDEV83 } from "react/jsx-dev-runtime";
+import { jsx as jsx83, jsxs as jsxs70 } from "react/jsx-runtime";
 async function loader16({}) {
   let { data: tournaments, error } = await tournamentRepo.getTournaments();
   if (error)
@@ -10314,129 +5229,37 @@ async function action11({ request }) {
 }
 function Tournaments() {
   let { tournaments } = useLoaderData16(), numberOfContests = tournaments.reduce((total, tournament) => total + tournament.contests.length, 0);
-  return /* @__PURE__ */ jsxDEV83("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV83("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
-      /* @__PURE__ */ jsxDEV83("h1", { className: "text-2xl font-black text-primary", children: "Tournaments" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 49,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV83(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsxDEV83(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 51,
-          columnNumber: 21
-        }, this),
+  return /* @__PURE__ */ jsxs70("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs70("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
+      /* @__PURE__ */ jsx83("h1", { className: "text-2xl font-black text-primary", children: "Tournaments" }),
+      /* @__PURE__ */ jsxs70(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsx83(Svg, { src: icons.addIcon, width: ".9em" }),
         "Create Tournament"
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 50,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments._index.tsx",
-      lineNumber: 48,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV83("aside", { className: "sm:flex justify-evenly max-w-xl mx-auto gap-2 p-3 border rounded-md my-4 bg-[#F6F8FA] text-sm", children: [
-      /* @__PURE__ */ jsxDEV83("div", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV83("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV83(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }, void 0, !1, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 57,
-          columnNumber: 75
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 57,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV83("span", { className: "grid", children: [
-          /* @__PURE__ */ jsxDEV83("span", { className: "text-primary font-satoshi-black", children: tournaments.length }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments._index.tsx",
-            lineNumber: 59,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV83("span", { className: "", children: "Tournaments Created" }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments._index.tsx",
-            lineNumber: 60,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 58,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 56,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV83("div", { className: "max-sm:my-2 max-sm:border-t sm:border-r sm:h-10" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 63,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV83("div", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV83("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV83(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 65,
-          columnNumber: 75
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 65,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV83("span", { className: "grid", children: [
-          /* @__PURE__ */ jsxDEV83("span", { className: "text-primary font-satoshi-black", children: numberOfContests }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments._index.tsx",
-            lineNumber: 67,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV83("span", { className: "", children: "Contests Created" }, void 0, !1, {
-            fileName: "app/routes/admin.tournaments._index.tsx",
-            lineNumber: 68,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.tournaments._index.tsx",
-          lineNumber: 66,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 64,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments._index.tsx",
-      lineNumber: 55,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV83(Cta_default, { element: "link", to: "add", className: "flex sm:hidden gap-2 justify-center items-center rounded-lg px-3 py-2", children: [
-      /* @__PURE__ */ jsxDEV83(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments._index.tsx",
-        lineNumber: 73,
-        columnNumber: 17
-      }, this),
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs70("aside", { className: "sm:flex justify-evenly max-w-xl mx-auto gap-2 p-3 border rounded-md my-4 bg-[#F6F8FA] text-sm", children: [
+      /* @__PURE__ */ jsxs70("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsx83("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx83(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }) }),
+        /* @__PURE__ */ jsxs70("span", { className: "grid", children: [
+          /* @__PURE__ */ jsx83("span", { className: "text-primary font-satoshi-black", children: tournaments.length }),
+          /* @__PURE__ */ jsx83("span", { className: "", children: "Tournaments Created" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx83("div", { className: "max-sm:my-2 max-sm:border-t sm:border-r sm:h-10" }),
+      /* @__PURE__ */ jsxs70("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsx83("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx83(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+        /* @__PURE__ */ jsxs70("span", { className: "grid", children: [
+          /* @__PURE__ */ jsx83("span", { className: "text-primary font-satoshi-black", children: numberOfContests }),
+          /* @__PURE__ */ jsx83("span", { className: "", children: "Contests Created" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs70(Cta_default, { element: "link", to: "add", className: "flex sm:hidden gap-2 justify-center items-center rounded-lg px-3 py-2", children: [
+      /* @__PURE__ */ jsx83(Svg, { src: icons.addIcon, width: ".9em" }),
       "Create Tournament"
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments._index.tsx",
-      lineNumber: 72,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV83("section", { className: "my-8 grid sm:grid-cols-2 gap-6", children: tournaments.map((tournament) => /* @__PURE__ */ jsxDEV83(TournamentCard, { tournament }, tournament.id, !1, {
-      fileName: "app/routes/admin.tournaments._index.tsx",
-      lineNumber: 78,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/admin.tournaments._index.tsx",
-      lineNumber: 76,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tournaments._index.tsx",
-    lineNumber: 47,
-    columnNumber: 9
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsx83("section", { className: "my-8 grid sm:grid-cols-2 gap-6", children: tournaments.map((tournament) => /* @__PURE__ */ jsx83(TournamentCard, { tournament }, tournament.id)) })
+  ] });
 }
 
 // app/routes/_public.contests._index.tsx
@@ -10447,7 +5270,7 @@ __export(public_contests_index_exports, {
 });
 import { json as json19 } from "@remix-run/node";
 import { useLoaderData as useLoaderData17 } from "@remix-run/react";
-import { jsxDEV as jsxDEV84 } from "react/jsx-dev-runtime";
+import { jsx as jsx84, jsxs as jsxs71 } from "react/jsx-runtime";
 async function loader17() {
   let { data: tournaments, error } = await tournamentRepo.getTournaments();
   if (error)
@@ -10456,30 +5279,10 @@ async function loader17() {
 }
 function Contests() {
   let { tournaments } = useLoaderData17();
-  return /* @__PURE__ */ jsxDEV84("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV84("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsxDEV84("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }, void 0, !1, {
-      fileName: "app/routes/_public.contests._index.tsx",
-      lineNumber: 17,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.contests._index.tsx",
-      lineNumber: 16,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV84("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsxDEV84(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id, !1, {
-      fileName: "app/routes/_public.contests._index.tsx",
-      lineNumber: 24,
-      columnNumber: 11
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/_public.contests._index.tsx",
-      lineNumber: 22,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.contests._index.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs71("main", { className: "grow", children: [
+    /* @__PURE__ */ jsx84("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx84("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }) }),
+    /* @__PURE__ */ jsx84("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsx84(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id)) })
+  ] });
 }
 
 // app/routes/_public.results._index.tsx
@@ -10660,71 +5463,23 @@ async function getContests(options) {
 }
 
 // app/routes/_public.results._index.tsx
-import { jsxDEV as jsxDEV85 } from "react/jsx-dev-runtime";
+import { jsx as jsx85, jsxs as jsxs72 } from "react/jsx-runtime";
 async function loader18() {
   let contests2 = await getContests({ where: { status: "completed" } });
   return json20({ contests: contests2 });
 }
 function Results() {
   let { contests: contests2 } = useLoaderData18();
-  return /* @__PURE__ */ jsxDEV85("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV85("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsxDEV85("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl", children: "Congratulating the Extraordinary Talents That Stole the Spotlight!" }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 17,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 16,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV85("section", { className: "wrapper", children: /* @__PURE__ */ jsxDEV85("div", { className: "p-2 rounded-full bg-secondary flex w-fit", children: [
-      /* @__PURE__ */ jsxDEV85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium bg-accent text-white", children: "All Contests" }, void 0, !1, {
-        fileName: "app/routes/_public.results._index.tsx",
-        lineNumber: 24,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium", children: "Ongoing Contests" }, void 0, !1, {
-        fileName: "app/routes/_public.results._index.tsx",
-        lineNumber: 25,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium", children: "Completed Contests" }, void 0, !1, {
-        fileName: "app/routes/_public.results._index.tsx",
-        lineNumber: 26,
-        columnNumber: 11
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 23,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 22,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV85("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: contests2.map((contest) => /* @__PURE__ */ jsxDEV85(ContestCard, { contest, to: `/results/${contest.id}`, withTag: !0, withCategory: !0 }, contest.id, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 32,
-      columnNumber: 11
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 30,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV85("div", { className: "wrapper my-20 flex justify-center", children: /* @__PURE__ */ jsxDEV85(Button, { element: "button", variant: "outline", children: "See more results" }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 37,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.results._index.tsx",
-      lineNumber: 36,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.results._index.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs72("main", { className: "grow", children: [
+    /* @__PURE__ */ jsx85("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx85("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl", children: "Congratulating the Extraordinary Talents That Stole the Spotlight!" }) }),
+    /* @__PURE__ */ jsx85("section", { className: "wrapper", children: /* @__PURE__ */ jsxs72("div", { className: "p-2 rounded-full bg-secondary flex w-fit", children: [
+      /* @__PURE__ */ jsx85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium bg-accent text-white", children: "All Contests" }),
+      /* @__PURE__ */ jsx85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium", children: "Ongoing Contests" }),
+      /* @__PURE__ */ jsx85("span", { className: "whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium", children: "Completed Contests" })
+    ] }) }),
+    /* @__PURE__ */ jsx85("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: contests2.map((contest) => /* @__PURE__ */ jsx85(ContestCard, { contest, to: `/results/${contest.id}`, withTag: !0, withCategory: !0 }, contest.id)) }),
+    /* @__PURE__ */ jsx85("div", { className: "wrapper my-20 flex justify-center", children: /* @__PURE__ */ jsx85(Button, { element: "button", variant: "outline", children: "See more results" }) })
+  ] });
 }
 
 // app/routes/admin.accounts.$userId.tsx
@@ -10740,7 +5495,7 @@ import { Form as Form10, useLoaderData as useLoaderData19, useNavigate as useNav
 import { useRef as useRef7, useState as useState18 } from "react";
 import cn8 from "classnames";
 import { CounterClockwiseClockIcon as Restore } from "@radix-ui/react-icons";
-import { jsxDEV as jsxDEV86 } from "react/jsx-dev-runtime";
+import { jsx as jsx86, jsxs as jsxs73 } from "react/jsx-runtime";
 function PermissionsFormControl({ permissions: permissions2, defaultPermissions, ...props }) {
   let [open, setOpen] = useState18(!1), fieldset = useRef7(null);
   function resetFieldset(e) {
@@ -10751,21 +5506,13 @@ function PermissionsFormControl({ permissions: permissions2, defaultPermissions,
   function labelize(persission) {
     return persission.split("_").join(" ");
   }
-  return /* @__PURE__ */ jsxDEV86("fieldset", { ref: fieldset, ...props, className: "p-2 sm:p-4 rounded-lg bg-transparent border hover:border-primary sm:col-span-2", children: [
-    /* @__PURE__ */ jsxDEV86("div", { "data-open": open, className: "flex justify-between data-[open=true]:pb-2 sm:data-[open=true]:pb-3 data-[open=true]:border-b", children: [
-      /* @__PURE__ */ jsxDEV86("span", { className: "flex gap-2 items-center font-bold cursor-pointer grow", onClick: () => setOpen((prev) => !prev), children: [
-        /* @__PURE__ */ jsxDEV86(Svg, { src: icons.arrowDownIcon, className: open ? "" : "-rotate-90" }, void 0, !1, {
-          fileName: "app/components/admin/PermissionsFormControl.tsx",
-          lineNumber: 24,
-          columnNumber: 21
-        }, this),
+  return /* @__PURE__ */ jsxs73("fieldset", { ref: fieldset, ...props, className: "p-2 sm:p-4 rounded-lg bg-transparent border hover:border-primary sm:col-span-2", children: [
+    /* @__PURE__ */ jsxs73("div", { "data-open": open, className: "flex justify-between data-[open=true]:pb-2 sm:data-[open=true]:pb-3 data-[open=true]:border-b", children: [
+      /* @__PURE__ */ jsxs73("span", { className: "flex gap-2 items-center font-bold cursor-pointer grow", onClick: () => setOpen((prev) => !prev), children: [
+        /* @__PURE__ */ jsx86(Svg, { src: icons.arrowDownIcon, className: open ? "" : "-rotate-90" }),
         "Permissions"
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/PermissionsFormControl.tsx",
-        lineNumber: 23,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV86(
+      ] }),
+      /* @__PURE__ */ jsxs73(
         Cta_default,
         {
           element: "button",
@@ -10775,33 +5522,13 @@ function PermissionsFormControl({ permissions: permissions2, defaultPermissions,
           className: "p-2 sm:px-8 sm:py-2 rounded-lg font-medium text-red-500 border-secondary active:border-red-300 sm:hover:border-red-300",
           onClick: resetFieldset,
           children: [
-            /* @__PURE__ */ jsxDEV86(Restore, { className: "text-inherit sm:hidden" }, void 0, !1, {
-              fileName: "app/components/admin/PermissionsFormControl.tsx",
-              lineNumber: 31,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV86("span", { className: "hidden sm:inline", children: "Restore defaults" }, void 0, !1, {
-              fileName: "app/components/admin/PermissionsFormControl.tsx",
-              lineNumber: 32,
-              columnNumber: 21
-            }, this)
+            /* @__PURE__ */ jsx86(Restore, { className: "text-inherit sm:hidden" }),
+            /* @__PURE__ */ jsx86("span", { className: "hidden sm:inline", children: "Restore defaults" })
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/PermissionsFormControl.tsx",
-          lineNumber: 27,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/PermissionsFormControl.tsx",
-      lineNumber: 22,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV86("div", { className: cn8("grid sm:grid-cols-3 gap-6 mt-4 sm:mx-3", { hidden: !open }), children: permissions2.map((permission) => /* @__PURE__ */ jsxDEV86(
+    ] }),
+    /* @__PURE__ */ jsx86("div", { className: cn8("grid sm:grid-cols-3 gap-6 mt-4 sm:mx-3", { hidden: !open }), children: permissions2.map((permission) => /* @__PURE__ */ jsx86(
       FormControl,
       {
         as: "input",
@@ -10813,24 +5540,9 @@ function PermissionsFormControl({ permissions: permissions2, defaultPermissions,
         labelText: labelize(permission),
         labelClassNames: "flex capitalize whitespace-nowrap items-center justify-between px-4"
       },
-      permission,
-      !1,
-      {
-        fileName: "app/components/admin/PermissionsFormControl.tsx",
-        lineNumber: 37,
-        columnNumber: 21
-      },
-      this
-    )) }, void 0, !1, {
-      fileName: "app/components/admin/PermissionsFormControl.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/PermissionsFormControl.tsx",
-    lineNumber: 21,
-    columnNumber: 9
-  }, this);
+      permission
+    )) })
+  ] });
 }
 
 // app/routes/admin.accounts.$userId.tsx
@@ -10901,7 +5613,7 @@ var role3 = ["edit_blog"], role2 = [...role3, "edit_content"], role1 = [...role2
 ], permissions = ["manage_users", "edit_content", "edit_blog"];
 
 // app/routes/admin.accounts.$userId.tsx
-import { jsxDEV as jsxDEV87 } from "react/jsx-dev-runtime";
+import { jsx as jsx87, jsxs as jsxs74 } from "react/jsx-runtime";
 async function loader19({ params, request }) {
   let user = adminUsers.find((user2) => user2.id == params.userId);
   if (!user) {
@@ -10918,101 +5630,29 @@ async function action12({ request }) {
 }
 function EditAdminUser() {
   let { permissions: permissions2, user } = useLoaderData19(), navigate = useNavigate6();
-  return /* @__PURE__ */ jsxDEV87("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV87("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV87(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 35,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87("h1", { className: "text-2xl font-black text-primary", children: "Edit User" }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 36,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts.$userId.tsx",
-      lineNumber: 34,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV87(Form10, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
-      /* @__PURE__ */ jsxDEV87(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", defaultValue: user.full_name.split(" ")[0], required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 39,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", defaultValue: user.full_name.split(" ")[1], required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 40,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", defaultValue: user.email, required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 41,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", defaultValue: user.username, required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 42,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(FormControl, { as: "input", type: "password", labelText: "Password", className: "", placeholder: "Create password", id: "password", name: "password", defaultValue: user.password, required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 43,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(Select2, { label: "Assign Role", id: "role", name: "role", defaultValue: user.role, required: !0, children: [
-        /* @__PURE__ */ jsxDEV87("option", { value: "Role 1", children: "Role 1" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.$userId.tsx",
-          lineNumber: 45,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV87("option", { value: "Role 2", children: "Role 2" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.$userId.tsx",
-          lineNumber: 46,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV87("option", { value: "Role 3", children: "Role 3" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.$userId.tsx",
-          lineNumber: 47,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 44,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87(PermissionsFormControl, { permissions: permissions2, defaultPermissions: user.permissions }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 50,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV87("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
-        /* @__PURE__ */ jsxDEV87(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.$userId.tsx",
-          lineNumber: 53,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV87(Cta_default, { element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: "Submit" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.$userId.tsx",
-          lineNumber: 54,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts.$userId.tsx",
-        lineNumber: 52,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts.$userId.tsx",
-      lineNumber: 38,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.accounts.$userId.tsx",
-    lineNumber: 33,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs74("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs74("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx87(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx87("h1", { className: "text-2xl font-black text-primary", children: "Edit User" })
+    ] }),
+    /* @__PURE__ */ jsxs74(Form10, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
+      /* @__PURE__ */ jsx87(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", defaultValue: user.full_name.split(" ")[0], required: !0 }),
+      /* @__PURE__ */ jsx87(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", defaultValue: user.full_name.split(" ")[1], required: !0 }),
+      /* @__PURE__ */ jsx87(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", defaultValue: user.email, required: !0 }),
+      /* @__PURE__ */ jsx87(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", defaultValue: user.username, required: !0 }),
+      /* @__PURE__ */ jsx87(FormControl, { as: "input", type: "password", labelText: "Password", className: "", placeholder: "Create password", id: "password", name: "password", defaultValue: user.password, required: !0 }),
+      /* @__PURE__ */ jsxs74(Select2, { label: "Assign Role", id: "role", name: "role", defaultValue: user.role, required: !0, children: [
+        /* @__PURE__ */ jsx87("option", { value: "Role 1", children: "Role 1" }),
+        /* @__PURE__ */ jsx87("option", { value: "Role 2", children: "Role 2" }),
+        /* @__PURE__ */ jsx87("option", { value: "Role 3", children: "Role 3" })
+      ] }),
+      /* @__PURE__ */ jsx87(PermissionsFormControl, { permissions: permissions2, defaultPermissions: user.permissions }),
+      /* @__PURE__ */ jsxs74("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
+        /* @__PURE__ */ jsx87(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
+        /* @__PURE__ */ jsx87(Cta_default, { element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: "Submit" })
+      ] })
+    ] })
+  ] });
 }
 
 // app/routes/admin.accounts._index.tsx
@@ -11026,322 +5666,102 @@ import { useLoaderData as useLoaderData20 } from "@remix-run/react";
 
 // app/components/reusables/ToggleBtn.tsx
 import cn9 from "classnames";
-import { jsxDEV as jsxDEV88 } from "react/jsx-dev-runtime";
+import { jsx as jsx88 } from "react/jsx-runtime";
 function ToggleBtn({ onClick, on }) {
-  return /* @__PURE__ */ jsxDEV88("button", { onClick, className: cn9("rounded-xl p-0.5 w-[34px] flex items-center", {
+  return /* @__PURE__ */ jsx88("button", { onClick, className: cn9("rounded-xl p-0.5 w-[34px] flex items-center", {
     "bg-accent justify-end": on,
     "bg-[#DAE0E6]": !on
-  }), children: /* @__PURE__ */ jsxDEV88("div", { className: "bg-secondary w-4 h-4 rounded-full" }, void 0, !1, {
-    fileName: "app/components/reusables/ToggleBtn.tsx",
-    lineNumber: 9,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/reusables/ToggleBtn.tsx",
-    lineNumber: 5,
-    columnNumber: 9
-  }, this);
+  }), children: /* @__PURE__ */ jsx88("div", { className: "bg-secondary w-4 h-4 rounded-full" }) });
 }
 
 // app/components/admin/accounts/AdminUserCard.tsx
-import { jsxDEV as jsxDEV89 } from "react/jsx-dev-runtime";
+import { jsx as jsx89, jsxs as jsxs75 } from "react/jsx-runtime";
 function AdminUserCard({ user, className }) {
-  let mainComponent = /* @__PURE__ */ jsxDEV89("span", { className: "", children: /* @__PURE__ */ jsxDEV89(Svg, { src: icons.optionsIcon }, void 0, !1, {
-    fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-    lineNumber: 12,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-    lineNumber: 11,
-    columnNumber: 27
-  }, this);
-  return /* @__PURE__ */ jsxDEV89("article", { className: cn("border rounded-lg shadow-sm p-3 text-xs font-satoshi-medium", className), children: [
-    /* @__PURE__ */ jsxDEV89("div", { className: "flex gap-4 mb-3", children: [
-      /* @__PURE__ */ jsxDEV89("p", { children: [
-        /* @__PURE__ */ jsxDEV89("span", { children: user.role }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 17,
-          columnNumber: 20
-        }, this),
+  let mainComponent = /* @__PURE__ */ jsx89("span", { className: "", children: /* @__PURE__ */ jsx89(Svg, { src: icons.optionsIcon }) });
+  return /* @__PURE__ */ jsxs75("article", { className: cn("border rounded-lg shadow-sm p-3 text-xs font-satoshi-medium", className), children: [
+    /* @__PURE__ */ jsxs75("div", { className: "flex gap-4 mb-3", children: [
+      /* @__PURE__ */ jsxs75("p", { children: [
+        /* @__PURE__ */ jsx89("span", { children: user.role }),
         " | ",
-        /* @__PURE__ */ jsxDEV89("span", { children: user.username }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 17,
-          columnNumber: 47
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-        lineNumber: 17,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV89(
+        /* @__PURE__ */ jsx89("span", { children: user.username })
+      ] }),
+      /* @__PURE__ */ jsxs75(
         Toggletip,
         {
           mainComponent,
           mainContainerClass: "ml-auto",
           childContainerClass: "top-[110%] right-0 bg-tertiary p-3 border border-disabled text-xs flex gap-4",
           children: [
-            /* @__PURE__ */ jsxDEV89(RoundCta_default, { icon: icons.editIcon, element: "link", to: `/admin/accounts/${user.id}`, className: "border-[#262626] bg-[#F7F7F8] text-primary" }, void 0, !1, {
-              fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-              lineNumber: 21,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV89(RoundCta_default, { icon: icons.trashIcon, className: "border-red-500 bg-red-50 text-red-500" }, void 0, !1, {
-              fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-              lineNumber: 22,
-              columnNumber: 21
-            }, this)
+            /* @__PURE__ */ jsx89(RoundCta_default, { icon: icons.editIcon, element: "link", to: `/admin/accounts/${user.id}`, className: "border-[#262626] bg-[#F7F7F8] text-primary" }),
+            /* @__PURE__ */ jsx89(RoundCta_default, { icon: icons.trashIcon, className: "border-red-500 bg-red-50 text-red-500" })
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 18,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV89("div", { className: "flex gap-4 justify-between", children: [
-      /* @__PURE__ */ jsxDEV89("div", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV89("span", { className: "p-1.5 border border-disabled rounded-full", children: /* @__PURE__ */ jsxDEV89("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 28,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 27,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV89("span", { className: "grid", children: [
-          /* @__PURE__ */ jsxDEV89("span", { className: "text-primary line-clamp-1", children: user.full_name }, void 0, !1, {
-            fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV89("span", { className: "line-clamp-1", children: user.email }, void 0, !1, {
-            fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-            lineNumber: 32,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 30,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV89("span", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV89("span", { className: "max-xs:hidden", children: user.access ? "Enabled" : "Disabled" }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 36,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV89(ToggleBtn, { on: user.access }, void 0, !1, {
-          fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-          lineNumber: 37,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-        lineNumber: 35,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-      lineNumber: 25,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/accounts/AdminUserCard.tsx",
-    lineNumber: 15,
-    columnNumber: 9
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsxs75("div", { className: "flex gap-4 justify-between", children: [
+      /* @__PURE__ */ jsxs75("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsx89("span", { className: "p-1.5 border border-disabled rounded-full", children: /* @__PURE__ */ jsx89("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+        /* @__PURE__ */ jsxs75("span", { className: "grid", children: [
+          /* @__PURE__ */ jsx89("span", { className: "text-primary line-clamp-1", children: user.full_name }),
+          /* @__PURE__ */ jsx89("span", { className: "line-clamp-1", children: user.email })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs75("span", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsx89("span", { className: "max-xs:hidden", children: user.access ? "Enabled" : "Disabled" }),
+        /* @__PURE__ */ jsx89(ToggleBtn, { on: user.access })
+      ] })
+    ] })
+  ] });
 }
 
 // app/routes/admin.accounts._index.tsx
-import { jsxDEV as jsxDEV90 } from "react/jsx-dev-runtime";
+import { jsx as jsx90, jsxs as jsxs76 } from "react/jsx-runtime";
 async function loader20({}) {
   return json21({ headings: ["full_name", "email", "username", "role", "access"], tableData: adminUsers });
 }
 function Accounts() {
   let { headings, tableData } = useLoaderData20();
-  return /* @__PURE__ */ jsxDEV90("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV90("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
-      /* @__PURE__ */ jsxDEV90("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 23,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV90(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsxDEV90(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 25,
-          columnNumber: 21
-        }, this),
+  return /* @__PURE__ */ jsxs76("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs76("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
+      /* @__PURE__ */ jsx90("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }),
+      /* @__PURE__ */ jsxs76(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsx90(Svg, { src: icons.addIcon, width: ".9em" }),
         "Add User"
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 22,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV90("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: [
-      /* @__PURE__ */ jsxDEV90("p", { className: "font-semibold", children: "Registered Admin Users" }, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 30,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV90(FormControl, { as: "input", type: "search", placeholder: "Search user...", className: "text-sm xs:min-w-[280px]" }, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 31,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV90(Cta_default, { element: "link", to: "add", className: "sm:hidden flex gap-2 items-center justify-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsxDEV90(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 33,
-          columnNumber: 21
-        }, this),
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs76("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: [
+      /* @__PURE__ */ jsx90("p", { className: "font-semibold", children: "Registered Admin Users" }),
+      /* @__PURE__ */ jsx90(FormControl, { as: "input", type: "search", placeholder: "Search user...", className: "text-sm xs:min-w-[280px]" }),
+      /* @__PURE__ */ jsxs76(Cta_default, { element: "link", to: "add", className: "sm:hidden flex gap-2 items-center justify-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsx90(Svg, { src: icons.addIcon, width: ".9em" }),
         "Add User"
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 32,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 29,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV90("div", { className: "sm:hidden grid gap-4 my-6", children: tableData.map((user) => /* @__PURE__ */ jsxDEV90(AdminUserCard, { user }, user.id, !1, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 40,
-      columnNumber: 41
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 39,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV90("div", { className: "hidden sm:block w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV90("table", { className: "w-full table-auto", children: [
-      /* @__PURE__ */ jsxDEV90("thead", { children: /* @__PURE__ */ jsxDEV90("tr", { className: "border-b border-secondary", children: [
-        headings.map((heading) => /* @__PURE__ */ jsxDEV90("th", { className: "text-left capitalize font-satoshi-black p-3", children: heading }, heading, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 49,
-          columnNumber: 33
-        }, this)),
-        /* @__PURE__ */ jsxDEV90("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Actions" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 51,
-          columnNumber: 29
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 47,
-        columnNumber: 25
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 46,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV90("tbody", { children: tableData.map((user, index) => /* @__PURE__ */ jsxDEV90("tr", { className: "border-b border-secondary", children: [
-        headings.map((heading) => heading === "access" ? /* @__PURE__ */ jsxDEV90("td", { className: "p-3", children: /* @__PURE__ */ jsxDEV90("span", { className: "grid grid-cols-[76px_36px] items-center w-min", children: [
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx90("div", { className: "sm:hidden grid gap-4 my-6", children: tableData.map((user) => /* @__PURE__ */ jsx90(AdminUserCard, { user }, user.id)) }),
+    /* @__PURE__ */ jsx90("div", { className: "hidden sm:block w-full overflow-x-auto", children: /* @__PURE__ */ jsxs76("table", { className: "w-full table-auto", children: [
+      /* @__PURE__ */ jsx90("thead", { children: /* @__PURE__ */ jsxs76("tr", { className: "border-b border-secondary", children: [
+        headings.map((heading) => /* @__PURE__ */ jsx90("th", { className: "text-left capitalize font-satoshi-black p-3", children: heading }, heading)),
+        /* @__PURE__ */ jsx90("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Actions" })
+      ] }) }),
+      /* @__PURE__ */ jsx90("tbody", { children: tableData.map((user, index) => /* @__PURE__ */ jsxs76("tr", { className: "border-b border-secondary", children: [
+        headings.map((heading) => heading === "access" ? /* @__PURE__ */ jsx90("td", { className: "p-3", children: /* @__PURE__ */ jsxs76("span", { className: "grid grid-cols-[76px_36px] items-center w-min", children: [
           user[heading] ? "Enabled" : "Disabled",
-          /* @__PURE__ */ jsxDEV90(ToggleBtn, { on: user[heading] }, void 0, !1, {
-            fileName: "app/routes/admin.accounts._index.tsx",
-            lineNumber: 62,
-            columnNumber: 49
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 60,
-          columnNumber: 45
-        }, this) }, heading, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 59,
-          columnNumber: 43
-        }, this) : /* @__PURE__ */ jsxDEV90("td", { className: "p-3", children: user[heading] }, heading, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 65,
-          columnNumber: 43
-        }, this)),
-        /* @__PURE__ */ jsxDEV90("td", { className: "p-3", children: /* @__PURE__ */ jsxDEV90("div", { className: "flex gap-4 items-center", children: [
-          /* @__PURE__ */ jsxDEV90(RoundCta_default, { icon: icons.editIcon, element: "link", to: user.id, className: "border-[#262626] bg-[#F7F7F8] text-primary" }, void 0, !1, {
-            fileName: "app/routes/admin.accounts._index.tsx",
-            lineNumber: 69,
-            columnNumber: 41
-          }, this),
-          /* @__PURE__ */ jsxDEV90(RoundCta_default, { icon: icons.trashIcon, className: "border-red-500 bg-red-50 text-red-500" }, void 0, !1, {
-            fileName: "app/routes/admin.accounts._index.tsx",
-            lineNumber: 70,
-            columnNumber: 41
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 68,
-          columnNumber: 37
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 67,
-          columnNumber: 33
-        }, this)
-      ] }, index, !0, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 56,
-        columnNumber: 29
-      }, this)) }, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 54,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 45,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 44,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV90("div", { className: "hidden sm:flex justify-between items-center my-4", children: [
-      /* @__PURE__ */ jsxDEV90("label", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx90(ToggleBtn, { on: user[heading] })
+        ] }) }, heading) : /* @__PURE__ */ jsx90("td", { className: "p-3", children: user[heading] }, heading)),
+        /* @__PURE__ */ jsx90("td", { className: "p-3", children: /* @__PURE__ */ jsxs76("div", { className: "flex gap-4 items-center", children: [
+          /* @__PURE__ */ jsx90(RoundCta_default, { icon: icons.editIcon, element: "link", to: user.id, className: "border-[#262626] bg-[#F7F7F8] text-primary" }),
+          /* @__PURE__ */ jsx90(RoundCta_default, { icon: icons.trashIcon, className: "border-red-500 bg-red-50 text-red-500" })
+        ] }) })
+      ] }, index)) })
+    ] }) }),
+    /* @__PURE__ */ jsxs76("div", { className: "hidden sm:flex justify-between items-center my-4", children: [
+      /* @__PURE__ */ jsxs76("label", { className: "flex gap-2", children: [
         "Rows per page",
-        /* @__PURE__ */ jsxDEV90("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 }, void 0, !1, {
-          fileName: "app/routes/admin.accounts._index.tsx",
-          lineNumber: 80,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 79,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV90(Pagination, {}, void 0, !1, {
-        fileName: "app/routes/admin.accounts._index.tsx",
-        lineNumber: 82,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts._index.tsx",
-      lineNumber: 78,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.accounts._index.tsx",
-    lineNumber: 21,
-    columnNumber: 9
-  }, this);
+        /* @__PURE__ */ jsx90("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx90(Pagination, {})
+    ] })
+  ] });
 }
 
 // app/routes/admin.contests._index.tsx
@@ -11353,7 +5773,7 @@ __export(admin_contests_index_exports, {
 });
 import { json as json22 } from "@remix-run/node";
 import { useLoaderData as useLoaderData21 } from "@remix-run/react";
-import { jsxDEV as jsxDEV91 } from "react/jsx-dev-runtime";
+import { jsx as jsx91, jsxs as jsxs77 } from "react/jsx-runtime";
 async function loader21({}) {
   let { data: contests2, error } = await contestRepo.getContests();
   if (error)
@@ -11376,44 +5796,16 @@ async function action13({ request }) {
 }
 function Contests2() {
   let { contests: contests2 } = useLoaderData21();
-  return /* @__PURE__ */ jsxDEV91("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV91("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
-      /* @__PURE__ */ jsxDEV91("h1", { className: "text-2xl font-black text-primary", children: "Contests" }, void 0, !1, {
-        fileName: "app/routes/admin.contests._index.tsx",
-        lineNumber: 33,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV91(Cta_default, { element: "link", to: "add", className: "flex gap-2 items-center justify-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsxDEV91(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
-          fileName: "app/routes/admin.contests._index.tsx",
-          lineNumber: 35,
-          columnNumber: 21
-        }, this),
+  return /* @__PURE__ */ jsxs77("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs77("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
+      /* @__PURE__ */ jsx91("h1", { className: "text-2xl font-black text-primary", children: "Contests" }),
+      /* @__PURE__ */ jsxs77(Cta_default, { element: "link", to: "add", className: "flex gap-2 items-center justify-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsx91(Svg, { src: icons.addIcon, width: ".9em" }),
         "Create Contest"
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.contests._index.tsx",
-        lineNumber: 34,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.contests._index.tsx",
-      lineNumber: 32,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV91("section", { className: "my-6 sm:my-12", children: /* @__PURE__ */ jsxDEV91(ContestTable, { data: contests2 }, void 0, !1, {
-      fileName: "app/routes/admin.contests._index.tsx",
-      lineNumber: 40,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/admin.contests._index.tsx",
-      lineNumber: 39,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.contests._index.tsx",
-    lineNumber: 31,
-    columnNumber: 9
-  }, this);
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx91("section", { className: "my-6 sm:my-12", children: /* @__PURE__ */ jsx91(ContestTable, { data: contests2 }) })
+  ] });
 }
 
 // app/routes/admin.tournaments.add.tsx
@@ -11427,58 +5819,22 @@ import { useNavigate as useNavigate7 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateTournamentForm.tsx
 import { Form as Form11 } from "@remix-run/react";
-import { jsxDEV as jsxDEV92 } from "react/jsx-dev-runtime";
+import { jsx as jsx92, jsxs as jsxs78 } from "react/jsx-runtime";
 function CreateTournamentForm() {
-  return /* @__PURE__ */ jsxDEV92(Form11, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsxDEV92("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Create New Tournament" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-      lineNumber: 9,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV92("div", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV92(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-        lineNumber: 12,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV92(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-        lineNumber: 13,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV92(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-        lineNumber: 14,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV92(DragnDrop, { labelText: "Tournament Image", name: "image" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-        lineNumber: 15,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-      lineNumber: 11,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV92("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV92(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Tournament" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-      lineNumber: 19,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-      lineNumber: 18,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/CreateTournamentForm.tsx",
-    lineNumber: 8,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs78(Form11, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx92("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Create New Tournament" }),
+    /* @__PURE__ */ jsxs78("div", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx92(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", required: !0 }),
+      /* @__PURE__ */ jsx92(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
+      /* @__PURE__ */ jsx92(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", required: !0 }),
+      /* @__PURE__ */ jsx92(DragnDrop, { labelText: "Tournament Image", name: "image" })
+    ] }),
+    /* @__PURE__ */ jsx92("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx92(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Tournament" }) })
+  ] });
 }
 
 // app/routes/admin.tournaments.add.tsx
-import { jsxDEV as jsxDEV93 } from "react/jsx-dev-runtime";
+import { jsx as jsx93, jsxs as jsxs79 } from "react/jsx-runtime";
 async function action14({ request }) {
   let formData = await request.formData(), payload = prepareTournamentDto(formData), { error } = await tournamentRepo.createTournament(payload);
   if (error) {
@@ -11490,33 +5846,13 @@ async function action14({ request }) {
 }
 function AddTournament() {
   let navigate = useNavigate7();
-  return /* @__PURE__ */ jsxDEV93("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV93("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV93(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments.add.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV93("span", { className: "font-black text-primary", children: "Create Tournament" }, void 0, !1, {
-        fileName: "app/routes/admin.tournaments.add.tsx",
-        lineNumber: 27,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tournaments.add.tsx",
-      lineNumber: 25,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV93(CreateTournamentForm, {}, void 0, !1, {
-      fileName: "app/routes/admin.tournaments.add.tsx",
-      lineNumber: 29,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tournaments.add.tsx",
-    lineNumber: 24,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs79("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs79("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx93(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx93("span", { className: "font-black text-primary", children: "Create Tournament" })
+    ] }),
+    /* @__PURE__ */ jsx93(CreateTournamentForm, {})
+  ] });
 }
 
 // app/routes/user.all-tournaments.tsx
@@ -11527,7 +5863,7 @@ __export(user_all_tournaments_exports, {
 });
 import { json as json24 } from "@remix-run/node";
 import { useLoaderData as useLoaderData22 } from "@remix-run/react";
-import { jsxDEV as jsxDEV94 } from "react/jsx-dev-runtime";
+import { jsx as jsx94, jsxs as jsxs80 } from "react/jsx-runtime";
 async function loader22() {
   let { data: tournaments, error } = await tournamentRepo.getTournaments();
   if (error)
@@ -11536,30 +5872,10 @@ async function loader22() {
 }
 function AllTournaments() {
   let { tournaments } = useLoaderData22();
-  return /* @__PURE__ */ jsxDEV94("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV94("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsxDEV94("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }, void 0, !1, {
-      fileName: "app/routes/user.all-tournaments.tsx",
-      lineNumber: 17,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.all-tournaments.tsx",
-      lineNumber: 16,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV94("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsxDEV94(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id, !1, {
-      fileName: "app/routes/user.all-tournaments.tsx",
-      lineNumber: 24,
-      columnNumber: 11
-    }, this)) }, void 0, !1, {
-      fileName: "app/routes/user.all-tournaments.tsx",
-      lineNumber: 22,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.all-tournaments.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs80("main", { className: "grow", children: [
+    /* @__PURE__ */ jsx94("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx94("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }) }),
+    /* @__PURE__ */ jsx94("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsx94(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id)) })
+  ] });
 }
 
 // app/routes/user.pending-uploads.tsx
@@ -11572,7 +5888,7 @@ __export(user_pending_uploads_exports, {
 import { useEffect as useEffect11, useState as useState19 } from "react";
 import { Link as Link10, useLoaderData as useLoaderData23 } from "@remix-run/react";
 import { json as json25, redirect as redirect13 } from "@remix-run/node";
-import { jsxDEV as jsxDEV95 } from "react/jsx-dev-runtime";
+import { jsx as jsx95, jsxs as jsxs81 } from "react/jsx-runtime";
 async function loader23({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (console.log({ cookieHeader }), !cookieHeader)
@@ -11586,57 +5902,25 @@ var PendingUploadCard = ({
   stage,
   full_name,
   contestantId
-}) => /* @__PURE__ */ jsxDEV95(Link10, { to: `/user/contestant/${contestantId}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxDEV95("article", { children: [
-  /* @__PURE__ */ jsxDEV95(
+}) => /* @__PURE__ */ jsx95(Link10, { to: `/user/contestant/${contestantId}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs81("article", { children: [
+  /* @__PURE__ */ jsx95(
     "img",
     {
       src: contestImageUrl || no_image_default,
       alt: full_name,
       className: "w-full aspect-[3/4] rounded-lg object-cover"
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 55,
-      columnNumber: 5
-    },
-    this
+    }
   ),
-  /* @__PURE__ */ jsxDEV95("div", { className: "pt-4", children: [
-    /* @__PURE__ */ jsxDEV95("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: [
+  /* @__PURE__ */ jsxs81("div", { className: "pt-4", children: [
+    /* @__PURE__ */ jsxs81("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: [
       contest_name,
-      /* @__PURE__ */ jsxDEV95("br", {}, void 0, !1, {
-        fileName: "app/routes/user.pending-uploads.tsx",
-        lineNumber: 63,
-        columnNumber: 9
-      }, this),
+      /* @__PURE__ */ jsx95("br", {}),
       "stage ",
       stage
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 61,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV95("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name }, void 0, !1, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 66,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.pending-uploads.tsx",
-    lineNumber: 60,
-    columnNumber: 5
-  }, this)
-] }, void 0, !0, {
-  fileName: "app/routes/user.pending-uploads.tsx",
-  lineNumber: 54,
-  columnNumber: 3
-}, this) }, void 0, !1, {
-  fileName: "app/routes/user.pending-uploads.tsx",
-  lineNumber: 53,
-  columnNumber: 3
-}, this);
+    ] }),
+    /* @__PURE__ */ jsx95("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
+  ] })
+] }) });
 function useUserPendingsUploadController() {
   let { data, error, authRequired } = useLoaderData23(), [pendingUploads, setPendingUploads] = useState19([]);
   return error && toast({
@@ -11652,28 +5936,12 @@ function useUserPendingsUploadController() {
 }
 function UserPendingsUpload() {
   let { pendingUploads } = useUserPendingsUploadController();
-  return /* @__PURE__ */ jsxDEV95("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxDEV95("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
-    /* @__PURE__ */ jsxDEV95("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxDEV95("div", { className: "max-w-3xl mx-auto text-center", children: [
-      /* @__PURE__ */ jsxDEV95("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Pending uploads" }, void 0, !1, {
-        fileName: "app/routes/user.pending-uploads.tsx",
-        lineNumber: 104,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV95("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "Please, we are expecting your uploads for the following stages" }, void 0, !1, {
-        fileName: "app/routes/user.pending-uploads.tsx",
-        lineNumber: 107,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 103,
-      columnNumber: 11
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 102,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV95("main", { className: "py-12 md:py-16", children: /* @__PURE__ */ jsxDEV95("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: pendingUploads.map((pendingUpload, idx) => /* @__PURE__ */ jsxDEV95(
+  return /* @__PURE__ */ jsx95("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs81("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
+    /* @__PURE__ */ jsx95("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs81("div", { className: "max-w-3xl mx-auto text-center", children: [
+      /* @__PURE__ */ jsx95("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Pending uploads" }),
+      /* @__PURE__ */ jsx95("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "Please, we are expecting your uploads for the following stages" })
+    ] }) }),
+    /* @__PURE__ */ jsx95("main", { className: "py-12 md:py-16", children: /* @__PURE__ */ jsx95("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: pendingUploads.map((pendingUpload, idx) => /* @__PURE__ */ jsx95(
       PendingUploadCard,
       {
         contestImageUrl: pendingUpload.contestImage,
@@ -11682,32 +5950,9 @@ function UserPendingsUpload() {
         full_name: pendingUpload.fullName,
         contestantId: pendingUpload.contestantId
       },
-      pendingUpload.contestantId,
-      !1,
-      {
-        fileName: "app/routes/user.pending-uploads.tsx",
-        lineNumber: 127,
-        columnNumber: 15
-      },
-      this
-    )) }, void 0, !1, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 125,
-      columnNumber: 11
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/user.pending-uploads.tsx",
-      lineNumber: 124,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.pending-uploads.tsx",
-    lineNumber: 101,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/user.pending-uploads.tsx",
-    lineNumber: 100,
-    columnNumber: 5
-  }, this);
+      pendingUpload.contestantId
+    )) }) })
+  ] }) });
 }
 
 // app/routes/admin.accounts.add.tsx
@@ -11718,7 +5963,7 @@ __export(admin_accounts_add_exports, {
   loader: () => loader24
 });
 import { Form as Form12, useLoaderData as useLoaderData24, useNavigate as useNavigate9 } from "@remix-run/react";
-import { jsxDEV as jsxDEV96 } from "react/jsx-dev-runtime";
+import { jsx as jsx96, jsxs as jsxs82 } from "react/jsx-runtime";
 async function loader24({}) {
   return { permissions };
 }
@@ -11728,101 +5973,29 @@ async function action15({ request }) {
 }
 function AddAdminUser() {
   let { permissions: permissions2 } = useLoaderData24(), navigate = useNavigate9();
-  return /* @__PURE__ */ jsxDEV96("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV96("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV96(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 28,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96("h1", { className: "text-2xl font-black text-primary", children: "Add User" }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 29,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts.add.tsx",
-      lineNumber: 27,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV96(Form12, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
-      /* @__PURE__ */ jsxDEV96(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 32,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 33,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 34,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 35,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(FormControl, { as: "input", type: "password", labelText: "Password", className: "", placeholder: "Create password", id: "password", name: "password", required: !0 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 36,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(Select2, { label: "Assign Role", id: "role", name: "role", required: !0, children: [
-        /* @__PURE__ */ jsxDEV96("option", { value: "1", children: "Role 1" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.add.tsx",
-          lineNumber: 38,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV96("option", { value: "2", children: "Role 2" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.add.tsx",
-          lineNumber: 39,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV96("option", { value: "3", children: "Role 3" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.add.tsx",
-          lineNumber: 40,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 37,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96(PermissionsFormControl, { permissions: permissions2 }, void 0, !1, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 43,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV96("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
-        /* @__PURE__ */ jsxDEV96(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.add.tsx",
-          lineNumber: 46,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV96(Cta_default, { element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: "Submit" }, void 0, !1, {
-          fileName: "app/routes/admin.accounts.add.tsx",
-          lineNumber: 47,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/admin.accounts.add.tsx",
-        lineNumber: 45,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.accounts.add.tsx",
-      lineNumber: 31,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.accounts.add.tsx",
-    lineNumber: 26,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs82("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs82("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx96(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx96("h1", { className: "text-2xl font-black text-primary", children: "Add User" })
+    ] }),
+    /* @__PURE__ */ jsxs82(Form12, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
+      /* @__PURE__ */ jsx96(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", required: !0 }),
+      /* @__PURE__ */ jsx96(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", required: !0 }),
+      /* @__PURE__ */ jsx96(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", required: !0 }),
+      /* @__PURE__ */ jsx96(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", required: !0 }),
+      /* @__PURE__ */ jsx96(FormControl, { as: "input", type: "password", labelText: "Password", className: "", placeholder: "Create password", id: "password", name: "password", required: !0 }),
+      /* @__PURE__ */ jsxs82(Select2, { label: "Assign Role", id: "role", name: "role", required: !0, children: [
+        /* @__PURE__ */ jsx96("option", { value: "1", children: "Role 1" }),
+        /* @__PURE__ */ jsx96("option", { value: "2", children: "Role 2" }),
+        /* @__PURE__ */ jsx96("option", { value: "3", children: "Role 3" })
+      ] }),
+      /* @__PURE__ */ jsx96(PermissionsFormControl, { permissions: permissions2 }),
+      /* @__PURE__ */ jsxs82("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
+        /* @__PURE__ */ jsx96(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
+        /* @__PURE__ */ jsx96(Cta_default, { element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: "Submit" })
+      ] })
+    ] })
+  ] });
 }
 
 // app/routes/admin.contests.add.tsx
@@ -11837,131 +6010,39 @@ import { useLoaderData as useLoaderData25, useNavigate as useNavigate10 } from "
 
 // app/components/admin/tournament/CreateContestForm.tsx
 import { Form as Form13, useSearchParams as useSearchParams3 } from "@remix-run/react";
-import { jsxDEV as jsxDEV97 } from "react/jsx-dev-runtime";
+import { jsx as jsx97, jsxs as jsxs83 } from "react/jsx-runtime";
 function CreateContestForm({ tournaments }) {
   let [searchParams] = useSearchParams3(), defaultTournament = searchParams.get("tournament") ?? void 0;
-  return /* @__PURE__ */ jsxDEV97(Form13, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsxDEV97("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV97("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV97(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: defaultTournament, required: !0, children: [
-        /* @__PURE__ */ jsxDEV97("option", { value: "", children: "Select a tournament" }, void 0, !1, {
-          fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-          lineNumber: 19,
-          columnNumber: 21
-        }, this),
-        tournaments.map((tournament) => /* @__PURE__ */ jsxDEV97("option", { value: tournament.id, children: tournament.id }, tournament.id, !1, {
-          fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-          lineNumber: 21,
-          columnNumber: 25
-        }, this))
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 24,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 25,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 26,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 27,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 28,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 29,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 30,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 31,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 17,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV97(CategoryInputs, {}, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 34,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV97(StageInputs, {}, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV97("fieldset", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV97("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 39,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 40,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV97(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", required: !0 }, void 0, !1, {
-        fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-        lineNumber: 41,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 37,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV97("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsxDEV97(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Contest" }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 45,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-      lineNumber: 44,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/tournament/CreateContestForm.tsx",
-    lineNumber: 14,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs83(Form13, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx97("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
+    /* @__PURE__ */ jsxs83("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs83(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: defaultTournament, required: !0, children: [
+        /* @__PURE__ */ jsx97("option", { value: "", children: "Select a tournament" }),
+        tournaments.map((tournament) => /* @__PURE__ */ jsx97("option", { value: tournament.id, children: tournament.id }, tournament.id))
+      ] }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", required: !0 }),
+      /* @__PURE__ */ jsx97(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1 })
+    ] }),
+    /* @__PURE__ */ jsx97(CategoryInputs, {}),
+    /* @__PURE__ */ jsx97(StageInputs, {}),
+    /* @__PURE__ */ jsxs83("fieldset", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx97("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", required: !0 })
+    ] }),
+    /* @__PURE__ */ jsx97("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx97(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Contest" }) })
+  ] });
 }
 
 // app/routes/admin.contests.add.tsx
-import { jsxDEV as jsxDEV98 } from "react/jsx-dev-runtime";
+import { jsx as jsx98, jsxs as jsxs84 } from "react/jsx-runtime";
 async function loader25({}) {
   let { data: tournaments = [] } = await tournamentRepo.getTournaments();
   return json26({ tournaments });
@@ -11977,33 +6058,13 @@ async function action16({ request }) {
 }
 function AddContest() {
   let { tournaments } = useLoaderData25(), navigate = useNavigate10();
-  return /* @__PURE__ */ jsxDEV98("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV98("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV98(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
-        fileName: "app/routes/admin.contests.add.tsx",
-        lineNumber: 33,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV98("span", { className: "font-black text-primary", children: "Create Contest" }, void 0, !1, {
-        fileName: "app/routes/admin.contests.add.tsx",
-        lineNumber: 34,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.contests.add.tsx",
-      lineNumber: 32,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV98(CreateContestForm, { tournaments }, void 0, !1, {
-      fileName: "app/routes/admin.contests.add.tsx",
-      lineNumber: 36,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.contests.add.tsx",
-    lineNumber: 31,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs84("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs84("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx98(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx98("span", { className: "font-black text-primary", children: "Create Contest" })
+    ] }),
+    /* @__PURE__ */ jsx98(CreateContestForm, { tournaments })
+  ] });
 }
 
 // app/routes/_public.winners.tsx
@@ -12014,7 +6075,7 @@ __export(public_winners_exports, {
 });
 import { Link as Link11, useLoaderData as useLoaderData26 } from "@remix-run/react";
 import { useEffect as useEffect12, useState as useState20 } from "react";
-import { jsxDEV as jsxDEV99 } from "react/jsx-dev-runtime";
+import { jsx as jsx99, jsxs as jsxs85 } from "react/jsx-runtime";
 async function loader26({ params }) {
   let { data: winners, error } = await contestRepo.getWinners();
   return { winners, error };
@@ -12025,48 +6086,20 @@ var WinnerCard = ({
   remark,
   full_name,
   id
-}) => /* @__PURE__ */ jsxDEV99(Link11, { to: `/winner/${id}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxDEV99("article", { children: [
-  /* @__PURE__ */ jsxDEV99(
+}) => /* @__PURE__ */ jsx99(Link11, { to: `/winner/${id}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs85("article", { children: [
+  /* @__PURE__ */ jsx99(
     "img",
     {
       src: image_url,
       alt: full_name,
       className: "w-full aspect-[3/4] rounded-lg object-cover"
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 28,
-      columnNumber: 5
-    },
-    this
+    }
   ),
-  /* @__PURE__ */ jsxDEV99("div", { className: "pt-4", children: [
-    /* @__PURE__ */ jsxDEV99("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: contest_name }, void 0, !1, {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 34,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV99("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name }, void 0, !1, {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 37,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.winners.tsx",
-    lineNumber: 33,
-    columnNumber: 5
-  }, this)
-] }, void 0, !0, {
-  fileName: "app/routes/_public.winners.tsx",
-  lineNumber: 27,
-  columnNumber: 3
-}, this) }, void 0, !1, {
-  fileName: "app/routes/_public.winners.tsx",
-  lineNumber: 26,
-  columnNumber: 3
-}, this), SearchIcon = (props) => /* @__PURE__ */ jsxDEV99(
+  /* @__PURE__ */ jsxs85("div", { className: "pt-4", children: [
+    /* @__PURE__ */ jsx99("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: contest_name }),
+    /* @__PURE__ */ jsx99("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
+  ] })
+] }) }), SearchIcon = (props) => /* @__PURE__ */ jsx99(
   "svg",
   {
     xmlns: "http://www.w3.org/2000/svg",
@@ -12075,31 +6108,15 @@ var WinnerCard = ({
     strokeWidth: 1.5,
     stroke: "currentColor",
     ...props,
-    children: /* @__PURE__ */ jsxDEV99(
+    children: /* @__PURE__ */ jsx99(
       "path",
       {
         strokeLinecap: "round",
         strokeLinejoin: "round",
         d: "m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 52,
-        columnNumber: 5
-      },
-      this
+      }
     )
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/routes/_public.winners.tsx",
-    lineNumber: 44,
-    columnNumber: 3
-  },
-  this
+  }
 );
 function Winners() {
   let { winners, error } = useLoaderData26(), [searchWinners, setSearchWinners] = useState20(""), [winnersFiltered, setWinnersFiltered] = useState20(winners ?? []);
@@ -12110,24 +6127,12 @@ function Winners() {
       (winner) => winner.full_name.toLowerCase().includes(searchWinners.trim().toLowerCase()) || winner.contest_name.toLowerCase().includes(searchWinners.trim().toLowerCase())
     );
     setWinnersFiltered(updated);
-  }, [searchWinners, winners]), error ? /* @__PURE__ */ jsxDEV99("h1", { className: "font-satoshi-bold text-4xl text-center", children: error.detail }, void 0, !1, {
-    fileName: "app/routes/_public.winners.tsx",
-    lineNumber: 79,
-    columnNumber: 7
-  }, this) : /* @__PURE__ */ jsxDEV99("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxDEV99("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
-    /* @__PURE__ */ jsxDEV99("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxDEV99("div", { className: "max-w-3xl mx-auto text-center", children: [
-      /* @__PURE__ */ jsxDEV99("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Meet Our Talented Contest Winners" }, void 0, !1, {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 90,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV99("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "A Glimpse of the Extraordinary Creations That Stole the Show" }, void 0, !1, {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 93,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV99("div", { className: "mt-8 relative max-w-lg mx-auto", children: [
-        /* @__PURE__ */ jsxDEV99(
+  }, [searchWinners, winners]), error ? /* @__PURE__ */ jsx99("h1", { className: "font-satoshi-bold text-4xl text-center", children: error.detail }) : /* @__PURE__ */ jsx99("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs85("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
+    /* @__PURE__ */ jsx99("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs85("div", { className: "max-w-3xl mx-auto text-center", children: [
+      /* @__PURE__ */ jsx99("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Meet Our Talented Contest Winners" }),
+      /* @__PURE__ */ jsx99("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "A Glimpse of the Extraordinary Creations That Stole the Show" }),
+      /* @__PURE__ */ jsxs85("div", { className: "mt-8 relative max-w-lg mx-auto", children: [
+        /* @__PURE__ */ jsx99(
           "input",
           {
             type: "text",
@@ -12135,41 +6140,13 @@ function Winners() {
             value: searchWinners,
             onChange: (e) => setSearchWinners(e.target.value),
             className: "w-full rounded-2xl py-3 px-6 pr-12 text-gray-900 shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/_public.winners.tsx",
-            lineNumber: 97,
-            columnNumber: 15
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV99("div", { className: "absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-auto", children: /* @__PURE__ */ jsxDEV99(SearchIcon, { className: "h-5 w-5 text-gray-400" }, void 0, !1, {
-          fileName: "app/routes/_public.winners.tsx",
-          lineNumber: 105,
-          columnNumber: 17
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public.winners.tsx",
-          lineNumber: 104,
-          columnNumber: 15
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 96,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 89,
-      columnNumber: 11
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 88,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV99("main", { className: "py-12 md:py-16", children: [
-      /* @__PURE__ */ jsxDEV99("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: winnersFiltered.map((winner, idx) => /* @__PURE__ */ jsxDEV99(
+        /* @__PURE__ */ jsx99("div", { className: "absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-auto", children: /* @__PURE__ */ jsx99(SearchIcon, { className: "h-5 w-5 text-gray-400" }) })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsxs85("main", { className: "py-12 md:py-16", children: [
+      /* @__PURE__ */ jsx99("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: winnersFiltered.map((winner, idx) => /* @__PURE__ */ jsx99(
         WinnerCard,
         {
           image_url: winner.image_url,
@@ -12178,53 +6155,18 @@ function Winners() {
           full_name: winner.full_name,
           id: winner._id
         },
-        winner.contestant_code || idx,
-        !1,
-        {
-          fileName: "app/routes/_public.winners.tsx",
-          lineNumber: 113,
-          columnNumber: 15
-        },
-        this
-      )) }, void 0, !1, {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 111,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV99("div", { className: "mt-12 md:mt-16 text-center", children: /* @__PURE__ */ jsxDEV99(
+        winner.contestant_code || idx
+      )) }),
+      /* @__PURE__ */ jsx99("div", { className: "mt-12 md:mt-16 text-center", children: /* @__PURE__ */ jsx99(
         "button",
         {
           type: "button",
           className: "inline-flex items-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors",
           children: "See more"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/routes/_public.winners.tsx",
-          lineNumber: 124,
-          columnNumber: 13
-        },
-        this
-      ) }, void 0, !1, {
-        fileName: "app/routes/_public.winners.tsx",
-        lineNumber: 123,
-        columnNumber: 11
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public.winners.tsx",
-      lineNumber: 110,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.winners.tsx",
-    lineNumber: 87,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/_public.winners.tsx",
-    lineNumber: 86,
-    columnNumber: 5
-  }, this);
+        }
+      ) })
+    ] })
+  ] }) });
 }
 
 // app/routes/_public._index.tsx
@@ -12234,11 +6176,11 @@ __export(public_index_exports, {
 });
 
 // app/components/public/landingpage/ContactForm.tsx
-import { jsxDEV as jsxDEV100 } from "react/jsx-dev-runtime";
+import { jsx as jsx100, jsxs as jsxs86 } from "react/jsx-runtime";
 function ContactForm() {
-  return /* @__PURE__ */ jsxDEV100("form", { className: "wrapper flex flex-col gap-6", children: [
-    /* @__PURE__ */ jsxDEV100("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxDEV100(
+  return /* @__PURE__ */ jsxs86("form", { className: "wrapper flex flex-col gap-6", children: [
+    /* @__PURE__ */ jsxs86("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx100(
         FormControl,
         {
           as: "input",
@@ -12246,17 +6188,9 @@ function ContactForm() {
           id: "fullName",
           name: "fullName",
           placeholder: "Enter your full name"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/landingpage/ContactForm.tsx",
-          lineNumber: 8,
-          columnNumber: 17
-        },
-        this
+        }
       ),
-      /* @__PURE__ */ jsxDEV100(
+      /* @__PURE__ */ jsx100(
         FormControl,
         {
           as: "input",
@@ -12264,22 +6198,10 @@ function ContactForm() {
           id: "email",
           name: "email",
           placeholder: "Enter your email address"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/public/landingpage/ContactForm.tsx",
-          lineNumber: 11,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/public/landingpage/ContactForm.tsx",
-      lineNumber: 7,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV100(
+    ] }),
+    /* @__PURE__ */ jsx100(
       FormControl,
       {
         as: "input",
@@ -12287,17 +6209,9 @@ function ContactForm() {
         id: "subject",
         name: "subject",
         placeholder: "Enter subject"
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/public/landingpage/ContactForm.tsx",
-        lineNumber: 15,
-        columnNumber: 13
-      },
-      this
+      }
     ),
-    /* @__PURE__ */ jsxDEV100(
+    /* @__PURE__ */ jsx100(
       FormControl,
       {
         as: "textarea",
@@ -12305,56 +6219,20 @@ function ContactForm() {
         id: "message",
         name: "message",
         placeholder: "Enter your message here..."
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/public/landingpage/ContactForm.tsx",
-        lineNumber: 18,
-        columnNumber: 13
-      },
-      this
+      }
     ),
-    /* @__PURE__ */ jsxDEV100(Button, { element: "button", className: "md:self-end", children: "Submit" }, void 0, !1, {
-      fileName: "app/components/public/landingpage/ContactForm.tsx",
-      lineNumber: 21,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/landingpage/ContactForm.tsx",
-    lineNumber: 6,
-    columnNumber: 9
-  }, this);
+    /* @__PURE__ */ jsx100(Button, { element: "button", className: "md:self-end", children: "Submit" })
+  ] });
 }
 
 // app/components/public/landingpage/WhyCard.tsx
-import { jsxDEV as jsxDEV101 } from "react/jsx-dev-runtime";
+import { jsx as jsx101, jsxs as jsxs87 } from "react/jsx-runtime";
 function WhyCard(props) {
-  return /* @__PURE__ */ jsxDEV101("article", { className: `block p-8 text-white rounded-3xl ${props.backgroundColor}`, children: [
-    /* @__PURE__ */ jsxDEV101("div", { className: "p-6 mb-8 rounded-3xl bg-[#FFFFFF29] w-fit", children: /* @__PURE__ */ jsxDEV101(Svg, { src: props.icon, width: 24, height: 24 }, void 0, !1, {
-      fileName: "app/components/public/landingpage/WhyCard.tsx",
-      lineNumber: 7,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/landingpage/WhyCard.tsx",
-      lineNumber: 6,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV101("h3", { className: "mb-4 text-2xl font-black", children: props.title }, void 0, !1, {
-      fileName: "app/components/public/landingpage/WhyCard.tsx",
-      lineNumber: 9,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV101("p", { className: "font-bold", children: props.subtext }, void 0, !1, {
-      fileName: "app/components/public/landingpage/WhyCard.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/landingpage/WhyCard.tsx",
-    lineNumber: 5,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs87("article", { className: `block p-8 text-white rounded-3xl ${props.backgroundColor}`, children: [
+    /* @__PURE__ */ jsx101("div", { className: "p-6 mb-8 rounded-3xl bg-[#FFFFFF29] w-fit", children: /* @__PURE__ */ jsx101(Svg, { src: props.icon, width: 24, height: 24 }) }),
+    /* @__PURE__ */ jsx101("h3", { className: "mb-4 text-2xl font-black", children: props.title }),
+    /* @__PURE__ */ jsx101("p", { className: "font-bold", children: props.subtext })
+  ] });
 }
 
 // app/lib/data/landingPage.data.ts
@@ -12386,382 +6264,102 @@ var whyUsData = [
 ];
 
 // app/components/public/landingpage/SponsorsSlider.tsx
-import { jsxDEV as jsxDEV102 } from "react/jsx-dev-runtime";
+import { jsx as jsx102 } from "react/jsx-runtime";
 function SponsorsSlider() {
-  return /* @__PURE__ */ jsxDEV102(AutoplayCarousel, { children: /* @__PURE__ */ jsxDEV102(CarouselItem, { children: /* @__PURE__ */ jsxDEV102("img", { src: sponsor_logo_default, alt: "Zendesk" }, void 0, !1, {
-    fileName: "app/components/public/landingpage/SponsorsSlider.tsx",
-    lineNumber: 9,
-    columnNumber: 27
-  }, this) }, void 0, !1, {
-    fileName: "app/components/public/landingpage/SponsorsSlider.tsx",
-    lineNumber: 9,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/public/landingpage/SponsorsSlider.tsx",
-    lineNumber: 8,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsx102(AutoplayCarousel, { children: /* @__PURE__ */ jsx102(CarouselItem, { children: /* @__PURE__ */ jsx102("img", { src: sponsor_logo_default, alt: "Zendesk" }) }) });
 }
 
 // app/routes/_public._index.tsx
-import { jsxDEV as jsxDEV103 } from "react/jsx-dev-runtime";
+import { jsx as jsx103, jsxs as jsxs88 } from "react/jsx-runtime";
 function LandingPage() {
-  return /* @__PURE__ */ jsxDEV103("main", { className: "snap-y", children: [
-    /* @__PURE__ */ jsxDEV103("section", { className: "wrapper flex flex-col md:flex-row gap-16 xl:gap-24 md:items-center py-8 md:py-16", children: [
-      /* @__PURE__ */ jsxDEV103("div", { className: "flex flex-col gap-6 sm:gap-8", children: [
-        /* @__PURE__ */ jsxDEV103("h1", { className: "font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug whitespace-nowrap", children: [
+  return /* @__PURE__ */ jsxs88("main", { className: "snap-y", children: [
+    /* @__PURE__ */ jsxs88("section", { className: "wrapper flex flex-col md:flex-row gap-16 xl:gap-24 md:items-center py-8 md:py-16", children: [
+      /* @__PURE__ */ jsxs88("div", { className: "flex flex-col gap-6 sm:gap-8", children: [
+        /* @__PURE__ */ jsxs88("h1", { className: "font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug whitespace-nowrap", children: [
           "Capturing Moments",
-          /* @__PURE__ */ jsxDEV103("br", {}, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 22,
-            columnNumber: 25
-          }, this),
+          /* @__PURE__ */ jsx103("br", {}),
           "Creating ",
-          /* @__PURE__ */ jsxDEV103("span", { className: "text-accent", children: "Memories." }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 23,
-            columnNumber: 34
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 20,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV103("p", { className: "text-xl", children: "Join our monthly/yearly photo contests open to kids, both male and female aged 0-14 years and discover a world of imagination and inspiration." }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 25,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV103("div", { className: "flex gap-4 flex-wrap", children: [
-          /* @__PURE__ */ jsxDEV103(Button, { element: "button", className: "w-full sm:w-auto", children: "Join Now" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 27,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV103(Button, { element: "a", href: "/contests", className: "w-full sm:w-auto", variant: "outline", children: "Explore Contests" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 28,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 26,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 19,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV103("div", { className: "grid grid-cols-3 gap-8 xl:gap-9 w-full", children: [
-        /* @__PURE__ */ jsxDEV103("div", { className: "flex flex-col gap-8 xl:gap-9", children: [
-          /* @__PURE__ */ jsxDEV103("img", { className: "aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full", src: hero_1_default, alt: "kid smiling" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 33,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV103("img", { className: "aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_2_default, alt: "kid smiling" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 34,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 32,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV103("div", { className: "flex flex-col gap-8 xl:gap-9 justify-center", children: [
-          /* @__PURE__ */ jsxDEV103("img", { className: "aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_3_default, alt: "kid smiling" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 37,
-            columnNumber: 25
-          }, this),
-          /* @__PURE__ */ jsxDEV103("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_4_default, alt: "kid smiling" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 38,
-            columnNumber: 25
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 36,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV103("div", { className: "flex flex-col justify-center", children: /* @__PURE__ */ jsxDEV103("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_5_default, alt: "kid smiling" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 41,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 40,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 31,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 18,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { className: "wrapper py-8 md:py-16", children: [
-      /* @__PURE__ */ jsxDEV103("h2", { className: "font-bold text-xl mb-4", children: "Who supports us" }, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 47,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV103(SponsorsSlider, {}, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 48,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsxDEV103("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxDEV103("div", { className: "wrapper", children: [
-        /* @__PURE__ */ jsxDEV103("div", { className: "mb-8", children: [
-          /* @__PURE__ */ jsxDEV103("p", { className: "font-black text-xl", children: "Our Vision" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 55,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV103("img", { className: "object-cover object-center", src: underline_default, alt: "underline", width: 100 }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 56,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 54,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("h2", { className: "text-2xl sm:text-3xl font-black mb-6 leading-snug", children: [
+          /* @__PURE__ */ jsx103("span", { className: "text-accent", children: "Memories." })
+        ] }),
+        /* @__PURE__ */ jsx103("p", { className: "text-xl", children: "Join our monthly/yearly photo contests open to kids, both male and female aged 0-14 years and discover a world of imagination and inspiration." }),
+        /* @__PURE__ */ jsxs88("div", { className: "flex gap-4 flex-wrap", children: [
+          /* @__PURE__ */ jsx103(Button, { element: "button", className: "w-full sm:w-auto", children: "Join Now" }),
+          /* @__PURE__ */ jsx103(Button, { element: "a", href: "/contests", className: "w-full sm:w-auto", variant: "outline", children: "Explore Contests" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs88("div", { className: "grid grid-cols-3 gap-8 xl:gap-9 w-full", children: [
+        /* @__PURE__ */ jsxs88("div", { className: "flex flex-col gap-8 xl:gap-9", children: [
+          /* @__PURE__ */ jsx103("img", { className: "aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full", src: hero_1_default, alt: "kid smiling" }),
+          /* @__PURE__ */ jsx103("img", { className: "aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_2_default, alt: "kid smiling" })
+        ] }),
+        /* @__PURE__ */ jsxs88("div", { className: "flex flex-col gap-8 xl:gap-9 justify-center", children: [
+          /* @__PURE__ */ jsx103("img", { className: "aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_3_default, alt: "kid smiling" }),
+          /* @__PURE__ */ jsx103("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_4_default, alt: "kid smiling" })
+        ] }),
+        /* @__PURE__ */ jsx103("div", { className: "flex flex-col justify-center", children: /* @__PURE__ */ jsx103("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_5_default, alt: "kid smiling" }) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs88("section", { className: "wrapper py-8 md:py-16", children: [
+      /* @__PURE__ */ jsx103("h2", { className: "font-bold text-xl mb-4", children: "Who supports us" }),
+      /* @__PURE__ */ jsx103(SponsorsSlider, {})
+    ] }),
+    /* @__PURE__ */ jsx103("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsxs88("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs88("div", { className: "wrapper", children: [
+        /* @__PURE__ */ jsxs88("div", { className: "mb-8", children: [
+          /* @__PURE__ */ jsx103("p", { className: "font-black text-xl", children: "Our Vision" }),
+          /* @__PURE__ */ jsx103("img", { className: "object-cover object-center", src: underline_default, alt: "underline", width: 100 })
+        ] }),
+        /* @__PURE__ */ jsxs88("h2", { className: "text-2xl sm:text-3xl font-black mb-6 leading-snug", children: [
           "Crafting ",
-          /* @__PURE__ */ jsxDEV103("span", { className: "text-accent", children: "Unforgettable" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 59,
-            columnNumber: 38
-          }, this),
+          /* @__PURE__ */ jsx103("span", { className: "text-accent", children: "Unforgettable" }),
           " Moments for Every Child's Special Day."
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 58,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("p", { className: "font-medium", children: "To create uniquely memorable and exciting kid's birthdays, we strive to be entertaining, transparent, innovative, creative, exciting, efficient, and reliable in every aspect of our service." }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 61,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 53,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV103("div", { className: "wrapper", children: /* @__PURE__ */ jsxDEV103("img", { className: "object-cover object-center w-full", src: birthday_present_default, alt: "wrapped gift" }, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 64,
-        columnNumber: 25
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 63,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 52,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { className: "py-8 md:py-16 wrapper flex flex-col items-center", children: [
-      /* @__PURE__ */ jsxDEV103("div", { className: "mb-6 sm:mb-16", children: [
-        /* @__PURE__ */ jsxDEV103("h2", { className: "font-satoshi-black text-2xl", children: "Why KOTMY?" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 84,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV103("img", { className: "object-fill w-[159px] h-5", src: underline_default, alt: "underline" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 85,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 83,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV103("div", { className: "grid gap-6 lg:gap-12 sm:grid-cols-2 max-w-5xl", children: whyUsData.map((item) => /* @__PURE__ */ jsxDEV103(WhyCard, { backgroundColor: item.bg, icon: item.icon, title: item.title, subtext: item.subtext }, item.title, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 89,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 87,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 82,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsxDEV103(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] }, void 0, !1, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 95,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 94,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { className: "pt-4 sm:py-8 md:py-16", children: /* @__PURE__ */ jsxDEV103("div", { className: "sm:wrapper bg-[#817EFB] bg-pattern bg-cover bg-left text-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxDEV103("div", { className: "wrapper", children: [
-        /* @__PURE__ */ jsxDEV103("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black mb-6 leading-snug", children: "Refer A Friend And Earn Rewards" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 101,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("p", { className: "font-satoshi-medium mb-8", children: "Lorem ipsum dolor sit amet consectetur. Velit egestas auctor in amet dis sed sit egestas. Viverra morbi eget consectetur accumsan integer. Mi et etiam amet est egestas tellus quis." }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 104,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("span", { className: "inline-block bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap", children: "COMING SOON" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 110,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 100,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV103("div", { className: "wrapper bg-[#E7E7E7] rounded-3xl w-full aspect-square" }, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 112,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 99,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 98,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV103("section", { id: "contact", className: "sm:py-8 md:py-16 sm:-scroll-m-4 md:-scroll-m-8 snap-start", children: /* @__PURE__ */ jsxDEV103("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxDEV103("div", { className: "wrapper flex flex-col gap-12", children: [
-        /* @__PURE__ */ jsxDEV103("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black leading-tight", children: "Do you want to know more about the way we work?" }, void 0, !1, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 120,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("div", { className: "flex flex-col lg:flex-row gap-6", children: [
-          /* @__PURE__ */ jsxDEV103("p", { children: [
-            /* @__PURE__ */ jsxDEV103("span", { className: "block font-satoshi-black mb-3", children: "Phone Us" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 125,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV103("span", { className: "font-satoshi-medium whitespace-nowrap", children: "+234 703 515 9093" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 126,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 124,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV103("p", { children: [
-            /* @__PURE__ */ jsxDEV103("span", { className: "block font-satoshi-black mb-3", children: "Email Us" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 129,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV103("span", { className: "font-satoshi-medium", children: "kidmonthyear@gmail.com" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 130,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 128,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 123,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV103("div", { children: [
-          /* @__PURE__ */ jsxDEV103("span", { className: "block font-satoshi-black mb-3", children: "Follow Us" }, void 0, !1, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 134,
-            columnNumber: 29
-          }, this),
-          /* @__PURE__ */ jsxDEV103("span", { className: "flex gap-4", children: [
-            /* @__PURE__ */ jsxDEV103(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 136,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV103(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 137,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV103(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 138,
-              columnNumber: 33
-            }, this),
-            /* @__PURE__ */ jsxDEV103(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" }, void 0, !1, {
-              fileName: "app/routes/_public._index.tsx",
-              lineNumber: 139,
-              columnNumber: 33
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/_public._index.tsx",
-            lineNumber: 135,
-            columnNumber: 29
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/routes/_public._index.tsx",
-          lineNumber: 133,
-          columnNumber: 25
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 119,
-        columnNumber: 21
-      }, this),
-      /* @__PURE__ */ jsxDEV103(ContactForm, {}, void 0, !1, {
-        fileName: "app/routes/_public._index.tsx",
-        lineNumber: 143,
-        columnNumber: 21
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 118,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/_public._index.tsx",
-      lineNumber: 117,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public._index.tsx",
-    lineNumber: 17,
-    columnNumber: 9
-  }, this);
+        ] }),
+        /* @__PURE__ */ jsx103("p", { className: "font-medium", children: "To create uniquely memorable and exciting kid's birthdays, we strive to be entertaining, transparent, innovative, creative, exciting, efficient, and reliable in every aspect of our service." })
+      ] }),
+      /* @__PURE__ */ jsx103("div", { className: "wrapper", children: /* @__PURE__ */ jsx103("img", { className: "object-cover object-center w-full", src: birthday_present_default, alt: "wrapped gift" }) })
+    ] }) }),
+    /* @__PURE__ */ jsxs88("section", { className: "py-8 md:py-16 wrapper flex flex-col items-center", children: [
+      /* @__PURE__ */ jsxs88("div", { className: "mb-6 sm:mb-16", children: [
+        /* @__PURE__ */ jsx103("h2", { className: "font-satoshi-black text-2xl", children: "Why KOTMY?" }),
+        /* @__PURE__ */ jsx103("img", { className: "object-fill w-[159px] h-5", src: underline_default, alt: "underline" })
+      ] }),
+      /* @__PURE__ */ jsx103("div", { className: "grid gap-6 lg:gap-12 sm:grid-cols-2 max-w-5xl", children: whyUsData.map((item) => /* @__PURE__ */ jsx103(WhyCard, { backgroundColor: item.bg, icon: item.icon, title: item.title, subtext: item.subtext }, item.title)) })
+    ] }),
+    /* @__PURE__ */ jsx103("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsx103(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] }) }),
+    /* @__PURE__ */ jsx103("section", { className: "pt-4 sm:py-8 md:py-16", children: /* @__PURE__ */ jsxs88("div", { className: "sm:wrapper bg-[#817EFB] bg-pattern bg-cover bg-left text-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs88("div", { className: "wrapper", children: [
+        /* @__PURE__ */ jsx103("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black mb-6 leading-snug", children: "Refer A Friend And Earn Rewards" }),
+        /* @__PURE__ */ jsx103("p", { className: "font-satoshi-medium mb-8", children: "Lorem ipsum dolor sit amet consectetur. Velit egestas auctor in amet dis sed sit egestas. Viverra morbi eget consectetur accumsan integer. Mi et etiam amet est egestas tellus quis." }),
+        /* @__PURE__ */ jsx103("span", { className: "inline-block bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap", children: "COMING SOON" })
+      ] }),
+      /* @__PURE__ */ jsx103("div", { className: "wrapper bg-[#E7E7E7] rounded-3xl w-full aspect-square" })
+    ] }) }),
+    /* @__PURE__ */ jsx103("section", { id: "contact", className: "sm:py-8 md:py-16 sm:-scroll-m-4 md:-scroll-m-8 snap-start", children: /* @__PURE__ */ jsxs88("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs88("div", { className: "wrapper flex flex-col gap-12", children: [
+        /* @__PURE__ */ jsx103("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black leading-tight", children: "Do you want to know more about the way we work?" }),
+        /* @__PURE__ */ jsxs88("div", { className: "flex flex-col lg:flex-row gap-6", children: [
+          /* @__PURE__ */ jsxs88("p", { children: [
+            /* @__PURE__ */ jsx103("span", { className: "block font-satoshi-black mb-3", children: "Phone Us" }),
+            /* @__PURE__ */ jsx103("span", { className: "font-satoshi-medium whitespace-nowrap", children: "+234 703 515 9093" })
+          ] }),
+          /* @__PURE__ */ jsxs88("p", { children: [
+            /* @__PURE__ */ jsx103("span", { className: "block font-satoshi-black mb-3", children: "Email Us" }),
+            /* @__PURE__ */ jsx103("span", { className: "font-satoshi-medium", children: "kidmonthyear@gmail.com" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs88("div", { children: [
+          /* @__PURE__ */ jsx103("span", { className: "block font-satoshi-black mb-3", children: "Follow Us" }),
+          /* @__PURE__ */ jsxs88("span", { className: "flex gap-4", children: [
+            /* @__PURE__ */ jsx103(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx103(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx103(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx103(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx103(ContactForm, {})
+    ] }) })
+  ] });
 }
 
 // app/routes/admin.overview.tsx
@@ -12774,16 +6372,12 @@ import { json as json27 } from "@remix-run/node";
 import { useLoaderData as useLoaderData27 } from "@remix-run/react";
 
 // app/components/admin/AdminSummary.tsx
-import { jsxDEV as jsxDEV104 } from "react/jsx-dev-runtime";
+import { jsx as jsx104, jsxs as jsxs89 } from "react/jsx-runtime";
 function AdminSummary({ users }) {
-  return /* @__PURE__ */ jsxDEV104("div", { className: "border rounded-xl overflow-hidden basis-3/5 max-w-xl", children: [
-    /* @__PURE__ */ jsxDEV104("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsxDEV104("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Admin Accounts" }, void 0, !1, {
-        fileName: "app/components/admin/AdminSummary.tsx",
-        lineNumber: 9,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV104(
+  return /* @__PURE__ */ jsxs89("div", { className: "border rounded-xl overflow-hidden basis-3/5 max-w-xl", children: [
+    /* @__PURE__ */ jsxs89("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx104("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Admin Accounts" }),
+      /* @__PURE__ */ jsx104(
         Cta_default,
         {
           element: "link",
@@ -12791,51 +6385,23 @@ function AdminSummary({ users }) {
           variant: "outline",
           className: "border-disabled rounded-lg text-inherit py-1.5 px-3 text-xs font-medium",
           children: "See All Users"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/admin/AdminSummary.tsx",
-          lineNumber: 10,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/AdminSummary.tsx",
-      lineNumber: 8,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV104("div", { className: "px-4 grid", children: users.slice(0, 5).map((user) => /* @__PURE__ */ jsxDEV104(AdminUserCard, { user, className: "border-0 shadow-none rounded-none border-b last:border-b-0" }, user.id, !1, {
-      fileName: "app/components/admin/AdminSummary.tsx",
-      lineNumber: 17,
-      columnNumber: 21
-    }, this)) }, void 0, !1, {
-      fileName: "app/components/admin/AdminSummary.tsx",
-      lineNumber: 15,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/AdminSummary.tsx",
-    lineNumber: 7,
-    columnNumber: 9
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsx104("div", { className: "px-4 grid", children: users.slice(0, 5).map((user) => /* @__PURE__ */ jsx104(AdminUserCard, { user, className: "border-0 shadow-none rounded-none border-b last:border-b-0" }, user.id)) })
+  ] });
 }
 
 // app/components/admin/ArticleSummary.tsx
-import { jsxDEV as jsxDEV105 } from "react/jsx-dev-runtime";
+import { jsx as jsx105 } from "react/jsx-runtime";
 function ArticleSummary() {
-  return /* @__PURE__ */ jsxDEV105("div", { className: "basis-1/5 p-3" }, void 0, !1, {
-    fileName: "app/components/admin/ArticleSummary.tsx",
-    lineNumber: 2,
-    columnNumber: 13
-  }, this);
+  return /* @__PURE__ */ jsx105("div", { className: "basis-1/5 p-3" });
 }
 
 // app/components/admin/Aggregator.tsx
-import { jsxDEV as jsxDEV106 } from "react/jsx-dev-runtime";
+import { jsx as jsx106 } from "react/jsx-runtime";
 function Aggregator({ className, children, ...props }) {
-  return /* @__PURE__ */ jsxDEV106("div", { className: "@container", children: /* @__PURE__ */ jsxDEV106(
+  return /* @__PURE__ */ jsx106("div", { className: "@container", children: /* @__PURE__ */ jsx106(
     "aside",
     {
       ...props,
@@ -12845,41 +6411,21 @@ function Aggregator({ className, children, ...props }) {
         className
       ),
       children
-    },
-    void 0,
-    !1,
-    {
-      fileName: "app/components/admin/Aggregator.tsx",
-      lineNumber: 8,
-      columnNumber: 13
-    },
-    this
-  ) }, void 0, !1, {
-    fileName: "app/components/admin/Aggregator.tsx",
-    lineNumber: 7,
-    columnNumber: 9
-  }, this);
+    }
+  ) });
 }
 function AggregatorItem({ className, children, ...props }) {
-  return /* @__PURE__ */ jsxDEV106("div", { className: cn("flex gap-3 items-center text-nowrap min-w-48", className), ...props, children }, void 0, !1, {
-    fileName: "app/components/admin/Aggregator.tsx",
-    lineNumber: 20,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsx106("div", { className: cn("flex gap-3 items-center text-nowrap min-w-48", className), ...props, children });
 }
 
 // app/components/admin/ContestSummary.tsx
-import { jsxDEV as jsxDEV107 } from "react/jsx-dev-runtime";
+import { jsx as jsx107, jsxs as jsxs90 } from "react/jsx-runtime";
 function ContestSummary({ contests: contests2 }) {
   let ongoingCount = contests2.filter((contest) => contest.status === "ongoing").length, yetToStartCount = contests2.filter((contest) => contest.status === "yet_to_start").length, closedCount = contests2.filter((contest) => ["completed", "registering"].includes(contest.status)).length;
-  return /* @__PURE__ */ jsxDEV107("div", { className: "border rounded-xl overflow-hidden grow", children: [
-    /* @__PURE__ */ jsxDEV107("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsxDEV107("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Contests" }, void 0, !1, {
-        fileName: "app/components/admin/ContestSummary.tsx",
-        lineNumber: 14,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV107(
+  return /* @__PURE__ */ jsxs90("div", { className: "border rounded-xl overflow-hidden grow", children: [
+    /* @__PURE__ */ jsxs90("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx107("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Contests" }),
+      /* @__PURE__ */ jsx107(
         Cta_default,
         {
           element: "link",
@@ -12887,181 +6433,53 @@ function ContestSummary({ contests: contests2 }) {
           variant: "outline",
           className: "border-disabled rounded-lg text-inherit py-1.5 px-3 text-xs font-medium",
           children: "See Contests"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/admin/ContestSummary.tsx",
-          lineNumber: 15,
-          columnNumber: 13
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/ContestSummary.tsx",
-      lineNumber: 13,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV107("div", { className: "px-4", children: [
-      /* @__PURE__ */ jsxDEV107(Aggregator, { className: "my-4", children: [
-        /* @__PURE__ */ jsxDEV107(AggregatorItem, { children: [
-          /* @__PURE__ */ jsxDEV107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV107(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 24,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 23,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV107("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV107("span", { className: "text-primary font-satoshi-black", children: contests2.length }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 27,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV107("span", { className: "", children: "Contests Created" }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 28,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 26,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/ContestSummary.tsx",
-          lineNumber: 22,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV107(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV107(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 33,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 32,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV107("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV107("span", { className: "text-primary font-satoshi-black", children: ongoingCount }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 36,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV107("span", { className: "", children: "Ongoing Contests" }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 37,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 35,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/ContestSummary.tsx",
-          lineNumber: 31,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV107(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV107(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 42,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 41,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV107("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV107("span", { className: "text-primary font-satoshi-black", children: yetToStartCount }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 45,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV107("span", { className: "", children: "Yet To Start Contests" }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 46,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 44,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/ContestSummary.tsx",
-          lineNumber: 40,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV107(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV107(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 51,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 50,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV107("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV107("span", { className: "text-primary font-satoshi-black", children: closedCount }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 54,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV107("span", { className: "", children: "Closed Contests" }, void 0, !1, {
-              fileName: "app/components/admin/ContestSummary.tsx",
-              lineNumber: 55,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/ContestSummary.tsx",
-            lineNumber: 53,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/ContestSummary.tsx",
-          lineNumber: 49,
-          columnNumber: 17
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/ContestSummary.tsx",
-        lineNumber: 21,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV107(ContestTable, { data: contests2.slice(0, 5) }, void 0, !1, {
-        fileName: "app/components/admin/ContestSummary.tsx",
-        lineNumber: 59,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/ContestSummary.tsx",
-      lineNumber: 20,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/ContestSummary.tsx",
-    lineNumber: 12,
-    columnNumber: 12
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsxs90("div", { className: "px-4", children: [
+      /* @__PURE__ */ jsxs90(Aggregator, { className: "my-4", children: [
+        /* @__PURE__ */ jsxs90(AggregatorItem, { children: [
+          /* @__PURE__ */ jsx107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx107(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs90("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx107("span", { className: "text-primary font-satoshi-black", children: contests2.length }),
+            /* @__PURE__ */ jsx107("span", { className: "", children: "Contests Created" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs90(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx107(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs90("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx107("span", { className: "text-primary font-satoshi-black", children: ongoingCount }),
+            /* @__PURE__ */ jsx107("span", { className: "", children: "Ongoing Contests" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs90(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx107(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs90("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx107("span", { className: "text-primary font-satoshi-black", children: yetToStartCount }),
+            /* @__PURE__ */ jsx107("span", { className: "", children: "Yet To Start Contests" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs90(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx107("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx107(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs90("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx107("span", { className: "text-primary font-satoshi-black", children: closedCount }),
+            /* @__PURE__ */ jsx107("span", { className: "", children: "Closed Contests" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx107(ContestTable, { data: contests2.slice(0, 5) })
+    ] })
+  ] });
 }
 
 // app/components/admin/TournamentSummary.tsx
-import { jsxDEV as jsxDEV108 } from "react/jsx-dev-runtime";
+import { jsx as jsx108, jsxs as jsxs91 } from "react/jsx-runtime";
 function TournamentSummary({ tournaments }) {
   let numberOfContests = tournaments.reduce((total, tournament) => total + tournament.contests.length, 0);
-  return /* @__PURE__ */ jsxDEV108("div", { className: "border rounded-xl overflow-hidden grow max-w-2xl", children: [
-    /* @__PURE__ */ jsxDEV108("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsxDEV108("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Tournaments" }, void 0, !1, {
-        fileName: "app/components/admin/TournamentSummary.tsx",
-        lineNumber: 12,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV108(
+  return /* @__PURE__ */ jsxs91("div", { className: "border rounded-xl overflow-hidden grow max-w-2xl", children: [
+    /* @__PURE__ */ jsxs91("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx108("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Tournaments" }),
+      /* @__PURE__ */ jsx108(
         Cta_default,
         {
           element: "link",
@@ -13069,105 +6487,29 @@ function TournamentSummary({ tournaments }) {
           variant: "outline",
           className: "border-disabled rounded-lg text-inherit py-1.5 px-3 text-xs font-medium",
           children: "See Tournaments"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/admin/TournamentSummary.tsx",
-          lineNumber: 13,
-          columnNumber: 13
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/TournamentSummary.tsx",
-      lineNumber: 11,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV108("div", { className: "px-4 grid", children: [
-      /* @__PURE__ */ jsxDEV108(Aggregator, { className: "mt-4", children: [
-        /* @__PURE__ */ jsxDEV108(AggregatorItem, { children: [
-          /* @__PURE__ */ jsxDEV108("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV108(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 22,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 21,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV108("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV108("span", { className: "text-primary font-satoshi-black", children: tournaments.length }, void 0, !1, {
-              fileName: "app/components/admin/TournamentSummary.tsx",
-              lineNumber: 25,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV108("span", { className: "", children: "Tournaments Created" }, void 0, !1, {
-              fileName: "app/components/admin/TournamentSummary.tsx",
-              lineNumber: 26,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 24,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/TournamentSummary.tsx",
-          lineNumber: 20,
-          columnNumber: 17
-        }, this),
-        /* @__PURE__ */ jsxDEV108(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV108("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV108(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 31,
-            columnNumber: 25
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 30,
-            columnNumber: 21
-          }, this),
-          /* @__PURE__ */ jsxDEV108("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV108("span", { className: "text-primary font-satoshi-black", children: numberOfContests }, void 0, !1, {
-              fileName: "app/components/admin/TournamentSummary.tsx",
-              lineNumber: 34,
-              columnNumber: 25
-            }, this),
-            /* @__PURE__ */ jsxDEV108("span", { className: "", children: "Contests Created" }, void 0, !1, {
-              fileName: "app/components/admin/TournamentSummary.tsx",
-              lineNumber: 35,
-              columnNumber: 25
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/TournamentSummary.tsx",
-            lineNumber: 33,
-            columnNumber: 21
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/TournamentSummary.tsx",
-          lineNumber: 29,
-          columnNumber: 17
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/TournamentSummary.tsx",
-        lineNumber: 19,
-        columnNumber: 13
-      }, this),
-      tournaments.slice(0, 2).map((tournament) => /* @__PURE__ */ jsxDEV108(TournamentCard, { tournament, className: "border-0 shadow-none bg-transparent rounded-none border-b last:border-b-0" }, tournament.id, !1, {
-        fileName: "app/components/admin/TournamentSummary.tsx",
-        lineNumber: 40,
-        columnNumber: 17
-      }, this))
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/TournamentSummary.tsx",
-      lineNumber: 18,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/TournamentSummary.tsx",
-    lineNumber: 10,
-    columnNumber: 12
-  }, this);
+    ] }),
+    /* @__PURE__ */ jsxs91("div", { className: "px-4 grid", children: [
+      /* @__PURE__ */ jsxs91(Aggregator, { className: "mt-4", children: [
+        /* @__PURE__ */ jsxs91(AggregatorItem, { children: [
+          /* @__PURE__ */ jsx108("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx108(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs91("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx108("span", { className: "text-primary font-satoshi-black", children: tournaments.length }),
+            /* @__PURE__ */ jsx108("span", { className: "", children: "Tournaments Created" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs91(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx108("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx108(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs91("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx108("span", { className: "text-primary font-satoshi-black", children: numberOfContests }),
+            /* @__PURE__ */ jsx108("span", { className: "", children: "Contests Created" })
+          ] })
+        ] })
+      ] }),
+      tournaments.slice(0, 2).map((tournament) => /* @__PURE__ */ jsx108(TournamentCard, { tournament, className: "border-0 shadow-none bg-transparent rounded-none border-b last:border-b-0" }, tournament.id))
+    ] })
+  ] });
 }
 
 // app/components/admin/TransactionSummary.tsx
@@ -13176,16 +6518,12 @@ import { useState as useState21 } from "react";
 // app/components/reusables/Doughnut.tsx
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import { jsxDEV as jsxDEV109 } from "react/jsx-dev-runtime";
+import { jsx as jsx109 } from "react/jsx-runtime";
 ChartJS.register(ArcElement, Tooltip, Legend);
-var DoughnutChart = (props) => /* @__PURE__ */ jsxDEV109(Doughnut, { ...props }, void 0, !1, {
-  fileName: "app/components/reusables/Doughnut.tsx",
-  lineNumber: 8,
-  columnNumber: 12
-}, this), Doughnut_default = DoughnutChart;
+var DoughnutChart = (props) => /* @__PURE__ */ jsx109(Doughnut, { ...props }), Doughnut_default = DoughnutChart;
 
 // app/components/admin/TransactionSummary.tsx
-import { jsxDEV as jsxDEV110 } from "react/jsx-dev-runtime";
+import { jsx as jsx110, jsxs as jsxs92 } from "react/jsx-runtime";
 var numberFormatterOptions4 = { style: "currency", currency: "NGN", currencyDisplay: "code" };
 function TransactionSummary({ data }) {
   let years = Object.keys(data).reverse(), [selectedYear, setSelectedYear] = useState21(years[0]), yearData = data[selectedYear], colors = ["#6246EA", "#817EFB", "#A3A8FE"], doughnutData = {
@@ -13196,101 +6534,33 @@ function TransactionSummary({ data }) {
       hoverOffset: 10
     }]
   };
-  return /* @__PURE__ */ jsxDEV110("div", { className: "border rounded-xl overflow-hidden basis-1/3 grow max-w-xl", children: [
-    /* @__PURE__ */ jsxDEV110("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsxDEV110("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Transactions" }, void 0, !1, {
-        fileName: "app/components/admin/TransactionSummary.tsx",
-        lineNumber: 28,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV110(Select, { onValueChange: (year) => setSelectedYear(year), children: [
-        /* @__PURE__ */ jsxDEV110(SelectTrigger, { className: "w-max", children: /* @__PURE__ */ jsxDEV110(SelectValue, { placeholder: years[0], defaultValue: years[0] }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 31,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 30,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV110(SelectContent, { children: years.map((year) => /* @__PURE__ */ jsxDEV110(SelectItem, { value: year, children: year }, year, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 34,
-          columnNumber: 45
-        }, this)) }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 33,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/TransactionSummary.tsx",
-        lineNumber: 29,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/TransactionSummary.tsx",
-      lineNumber: 27,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV110("div", { className: "p-4 grid max-sm:text-sm", children: [
-      /* @__PURE__ */ jsxDEV110(Doughnut_default, { data: doughnutData, className: "max-w-sm max-h-[384px] place-self-center" }, void 0, !1, {
-        fileName: "app/components/admin/TransactionSummary.tsx",
-        lineNumber: 39,
-        columnNumber: 17
-      }, this),
-      Object.entries(yearData).map(([transaction, amount], idx) => /* @__PURE__ */ jsxDEV110("span", { className: "flex justify-between py-3 border-b last:border-b-0 text-primary font-medium", children: [
-        /* @__PURE__ */ jsxDEV110("span", { className: "flex items-center gap-2 capitalize", children: [
-          /* @__PURE__ */ jsxDEV110("div", { className: cn("w-3 h-3 rounded-[4px] bg-[#A3A8FE]", `bg-[${colors[idx]}]`) }, void 0, !1, {
-            fileName: "app/components/admin/TransactionSummary.tsx",
-            lineNumber: 43,
-            columnNumber: 29
-          }, this),
+  return /* @__PURE__ */ jsxs92("div", { className: "border rounded-xl overflow-hidden basis-1/3 grow max-w-xl", children: [
+    /* @__PURE__ */ jsxs92("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx110("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Transactions" }),
+      /* @__PURE__ */ jsxs92(Select, { onValueChange: (year) => setSelectedYear(year), children: [
+        /* @__PURE__ */ jsx110(SelectTrigger, { className: "w-max", children: /* @__PURE__ */ jsx110(SelectValue, { placeholder: years[0], defaultValue: years[0] }) }),
+        /* @__PURE__ */ jsx110(SelectContent, { children: years.map((year) => /* @__PURE__ */ jsx110(SelectItem, { value: year, children: year }, year)) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs92("div", { className: "p-4 grid max-sm:text-sm", children: [
+      /* @__PURE__ */ jsx110(Doughnut_default, { data: doughnutData, className: "max-w-sm max-h-[384px] place-self-center" }),
+      Object.entries(yearData).map(([transaction, amount], idx) => /* @__PURE__ */ jsxs92("span", { className: "flex justify-between py-3 border-b last:border-b-0 text-primary font-medium", children: [
+        /* @__PURE__ */ jsxs92("span", { className: "flex items-center gap-2 capitalize", children: [
+          /* @__PURE__ */ jsx110("div", { className: cn("w-3 h-3 rounded-[4px] bg-[#A3A8FE]", `bg-[${colors[idx]}]`) }),
           transaction
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 42,
-          columnNumber: 25
-        }, this),
-        /* @__PURE__ */ jsxDEV110("span", { children: numberFormatter(amount, numberFormatterOptions4) }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 46,
-          columnNumber: 25
-        }, this)
-      ] }, transaction, !0, {
-        fileName: "app/components/admin/TransactionSummary.tsx",
-        lineNumber: 41,
-        columnNumber: 21
-      }, this)),
-      /* @__PURE__ */ jsxDEV110("span", { className: "flex justify-between py-3 border-b last:border-b-0 text-primary font-bold", children: [
-        /* @__PURE__ */ jsxDEV110("span", { className: "flex items-center gap-2 uppercase", children: "TOTAL" }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 50,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV110("span", { children: numberFormatter(Object.values(yearData).reduce((sum, curr) => sum + curr, 0), numberFormatterOptions4) }, void 0, !1, {
-          fileName: "app/components/admin/TransactionSummary.tsx",
-          lineNumber: 53,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/TransactionSummary.tsx",
-        lineNumber: 49,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/TransactionSummary.tsx",
-      lineNumber: 38,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/TransactionSummary.tsx",
-    lineNumber: 26,
-    columnNumber: 9
-  }, this);
+        ] }),
+        /* @__PURE__ */ jsx110("span", { children: numberFormatter(amount, numberFormatterOptions4) })
+      ] }, transaction)),
+      /* @__PURE__ */ jsxs92("span", { className: "flex justify-between py-3 border-b last:border-b-0 text-primary font-bold", children: [
+        /* @__PURE__ */ jsx110("span", { className: "flex items-center gap-2 uppercase", children: "TOTAL" }),
+        /* @__PURE__ */ jsx110("span", { children: numberFormatter(Object.values(yearData).reduce((sum, curr) => sum + curr, 0), numberFormatterOptions4) })
+      ] })
+    ] })
+  ] });
 }
 
 // app/routes/admin.overview.tsx
-import { jsxDEV as jsxDEV111 } from "react/jsx-dev-runtime";
+import { jsx as jsx111, jsxs as jsxs93 } from "react/jsx-runtime";
 async function loader27({}) {
   let { data: contests2 } = await contestRepo.getContests(), { data: tournaments } = await tournamentRepo.getTournaments();
   return json27({
@@ -13306,59 +6576,19 @@ async function loader27({}) {
 }
 function Home() {
   let { adminUsers: adminUsers2, tournaments, contests: contests2, transactions } = useLoaderData27();
-  return /* @__PURE__ */ jsxDEV111("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV111("h1", { className: "grid font-medium text-primary", children: [
-      /* @__PURE__ */ jsxDEV111("span", { className: "text-xl sm:text-2xl font-satoshi-bold line-clamp-1", children: "Hello Admin" }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 32,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV111("span", { className: "line-clamp-1", children: "Welcome back to KOTMY \u{1F44B}" }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 33,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.overview.tsx",
-      lineNumber: 31,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV111("section", { className: "my-6 grid sm:flex flex-wrap items-start gap-6", children: [
-      /* @__PURE__ */ jsxDEV111(AdminSummary, { users: adminUsers2 }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 36,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV111(ArticleSummary, {}, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV111(TournamentSummary, { tournaments }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV111(TransactionSummary, { data: transactions }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 39,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV111(ContestSummary, { contests: contests2 }, void 0, !1, {
-        fileName: "app/routes/admin.overview.tsx",
-        lineNumber: 40,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.overview.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.overview.tsx",
-    lineNumber: 30,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsxs93("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs93("h1", { className: "grid font-medium text-primary", children: [
+      /* @__PURE__ */ jsx111("span", { className: "text-xl sm:text-2xl font-satoshi-bold line-clamp-1", children: "Hello Admin" }),
+      /* @__PURE__ */ jsx111("span", { className: "line-clamp-1", children: "Welcome back to KOTMY \u{1F44B}" })
+    ] }),
+    /* @__PURE__ */ jsxs93("section", { className: "my-6 grid sm:flex flex-wrap items-start gap-6", children: [
+      /* @__PURE__ */ jsx111(AdminSummary, { users: adminUsers2 }),
+      /* @__PURE__ */ jsx111(ArticleSummary, {}),
+      /* @__PURE__ */ jsx111(TournamentSummary, { tournaments }),
+      /* @__PURE__ */ jsx111(TransactionSummary, { data: transactions }),
+      /* @__PURE__ */ jsx111(ContestSummary, { contests: contests2 })
+    ] })
+  ] });
 }
 
 // app/routes/admin._index.tsx
@@ -13435,7 +6665,7 @@ var AuthServer = class {
 }, authServer = new AuthServer();
 
 // app/routes/user.profile.tsx
-import { Fragment as Fragment11, jsxDEV as jsxDEV112 } from "react/jsx-dev-runtime";
+import { Fragment as Fragment11, jsx as jsx112, jsxs as jsxs94 } from "react/jsx-runtime";
 async function loader29({ request }) {
   let cookieHeader = request.headers.get("Cookie"), { data, error } = await authServer.getMe(cookieHeader || "");
   return json28({ data, error });
@@ -13463,157 +6693,41 @@ function useUserProfileController() {
 }
 function UserProfilePage() {
   let { profile, email, imagePreview, fileInputRef, handleImageChange } = useUserProfileController(), isLoading = !profile && !email;
-  return /* @__PURE__ */ jsxDEV112("div", { className: "min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16", children: /* @__PURE__ */ jsxDEV112("div", { className: "max-w-2xl w-full px-4 sm:px-6 lg:px-8", children: [
-    /* @__PURE__ */ jsxDEV112("div", { className: "flex flex-col items-center mb-8", children: [
-      /* @__PURE__ */ jsxDEV112("div", { className: "w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-200 mb-4", children: isLoading ? /* @__PURE__ */ jsxDEV112("div", { className: "w-full h-full bg-gray-200 animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 79,
-        columnNumber: 15
-      }, this) : imagePreview ? /* @__PURE__ */ jsxDEV112("img", { src: imagePreview, alt: "Profile", className: "w-full h-full object-cover" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 81,
-        columnNumber: 15
-      }, this) : /* @__PURE__ */ jsxDEV112(Svg, { src: icons.avatarIcon, className: "w-full h-full" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 83,
-        columnNumber: 15
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 77,
-        columnNumber: 11
-      }, this),
-      isLoading ? /* @__PURE__ */ jsxDEV112(Fragment11, { children: [
-        /* @__PURE__ */ jsxDEV112("div", { className: "h-8 w-40 bg-gray-200 rounded animate-pulse mb-2" }, void 0, !1, {
-          fileName: "app/routes/user.profile.tsx",
-          lineNumber: 88,
-          columnNumber: 15
-        }, this),
-        /* @__PURE__ */ jsxDEV112("div", { className: "h-5 w-56 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-          fileName: "app/routes/user.profile.tsx",
-          lineNumber: 89,
-          columnNumber: 15
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 87,
-        columnNumber: 13
-      }, this) : /* @__PURE__ */ jsxDEV112(Fragment11, { children: [
-        /* @__PURE__ */ jsxDEV112("h1", { className: "text-3xl font-bold text-gray-900", children: [
+  return /* @__PURE__ */ jsx112("div", { className: "min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16", children: /* @__PURE__ */ jsxs94("div", { className: "max-w-2xl w-full px-4 sm:px-6 lg:px-8", children: [
+    /* @__PURE__ */ jsxs94("div", { className: "flex flex-col items-center mb-8", children: [
+      /* @__PURE__ */ jsx112("div", { className: "w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-200 mb-4", children: isLoading ? /* @__PURE__ */ jsx112("div", { className: "w-full h-full bg-gray-200 animate-pulse" }) : imagePreview ? /* @__PURE__ */ jsx112("img", { src: imagePreview, alt: "Profile", className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx112(Svg, { src: icons.avatarIcon, className: "w-full h-full" }) }),
+      isLoading ? /* @__PURE__ */ jsxs94(Fragment11, { children: [
+        /* @__PURE__ */ jsx112("div", { className: "h-8 w-40 bg-gray-200 rounded animate-pulse mb-2" }),
+        /* @__PURE__ */ jsx112("div", { className: "h-5 w-56 bg-gray-200 rounded animate-pulse" })
+      ] }) : /* @__PURE__ */ jsxs94(Fragment11, { children: [
+        /* @__PURE__ */ jsxs94("h1", { className: "text-3xl font-bold text-gray-900", children: [
           profile?.first_name,
           " ",
           profile?.last_name
-        ] }, void 0, !0, {
-          fileName: "app/routes/user.profile.tsx",
-          lineNumber: 93,
-          columnNumber: 15
-        }, this),
-        /* @__PURE__ */ jsxDEV112("p", { className: "text-lg text-gray-600", children: email }, void 0, !1, {
-          fileName: "app/routes/user.profile.tsx",
-          lineNumber: 94,
-          columnNumber: 15
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 92,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.profile.tsx",
-      lineNumber: 76,
-      columnNumber: 9
-    }, this),
-    isLoading ? /* @__PURE__ */ jsxDEV112("div", { className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 100,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 101,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 102,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 103,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 104,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("div", { className: "h-12 bg-gray-200 rounded animate-pulse" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 105,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.profile.tsx",
-      lineNumber: 99,
-      columnNumber: 11
-    }, this) : /* @__PURE__ */ jsxDEV112(Form14, { method: "POST", encType: "multipart/form-data", className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
-      /* @__PURE__ */ jsxDEV112(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", defaultValue: profile?.first_name, icon: icons.avatarIcon, required: !0 }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 109,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 110,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112(FormControl, { as: "input", id: "email", name: "email", labelText: "Email", defaultValue: email, icon: icons.avatarIcon, required: !0, readOnly: !0 }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 111,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112(FormControl, { as: "input", id: "status", name: "status", labelText: "Status", defaultValue: profile?.status, icon: icons.avatarIcon }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 112,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
-        /* @__PURE__ */ jsxDEV112(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }, void 0, !1, {
-          fileName: "app/routes/user.profile.tsx",
-          lineNumber: 114,
-          columnNumber: 15
-        }, this),
+        ] }),
+        /* @__PURE__ */ jsx112("p", { className: "text-lg text-gray-600", children: email })
+      ] })
+    ] }),
+    isLoading ? /* @__PURE__ */ jsxs94("div", { className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-12 bg-gray-200 rounded animate-pulse" })
+    ] }) : /* @__PURE__ */ jsxs94(Form14, { method: "POST", encType: "multipart/form-data", className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", defaultValue: profile?.first_name, icon: icons.avatarIcon, required: !0 }),
+      /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 }),
+      /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "email", name: "email", labelText: "Email", defaultValue: email, icon: icons.avatarIcon, required: !0, readOnly: !0 }),
+      /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "status", name: "status", labelText: "Status", defaultValue: profile?.status, icon: icons.avatarIcon }),
+      /* @__PURE__ */ jsxs94("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+        /* @__PURE__ */ jsx112(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
         "Profile Image"
-      ] }, void 0, !0, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 113,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112(DragnDrop, { name: "image", labelText: "Upload Image", multiple: !1, required: !1 }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 118,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV112(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Update Profile" }, void 0, !1, {
-        fileName: "app/routes/user.profile.tsx",
-        lineNumber: 119,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.profile.tsx",
-      lineNumber: 108,
-      columnNumber: 11
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.profile.tsx",
-    lineNumber: 75,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/user.profile.tsx",
-    lineNumber: 74,
-    columnNumber: 5
-  }, this);
+      ] }),
+      /* @__PURE__ */ jsx112(DragnDrop, { name: "image", labelText: "Upload Image", multiple: !1, required: !1 }),
+      /* @__PURE__ */ jsx112(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Update Profile" })
+    ] })
+  ] }) });
 }
 
 // app/routes/_public.tsx
@@ -13626,74 +6740,18 @@ import { Outlet as Outlet3 } from "@remix-run/react";
 
 // app/components/public/Footer.tsx
 import { Link as Link12 } from "@remix-run/react";
-import { jsxDEV as jsxDEV113 } from "react/jsx-dev-runtime";
+import { jsx as jsx113, jsxs as jsxs95 } from "react/jsx-runtime";
 function Footer() {
-  return /* @__PURE__ */ jsxDEV113("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxDEV113("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
-    /* @__PURE__ */ jsxDEV113("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxDEV113("ul", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsxDEV113("li", { children: /* @__PURE__ */ jsxDEV113(Link12, { to: "/contests", children: "Contests" }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 9,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 9,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV113("li", { children: /* @__PURE__ */ jsxDEV113(Link12, { to: "/#contact", children: "Contact" }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 10,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 10,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV113("li", { children: /* @__PURE__ */ jsxDEV113(Link12, { to: "/winners", children: "Winners" }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 11,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 11,
-        columnNumber: 25
-      }, this),
-      /* @__PURE__ */ jsxDEV113("li", { children: /* @__PURE__ */ jsxDEV113(Link12, { to: "/results", children: "Results" }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 12,
-        columnNumber: 29
-      }, this) }, void 0, !1, {
-        fileName: "app/components/public/Footer.tsx",
-        lineNumber: 12,
-        columnNumber: 25
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/Footer.tsx",
-      lineNumber: 8,
-      columnNumber: 21
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/Footer.tsx",
-      lineNumber: 7,
-      columnNumber: 17
-    }, this),
-    /* @__PURE__ */ jsxDEV113("span", { children: "Privacy Policy" }, void 0, !1, {
-      fileName: "app/components/public/Footer.tsx",
-      lineNumber: 15,
-      columnNumber: 17
-    }, this),
-    /* @__PURE__ */ jsxDEV113("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" }, void 0, !1, {
-      fileName: "app/components/public/Footer.tsx",
-      lineNumber: 16,
-      columnNumber: 17
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/Footer.tsx",
-    lineNumber: 6,
-    columnNumber: 13
-  }, this) }, void 0, !1, {
-    fileName: "app/components/public/Footer.tsx",
-    lineNumber: 5,
-    columnNumber: 9
-  }, this);
+  return /* @__PURE__ */ jsx113("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs95("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
+    /* @__PURE__ */ jsx113("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs95("ul", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/contests", children: "Contests" }) }),
+      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/#contact", children: "Contact" }) }),
+      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/winners", children: "Winners" }) }),
+      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/results", children: "Results" }) })
+    ] }) }),
+    /* @__PURE__ */ jsx113("span", { children: "Privacy Policy" }),
+    /* @__PURE__ */ jsx113("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" })
+  ] }) });
 }
 
 // app/components/public/Navigation.tsx
@@ -13703,281 +6761,85 @@ import { Link as Link14, NavLink as NavLink2, useLocation as useLocation5 } from
 // app/components/public/MobileNavigation.tsx
 import { Link as Link13, NavLink, useLocation as useLocation4 } from "@remix-run/react";
 import { useRef as useRef9 } from "react";
-import { jsxDEV as jsxDEV114 } from "react/jsx-dev-runtime";
+import { jsx as jsx114, jsxs as jsxs96 } from "react/jsx-runtime";
 function MobileNavigation({ show, onClose }) {
   let { pathname } = useLocation4(), mobileNav = useRef9(null);
-  return mobileNav.current?.style.setProperty("--left", "0%"), /* @__PURE__ */ jsxDEV114(
+  return mobileNav.current?.style.setProperty("--left", "0%"), /* @__PURE__ */ jsxs96(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "sm:hidden fixed top-0 left-0 bg-primary w-full h-dvh z-10 flex flex-col justify-between mobileNav data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left",
       children: [
-        /* @__PURE__ */ jsxDEV114("header", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxDEV114("div", { className: "flex justify-between items-center", children: [
-            /* @__PURE__ */ jsxDEV114(Link13, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsxDEV114(Svg, { src: icons.logoIcon, width: 37, height: 36 }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 15,
-              columnNumber: 68
-            }, this) }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 15,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV114("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsxDEV114(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 17,
-              columnNumber: 21
-            }, this) }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 16,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 14,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV114("nav", { className: "", children: [
-            /* @__PURE__ */ jsxDEV114("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
-              /* @__PURE__ */ jsxDEV114("li", { children: /* @__PURE__ */ jsxDEV114(NavLink, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/contests") ? /* @__PURE__ */ jsxDEV114(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-                  fileName: "app/components/public/MobileNavigation.tsx",
-                  lineNumber: 23,
-                  columnNumber: 59
-                }, this) : null,
+        /* @__PURE__ */ jsxs96("header", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs96("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsx114(Link13, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx114(Svg, { src: icons.logoIcon, width: 37, height: 36 }) }),
+            /* @__PURE__ */ jsx114("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx114(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
+          ] }),
+          /* @__PURE__ */ jsxs96("nav", { className: "", children: [
+            /* @__PURE__ */ jsxs96("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
+              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/contests") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Contests"
-              ] }, void 0, !0, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 22,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 22,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114("li", { children: /* @__PURE__ */ jsxDEV114(NavLink, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/winners") ? /* @__PURE__ */ jsxDEV114(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-                  fileName: "app/components/public/MobileNavigation.tsx",
-                  lineNumber: 26,
-                  columnNumber: 58
-                }, this) : null,
+              ] }) }),
+              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/winners") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Winners"
-              ] }, void 0, !0, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 25,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 25,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114("li", { children: /* @__PURE__ */ jsxDEV114(NavLink, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/results") ? /* @__PURE__ */ jsxDEV114(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-                  fileName: "app/components/public/MobileNavigation.tsx",
-                  lineNumber: 29,
-                  columnNumber: 58
-                }, this) : null,
+              ] }) }),
+              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/results") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Results"
-              ] }, void 0, !0, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 28,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 28,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114("li", { children: /* @__PURE__ */ jsxDEV114(NavLink, { onClick: onClose, to: "/login", className: "", children: "Sign In" }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 31,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 31,
-                columnNumber: 21
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 21,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV114(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 33,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 20,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 13,
-          columnNumber: 9
-        }, this),
-        /* @__PURE__ */ jsxDEV114("aside", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxDEV114("div", { className: "mb-12", children: [
-            /* @__PURE__ */ jsxDEV114("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 38,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV114("span", { className: "flex gap-4", children: [
-              /* @__PURE__ */ jsxDEV114(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 40,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 41,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 42,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV114(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" }, void 0, !1, {
-                fileName: "app/components/public/MobileNavigation.tsx",
-                lineNumber: 43,
-                columnNumber: 21
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 39,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 37,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV114("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
-            /* @__PURE__ */ jsxDEV114("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 47,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV114("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" }, void 0, !1, {
-              fileName: "app/components/public/MobileNavigation.tsx",
-              lineNumber: 48,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 46,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 36,
-          columnNumber: 9
-        }, this)
+              ] }) }),
+              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(NavLink, { onClick: onClose, to: "/login", className: "", children: "Sign In" }) })
+            ] }),
+            /* @__PURE__ */ jsx114(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs96("aside", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs96("div", { className: "mb-12", children: [
+            /* @__PURE__ */ jsx114("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
+            /* @__PURE__ */ jsxs96("span", { className: "flex gap-4", children: [
+              /* @__PURE__ */ jsx114(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx114(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx114(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx114(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs96("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
+            /* @__PURE__ */ jsx114("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
+            /* @__PURE__ */ jsx114("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
+          ] })
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/public/MobileNavigation.tsx",
-      lineNumber: 11,
-      columnNumber: 13
-    },
-    this
+    }
   );
 }
 
 // app/components/public/Navigation.tsx
-import { jsxDEV as jsxDEV115 } from "react/jsx-dev-runtime";
+import { jsx as jsx115, jsxs as jsxs97 } from "react/jsx-runtime";
 function Navigation() {
   let [showNav, setShowNav] = useState23(!1), { pathname } = useLocation5();
-  return /* @__PURE__ */ jsxDEV115("header", { className: "flex justify-between items-center wrapper py-5", children: [
-    /* @__PURE__ */ jsxDEV115(Link14, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsxDEV115(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }, void 0, !1, {
-      fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 14,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 13,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV115("nav", { className: "hidden md:flex gap-16 items-center", children: [
-      /* @__PURE__ */ jsxDEV115("ul", { className: "flex gap-6 text-xl font-bold", children: [
-        /* @__PURE__ */ jsxDEV115("li", { children: /* @__PURE__ */ jsxDEV115(NavLink2, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/contests") ? /* @__PURE__ */ jsxDEV115(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-            fileName: "app/components/public/Navigation.tsx",
-            lineNumber: 19,
-            columnNumber: 59
-          }, this) : null,
+  return /* @__PURE__ */ jsxs97("header", { className: "flex justify-between items-center wrapper py-5", children: [
+    /* @__PURE__ */ jsx115(Link14, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx115(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsxs97("nav", { className: "hidden md:flex gap-16 items-center", children: [
+      /* @__PURE__ */ jsxs97("ul", { className: "flex gap-6 text-xl font-bold", children: [
+        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/contests") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Contests"
-        ] }, void 0, !0, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 18,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 18,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV115("li", { children: /* @__PURE__ */ jsxDEV115(NavLink2, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/winners") ? /* @__PURE__ */ jsxDEV115(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-            fileName: "app/components/public/Navigation.tsx",
-            lineNumber: 22,
-            columnNumber: 58
-          }, this) : null,
+        ] }) }),
+        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/winners") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Winners"
-        ] }, void 0, !0, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 21,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 21,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV115("li", { children: /* @__PURE__ */ jsxDEV115(NavLink2, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/results") ? /* @__PURE__ */ jsxDEV115(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, !1, {
-            fileName: "app/components/public/Navigation.tsx",
-            lineNumber: 25,
-            columnNumber: 58
-          }, this) : null,
+        ] }) }),
+        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/results") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Results"
-        ] }, void 0, !0, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 24,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 24,
-          columnNumber: 21
-        }, this),
-        /* @__PURE__ */ jsxDEV115("li", { children: /* @__PURE__ */ jsxDEV115(NavLink2, { to: "/login", className: "", children: "Sign In" }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 28,
-          columnNumber: 25
-        }, this) }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 28,
-          columnNumber: 21
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/public/Navigation.tsx",
-        lineNumber: 17,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV115(Button, { element: "a", href: "/signup", children: "Join Now" }, void 0, !1, {
-        fileName: "app/components/public/Navigation.tsx",
-        lineNumber: 30,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 16,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV115(
+        ] }) }),
+        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsx115(NavLink2, { to: "/login", className: "", children: "Sign In" }) })
+      ] }),
+      /* @__PURE__ */ jsx115(Button, { element: "a", href: "/signup", children: "Join Now" })
+    ] }),
+    /* @__PURE__ */ jsx115(
       "button",
       {
         onClick: () => {
@@ -13985,63 +6847,27 @@ function Navigation() {
         },
         title: "hamburger",
         className: "sm:hidden flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsxDEV115(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 }, void 0, !1, {
-          fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 37,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/public/Navigation.tsx",
-        lineNumber: 32,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx115(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 })
+      }
     ),
-    /* @__PURE__ */ jsxDEV115(MobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx115(MobileNavigation, { onClose: () => {
       setShowNav(!1);
-    }, show: showNav }, void 0, !1, {
-      fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 39,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/public/Navigation.tsx",
-    lineNumber: 12,
-    columnNumber: 9
-  }, this);
+    }, show: showNav })
+  ] });
 }
 
 // app/routes/_public.tsx
-import { jsxDEV as jsxDEV116 } from "react/jsx-dev-runtime";
+import { jsx as jsx116, jsxs as jsxs98 } from "react/jsx-runtime";
 var meta = () => [
   { title: "Kid of the Month & Year" },
   { name: "description", content: "Welcome to the best contest platform for children of all ages!" }
 ];
 function Index() {
-  return /* @__PURE__ */ jsxDEV116("div", { className: "min-h-screen bg-primary flex flex-col", children: [
-    /* @__PURE__ */ jsxDEV116(Navigation, {}, void 0, !1, {
-      fileName: "app/routes/_public.tsx",
-      lineNumber: 16,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV116(Outlet3, {}, void 0, !1, {
-      fileName: "app/routes/_public.tsx",
-      lineNumber: 17,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV116(Footer, {}, void 0, !1, {
-      fileName: "app/routes/_public.tsx",
-      lineNumber: 18,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/_public.tsx",
-    lineNumber: 15,
-    columnNumber: 5
-  }, this);
+  return /* @__PURE__ */ jsxs98("div", { className: "min-h-screen bg-primary flex flex-col", children: [
+    /* @__PURE__ */ jsx116(Navigation, {}),
+    /* @__PURE__ */ jsx116(Outlet3, {}),
+    /* @__PURE__ */ jsx116(Footer, {})
+  ] });
 }
 
 // app/routes/logout.tsx
@@ -14051,7 +6877,7 @@ __export(logout_exports, {
 });
 import { Link as Link15, useSearchParams as useSearchParams4 } from "@remix-run/react";
 import { useEffect as useEffect14 } from "react";
-import { jsxDEV as jsxDEV117 } from "react/jsx-dev-runtime";
+import { jsx as jsx117, jsxs as jsxs99 } from "react/jsx-runtime";
 function useLogoutController() {
   let [searchQuery] = useSearchParams4(), { deleteUserStoreManager } = useUserManager();
   useEffect14(() => {
@@ -14059,37 +6885,13 @@ function useLogoutController() {
   }, []);
 }
 function Logout() {
-  return useLogoutController(), /* @__PURE__ */ jsxDEV117("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsxDEV117(Link15, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsxDEV117(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }, void 0, !1, {
-      fileName: "app/routes/logout.tsx",
-      lineNumber: 30,
-      columnNumber: 17
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/logout.tsx",
-      lineNumber: 29,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV117("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
-      /* @__PURE__ */ jsxDEV117("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }, void 0, !1, {
-        fileName: "app/routes/logout.tsx",
-        lineNumber: 34,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV117(Link15, { to: "/login", className: "mt-4 text-center underline", children: "Login again" }, void 0, !1, {
-        fileName: "app/routes/logout.tsx",
-        lineNumber: 35,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/logout.tsx",
-      lineNumber: 33,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/logout.tsx",
-    lineNumber: 28,
-    columnNumber: 5
-  }, this);
+  return useLogoutController(), /* @__PURE__ */ jsxs99("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx117(Link15, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx117(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }) }),
+    /* @__PURE__ */ jsxs99("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
+      /* @__PURE__ */ jsx117("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
+      /* @__PURE__ */ jsx117(Link15, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
+    ] })
+  ] });
 }
 
 // app/routes/signup.tsx
@@ -14102,7 +6904,7 @@ __export(signup_exports, {
 import { Form as Form15, Link as Link16, useActionData as useActionData4, useNavigate as useNavigate12, useSearchParams as useSearchParams5 } from "@remix-run/react";
 import { json as json29 } from "@remix-run/node";
 import { useEffect as useEffect15 } from "react";
-import { jsxDEV as jsxDEV118 } from "react/jsx-dev-runtime";
+import { jsx as jsx118, jsxs as jsxs100 } from "react/jsx-runtime";
 async function loader30({ request }) {
   return null;
 }
@@ -14129,119 +6931,31 @@ function useSignupController() {
 }
 function Signup() {
   let { actionData } = useSignupController();
-  return /* @__PURE__ */ jsxDEV118("main", { className: "bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsxDEV118(Link16, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsxDEV118(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }, void 0, !1, {
-      fileName: "app/routes/signup.tsx",
-      lineNumber: 73,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/signup.tsx",
-      lineNumber: 72,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV118("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxDEV118(Form15, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsxDEV118("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsxDEV118("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsxDEV118("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 80,
-        columnNumber: 15
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 79,
-        columnNumber: 13
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 78,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV118("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 83,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV118("hr", {}, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 84,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV118("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs100("main", { className: "bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx118(Link16, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx118(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx118("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs100(Form15, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx118("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx118("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx118("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx118("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
+      /* @__PURE__ */ jsx118("hr", {}),
+      /* @__PURE__ */ jsxs100("p", { className: "text-center text-sm mt-2", children: [
         "Already have an account? ",
-        /* @__PURE__ */ jsxDEV118(Link16, { to: "/login", className: "text-primary underline", children: "Login" }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 85,
-          columnNumber: 76
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 85,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV118("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsxDEV118(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 87,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 88,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 89,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 90,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 91,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
-          /* @__PURE__ */ jsxDEV118(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }, void 0, !1, {
-            fileName: "app/routes/signup.tsx",
-            lineNumber: 94,
-            columnNumber: 15
-          }, this),
+        /* @__PURE__ */ jsx118(Link16, { to: "/login", className: "text-primary underline", children: "Login" })
+      ] }),
+      /* @__PURE__ */ jsxs100("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }),
+        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
+        /* @__PURE__ */ jsxs100("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+          /* @__PURE__ */ jsx118(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
           "Profile Image"
-        ] }, void 0, !0, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 93,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV118(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" }, void 0, !1, {
-          fileName: "app/routes/signup.tsx",
-          lineNumber: 97,
-          columnNumber: 13
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 86,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV118(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" }, void 0, !1, {
-        fileName: "app/routes/signup.tsx",
-        lineNumber: 99,
-        columnNumber: 11
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/signup.tsx",
-      lineNumber: 77,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/signup.tsx",
-      lineNumber: 75,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/signup.tsx",
-    lineNumber: 71,
-    columnNumber: 5
-  }, this);
+        ] }),
+        /* @__PURE__ */ jsx118(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
+      ] }),
+      /* @__PURE__ */ jsx118(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" })
+    ] }) })
+  ] });
 }
 
 // app/routes/admin.tsx
@@ -14260,25 +6974,17 @@ import { NavLink as NavLink3, useLocation as useLocation6 } from "@remix-run/rea
 // app/components/reusables/Accordion.tsx
 import * as React13 from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { jsxDEV as jsxDEV119 } from "react/jsx-dev-runtime";
-var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxDEV119(
+import { jsx as jsx119, jsxs as jsxs101 } from "react/jsx-runtime";
+var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx119(
   AccordionPrimitive.Item,
   {
     ref,
     className: cn("", className),
     ...props
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Accordion.tsx",
-    lineNumber: 14,
-    columnNumber: 3
-  },
-  this
+  }
 ));
 AccordionItem.displayName = "AccordionItem";
-var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxDEV119(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxDEV119(
+var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx119(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs101(
   AccordionPrimitive.Trigger,
   {
     ref,
@@ -14289,53 +6995,25 @@ var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, re
     ...props,
     children: [
       children,
-      /* @__PURE__ */ jsxDEV119(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" }, void 0, !1, {
-        fileName: "app/components/reusables/Accordion.tsx",
-        lineNumber: 36,
-        columnNumber: 7
-      }, this)
+      /* @__PURE__ */ jsx119(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" })
     ]
-  },
-  void 0,
-  !0,
-  {
-    fileName: "app/components/reusables/Accordion.tsx",
-    lineNumber: 27,
-    columnNumber: 5
-  },
-  this
-) }, void 0, !1, {
-  fileName: "app/components/reusables/Accordion.tsx",
-  lineNumber: 26,
-  columnNumber: 3
-}, this));
+  }
+) }));
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
-var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxDEV119(
+var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx119(
   AccordionPrimitive.Content,
   {
     ref,
     className: "overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
     ...props,
-    children: /* @__PURE__ */ jsxDEV119("div", { className: cn("", className), children }, void 0, !1, {
-      fileName: "app/components/reusables/Accordion.tsx",
-      lineNumber: 51,
-      columnNumber: 5
-    }, this)
-  },
-  void 0,
-  !1,
-  {
-    fileName: "app/components/reusables/Accordion.tsx",
-    lineNumber: 46,
-    columnNumber: 3
-  },
-  this
+    children: /* @__PURE__ */ jsx119("div", { className: cn("", className), children })
+  }
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
 // app/components/admin/AdminMobileNavigation.tsx
 import { useEffect as useEffect16, useRef as useRef10 } from "react";
-import { jsxDEV as jsxDEV120 } from "react/jsx-dev-runtime";
+import { jsx as jsx120, jsxs as jsxs102 } from "react/jsx-runtime";
 var primaryNavs = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview" },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts" },
@@ -14363,352 +7041,136 @@ function AdminMobileNavigation({ show, onClose }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxDEV120("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs102("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsxDEV120(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-      fileName: "app/components/admin/AdminMobileNavigation.tsx",
-      lineNumber: 38,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-    lineNumber: 36,
-    columnNumber: 9
-  }, this);
-  return /* @__PURE__ */ jsxDEV120(
+    /* @__PURE__ */ jsx120(Svg, { src: icons.arrowDownIcon })
+  ] });
+  return /* @__PURE__ */ jsxs102(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxDEV120("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsxDEV120("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }, void 0, !1, {
-            fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 43,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV120(
+        /* @__PURE__ */ jsxs102("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx120("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx120(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsxDEV120(Svg, { src: icons.closeIcon }, void 0, !1, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 49,
-                columnNumber: 17
-              }, this)
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 44,
-              columnNumber: 13
-            },
-            this
+              children: /* @__PURE__ */ jsx120(Svg, { src: icons.closeIcon })
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 42,
-          columnNumber: 9
-        }, this),
-        /* @__PURE__ */ jsxDEV120("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxDEV120("header", { children: [
-            /* @__PURE__ */ jsxDEV120("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxDEV120("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsxDEV120("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsxDEV120("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, !1, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 57,
-                  columnNumber: 29
-                }, this) }, void 0, !1, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 56,
-                  columnNumber: 25
-                }, this),
-                /* @__PURE__ */ jsxDEV120("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsxDEV120("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 60,
-                    columnNumber: 29
-                  }, this),
-                  /* @__PURE__ */ jsxDEV120("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 61,
-                    columnNumber: 29
-                  }, this)
-                ] }, void 0, !0, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 59,
-                  columnNumber: 25
-                }, this)
-              ] }, void 0, !0, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 55,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV120(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsxDEV120("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxDEV120(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsxDEV120(
+        ] }),
+        /* @__PURE__ */ jsxs102("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs102("header", { children: [
+            /* @__PURE__ */ jsxs102("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs102("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx120("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx120("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs102("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx120("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
+                  /* @__PURE__ */ jsx120("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx120(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx120("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs102(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx120(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxDEV120("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsxDEV120(Svg, { src: navItem.icon }, void 0, !1, {
-                        fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                        lineNumber: 80,
-                        columnNumber: 45
-                      }, this),
+                    children: /* @__PURE__ */ jsxs102("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
                       navItem.label
-                    ] }, void 0, !0, {
-                      fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                      lineNumber: 79,
-                      columnNumber: 41
-                    }, this)
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 75,
-                    columnNumber: 37
-                  },
-                  this
+                    ] })
+                  }
                 ),
-                /* @__PURE__ */ jsxDEV120(AccordionContent, { children: /* @__PURE__ */ jsxDEV120("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsxDEV120("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsxDEV120(
+                /* @__PURE__ */ jsx120(AccordionContent, { children: /* @__PURE__ */ jsx120("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx120("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx120(
                   NavLink3,
                   {
                     to: subitem.url,
                     onClick: onClose,
                     className: ({ isActive }) => `${isActive ? "active" : ""}`,
                     children: subitem.label
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 88,
-                    columnNumber: 53
-                  },
-                  this
-                ) }, subitem.label, !1, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 87,
-                  columnNumber: 49
-                }, this)) }, void 0, !1, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 85,
-                  columnNumber: 41
-                }, this) }, void 0, !1, {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 84,
-                  columnNumber: 37
-                }, this)
-              ] }, navItem.label, !0, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 74,
-                columnNumber: 35
-              }, this) : /* @__PURE__ */ jsxDEV120("li", { children: /* @__PURE__ */ jsxDEV120(
+                  }
+                ) }, subitem.label)) }) })
+              ] }, navItem.label) : /* @__PURE__ */ jsx120("li", { children: /* @__PURE__ */ jsxs102(
                 NavLink3,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsxDEV120(Svg, { src: navItem.icon }, void 0, !1, {
-                      fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                      lineNumber: 72,
-                      columnNumber: 37
-                    }, this),
+                    /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
-                },
-                void 0,
-                !0,
-                {
-                  fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                  lineNumber: 67,
-                  columnNumber: 59
-                },
-                this
-              ) }, navItem.label, !1, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 67,
-                columnNumber: 35
-              }, this)) }, void 0, !1, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 65,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 64,
-                columnNumber: 21
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 54,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV120("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsxDEV120("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsxDEV120("li", { children: /* @__PURE__ */ jsxDEV120(
+                }
+              ) }, navItem.label)) }) })
+            ] }),
+            /* @__PURE__ */ jsx120("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx120("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx120("li", { children: /* @__PURE__ */ jsxs102(
               NavLink3,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsxDEV120(Svg, { src: navItem.icon }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 107,
-                    columnNumber: 33
-                  }, this),
+                  /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
-              },
-              void 0,
-              !0,
-              {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 104,
-                columnNumber: 53
-              },
-              this
-            ) }, navItem.label, !1, {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 104,
-              columnNumber: 29
-            }, this)) }, void 0, !1, {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 102,
-              columnNumber: 21
-            }, this) }, void 0, !1, {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 101,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 53,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV120("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxDEV120("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsxDEV120(Svg, { src: icons.themeIcon }, void 0, !1, {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 115,
-                columnNumber: 21
-              }, this),
+              }
+            ) }, navItem.label)) }) })
+          ] }),
+          /* @__PURE__ */ jsxs102("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs102("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx120(Svg, { src: icons.themeIcon }),
               "Theme"
-            ] }, void 0, !0, {
-              fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 114,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV120(
+            ] }),
+            /* @__PURE__ */ jsxs102(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsxDEV120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 120,
-                    columnNumber: 21
-                  }, this),
-                  /* @__PURE__ */ jsxDEV120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 121,
-                    columnNumber: 21
-                  }, this),
-                  /* @__PURE__ */ jsxDEV120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, !1, {
-                    fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                    lineNumber: 122,
-                    columnNumber: 21
-                  }, this)
+                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
-              },
-              void 0,
-              !0,
-              {
-                fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 118,
-                columnNumber: 17
-              },
-              this
+              }
             )
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 113,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 52,
-          columnNumber: 9
-        }, this)
+          ] })
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/admin/AdminMobileNavigation.tsx",
-      lineNumber: 40,
-      columnNumber: 13
-    },
-    this
+    }
   );
 }
 
 // app/components/admin/MobileHeader.tsx
 import { Link as Link17 } from "@remix-run/react";
-import { jsxDEV as jsxDEV121 } from "react/jsx-dev-runtime";
+import { jsx as jsx121, jsxs as jsxs103 } from "react/jsx-runtime";
 function MobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxDEV121("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxDEV121(Link17, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsxDEV121(Svg, { src: icons.logoIcon, width: 37, height: 36 }, void 0, !1, {
-        fileName: "app/components/admin/MobileHeader.tsx",
-        lineNumber: 9,
-        columnNumber: 17
-      }, this),
+  return /* @__PURE__ */ jsxs103("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs103(Link17, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx121(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-ADMIN"
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/MobileHeader.tsx",
-      lineNumber: 8,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV121(
+    ] }),
+    /* @__PURE__ */ jsx121(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsxDEV121(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 }, void 0, !1, {
-          fileName: "app/components/admin/MobileHeader.tsx",
-          lineNumber: 17,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/admin/MobileHeader.tsx",
-        lineNumber: 12,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx121(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+      }
     )
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/MobileHeader.tsx",
-    lineNumber: 7,
-    columnNumber: 9
-  }, this);
+  ] });
 }
 
 // app/components/admin/AdminNav.tsx
 import { NavLink as NavLink4, useLocation as useLocation7 } from "@remix-run/react";
 import { Accordion as Accordion2, AccordionContent as AccordionContent2, AccordionItem as AccordionItem2, AccordionTrigger as AccordionTrigger2 } from "@radix-ui/react-accordion";
-import { jsxDEV as jsxDEV122 } from "react/jsx-dev-runtime";
+import { jsx as jsx122, jsxs as jsxs104 } from "react/jsx-runtime";
 var navs = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview" },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts" },
@@ -14730,189 +7192,69 @@ function AdminNavigation({ show }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxDEV122("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs104("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsxDEV122(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-      fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 31,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/AdminNav.tsx",
-    lineNumber: 29,
-    columnNumber: 9
-  }, this);
-  return show ? /* @__PURE__ */ jsxDEV122("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
-    /* @__PURE__ */ jsxDEV122("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsxDEV122("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }, void 0, !1, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 36,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV122("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsxDEV122("li", { children: /* @__PURE__ */ jsxDEV122(
+    /* @__PURE__ */ jsx122(Svg, { src: icons.arrowDownIcon })
+  ] });
+  return show ? /* @__PURE__ */ jsxs104("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
+    /* @__PURE__ */ jsxs104("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx122("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx122("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx122("li", { children: /* @__PURE__ */ jsxs104(
         NavLink4,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsxDEV122(Svg, { src: navItem.icon }, void 0, !1, {
-              fileName: "app/components/admin/AdminNav.tsx",
-              lineNumber: 42,
-              columnNumber: 29
-            }, this),
+            /* @__PURE__ */ jsx122(Svg, { src: navItem.icon }),
             navItem.label
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 39,
-          columnNumber: 49
-        },
-        this
-      ) }, navItem.label, !1, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 39,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 37,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV122(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxDEV122(AccordionItem2, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxDEV122(
+        }
+      ) }, navItem.label)) }),
+      /* @__PURE__ */ jsx122(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs104(AccordionItem2, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs104(
           AccordionTrigger2,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxDEV122("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsxDEV122(Svg, { src: item.icon }, void 0, !1, {
-                  fileName: "app/components/admin/AdminNav.tsx",
-                  lineNumber: 54,
-                  columnNumber: 37
-                }, this),
+              /* @__PURE__ */ jsxs104("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx122(Svg, { src: item.icon }),
                 item.label
-              ] }, void 0, !0, {
-                fileName: "app/components/admin/AdminNav.tsx",
-                lineNumber: 53,
-                columnNumber: 33
-              }, this),
-              /* @__PURE__ */ jsxDEV122(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" }, void 0, !1, {
-                fileName: "app/components/admin/AdminNav.tsx",
-                lineNumber: 57,
-                columnNumber: 33
-              }, this)
+              ] }),
+              /* @__PURE__ */ jsx122(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
-          },
-          void 0,
-          !0,
-          {
-            fileName: "app/components/admin/AdminNav.tsx",
-            lineNumber: 49,
-            columnNumber: 29
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV122(AccordionContent2, { children: /* @__PURE__ */ jsxDEV122("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsxDEV122("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsxDEV122(
+        /* @__PURE__ */ jsx122(AccordionContent2, { children: /* @__PURE__ */ jsx122("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx122("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx122(
           NavLink4,
           {
             to: subitem.url,
             className: ({ isActive }) => `${isActive ? "active" : ""}`,
             children: subitem.label
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/admin/AdminNav.tsx",
-            lineNumber: 63,
-            columnNumber: 45
-          },
-          this
-        ) }, subitem.label, !1, {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 62,
-          columnNumber: 41
-        }, this)) }, void 0, !1, {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 60,
-          columnNumber: 33
-        }, this) }, void 0, !1, {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 59,
-          columnNumber: 29
-        }, this)
-      ] }, item.label, !0, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 48,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 46,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 35,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV122("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxDEV122("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsxDEV122(Svg, { src: icons.themeIcon }, void 0, !1, {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 78,
-          columnNumber: 21
-        }, this),
+          }
+        ) }, subitem.label)) }) })
+      ] }, item.label)) })
+    ] }),
+    /* @__PURE__ */ jsxs104("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs104("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx122(Svg, { src: icons.themeIcon }),
         "Theme"
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 77,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV122(
+      ] }),
+      /* @__PURE__ */ jsxs104(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsxDEV122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, !1, {
-              fileName: "app/components/admin/AdminNav.tsx",
-              lineNumber: 83,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, !1, {
-              fileName: "app/components/admin/AdminNav.tsx",
-              lineNumber: 84,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, !1, {
-              fileName: "app/components/admin/AdminNav.tsx",
-              lineNumber: 85,
-              columnNumber: 21
-            }, this)
+            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 81,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 76,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/AdminNav.tsx",
-    lineNumber: 34,
-    columnNumber: 11
-  }, this) : null;
+    ] })
+  ] }) : null;
 }
 
 // app/components/admin/PrimaryHeader.tsx
@@ -14920,166 +7262,70 @@ import { Link as Link19 } from "@remix-run/react";
 
 // app/components/admin/AdminToolbar.tsx
 import { Link as Link18 } from "@remix-run/react";
-import { jsxDEV as jsxDEV123 } from "react/jsx-dev-runtime";
+import { jsx as jsx123, jsxs as jsxs105 } from "react/jsx-runtime";
 function AdminToolbar() {
-  let mainComponent = /* @__PURE__ */ jsxDEV123(
+  let mainComponent = /* @__PURE__ */ jsxs105(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxDEV123("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV123("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsxDEV123("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, !1, {
-            fileName: "app/components/admin/AdminToolbar.tsx",
-            lineNumber: 13,
-            columnNumber: 21
-          }, this) }, void 0, !1, {
-            fileName: "app/components/admin/AdminToolbar.tsx",
-            lineNumber: 12,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV123("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV123("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }, void 0, !1, {
-              fileName: "app/components/admin/AdminToolbar.tsx",
-              lineNumber: 16,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV123("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" }, void 0, !1, {
-              fileName: "app/components/admin/AdminToolbar.tsx",
-              lineNumber: 17,
-              columnNumber: 21
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/admin/AdminToolbar.tsx",
-            lineNumber: 15,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/AdminToolbar.tsx",
-          lineNumber: 11,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV123(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-          fileName: "app/components/admin/AdminToolbar.tsx",
-          lineNumber: 20,
-          columnNumber: 13
-        }, this)
+        /* @__PURE__ */ jsxs105("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx123("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx123("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs105("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx123("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
+            /* @__PURE__ */ jsx123("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx123(Svg, { src: icons.arrowDownIcon })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/admin/AdminToolbar.tsx",
-      lineNumber: 9,
-      columnNumber: 9
-    },
-    this
+    }
   );
-  return /* @__PURE__ */ jsxDEV123(
+  return /* @__PURE__ */ jsxs105(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxDEV123(Link18, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsxDEV123(Svg, { src: icons.profileIcon }, void 0, !1, {
-            fileName: "app/components/admin/AdminToolbar.tsx",
-            lineNumber: 27,
-            columnNumber: 17
-          }, this),
+        /* @__PURE__ */ jsxs105(Link18, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx123(Svg, { src: icons.profileIcon }),
           " Profile"
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/AdminToolbar.tsx",
-          lineNumber: 26,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV123(Link18, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsxDEV123(Svg, { src: icons.signoutIcon }, void 0, !1, {
-            fileName: "app/components/admin/AdminToolbar.tsx",
-            lineNumber: 30,
-            columnNumber: 17
-          }, this),
+        ] }),
+        /* @__PURE__ */ jsxs105(Link18, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx123(Svg, { src: icons.signoutIcon }),
           " Sign Out"
-        ] }, void 0, !0, {
-          fileName: "app/components/admin/AdminToolbar.tsx",
-          lineNumber: 29,
-          columnNumber: 13
-        }, this)
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/admin/AdminToolbar.tsx",
-      lineNumber: 24,
-      columnNumber: 9
-    },
-    this
+    }
   );
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { jsxDEV as jsxDEV124 } from "react/jsx-dev-runtime";
+import { jsx as jsx124, jsxs as jsxs106 } from "react/jsx-runtime";
 function PrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxDEV124("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxDEV124("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsxDEV124(
+  return /* @__PURE__ */ jsxs106("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs106("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx124(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsxDEV124(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 }, void 0, !1, {
-            fileName: "app/components/admin/PrimaryHeader.tsx",
-            lineNumber: 16,
-            columnNumber: 21
-          }, this)
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/admin/PrimaryHeader.tsx",
-          lineNumber: 11,
-          columnNumber: 17
-        },
-        this
+          children: /* @__PURE__ */ jsx124(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+        }
       ),
-      /* @__PURE__ */ jsxDEV124(Link19, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsxDEV124(Svg, { src: icons.logoIcon, width: 37, height: 36 }, void 0, !1, {
-          fileName: "app/components/admin/PrimaryHeader.tsx",
-          lineNumber: 19,
-          columnNumber: 21
-        }, this),
+      /* @__PURE__ */ jsxs106(Link19, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx124(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-ADMIN"
-      ] }, void 0, !0, {
-        fileName: "app/components/admin/PrimaryHeader.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/admin/PrimaryHeader.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV124(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }, void 0, !1, {
-      fileName: "app/components/admin/PrimaryHeader.tsx",
-      lineNumber: 23,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV124(AdminToolbar, {}, void 0, !1, {
-      fileName: "app/components/admin/PrimaryHeader.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/admin/PrimaryHeader.tsx",
-    lineNumber: 9,
-    columnNumber: 9
-  }, this);
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx124(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx124(AdminToolbar, {})
+  ] });
 }
 
 // app/routes/admin.tsx
-import { jsxDEV as jsxDEV125 } from "react/jsx-dev-runtime";
+import { jsx as jsx125, jsxs as jsxs107 } from "react/jsx-runtime";
 var meta2 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
@@ -15088,89 +7334,33 @@ function Layout({ children }) {
   let [showNav, setShowNav] = useState24(!1);
   return useEffect17(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxDEV125("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsxDEV125(PrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs107("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx125(PrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
-    } }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 23,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV125(MobileHeader, { toggleNav: () => {
+    } }),
+    /* @__PURE__ */ jsx125(MobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
-    } }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 24,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV125(AdminMobileNavigation, { onClose: () => {
+    } }),
+    /* @__PURE__ */ jsx125(AdminMobileNavigation, { onClose: () => {
       setShowNav(!1);
-    }, show: showNav }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 25,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV125("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsxDEV125(AdminNavigation, { show: showNav }, void 0, !1, {
-        fileName: "app/routes/admin.tsx",
-        lineNumber: 27,
-        columnNumber: 13
-      }, this),
+    }, show: showNav }),
+    /* @__PURE__ */ jsxs107("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx125(AdminNavigation, { show: showNav }),
       children
-    ] }, void 0, !0, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 26,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tsx",
-    lineNumber: 22,
-    columnNumber: 13
-  }, this);
+    ] })
+  ] });
 }
 function AdminLayout() {
-  return /* @__PURE__ */ jsxDEV125(Layout, { children: /* @__PURE__ */ jsxDEV125(Outlet4, {}, void 0, !1, {
-    fileName: "app/routes/admin.tsx",
-    lineNumber: 34,
-    columnNumber: 20
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/admin.tsx",
-    lineNumber: 34,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsx125(Layout, { children: /* @__PURE__ */ jsx125(Outlet4, {}) });
 }
 function ErrorBoundary2() {
   let { pathname } = useLocation8();
-  return /* @__PURE__ */ jsxDEV125(Layout, { children: /* @__PURE__ */ jsxDEV125("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsxDEV125("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 43,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV125("p", { children: "Apologies, something went wrong on our end. Please try again." }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 44,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV125(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 45,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV125(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" }, void 0, !1, {
-      fileName: "app/routes/admin.tsx",
-      lineNumber: 46,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/admin.tsx",
-    lineNumber: 42,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/admin.tsx",
-    lineNumber: 41,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsx125(Layout, { children: /* @__PURE__ */ jsxs107("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx125("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx125("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx125(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx125(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" })
+  ] }) });
 }
 
 // app/routes/login.tsx
@@ -15183,7 +7373,7 @@ __export(login_exports, {
 import { Form as Form16, Link as Link20, useActionData as useActionData5, useNavigate as useNavigate13, useSearchParams as useSearchParams6 } from "@remix-run/react";
 import { json as json30 } from "@remix-run/node";
 import { useEffect as useEffect18 } from "react";
-import { jsxDEV as jsxDEV126 } from "react/jsx-dev-runtime";
+import { jsx as jsx126, jsxs as jsxs108 } from "react/jsx-runtime";
 async function loader31({ request }) {
   return null;
 }
@@ -15219,54 +7409,18 @@ function useLoginController() {
 }
 function Login() {
   let { actionData } = useLoginController();
-  return /* @__PURE__ */ jsxDEV126("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsxDEV126(Link20, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsxDEV126(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }, void 0, !1, {
-      fileName: "app/routes/login.tsx",
-      lineNumber: 94,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/login.tsx",
-      lineNumber: 93,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV126("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxDEV126(Form16, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsxDEV126("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsxDEV126("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsxDEV126("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 101,
-        columnNumber: 25
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 100,
-        columnNumber: 21
-      }, this) }, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 99,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV126("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 104,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV126("hr", {}, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 106,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV126("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs108("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx126(Link20, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx126(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx126("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs108(Form16, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx126("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx126("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx126("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx126("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
+      /* @__PURE__ */ jsx126("hr", {}),
+      /* @__PURE__ */ jsxs108("p", { className: "text-center text-sm mt-2", children: [
         "Don't have an account yet? ",
-        /* @__PURE__ */ jsxDEV126(Link20, { to: "/signup", className: "text-primary underline", children: "Register" }, void 0, !1, {
-          fileName: "app/routes/login.tsx",
-          lineNumber: 107,
-          columnNumber: 90
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 107,
-        columnNumber: 23
-      }, this),
-      /* @__PURE__ */ jsxDEV126("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsxDEV126(
+        /* @__PURE__ */ jsx126(Link20, { to: "/signup", className: "text-primary underline", children: "Register" })
+      ] }),
+      /* @__PURE__ */ jsxs108("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx126(
           FormControl,
           {
             as: "input",
@@ -15276,17 +7430,9 @@ function Login() {
             labelText: "email",
             icon: icons.avatarIcon,
             required: !0
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/login.tsx",
-            lineNumber: 110,
-            columnNumber: 21
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV126(
+        /* @__PURE__ */ jsx126(
           FormControl,
           {
             as: "input",
@@ -15297,40 +7443,12 @@ function Login() {
             type: "password",
             icon: icons.lockIcon,
             required: !0
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/login.tsx",
-            lineNumber: 113,
-            columnNumber: 21
-          },
-          this
+          }
         )
-      ] }, void 0, !0, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 109,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV126(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" }, void 0, !1, {
-        fileName: "app/routes/login.tsx",
-        lineNumber: 116,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/login.tsx",
-      lineNumber: 98,
-      columnNumber: 13
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/login.tsx",
-      lineNumber: 96,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/login.tsx",
-    lineNumber: 92,
-    columnNumber: 12
-  }, this);
+      ] }),
+      /* @__PURE__ */ jsx126(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
+    ] }) })
+  ] });
 }
 
 // app/routes/user.tsx
@@ -15349,218 +7467,98 @@ import { Link as Link22 } from "@remix-run/react";
 // app/components/user/UserToolBar.tsx
 import { Link as Link21, useNavigate as useNavigate14 } from "@remix-run/react";
 import { useEffect as useEffect19, useState as useState25 } from "react";
-import { jsxDEV as jsxDEV127 } from "react/jsx-dev-runtime";
+import { jsx as jsx127, jsxs as jsxs109 } from "react/jsx-runtime";
 function UserToolbar() {
   let [user, setUser] = useState25(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate14();
   useEffect19(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxDEV127(
+  let mainComponent = /* @__PURE__ */ jsxs109(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxDEV127("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsxDEV127("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsxDEV127("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, !1, {
-            fileName: "app/components/user/UserToolBar.tsx",
-            lineNumber: 27,
-            columnNumber: 21
-          }, this) }, void 0, !1, {
-            fileName: "app/components/user/UserToolBar.tsx",
-            lineNumber: 26,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV127("span", { className: "grid", children: [
-            /* @__PURE__ */ jsxDEV127("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }, void 0, !1, {
-              fileName: "app/components/user/UserToolBar.tsx",
-              lineNumber: 30,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV127("span", { className: "block text-xs font-satoshi-medium", children: user?.email }, void 0, !1, {
-              fileName: "app/components/user/UserToolBar.tsx",
-              lineNumber: 31,
-              columnNumber: 21
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/user/UserToolBar.tsx",
-            lineNumber: 29,
-            columnNumber: 17
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/user/UserToolBar.tsx",
-          lineNumber: 25,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV127(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-          fileName: "app/components/user/UserToolBar.tsx",
-          lineNumber: 34,
-          columnNumber: 13
-        }, this)
+        /* @__PURE__ */ jsxs109("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx127("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx127("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx127("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+            /* @__PURE__ */ jsx127("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx127(Svg, { src: icons.arrowDownIcon })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/user/UserToolBar.tsx",
-      lineNumber: 23,
-      columnNumber: 9
-    },
-    this
+    }
   );
-  return /* @__PURE__ */ jsxDEV127(
+  return /* @__PURE__ */ jsxs109(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxDEV127(Link21, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsxDEV127(Svg, { src: icons.profileIcon }, void 0, !1, {
-            fileName: "app/components/user/UserToolBar.tsx",
-            lineNumber: 41,
-            columnNumber: 17
-          }, this),
+        /* @__PURE__ */ jsxs109(Link21, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx127(Svg, { src: icons.profileIcon }),
           " Profile"
-        ] }, void 0, !0, {
-          fileName: "app/components/user/UserToolBar.tsx",
-          lineNumber: 40,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV127(Link21, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsxDEV127(Svg, { src: icons.signoutIcon }, void 0, !1, {
-            fileName: "app/components/user/UserToolBar.tsx",
-            lineNumber: 44,
-            columnNumber: 17
-          }, this),
+        ] }),
+        /* @__PURE__ */ jsxs109(Link21, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx127(Svg, { src: icons.signoutIcon }),
           " Sign Out"
-        ] }, void 0, !0, {
-          fileName: "app/components/user/UserToolBar.tsx",
-          lineNumber: 43,
-          columnNumber: 13
-        }, this)
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/user/UserToolBar.tsx",
-      lineNumber: 38,
-      columnNumber: 9
-    },
-    this
+    }
   );
 }
 
 // app/components/user/UserPrimaryHeader.tsx
-import { jsxDEV as jsxDEV128 } from "react/jsx-dev-runtime";
+import { jsx as jsx128, jsxs as jsxs110 } from "react/jsx-runtime";
 function UserPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxDEV128("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxDEV128("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsxDEV128(
+  return /* @__PURE__ */ jsxs110("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs110("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx128(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsxDEV128(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 }, void 0, !1, {
-            fileName: "app/components/user/UserPrimaryHeader.tsx",
-            lineNumber: 16,
-            columnNumber: 21
-          }, this)
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/components/user/UserPrimaryHeader.tsx",
-          lineNumber: 11,
-          columnNumber: 17
-        },
-        this
+          children: /* @__PURE__ */ jsx128(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+        }
       ),
-      /* @__PURE__ */ jsxDEV128(Link22, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsxDEV128(Svg, { src: icons.logoIcon, width: 37, height: 36 }, void 0, !1, {
-          fileName: "app/components/user/UserPrimaryHeader.tsx",
-          lineNumber: 19,
-          columnNumber: 21
-        }, this),
+      /* @__PURE__ */ jsxs110(Link22, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx128(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-USER"
-      ] }, void 0, !0, {
-        fileName: "app/components/user/UserPrimaryHeader.tsx",
-        lineNumber: 18,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/user/UserPrimaryHeader.tsx",
-      lineNumber: 10,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV128(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }, void 0, !1, {
-      fileName: "app/components/user/UserPrimaryHeader.tsx",
-      lineNumber: 23,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV128(UserToolbar, {}, void 0, !1, {
-      fileName: "app/components/user/UserPrimaryHeader.tsx",
-      lineNumber: 24,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/user/UserPrimaryHeader.tsx",
-    lineNumber: 9,
-    columnNumber: 9
-  }, this);
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx128(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx128(UserToolbar, {})
+  ] });
 }
 
 // app/components/user/UserMobileHeader.tsx
 import { Link as Link23 } from "@remix-run/react";
-import { jsxDEV as jsxDEV129 } from "react/jsx-dev-runtime";
+import { jsx as jsx129, jsxs as jsxs111 } from "react/jsx-runtime";
 function UserMobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxDEV129("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxDEV129(Link23, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsxDEV129(Svg, { src: icons.logoIcon, width: 37, height: 36 }, void 0, !1, {
-        fileName: "app/components/user/UserMobileHeader.tsx",
-        lineNumber: 9,
-        columnNumber: 17
-      }, this),
+  return /* @__PURE__ */ jsxs111("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs111(Link23, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx129(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-USER"
-    ] }, void 0, !0, {
-      fileName: "app/components/user/UserMobileHeader.tsx",
-      lineNumber: 8,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV129(
+    ] }),
+    /* @__PURE__ */ jsx129(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsxDEV129(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 }, void 0, !1, {
-          fileName: "app/components/user/UserMobileHeader.tsx",
-          lineNumber: 17,
-          columnNumber: 17
-        }, this)
-      },
-      void 0,
-      !1,
-      {
-        fileName: "app/components/user/UserMobileHeader.tsx",
-        lineNumber: 12,
-        columnNumber: 13
-      },
-      this
+        children: /* @__PURE__ */ jsx129(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+      }
     )
-  ] }, void 0, !0, {
-    fileName: "app/components/user/UserMobileHeader.tsx",
-    lineNumber: 7,
-    columnNumber: 9
-  }, this);
+  ] });
 }
 
 // app/components/user/UserMobileNavigation.tsx
 import { NavLink as NavLink5, useLocation as useLocation9, useNavigate as useNavigate15 } from "@remix-run/react";
 import { useEffect as useEffect20, useRef as useRef11, useState as useState26 } from "react";
-import { jsxDEV as jsxDEV130 } from "react/jsx-dev-runtime";
+import { jsx as jsx130, jsxs as jsxs112 } from "react/jsx-runtime";
 var primaryNavs2 = [
   { label: "Contests", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -15589,307 +7587,115 @@ function UserMobileNavigation({ show, onClose }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxDEV130("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs112("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsxDEV130(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-      fileName: "app/components/user/UserMobileNavigation.tsx",
-      lineNumber: 50,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/user/UserMobileNavigation.tsx",
-    lineNumber: 48,
-    columnNumber: 9
-  }, this);
-  return /* @__PURE__ */ jsxDEV130(
+    /* @__PURE__ */ jsx130(Svg, { src: icons.arrowDownIcon })
+  ] });
+  return /* @__PURE__ */ jsxs112(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxDEV130("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsxDEV130("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }, void 0, !1, {
-            fileName: "app/components/user/UserMobileNavigation.tsx",
-            lineNumber: 55,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV130(
+        /* @__PURE__ */ jsxs112("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx130("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx130(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsxDEV130(Svg, { src: icons.closeIcon }, void 0, !1, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 61,
-                columnNumber: 17
-              }, this)
-            },
-            void 0,
-            !1,
-            {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 56,
-              columnNumber: 13
-            },
-            this
+              children: /* @__PURE__ */ jsx130(Svg, { src: icons.closeIcon })
+            }
           )
-        ] }, void 0, !0, {
-          fileName: "app/components/user/UserMobileNavigation.tsx",
-          lineNumber: 54,
-          columnNumber: 9
-        }, this),
-        /* @__PURE__ */ jsxDEV130("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxDEV130("header", { children: [
-            /* @__PURE__ */ jsxDEV130("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxDEV130("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsxDEV130("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsxDEV130("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, !1, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 69,
-                  columnNumber: 29
-                }, this) }, void 0, !1, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 68,
-                  columnNumber: 25
-                }, this),
-                /* @__PURE__ */ jsxDEV130("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsxDEV130("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 72,
-                    columnNumber: 29
-                  }, this),
-                  /* @__PURE__ */ jsxDEV130("span", { className: "block text-xs font-satoshi-medium", children: user?.email }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 73,
-                    columnNumber: 29
-                  }, this)
-                ] }, void 0, !0, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 71,
-                  columnNumber: 25
-                }, this)
-              ] }, void 0, !0, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 67,
-                columnNumber: 21
-              }, this),
-              /* @__PURE__ */ jsxDEV130(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsxDEV130("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxDEV130(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsxDEV130(
+        ] }),
+        /* @__PURE__ */ jsxs112("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs112("header", { children: [
+            /* @__PURE__ */ jsxs112("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs112("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx130("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx130("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs112("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx130("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+                  /* @__PURE__ */ jsx130("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx130(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx130("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs112(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx130(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxDEV130("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsxDEV130(Svg, { src: navItem.icon }, void 0, !1, {
-                        fileName: "app/components/user/UserMobileNavigation.tsx",
-                        lineNumber: 92,
-                        columnNumber: 45
-                      }, this),
+                    children: /* @__PURE__ */ jsxs112("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
                       navItem.label
-                    ] }, void 0, !0, {
-                      fileName: "app/components/user/UserMobileNavigation.tsx",
-                      lineNumber: 91,
-                      columnNumber: 41
-                    }, this)
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 87,
-                    columnNumber: 37
-                  },
-                  this
+                    ] })
+                  }
                 ),
-                /* @__PURE__ */ jsxDEV130(AccordionContent, { children: /* @__PURE__ */ jsxDEV130("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsxDEV130("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsxDEV130(
+                /* @__PURE__ */ jsx130(AccordionContent, { children: /* @__PURE__ */ jsx130("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx130("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx130(
                   NavLink5,
                   {
                     to: subitem.url,
                     onClick: onClose,
                     className: ({ isActive }) => `${isActive ? "active" : ""}`,
                     children: subitem.label
-                  },
-                  void 0,
-                  !1,
-                  {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 100,
-                    columnNumber: 53
-                  },
-                  this
-                ) }, subitem.label, !1, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 99,
-                  columnNumber: 49
-                }, this)) }, void 0, !1, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 97,
-                  columnNumber: 41
-                }, this) }, void 0, !1, {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 96,
-                  columnNumber: 37
-                }, this)
-              ] }, navItem.label, !0, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 86,
-                columnNumber: 35
-              }, this) : /* @__PURE__ */ jsxDEV130("li", { children: /* @__PURE__ */ jsxDEV130(
+                  }
+                ) }, subitem.label)) }) })
+              ] }, navItem.label) : /* @__PURE__ */ jsx130("li", { children: /* @__PURE__ */ jsxs112(
                 NavLink5,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsxDEV130(Svg, { src: navItem.icon }, void 0, !1, {
-                      fileName: "app/components/user/UserMobileNavigation.tsx",
-                      lineNumber: 84,
-                      columnNumber: 37
-                    }, this),
+                    /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
-                },
-                void 0,
-                !0,
-                {
-                  fileName: "app/components/user/UserMobileNavigation.tsx",
-                  lineNumber: 79,
-                  columnNumber: 59
-                },
-                this
-              ) }, navItem.label, !1, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 79,
-                columnNumber: 35
-              }, this)) }, void 0, !1, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 77,
-                columnNumber: 25
-              }, this) }, void 0, !1, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 76,
-                columnNumber: 21
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 66,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV130("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsxDEV130("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsxDEV130("li", { children: /* @__PURE__ */ jsxDEV130(
+                }
+              ) }, navItem.label)) }) })
+            ] }),
+            /* @__PURE__ */ jsx130("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx130("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx130("li", { children: /* @__PURE__ */ jsxs112(
               NavLink5,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsxDEV130(Svg, { src: navItem.icon }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 119,
-                    columnNumber: 33
-                  }, this),
+                  /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
-              },
-              void 0,
-              !0,
-              {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 116,
-                columnNumber: 53
-              },
-              this
-            ) }, navItem.label, !1, {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 116,
-              columnNumber: 29
-            }, this)) }, void 0, !1, {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 114,
-              columnNumber: 21
-            }, this) }, void 0, !1, {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 113,
-              columnNumber: 17
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/components/user/UserMobileNavigation.tsx",
-            lineNumber: 65,
-            columnNumber: 13
-          }, this),
-          /* @__PURE__ */ jsxDEV130("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxDEV130("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsxDEV130(Svg, { src: icons.themeIcon }, void 0, !1, {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 127,
-                columnNumber: 21
-              }, this),
+              }
+            ) }, navItem.label)) }) })
+          ] }),
+          /* @__PURE__ */ jsxs112("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs112("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx130(Svg, { src: icons.themeIcon }),
               "Theme"
-            ] }, void 0, !0, {
-              fileName: "app/components/user/UserMobileNavigation.tsx",
-              lineNumber: 126,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV130(
+            ] }),
+            /* @__PURE__ */ jsxs112(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsxDEV130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 132,
-                    columnNumber: 21
-                  }, this),
-                  /* @__PURE__ */ jsxDEV130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 133,
-                    columnNumber: 21
-                  }, this),
-                  /* @__PURE__ */ jsxDEV130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, !1, {
-                    fileName: "app/components/user/UserMobileNavigation.tsx",
-                    lineNumber: 134,
-                    columnNumber: 21
-                  }, this)
+                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
-              },
-              void 0,
-              !0,
-              {
-                fileName: "app/components/user/UserMobileNavigation.tsx",
-                lineNumber: 130,
-                columnNumber: 17
-              },
-              this
+              }
             )
-          ] }, void 0, !0, {
-            fileName: "app/components/user/UserMobileNavigation.tsx",
-            lineNumber: 125,
-            columnNumber: 13
-          }, this)
-        ] }, void 0, !0, {
-          fileName: "app/components/user/UserMobileNavigation.tsx",
-          lineNumber: 64,
-          columnNumber: 9
-        }, this)
+          ] })
+        ] })
       ]
-    },
-    void 0,
-    !0,
-    {
-      fileName: "app/components/user/UserMobileNavigation.tsx",
-      lineNumber: 52,
-      columnNumber: 13
-    },
-    this
+    }
   );
 }
 
 // app/components/user/UserNavigation.tsx
 import { NavLink as NavLink6, useLocation as useLocation10 } from "@remix-run/react";
 import { Accordion as Accordion3, AccordionContent as AccordionContent3, AccordionItem as AccordionItem3, AccordionTrigger as AccordionTrigger3 } from "@radix-ui/react-accordion";
-import { jsxDEV as jsxDEV131 } from "react/jsx-dev-runtime";
+import { jsx as jsx131, jsxs as jsxs113 } from "react/jsx-runtime";
 var navs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -15911,193 +7717,73 @@ function UserNavigation({ show }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxDEV131("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs113("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsxDEV131(Svg, { src: icons.arrowDownIcon }, void 0, !1, {
-      fileName: "app/components/user/UserNavigation.tsx",
-      lineNumber: 33,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/user/UserNavigation.tsx",
-    lineNumber: 31,
-    columnNumber: 9
-  }, this);
-  return show ? /* @__PURE__ */ jsxDEV131("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxDEV131("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsxDEV131("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }, void 0, !1, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 38,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV131("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsxDEV131("li", { children: /* @__PURE__ */ jsxDEV131(
+    /* @__PURE__ */ jsx131(Svg, { src: icons.arrowDownIcon })
+  ] });
+  return show ? /* @__PURE__ */ jsxs113("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs113("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx131("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx131("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx131("li", { children: /* @__PURE__ */ jsxs113(
         NavLink6,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsxDEV131(Svg, { src: navItem.icon }, void 0, !1, {
-              fileName: "app/components/user/UserNavigation.tsx",
-              lineNumber: 44,
-              columnNumber: 29
-            }, this),
+            /* @__PURE__ */ jsx131(Svg, { src: navItem.icon }),
             navItem.label
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 41,
-          columnNumber: 49
-        },
-        this
-      ) }, navItem.label, !1, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 41,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 39,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV131(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxDEV131(AccordionItem3, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxDEV131(
+        }
+      ) }, navItem.label)) }),
+      /* @__PURE__ */ jsx131(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs113(AccordionItem3, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs113(
           AccordionTrigger3,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxDEV131("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsxDEV131(Svg, { src: item.icon }, void 0, !1, {
-                  fileName: "app/components/user/UserNavigation.tsx",
-                  lineNumber: 56,
-                  columnNumber: 37
-                }, this),
+              /* @__PURE__ */ jsxs113("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx131(Svg, { src: item.icon }),
                 item.label
-              ] }, void 0, !0, {
-                fileName: "app/components/user/UserNavigation.tsx",
-                lineNumber: 55,
-                columnNumber: 33
-              }, this),
-              /* @__PURE__ */ jsxDEV131(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" }, void 0, !1, {
-                fileName: "app/components/user/UserNavigation.tsx",
-                lineNumber: 59,
-                columnNumber: 33
-              }, this)
+              ] }),
+              /* @__PURE__ */ jsx131(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
-          },
-          void 0,
-          !0,
-          {
-            fileName: "app/components/user/UserNavigation.tsx",
-            lineNumber: 51,
-            columnNumber: 29
-          },
-          this
+          }
         ),
-        /* @__PURE__ */ jsxDEV131(AccordionContent3, { children: /* @__PURE__ */ jsxDEV131("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsxDEV131("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsxDEV131(
+        /* @__PURE__ */ jsx131(AccordionContent3, { children: /* @__PURE__ */ jsx131("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx131("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx131(
           NavLink6,
           {
             to: subitem.url,
             className: ({ isActive }) => `${isActive ? "active" : ""}`,
             children: subitem.label
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/components/user/UserNavigation.tsx",
-            lineNumber: 65,
-            columnNumber: 45
-          },
-          this
-        ) }, subitem.label, !1, {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 64,
-          columnNumber: 41
-        }, this)) }, void 0, !1, {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 62,
-          columnNumber: 33
-        }, this) }, void 0, !1, {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 61,
-          columnNumber: 29
-        }, this)
-      ] }, item.label, !0, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 50,
-        columnNumber: 25
-      }, this)) }, void 0, !1, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 48,
-        columnNumber: 17
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/components/user/UserNavigation.tsx",
-      lineNumber: 37,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV131("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxDEV131("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsxDEV131(Svg, { src: icons.themeIcon }, void 0, !1, {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 80,
-          columnNumber: 21
-        }, this),
+          }
+        ) }, subitem.label)) }) })
+      ] }, item.label)) })
+    ] }),
+    /* @__PURE__ */ jsxs113("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs113("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx131(Svg, { src: icons.themeIcon }),
         "Theme"
-      ] }, void 0, !0, {
-        fileName: "app/components/user/UserNavigation.tsx",
-        lineNumber: 79,
-        columnNumber: 17
-      }, this),
-      /* @__PURE__ */ jsxDEV131(
+      ] }),
+      /* @__PURE__ */ jsxs113(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsxDEV131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, !1, {
-              fileName: "app/components/user/UserNavigation.tsx",
-              lineNumber: 85,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, !1, {
-              fileName: "app/components/user/UserNavigation.tsx",
-              lineNumber: 86,
-              columnNumber: 21
-            }, this),
-            /* @__PURE__ */ jsxDEV131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, !1, {
-              fileName: "app/components/user/UserNavigation.tsx",
-              lineNumber: 87,
-              columnNumber: 21
-            }, this)
+            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
-        },
-        void 0,
-        !0,
-        {
-          fileName: "app/components/user/UserNavigation.tsx",
-          lineNumber: 83,
-          columnNumber: 17
-        },
-        this
+        }
       )
-    ] }, void 0, !0, {
-      fileName: "app/components/user/UserNavigation.tsx",
-      lineNumber: 78,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/components/user/UserNavigation.tsx",
-    lineNumber: 36,
-    columnNumber: 11
-  }, this) : null;
+    ] })
+  ] }) : null;
 }
 
 // app/routes/user.tsx
-import { jsxDEV as jsxDEV132 } from "react/jsx-dev-runtime";
+import { jsx as jsx132, jsxs as jsxs114 } from "react/jsx-runtime";
 var meta3 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
@@ -16106,100 +7792,40 @@ function Layout2({ children }) {
   let [showNav, setShowNav] = useState27(!1);
   return useEffect21(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxDEV132("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsxDEV132(UserPrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs114("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx132(UserPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
-    } }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 23,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV132(UserMobileHeader, { toggleNav: () => {
+    } }),
+    /* @__PURE__ */ jsx132(UserMobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
-    } }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 24,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV132(UserMobileNavigation, { onClose: () => {
+    } }),
+    /* @__PURE__ */ jsx132(UserMobileNavigation, { onClose: () => {
       setShowNav(!1);
-    }, show: showNav }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 25,
-      columnNumber: 9
-    }, this),
-    /* @__PURE__ */ jsxDEV132("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsxDEV132(UserNavigation, { show: showNav }, void 0, !1, {
-        fileName: "app/routes/user.tsx",
-        lineNumber: 29,
-        columnNumber: 13
-      }, this),
-      /* @__PURE__ */ jsxDEV132("div", { className: "flex-grow overflow-y-auto", children }, void 0, !1, {
-        fileName: "app/routes/user.tsx",
-        lineNumber: 32,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 27,
-      columnNumber: 9
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.tsx",
-    lineNumber: 22,
-    columnNumber: 13
-  }, this);
+    }, show: showNav }),
+    /* @__PURE__ */ jsxs114("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx132(UserNavigation, { show: showNav }),
+      /* @__PURE__ */ jsx132("div", { className: "flex-grow overflow-y-auto", children })
+    ] })
+  ] });
 }
 function UserLayout() {
-  return /* @__PURE__ */ jsxDEV132(Layout2, { children: /* @__PURE__ */ jsxDEV132(Outlet5, {}, void 0, !1, {
-    fileName: "app/routes/user.tsx",
-    lineNumber: 40,
-    columnNumber: 20
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/user.tsx",
-    lineNumber: 40,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsx132(Layout2, { children: /* @__PURE__ */ jsx132(Outlet5, {}) });
 }
 function ErrorBoundary3() {
   let { pathname } = useLocation11();
-  return /* @__PURE__ */ jsxDEV132(Layout2, { children: /* @__PURE__ */ jsxDEV132("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsxDEV132("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 49,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV132("p", { children: "Apologies, something went wrong on our end. Please try again." }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 50,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV132(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 51,
-      columnNumber: 13
-    }, this),
-    /* @__PURE__ */ jsxDEV132(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" }, void 0, !1, {
-      fileName: "app/routes/user.tsx",
-      lineNumber: 52,
-      columnNumber: 13
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/user.tsx",
-    lineNumber: 48,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/user.tsx",
-    lineNumber: 47,
-    columnNumber: 12
-  }, this);
+  return /* @__PURE__ */ jsx132(Layout2, { children: /* @__PURE__ */ jsxs114("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx132("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx132("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx132(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx132(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" })
+  ] }) });
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-CJAL6F27.js", imports: ["/build/_shared/chunk-JXHNNPNR.js", "/build/_shared/chunk-RJTUOXH3.js", "/build/_shared/chunk-H36SQQE5.js", "/build/_shared/chunk-JAFVEBEK.js", "/build/_shared/chunk-N4FG5RPV.js", "/build/_shared/chunk-JKUASME7.js", "/build/_shared/chunk-TVZC3ZTX.js", "/build/_shared/chunk-RODUX5XG.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-ACWQJRJN.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-TXXDRBQH.js", imports: ["/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-SX3FGMAA.js", imports: ["/build/_shared/chunk-OM6EOTOF.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-7JOVENOC.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-KHMMDDSP.js", "/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-OM6EOTOF.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-E27HUZ53.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-Q7MBGK42.js", imports: ["/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-H73PWCDY.js", imports: ["/build/_shared/chunk-KHMMDDSP.js", "/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-OM6EOTOF.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-E27HUZ53.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-VCG6TAVT.js", imports: ["/build/_shared/chunk-E27HUZ53.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-7X446WIS.js", imports: ["/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-FGCO2QRD.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-GAODON6Q.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-H5URSVYM.js", imports: ["/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-2H3JFORB.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-YUYTOX5B.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-WFRATEVD.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-GTA2ZJO6.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-M2RJKA64.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-OJY7EYXN.js", imports: ["/build/_shared/chunk-PZIH43UG.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-452EFWSP.js", imports: ["/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-AVTLFHAV.js", imports: ["/build/_shared/chunk-PZIH43UG.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-6Z6CBME2.js", imports: ["/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-XT777RWX.js", imports: ["/build/_shared/chunk-MK4L2E3C.js", "/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-4PJCYBWU.js", imports: ["/build/_shared/chunk-5OG3PKWF.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-FDEQCNE3.js", imports: ["/build/_shared/chunk-MK4L2E3C.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-3OVC22TS.js", imports: ["/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-5OG3PKWF.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-7ZWZVLDD.js", imports: ["/build/_shared/chunk-5OG3PKWF.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-IKLOFTY7.js", imports: ["/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-DDEIT4UP.js", imports: ["/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-2JBCWDBU.js", imports: ["/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-F2EL47NG.js", imports: ["/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-2B2ECWDT.js", imports: ["/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-R27IYVOP.js", imports: ["/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-B65OOJCS.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-XMTLYGWX.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-FDFQMJ7V.js", imports: ["/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-E4AOAU2F.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-MRS6OTA4.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-YHAF566D.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-LBAJGJUG.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-Q2XDQINN.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-PU4HQFD4.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-2PRS2ZB4.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-P67C7TRW.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-AGKGXIN2.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "f6de1af4", hmr: { runtime: "/build/_shared/chunk-JAFVEBEK.js", timestamp: 1765086752711 }, url: "/build/manifest-F6DE1AF4.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-GDHIIEYX.js", imports: ["/build/_shared/chunk-SN2BHVXC.js", "/build/_shared/chunk-653BTUZP.js", "/build/_shared/chunk-W5DRAD4K.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-A6WVZ57M.js", imports: ["/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-KOXLHCSC.js", imports: ["/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-YG7EJ4RF.js", imports: ["/build/_shared/chunk-FXXDJ2XE.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-FZHN2PSY.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-36CLYKSV.js", "/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-FXXDJ2XE.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-XG4ZIYWV.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-NSCR7CIU.js", imports: ["/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-SUZBQWKL.js", imports: ["/build/_shared/chunk-36CLYKSV.js", "/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-FXXDJ2XE.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-XG4ZIYWV.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-NSQLSK5T.js", imports: ["/build/_shared/chunk-XG4ZIYWV.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-MYOKJCT2.js", imports: ["/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-CPGA6PPH.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-TU7746Z2.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-LTSJ5K3C.js", imports: ["/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-FQXRYZG4.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-DYULOVYU.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-W2CKHRSB.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-KNAMJTWY.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-5TGBFPUR.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-NQWKK5ZN.js", imports: ["/build/_shared/chunk-FNH2M23H.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-HSD2WFLA.js", imports: ["/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-CZ7QEQUS.js", imports: ["/build/_shared/chunk-FNH2M23H.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-Q6UWC4L6.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-H4I4T7LF.js", imports: ["/build/_shared/chunk-3VWY66MZ.js", "/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-XAVIPSU4.js", imports: ["/build/_shared/chunk-2HEJUO2F.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-WA4JY7I4.js", imports: ["/build/_shared/chunk-3VWY66MZ.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-GNQACOOT.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-2HEJUO2F.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-WMNMBIXB.js", imports: ["/build/_shared/chunk-2HEJUO2F.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-E4725CAH.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-NEOK76XA.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-VXTHRYBY.js", imports: ["/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-T5NB2AME.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-564NMG47.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-ILQTHGBA.js", imports: ["/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-5HG2HLM4.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-QOQLJAFG.js", imports: ["/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-7DXOPNGB.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-FVJKI4Q6.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-PSEPMHEO.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-JGLCKT2D.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-PD55Z644.js", imports: ["/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-HRYP4HKG.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-YESDN7YI.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-XD6DEJZE.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "b64d3778", hmr: void 0, url: "/build/manifest-B64D3778.js" };
 
 // server-entry-module:@remix-run/dev/server-build
-var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
+var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
   root: {
     id: "root",
     parentId: void 0,
@@ -16522,4 +8148,3 @@ export {
   publicPath,
   routes
 };
-//# sourceMappingURL=index.js.map
