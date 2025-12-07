@@ -21,7 +21,7 @@ const primaryNavs = [
     },
 ]
 const secondaryNavs = [
-    { label: 'Profile', icon: icons.profileIcon, url: '.' },
+    { label: 'Profile', icon: icons.profileIcon, url: '/user/profile' },
     { label: 'Sign Out', icon: icons.signoutIcon, url: '/logout' },
 ]
 

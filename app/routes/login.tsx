@@ -61,7 +61,7 @@ function useLoginController(){
         // try to get user
         const user = getUserStoreManager();
         if(user){
-            navigate(searchQuery.get("redirectTo") || '/user/all-tournaments');
+            navigate(searchQuery.get("redirectTo") || "/user/profile");
         }
         // if user is signed in already, redirect to dashboard
 
@@ -81,7 +81,7 @@ function useLoginController(){
         // save user to store
         if(actionData?.data){
             setUserStoreManager(actionData.data, true);
-            navigate(searchQuery.get("redirectTo") || '/user/all-tournaments');
+            navigate(searchQuery.get("redirectTo") || '/user/profile' );
             return;
         }
     }, [actionData?.data])

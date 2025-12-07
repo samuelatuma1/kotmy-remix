@@ -58,7 +58,7 @@ function useSignupController() {
   useEffect(() => {
     if (actionData?.data) {
       setUserStoreManager(actionData.data, true);
-      navigate(searchQuery.get("redirectTo") || "/user/all-tournaments");
+      navigate(searchQuery.get("redirectTo") || "/user/profile");
       return;
     }
   }, [actionData?.data]);
@@ -92,7 +92,7 @@ export default function Signup() {
 
             <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Svg src={icons.avatarIcon} className="w-4 h-4" />
-              Profile Image (optional)
+              Profile Image
             </label>
             <DragnDrop className='sm:col-span-2' name='image' multiple={false} labelText="Upload profile photo" />
           </div>
