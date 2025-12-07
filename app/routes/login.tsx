@@ -94,6 +94,7 @@ export default function Login() {
             <Svg src={icons.logoIcon} className='w-14 h-14 sm:w-16 sm:h-16' />
         </Link>
         <section className="grow flex flex-col justify-center items-center">
+
             <Form method="POST" className="w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3">
                 <div className="w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white">
                     <div className="w-max p-4 border border-disabled rounded-full bg-white">
@@ -101,7 +102,10 @@ export default function Login() {
                     </div>
                 </div>
                 <h1 className="text-2xl font-satoshi-bold text-center">Enter your details to login</h1>
+
                 <hr />
+                      <p className="text-center text-sm mt-2">Don't have an account yet? <Link to="/signup" className="text-primary underline">Register</Link></p>
+
                 <div className="my-2 flex flex-col gap-3">
                     <FormControl as="input" id="email" name="email" placeholder="Enter your email address"
                         labelText="email" icon={icons.avatarIcon} required />

@@ -37,7 +37,7 @@ export default function UserToolbar() {
     return (
         <Toggletip mainComponent={mainComponent}
             childContainerClass="top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap">
-            <Link to={'.'} className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>
+            <Link to={'/user/profile'} className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>
                 <Svg src={icons.profileIcon} /> Profile
             </Link>
             <Link to={'/logout'} className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>
