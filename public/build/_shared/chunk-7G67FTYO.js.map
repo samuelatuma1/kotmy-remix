@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../../../app/lib/numbers.utils.ts"],
-  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app/lib/numbers.utils.ts\"\n);\nimport.meta.hot.lastModified = \"1757765166871.147\";\n}\n// REMIX HMR END\n\nexport function numberSlang(value: number) {\r\n    if (value >= 1000000000) return `${(value / 1000000000)}b`\r\n    else if (value >= 1000000) return `${(value / 1000000)}m`\r\n    else if (value >= 1000) return `${(value / 1000)}k`\r\n    else return value\r\n}\r\n\r\nexport function numberFormatter(number: number, options: Intl.NumberFormatOptions = {}) {\r\n    return new Intl.NumberFormat('en-NG', options).format(number)\r\n}"],
-  "mappings": ";;;;;AAEA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;AAGO,SAAS,YAAY,OAAe;AACvC,MAAI,SAAS;AAAY,WAAO,GAAI,QAAQ;AAAA,WACnC,SAAS;AAAS,WAAO,GAAI,QAAQ;AAAA,WACrC,SAAS;AAAM,WAAO,GAAI,QAAQ;AAAA;AACtC,WAAO;AAChB;AAEO,SAAS,gBAAgB,QAAgB,UAAoC,CAAC,GAAG;AACpF,SAAO,IAAI,KAAK,aAAa,SAAS,OAAO,EAAE,OAAO,MAAM;AAChE;",
-  "names": []
-}
