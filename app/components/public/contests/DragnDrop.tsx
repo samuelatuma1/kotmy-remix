@@ -15,7 +15,8 @@ export default function DragnDrop({
     const [preview, setPreview] = useState<string | null>(null);
 
     const handleChange = (file: File | File[]) => {
-        const selectedFile = Array.isArray(file) ? file[0] : file;
+        const selectedFile: File = (file instanceof FileList || Array.isArray(file)) ? file[0] : file;
+
         if (selectedFile && selectedFile.type.startsWith("image/")) {
             setPreview(URL.createObjectURL(selectedFile));
         } else {

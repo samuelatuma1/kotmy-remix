@@ -2,12 +2,20 @@ import { Link, NavLink, useLocation } from '@remix-run/react'
 import Svg from '../reusables/Svg'
 import { icons } from '~/assets/icons'
 import Button from '../reusables/Button'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useUserManager } from '~/lib/store/store_managers/tokenManager'
+import { UserAtom } from '~/lib/store/atoms/token'
 
 export default function MobileNavigation({ show, onClose }: { show: boolean, onClose: () => void }) {
     const { pathname } = useLocation()
+    const [user, setUser] = useState<UserAtom | null>(null)
     const mobileNav = useRef<HTMLDivElement>(null)
     mobileNav.current?.style.setProperty('--left', `0%`)
+    const {getUserStoreManager} = useUserManager()
+    useEffect(() => {
+        const user = getUserStoreManager()
+        setUser(user)
+    }, [])
     return (<div data-show={show} ref={mobileNav}
         className="sm:hidden fixed top-0 left-0 bg-primary w-full h-dvh z-10 flex flex-col justify-between mobileNav data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left">
         <header className='wrapper py-5'>
@@ -28,7 +36,7 @@ export default function MobileNavigation({ show, onClose }: { show: boolean, onC
                     <li><NavLink onClick={onClose} to="/results" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/results') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Results
                     </NavLink></li>
-                    <li><NavLink onClick={onClose} to="/login" className=''>Sign In</NavLink></li>
+                    <li><NavLink onClick={onClose} to="/login" className=''>{user ? 'My Profile' : 'Sign In'}</NavLink></li>
                 </ul>
                 <Button element='a' onClick={onClose} href={'/signup'} className='block w-full sm:w-auto'>Join Now</Button>
             </nav>

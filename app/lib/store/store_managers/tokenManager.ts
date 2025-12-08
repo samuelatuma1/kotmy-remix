@@ -36,7 +36,8 @@ export const useUserManager = () => {
     }
 
     const getUserStoreManager = () => {
-        if(!userStore){
+        try{
+            if(!userStore){
             const storedUser = localStorage.getItem('atom_user');
             if(storedUser){
                 const newUser: UserAtom = JSON.parse(storedUser);
@@ -45,6 +46,9 @@ export const useUserManager = () => {
             }
         }
         return userStore;
+        }catch(e){
+            return null;
+        }
     }
 
     const deleteUserStoreManager = () => {

@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from '@remix-run/react'
 import Button from '../reusables/Button'
 import Svg from '../reusables/Svg'
 import { icons } from '~/assets/icons'
 import MobileNavigation from './MobileNavigation'
+import { useUserManager } from '~/lib/store/store_managers/tokenManager'
+import { UserAtom } from '~/lib/store/atoms/token'
 
 export default function Navigation() {
+    const {getUserStoreManager} = useUserManager()
     const [showNav, setShowNav] = useState(false)
     const { pathname } = useLocation()
+    const [user, setUser] = useState<UserAtom | null>(null)
+    useEffect(() => {
+        const user = getUserStoreManager()
+        setUser(user)
+    }, [])
     return (
         <header className='flex justify-between items-center wrapper py-5'>
             <Link to={'/'} aria-label='home'>
@@ -25,7 +33,7 @@ export default function Navigation() {
                         {pathname.includes('/results') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Results
                     </NavLink></li>
                     {/* <li><NavLink to="/#contact" className=''>Contact</NavLink></li> */}
-                    <li><NavLink to="/login" className=''>Sign In</NavLink></li>
+                    <li><NavLink to="/login" className=''>{user ? 'My Profile' : 'Sign In'}</NavLink></li>
                 </ul>
                 <Button element='a' href={'/signup'}>Join Now</Button>
             </nav>

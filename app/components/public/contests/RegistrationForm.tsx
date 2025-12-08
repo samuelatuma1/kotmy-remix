@@ -7,12 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { nigerianStates } from "~/lib/data/states"
 import { IContest } from "~/services/contest/types/contest.interface"
 import { useUserManager } from "~/lib/store/store_managers/tokenManager"
+import { UserAtom } from "~/lib/store/atoms/token"
+import { useEffect, useState } from "react"
 
 export default function RegistrationForm({ contest }: { contest: IContest }) {
     // Users must be signed in to register for a contest
-    const {setUserStoreManager, getUserStoreManager} = useUserManager();
+    const {getUserStoreManager} = useUserManager();
+    const [user, setUser] = useState<UserAtom | null>(null);
     const navigate = useNavigate();
-    const user = getUserStoreManager();
+
+    useEffect(() => {
+        const user = getUserStoreManager();
+        setUser(user);
+    }, []);
+    
     const location = useLocation();
     if(!user) {
         const pathname = location.pathname; // e.g., /my-route
@@ -93,7 +101,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                     </Select>
                 </label>
 
-                <FormControl as="textarea" labelClassNames="col-span-2" labelText="What would you like your voters to know?" id="info" name="info"
+                <FormControl as="textarea" labelClassNames="col-span-2 max-w-full" labelText="What would you like your voters to know?" id="info" name="info"
                     placeholder="" 
                 />
             </div>
