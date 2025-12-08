@@ -101,10 +101,11 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                     </Select>
                 </label>
 
-                <FormControl as="textarea" labelClassNames="col-span-2 max-w-full" labelText="What would you like your voters to know?" id="info" name="info"
+                
+            </div>
+            <FormControl as="textarea" labelClassNames="col-span-2 max-w-full" labelText="What would you like your voters to know?" id="info" name="info"
                     placeholder="" 
                 />
-            </div>
             <DragnDrop labelText="Upload Image" name="contestant_image" multiple required />
             <input type="hidden" name="contestId" value={contest._id} />
             <Button element="button" type="submit" name="intent" value="register" className="md:self-end">Submit</Button>
