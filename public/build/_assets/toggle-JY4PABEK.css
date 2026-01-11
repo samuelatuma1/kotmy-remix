@@ -1,8 +1,0 @@
-/* app/toggle.css */
-.toggle-checkbox:checked {
-  @apply : bg-blue-500;
-}
-.toggle-checkbox:checked + .toggle-label {
-  @apply : bg-blue-500;
-}
-/*# sourceMappingURL=/build/_assets/toggle-JGDEW4L4.css.map */
