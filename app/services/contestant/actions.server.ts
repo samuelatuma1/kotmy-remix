@@ -41,9 +41,10 @@ export async function toggleEvictContestants(formData: FormData, request: Reques
     return json(null, { headers })
 }
 
-export async function registerContestant(formData: FormData, request: Request) {
+export async function registerContestant(formData: FormData, request: Request, cookies: string) {
     const contestId = formData.get("contestId") as string
-    const { data, error } = await contestantRepo.registerContestant({ contestId, dto: formData })
+    
+    const { data, error } = await contestantRepo.registerContestant({ contestId, dto: formData }, cookies)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail ?? "Error registering the contestant"}::${Date.now()}` })
         return json({ data: null }, { headers })

@@ -19,6 +19,12 @@ export type Rate = {
     bonus?: number
     price_per_vote?: number
     vote_currency?: string
+
+    social_media_bonus: number
+    tally_bonus: number
+    judge_bonus: number
+    givaah_bonus: number
+
 }
 
 export interface IContestDto {
@@ -110,8 +116,20 @@ export interface IStage {
     price_per_vote?: number
     contest_id?: string
     media_type?: string | StageMediaType
+
+    enable_bonus: boolean
+
+    bonus_reset_time: string
 }
 
+export interface StageBonusJob{
+    job_id: string,
+    next_run_time: string,
+    success: boolean,
+    message: string | null,
+    job_added: boolean,
+    job_removed: boolean
+}
 export interface IStageWContestant extends IStage {
     contestants: IContestant[]
 }

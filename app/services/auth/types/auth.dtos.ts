@@ -16,5 +16,5 @@ export class ILoginResponseDTO {
     token: string = "";
     permissions: string[] = [];
     user_profile?: UserProfile; 
-    
+    referral_code?: string
 }

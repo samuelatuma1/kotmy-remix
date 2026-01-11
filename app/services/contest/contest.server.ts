@@ -1,7 +1,7 @@
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { Grade, IContest, IContestDto, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, Social, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
+import { Grade, IContest, IContestDto, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json } from "@remix-run/node"
@@ -89,6 +89,17 @@ export class ContestRepository implements IContestRepository {
         })
         if (error || !stage) return { error: error ?? { detail: "The stage was not found" } }
         return { data: stage }
+    }
+
+    async toggleEnableBonus({ stageId, dto, token = TOKEN }: { stageId: string; dto: Partial<{enable: boolean, hours: number, minutes: number}>; token?: string }): Promise<TFetcherResponse<StageBonusJob>> {
+        const { data: stageBonus, error } = await ApiCall.call<StageBonusJob | null, unknown>({
+            url: ApiEndPoints.toggleEnableStageBonus(),
+            method: MethodsEnum.POST,
+            headers: { Authorization: `Bearer ${token}` },
+            data: { stage_id: stageId, ...dto }
+        })
+        if (error || !stageBonus) return { error: error ?? { detail: "The stage was not found" } }
+        return { data: stageBonus }
     }
     async deleteStage({ stageId, token = TOKEN }: { stageId: string; token?: string }): Promise<TFetcherResponse<null>> {
         const { data, error } = await ApiCall.call<null, unknown>({
@@ -217,6 +228,24 @@ export async function updateStage(formData: FormData, request: Request) {
     return json(data, { headers })
 }
 
+export async function toggleEnableStageBonus(formData: FormData, request: Request){
+
+    const stage_id = formData.get("stage_id") as string
+    const enable_bonus = formData.get("enable") === 'true' ? true : false
+    const hours = parseInt(formData.get("hours") as string)
+    const minutes = parseInt(formData.get("minutes") as string)
+
+    const { data, error } = await contestRepo.toggleEnableBonus({ stageId: stage_id, dto: { enable: enable_bonus, hours, minutes } })
+    console.log("ERROR!!")
+    console.log(error)
+    if (error) {
+        const { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` })
+        return json(error, { headers })
+    }
+    const { headers } = await setToast({ request, toast: `success::The stage has been updated::${Date.now()}` })
+    return json(data, { headers })
+
+}
 export async function toggleRegistration(formData: FormData, request: Request) {
     const contestId = formData.get("contestId") as string
     const { data, error } = await contestRepo.toggleRegistration({ contestId })
@@ -241,6 +270,10 @@ export function prepareStageDto(formData: FormData) {
             "tally": parseInt(formData.get('tally_rate') as string),
             "judge": parseInt(formData.get('judge_rate') as string),
             "givaah": parseInt(formData.get('givaah_rate') as string),
+            "social_media_bonus": parseInt(formData.get('social_media_bonus_rate') as string),
+            "tally_bonus": parseInt(formData.get('tally_bonus_rate') as string),
+            "judge_bonus": parseInt(formData.get('judge_bonus_rate') as string),
+            "givaah_bonus": parseInt(formData.get('givaah_bonus_rate') as string),
         },
         "success_count": parseInt(formData.get('success_count') as string),
         "grade": {

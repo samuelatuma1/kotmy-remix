@@ -14,6 +14,7 @@ import {
 } from "@remix-run/react"
 import globalStyles from './global.css'
 import autoplaycarouselStyles from "./autoplaycarousel.css"
+import toggleStyles from "./toggle.css"
 import { nickToast } from "./lib/session.server"
 import PageTransitionProgressBar from "./components/reusables/PageProgress"
 import Cta from "./components/reusables/Cta"
@@ -25,6 +26,7 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: globalStyles },
   { rel: "stylesheet", href: autoplaycarouselStyles },
+  { rel: "stylesheet", href: toggleStyles },
 ]
 
 

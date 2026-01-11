@@ -11,7 +11,7 @@ import ScoreboardTable from "~/components/public/contests/ScoreboardTable"
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectItem } from "~/components/reusables/select-shad"
 import StatusTag from "~/components/reusables/StatusTag"
 import { StageContestantsLoader } from "./_public.contests.$tournamentId.$contestId"
-
+import { IStageWContestant } from "~/services/contest/types/contest.interface"
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
     const intent = formData.get('intent') as 'tally_vote'
@@ -77,7 +77,7 @@ export default function Scoreboard() {
                         </div>
                         <Link to={`/results/${contest!.id}`} className="w-fit text-accent font-bold hover:underline underline-offset-4">See result table</Link>
                     </div>
-                    <ScoreboardTable contestants={stage?.contestants ?? []} socialMediaType={stage?.rates.social_media.type ?? 'kotmy'} />
+                    <ScoreboardTable contestants={stage?.contestants ?? []} socialMediaType={stage?.rates.social_media.type ?? 'kotmy'} show_bonus={stage?.enable_bonus ?? false} />
                     <MobileScoreboard contestants={stage?.contestants ?? []} socialMediaType={stage?.rates.social_media.type ?? 'kotmy'} />
                     {/* <Pagination className="p-6" /> */}
                 </div>

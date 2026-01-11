@@ -15,6 +15,10 @@ export interface IContestant {
     judge: number;
     givaah: number;
     bonus: number;
+    social_media_bonus: number;
+    tally_bonus: number;
+    judge_bonus: number;
+    givaah_bonus: number;
   };
   social_media_url: string;
   code: string;
@@ -132,7 +136,7 @@ export interface IContestantRepository {
   registerContestant(payload: {
     contestId: string;
     dto: FormData;
-  }): Promise<TFetcherResponse<IContestant>>;
+  }, cookies: string): Promise<TFetcherResponse<IContestant>>;
   toggleEvictContestants(
     dto: IToggleEvictContestantDTO,
     token: string

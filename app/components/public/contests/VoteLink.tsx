@@ -37,3 +37,28 @@ export default React.forwardRef(function VoteLink({ type, url, count, className 
         </Cta>
     )
 })
+
+type BonusProps = {
+    type: "SMB" | "TB" | "JB" | "GB",
+    url?: string,
+    count: number | string,
+    className?: string,
+}
+const BonusLink = React.forwardRef(function BonusLink({ type, url, count, className = '', ...rest }: BonusProps, ref: React.ForwardedRef<HTMLButtonElement>) {
+    const props = url
+        ? { element: 'link', to: url, ...rest } as const
+        : { element: 'button', ref, ...rest } as const
+    
+    return (
+        <Cta {...props} variant="outline" className={cn(`p-2 flex items-center border rounded-full`, {
+            'border-facebook text-facebook bg-facebookBG hover:bg-facebook/15': true
+        }, className)}>
+            <span className={`w-6 h-6 flex items-center justify-center rounded-full p-1`}>
+                <span>{type }</span>
+            </span>
+            <span className="grow text-xs font-bold text-center mr-2">{count}</span>
+        </Cta>
+    )
+})
+
+export { BonusLink }

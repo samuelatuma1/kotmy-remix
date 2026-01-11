@@ -33,13 +33,14 @@ export class ContestantRepository implements IContestantRepository {
             data: dto
         })
     }
-    async registerContestant(payload: { contestId: string, dto: FormData }): Promise<TFetcherResponse<IContestant>> {
+    async registerContestant(payload: { contestId: string, dto: FormData}, cookies: string): Promise<TFetcherResponse<IContestant>> {
+        console.log("Cookies2", cookies)
         return await ApiCall.call({
             method: MethodsEnum.POST,
             url: ApiEndPoints.registerContestant(payload.contestId),
             headers: { "Content-Type": "multipart/form-data" },
             data: payload.dto
-        })
+        }, cookies)
     }
     async toggleEvictContestants(dto: IToggleEvictContestantDTO, token = TOKEN): Promise<TFetcherResponse<void>> {
         return await ApiCall.call({

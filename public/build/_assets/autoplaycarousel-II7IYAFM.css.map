@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/autoplaycarousel.css"],
+  "sourcesContent": [".carousel-container {\r\n    --timing: 3s;\r\n    padding-block: 8px;\r\n    overflow: hidden;\r\n    white-space: nowrap;\r\n}\r\n\r\n.carousel-track {\r\n    width: max-content;\r\n    display: inline-block;\r\n}\r\n\r\n.carousel-container:hover .carousel-track {\r\n    animation-play-state: paused;\r\n}\r\n\r\n.carousel-card {\r\n    display: inline-block;\r\n}\r\n\r\n.slide {\r\n    animation: var(--timing) slide infinite linear;\r\n}\r\n\r\n.slide-reverse {\r\n    animation: var(--timing) slide-reverse infinite linear;\r\n}\r\n\r\n@keyframes slide {\r\n    from {\r\n        transform: translateX(0);\r\n    }\r\n\r\n    to {\r\n        transform: translateX(-100%);\r\n    }\r\n}\r\n\r\n@keyframes slide-reverse {\r\n    from {\r\n        transform: translateX(-100%);\r\n    }\r\n\r\n    to {\r\n        transform: translateX(0);\r\n    }\r\n}"],
+  "mappings": ";AAAA;AACI;AACA;AACA;AACA;;AAGJ;AACI;AACA;;AAGJ;AACI;;AAGJ;AACI;;AAGJ;AACI;;AAGJ;AACI;;AAGJ;;AAEQ;;;AAIA;;;AAIR;;AAEQ;;;AAIA;;;",
+  "names": []
+}

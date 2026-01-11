@@ -73,6 +73,10 @@ export class ApiEndPoints {
     static updateContest(id: string) {
         return `/v2/api/admin/contest/${id}`
     }
+
+    static toggleEnableStageBonus() {
+        return `/v2/api/contest/toggle_stage_bonus`
+    }
     static deleteContest(id: string) {
         return `/v2/api/admin/contest/${id}`
     }

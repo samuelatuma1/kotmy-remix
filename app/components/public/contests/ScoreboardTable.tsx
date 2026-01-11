@@ -1,6 +1,6 @@
 import ProgressBar from "./ProgressBar"
 import Grade from "./Grade"
-import VoteLink from "./VoteLink"
+import VoteLink, { BonusLink } from "./VoteLink"
 import { noImage } from "~/assets/images"
 import { numberSlang } from "~/lib/numbers.utils"
 import { IContestant } from "~/services/contestant/types/contestant.interface"
@@ -8,7 +8,7 @@ import { Social } from "~/services/contest/types/contest.interface"
 import TallyVoteDialog from "./TallyVoteDialog"
 import { useFetcher } from "@remix-run/react"
 
-export default function ScoreboardTable({ contestants, socialMediaType }: { contestants: IContestant[], socialMediaType: Social }) {
+export default function ScoreboardTable({ contestants, socialMediaType, show_bonus }: { contestants: IContestant[], socialMediaType: Social, show_bonus: boolean }) {
     const fetcher = useFetcher()
     return (
         <table className="w-full table-auto hidden sm:table">
@@ -19,6 +19,15 @@ export default function ScoreboardTable({ contestants, socialMediaType }: { cont
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell">progress</th>
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell">grade</th>
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">votes (SM, tally, givaah)</th>
+
+                    {show_bonus && (
+                        <>
+                            <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">SMB</th>
+                            <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">TB</th>
+                            <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">GB</th>
+                            <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">JB</th>
+                        </>
+                    )}
                 </tr>
             </thead>
             <tbody>
@@ -65,8 +74,23 @@ export default function ScoreboardTable({ contestants, socialMediaType }: { cont
                                 />
                             )}
                             <TallyVoteDialog contestant={contestant} />
-                            {/* <VoteLink type={'givaah'} url={'.'} count={numberSlang(contestant.vote.givaah)} /> */}
+                            
                         </td>
+                        {show_bonus && (
+                            <>
+                                <td className="px-6 py-3">
+                                    {contestant.vote.social_media_bonus}
+                                </td>
+                                <td className="px-6 py-3">
+                                    {contestant.vote.tally_bonus}
+                                </td>
+                                <td className="px-6 py-3">
+                                    {contestant.vote.givaah_bonus}
+                                </td>
+                                <td className="px-6 py-3">
+                                {contestant.vote.judge_bonus}
+                        </td>
+                        </>)}
                     </tr>
                 ))}
             </tbody>

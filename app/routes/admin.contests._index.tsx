@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
-import { contestRepo, deleteContest, migrateStage, toggleRegistration, updateStage } from "~/services/contest/contest.server"
+import { contestRepo, deleteContest, migrateStage, toggleEnableStageBonus, toggleRegistration, updateStage } from "~/services/contest/contest.server"
 import { setToast } from "~/lib/session.server"
 import ContestTable from "~/components/admin/contest/ContestTable"
 import Cta from "~/components/reusables/Cta"
@@ -15,9 +15,10 @@ export async function loader({ }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
-    const intent = formData.get('intent') as 'delete' | 'update_stage' | 'migrate' | 'toggle_registration'
+    const intent = formData.get('intent') as 'delete' | 'update_stage' | 'migrate' | 'toggle_registration' | 'toggle_stage_bonus'
     if (intent === 'delete') return await deleteContest(formData, request)
     if (intent === 'update_stage') return await updateStage(formData, request)
+    if (intent === 'toggle_stage_bonus') return await toggleEnableStageBonus(formData, request)
     if (intent === 'toggle_registration') return await toggleRegistration(formData, request)
     if (intent === 'migrate') return await migrateStage(formData, request)
     console.log(...formData)

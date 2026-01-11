@@ -27,7 +27,11 @@ export default function Stages({ row }: { row: Row<IContestWStage> }) {
         }
       </div>
       {selectedStage
-        ? <EditStageForm key={selectedStage._id} stage={selectedStage} contestId={row.original.id} closeForm={row.getToggleExpandedHandler()} />
+        ? <>
+          <EditStageForm key={selectedStage._id} stage={selectedStage} contestId={row.original.id} closeForm={row.getToggleExpandedHandler()} />
+          <hr />
+          <ToggleStageBonus stage={selectedStage} />
+        </>
         : null
       }
     </div >
@@ -50,6 +54,11 @@ function EditStageForm({ stage, contestId, closeForm }: { stage: IStage, contest
         <FormControl as='input' id='tally_rate' name='tally_rate' labelText='Tally Rate (%)' type='number' min={0} defaultValue={stage.rates.tally} />
         <FormControl as='input' id='givaah_rate' name='givaah_rate' labelText='Givaah Rate (%)' type='number' min={0} defaultValue={stage.rates.givaah} />
         <FormControl as='input' id='judge_rate' name='judge_rate' labelText='Judge Rate (%)' type='number' min={0} defaultValue={stage.rates.judge} />
+
+        <FormControl as='input' id='social_media_bonus_rate' name='social_media_bonus_rate' labelText='Social Media Bonus Rate (%)' type='number' min={0} defaultValue={stage.rates.social_media_bonus} />
+        <FormControl as='input' id='tally_bonus_rate' name='tally_bonus_rate' labelText='Tally Bonus Rate (%)' type='number' min={0} defaultValue={stage.rates.tally_bonus} />
+        <FormControl as='input' id='givaah_bonus_rate' name='givaah_bonus_rate' labelText='Givaah Bonus Rate (%)' type='number' min={0} defaultValue={stage.rates.givaah_bonus} />
+        <FormControl as='input' id='judge_bonus_rate' name='judge_bonus_rate' labelText='Judge Bonus Rate (%)' type='number' min={0} defaultValue={stage.rates.judge_bonus} />
       </fieldset>
       <fieldset className="pt-2 py-4 grid grid-cols-2 gap-3 border-b">
         <legend className='font-bold text-sm text-admin-pry'>Grades</legend>
@@ -70,4 +79,38 @@ function EditStageForm({ stage, contestId, closeForm }: { stage: IStage, contest
       <input type="hidden" name='stageId' value={stage._id} />
     </Form>
   )
+}
+
+function ToggleStageBonus({ stage }: { stage: IStage }) {
+    const [enabled, setEnabled] = useState(stage.enable_bonus);
+    const [time,] = useState(stage.bonus_reset_time || "00:00:00");
+
+    const [hours, minutes] = time.split(':');
+
+    return (
+        <Form method="POST" className='text-primary text-xs flex flex-col gap-4 py-4'>
+            <fieldset className="py-4 grid grid-cols-4 gap-3">
+                <legend className='font-bold text-sm text-admin-pry w-max col-span-4'>Stage Bonus</legend>
+                <div className='flex items-center gap-2'>
+                    <label htmlFor="enable_bonus" className='font-medium'>Enable Bonus</label>
+                    <input
+                        type="checkbox"
+                        id="enable"
+                        name="enable"
+                        checked={enabled}
+                        onChange={(e) => setEnabled(e.target.checked)}
+                        className="h-5 w-5 rounded-md"
+                        value="true"
+                    />
+                </div>
+                <FormControl as='input' id='hours' name='hours' labelText='Reset Time (Hours)' type='number' min={0} max={23} defaultValue={hours} />
+                <FormControl as='input' id='minutes' name='minutes' labelText='Reset Time (Minutes)' type='number' min={0} max={59} defaultValue={minutes} />
+            </fieldset>
+
+             <div className='flex justify-end gap-6'>
+                <Cta element='button' type='submit' name='intent' value='toggle_stage_bonus' className='px-3 py-2 rounded-md font-bold min-w-[90px] text-white'>Enable/Disable Bonus</Cta>
+            </div>
+            <input type="hidden" name='stage_id' value={stage._id} />
+        </Form>
+    )
 }
