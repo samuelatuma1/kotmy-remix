@@ -26,7 +26,7 @@ export default function DragnDrop({
 
     return (
         <div className={`w-full max-w-full overflow-hidden ${className}`}>
-            <span className="font-bold">{labelText}</span>
+            <span className="font-bold">{labelText}{required ? <span className="text-red-400">*</span>: ""}</span>
             <FileUploader
                 name={name}
                 types={fileTypes}

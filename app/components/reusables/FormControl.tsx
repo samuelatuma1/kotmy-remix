@@ -27,7 +27,7 @@ export default function FormControl({ labelClassNames, labelText, error, ...prop
     <Svg src={icons.warningIcon} />{error}
   </span>
   return (
-    <label htmlFor={props.id} className={`block font-bold ${labelClassNames}`}>{labelText}
+    <label htmlFor={props.id} className={`block font-bold ${labelClassNames}`}>{labelText}{props.required ? <span className="text-red-400" >*</span> : ""}
       {props.as === 'input'
         ? <>
           <div aria-invalid={!!error} className={formControlClasses}>

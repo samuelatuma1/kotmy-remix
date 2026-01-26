@@ -49,6 +49,8 @@ export interface IContestDto {
     stages: IStage[]
     no_of_stages?: number
     no_of_winners?: number
+
+    tally_vote_split_earnings: ITallyVoteSplitEarning
 }
 
 export interface IContest {
@@ -72,6 +74,8 @@ export interface IContest {
     no_of_stages?: number
     no_of_winners?: number
     image_url?: string
+
+    tally_vote_split_earnings: ITallyVoteSplitEarning
 }
 
 export interface IContestWStage extends IContest {
@@ -122,6 +126,12 @@ export interface IStage {
     bonus_reset_time: string
 }
 
+export interface ITallyVoteSplitEarning{
+    contestant_share_percent: number,
+    min_for_referral_earning: number,
+    referral_bonus_from_min: number,
+    referral_percent_after_min: number
+}
 export interface StageBonusJob{
     job_id: string,
     next_run_time: string,
@@ -151,6 +161,7 @@ export interface ICreateContestDTO {
     add_info: string
     no_of_stages: number
     stages: string // stringified ICreateStageDTO[]
+    tally_vote_split_earnings: string // stringified ITallyVoteSplitEarning
 }
 
 export interface ICreateStageDTO {
@@ -185,7 +196,8 @@ export function dtoToContest(contest: IContestDto): IContest | IContestWStage {
         categories: contest.categories,
         stages: contest.stages,
         no_of_stages: contest.no_of_stages,
-        no_of_winners: contest.no_of_winners
+        no_of_winners: contest.no_of_winners,
+        tally_vote_split_earnings: contest.tally_vote_split_earnings,
     }
 }
 

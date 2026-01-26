@@ -20,7 +20,7 @@ const primaryNavs = [
             { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
             { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
             { label: 'Your Profile', url: '/user/profile' },
-            { label: 'Income History', url: 'transactions/income-history' },
+            { label: 'Wallet', url: '/user/wallet' }
         ]
     },
 ]

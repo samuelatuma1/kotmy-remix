@@ -30,9 +30,18 @@ export default function CreateContestForm({ tournaments }: { tournaments: Pick<I
                 <FormControl as='textarea' rows={2} labelText='Contest Prizes' labelClassNames='sm:col-span-2' placeholder='Enter contest prizes' id='prizes' name='prizes' required />
                 <DragnDrop className='sm:col-span-2' name='image' multiple={false} />
             </fieldset>
-
+                
             <CategoryInputs />
             <StageInputs />
+
+          
+            <fieldset className="grid gap-3 sm:gap-6 sm:grid-cols-2">
+                <legend className='text-lg mb-4 font-bold'>Contestants and Referrals Earnings</legend>
+                <FormControl as='input' type="number" step={1} max={100} min={0} labelText='Contestant Share Percentage' id='contestant_share_percent' name='contestant_share_percent' defaultValue={50} required />
+                <FormControl as='input' type="number" labelText='Minimum amount for affiliate to earn' id='min_for_referral_earning' name='min_for_referral_earning' defaultValue={3000} required />
+                <FormControl as='input' type="number" labelText='Amount affiliate would earn from minimum' id='referral_bonus_from_min' name='referral_bonus_from_min' defaultValue={500} required />
+                <FormControl as='input' type="number" step={1} max={100} min={0} labelText='Affiliate percentage earnings after minimum'  id='referral_percent_after_min' name='referral_percent_after_min' defaultValue={1} required />
+            </fieldset>
 
             <fieldset className="grid gap-3 sm:gap-6">
                 <legend className='text-lg mb-4 font-bold'>Submission Guidelines</legend>

@@ -1,7 +1,7 @@
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { Grade, IContest, IContestDto, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
+import { Grade, IContest, IContestDto, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json } from "@remix-run/node"
@@ -179,6 +179,13 @@ export function prepareContestPayload(formData: FormData) {
             }
         })
     }
+
+    const tally_split_earning: ITallyVoteSplitEarning = {
+        contestant_share_percent: parseInt(formData.get('contestant_share_percent') as string),
+        min_for_referral_earning: parseInt(formData.get('min_for_referral_earning') as string),
+        referral_bonus_from_min: parseInt(formData.get('referral_bonus_from_min') as string),
+        referral_percent_after_min: parseInt(formData.get('referral_percent_after_min') as string),
+    }
     
     const payloadObj: ICreateContestDTO = {
         name: formData.get('name') as string,
@@ -195,8 +202,10 @@ export function prepareContestPayload(formData: FormData) {
         image:  !formData.get('image') ?  null: (formData.get('image') as File).size === 0 ? null : formData.get('image') as File,
         categories: JSON.stringify(formData.getAll('category')),
         no_of_stages: no_of_stages,
-        stages: JSON.stringify(stages)
+        stages: JSON.stringify(stages),
+        tally_vote_split_earnings: JSON.stringify(tally_split_earning)
     }
+    console.log({payloadObj})
     console.log(payloadObj)
     const payload = new FormData()
     Object.entries(payloadObj).forEach(([key, value]) => {

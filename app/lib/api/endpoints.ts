@@ -137,4 +137,12 @@ export class ApiEndPoints {
     static get updateProfile() {
         return "/v2/api/users/updateprofile/";
     }
+
+    static get userWallets(){
+        return `/v2/api/wallet/user_wallets`
+    }
+
+    static get userLedgers(){
+        return `/v2/api/wallet/ledgers`
+    }
 }

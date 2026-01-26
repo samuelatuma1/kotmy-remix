@@ -33,6 +33,7 @@ function useUserProfileController() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(loaderData?.data?.user_profile || null);
   const [email, setEmail] = useState<string>(loaderData?.data?.email || "");
+  const [referralCode, setReferralCode] = useState<string>(loaderData?.data?.referral_code || "");
   const [imagePreview, setImagePreview] = useState<string | undefined>(profile?.image_url);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -52,6 +53,7 @@ function useUserProfileController() {
       });
       setProfile(actionData.data.user_profile || null);
       setEmail(actionData.data.email || "");
+      setReferralCode(actionData.data.referral_code || "")
       setImagePreview(actionData.data.user_profile?.image_url);
     }
   }, [actionData]);
@@ -64,11 +66,11 @@ function useUserProfileController() {
     }
   };
 
-  return { profile, email, imagePreview, fileInputRef, handleImageChange };
+  return { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode };
 }
 
 export default function UserProfilePage() {
-  const { profile, email, imagePreview, fileInputRef, handleImageChange } = useUserProfileController();
+  const { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController();
   const isLoading = !profile && !email;
   return (
     <div className="min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16">
@@ -109,7 +111,12 @@ export default function UserProfilePage() {
             <FormControl as="input" id="first_name" name="first_name" labelText="First Name" defaultValue={profile?.first_name} icon={icons.avatarIcon} required />
             <FormControl as="input" id="last_name" name="last_name" labelText="Last Name" defaultValue={profile?.last_name} icon={icons.avatarIcon} required />
             <FormControl as="input" id="email" name="email" labelText="Email" defaultValue={email} icon={icons.avatarIcon} required readOnly />
+
+
+            
             <FormControl as="input" id="status" name="status" labelText="Status" defaultValue={profile?.status} icon={icons.avatarIcon} />
+
+            <FormControl as="input" id="" name="" labelText="Referral code" defaultValue={referralCode} icon={icons.lockIcon} required readOnly />
             <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Svg src={icons.avatarIcon} className="w-4 h-4" />
               Profile Image

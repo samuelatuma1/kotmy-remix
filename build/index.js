@@ -121,7 +121,7 @@ import {
 } from "@remix-run/react";
 
 // app/global.css
-var global_default = "/build/_assets/global-6BUAAEYF.css";
+var global_default = "/build/_assets/global-XYM6KXLD.css";
 
 // app/autoplaycarousel.css
 var autoplaycarousel_default = "/build/_assets/autoplaycarousel-UE5MKUNL.css";
@@ -772,6 +772,12 @@ var ApiEndPoints = class {
   static get updateProfile() {
     return "/v2/api/users/updateprofile/";
   }
+  static get userWallets() {
+    return "/v2/api/wallet/user_wallets";
+  }
+  static get userLedgers() {
+    return "/v2/api/wallet/ledgers";
+  }
 };
 
 // app/services/contestant/contestant.server.ts
@@ -1109,6 +1115,7 @@ function FormControl({ labelClassNames, labelText, error, ...props }) {
   ] });
   return /* @__PURE__ */ jsxs4("label", { htmlFor: props.id, className: `block font-bold ${labelClassNames}`, children: [
     labelText,
+    props.required ? /* @__PURE__ */ jsx10("span", { className: "text-red-400", children: "*" }) : "",
     props.as === "input" ? /* @__PURE__ */ jsxs4(Fragment, { children: [
       /* @__PURE__ */ jsxs4("div", { "aria-invalid": !!error, className: formControlClasses, children: [
         /* @__PURE__ */ jsx10(Svg, { src: props.icon ?? "", className: cn("basis-6", { hidden: !props.icon }) }),
@@ -1174,7 +1181,10 @@ function DragnDrop({
     selectedFile && selectedFile.type.startsWith("image/") ? setPreview(URL.createObjectURL(selectedFile)) : setPreview(null);
   };
   return /* @__PURE__ */ jsxs5("div", { className: `w-full max-w-full overflow-hidden ${className}`, children: [
-    /* @__PURE__ */ jsx12("span", { className: "font-bold", children: labelText }),
+    /* @__PURE__ */ jsxs5("span", { className: "font-bold", children: [
+      labelText,
+      required ? /* @__PURE__ */ jsx12("span", { className: "text-red-400", children: "*" }) : ""
+    ] }),
     /* @__PURE__ */ jsx12(
       FileUploader,
       {
@@ -2527,7 +2537,10 @@ function RegistrationForm({ contest }) {
     ] }),
     /* @__PURE__ */ jsxs22("div", { className: "grid gap-6 lg:grid-cols-2", children: [
       /* @__PURE__ */ jsxs22("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
-        "Gender",
+        /* @__PURE__ */ jsxs22("span", { children: [
+          "Gender",
+          /* @__PURE__ */ jsx29("span", { className: "text-red-400", children: "*" })
+        ] }),
         /* @__PURE__ */ jsxs22(Select, { name: "sex", required: !0, children: [
           /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Gender" }) }),
           /* @__PURE__ */ jsxs22(SelectContent, { children: [
@@ -2537,7 +2550,10 @@ function RegistrationForm({ contest }) {
         ] })
       ] }),
       /* @__PURE__ */ jsxs22("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
-        "State of Residence",
+        /* @__PURE__ */ jsxs22("span", { children: [
+          "State of Residence",
+          /* @__PURE__ */ jsx29("span", { className: "text-red-400", children: "*" })
+        ] }),
         /* @__PURE__ */ jsxs22(Select, { name: "state_of_residence", required: !0, children: [
           /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Select a state" }) }),
           /* @__PURE__ */ jsx29(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx29(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
@@ -2558,7 +2574,10 @@ function RegistrationForm({ contest }) {
         }
       ),
       /* @__PURE__ */ jsxs22("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
-        "Category",
+        /* @__PURE__ */ jsxs22("span", { children: [
+          "Category",
+          /* @__PURE__ */ jsx29("span", { className: "text-red-400", children: "*" })
+        ] }),
         /* @__PURE__ */ jsxs22(Select, { name: "category", required: !!contest.categories.length, children: [
           /* @__PURE__ */ jsx29(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx29(SelectValue, { placeholder: "Select a category" }) }),
           /* @__PURE__ */ jsx29(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx29(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
@@ -2569,8 +2588,8 @@ function RegistrationForm({ contest }) {
       FormControl,
       {
         as: "input",
-        labelClassNames: "col-span-1 max-w-full",
-        labelText: "Referral code",
+        labelClassNames: "col-span-1 max-w-full text-gray-500",
+        labelText: "Referral code (Optional)",
         id: "referral_code",
         name: "referral_code",
         placeholder: "",
@@ -2863,7 +2882,8 @@ function dtoToContest(contest) {
     categories: contest.categories,
     stages: contest.stages,
     no_of_stages: contest.no_of_stages,
-    no_of_winners: contest.no_of_winners
+    no_of_winners: contest.no_of_winners,
+    tally_vote_split_earnings: contest.tally_vote_split_earnings
   };
 }
 function dtoToContestInTournament(contest) {
@@ -3020,7 +3040,12 @@ function prepareContestPayload(formData) {
         givaah: 0
       }
     });
-  let payloadObj = {
+  let tally_split_earning = {
+    contestant_share_percent: parseInt(formData.get("contestant_share_percent")),
+    min_for_referral_earning: parseInt(formData.get("min_for_referral_earning")),
+    referral_bonus_from_min: parseInt(formData.get("referral_bonus_from_min")),
+    referral_percent_after_min: parseInt(formData.get("referral_percent_after_min"))
+  }, payloadObj = {
     name: formData.get("name"),
     contest_unique_id: formData.get("uniqueId"),
     tournament_unique_id: formData.get("tournament"),
@@ -3035,9 +3060,10 @@ function prepareContestPayload(formData) {
     image: formData.get("image") ? formData.get("image").size === 0 ? null : formData.get("image") : null,
     categories: JSON.stringify(formData.getAll("category")),
     no_of_stages,
-    stages: JSON.stringify(stages)
+    stages: JSON.stringify(stages),
+    tally_vote_split_earnings: JSON.stringify(tally_split_earning)
   };
-  console.log(payloadObj);
+  console.log({ payloadObj }), console.log(payloadObj);
   let payload = new FormData();
   return Object.entries(payloadObj).forEach(([key, value]) => {
     (value !== null || value != null) && payload.append(key, value);
@@ -4128,6 +4154,13 @@ function EditContestForm({ tournaments, contest }) {
     ] }),
     /* @__PURE__ */ jsx58(CategoryInputs, { categories: Object.values(contest.categories) }),
     /* @__PURE__ */ jsx58(StageInputs, { stages: contest.stages }, contest.stages.length),
+    /* @__PURE__ */ jsxs45("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsx58("legend", { className: "text-lg mb-4 font-bold", children: "Contestants and Referrals Earnings (Can only be edited before contest starts)" }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Contestant Share Percentage", id: "contestant_share_percent", name: "contestant_share_percent", defaultValue: contest.tally_vote_split_earnings.contestant_share_percent, readOnly: contest.status !== "yet_to_start" }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "number", labelText: "Minimum amount for affiliate to earn", id: "min_for_referral_earning", name: "min_for_referral_earning", defaultValue: contest.tally_vote_split_earnings.min_for_referral_earning, readOnly: contest.status !== "yet_to_start" }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "number", labelText: "Amount affiliate would earn from minimum", id: "referral_bonus_from_min", name: "referral_bonus_from_min", defaultValue: contest.tally_vote_split_earnings.referral_bonus_from_min, readOnly: contest.status !== "yet_to_start" }),
+      /* @__PURE__ */ jsx58(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Affiliate percentage earnings after minimum", id: "referral_percent_after_min", name: "referral_percent_after_min", defaultValue: contest.tally_vote_split_earnings.referral_percent_after_min, readOnly: contest.status !== "yet_to_start" })
+    ] }),
     /* @__PURE__ */ jsxs45("fieldset", { className: "grid gap-6", children: [
       /* @__PURE__ */ jsx58("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
       /* @__PURE__ */ jsx58(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", defaultValue: contest.sub_req, required: !0 }),
@@ -4483,7 +4516,7 @@ var UserServer = class {
     return await this.contestantServer.getContestantDetailsWithContest(contestantId, cookies);
   }
   async updateUserContestant(payload, cookies) {
-    let { error, authRequired, data } = await contestantRepo.updateUserContestant(payload, cookies);
+    let { error, authRequired, data } = await this.contestantServer.updateUserContestant(payload, cookies);
     return { error, authRequired, data };
   }
 }, userServer = new UserServer(contestantRepo);
@@ -6192,6 +6225,13 @@ function CreateContestForm({ tournaments }) {
     ] }),
     /* @__PURE__ */ jsx97(CategoryInputs, {}),
     /* @__PURE__ */ jsx97(StageInputs, {}),
+    /* @__PURE__ */ jsxs83("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsx97("legend", { className: "text-lg mb-4 font-bold", children: "Contestants and Referrals Earnings" }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Contestant Share Percentage", id: "contestant_share_percent", name: "contestant_share_percent", defaultValue: 50, required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "number", labelText: "Minimum amount for affiliate to earn", id: "min_for_referral_earning", name: "min_for_referral_earning", defaultValue: 3e3, required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "number", labelText: "Amount affiliate would earn from minimum", id: "referral_bonus_from_min", name: "referral_bonus_from_min", defaultValue: 500, required: !0 }),
+      /* @__PURE__ */ jsx97(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Affiliate percentage earnings after minimum", id: "referral_percent_after_min", name: "referral_percent_after_min", defaultValue: 1, required: !0 })
+    ] }),
     /* @__PURE__ */ jsxs83("fieldset", { className: "grid gap-3 sm:gap-6", children: [
       /* @__PURE__ */ jsx97("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
       /* @__PURE__ */ jsx97(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", required: !0 }),
@@ -6836,7 +6876,7 @@ async function action17({ request }) {
   return json28({ data, error });
 }
 function useUserProfileController() {
-  let { toast: toast5 } = useToast(), loaderData = useLoaderData28(), actionData = useActionData3(), navigate = useNavigate11(), [profile, setProfile] = useState23(loaderData?.data?.user_profile || null), [email, setEmail] = useState23(loaderData?.data?.email || ""), [imagePreview, setImagePreview] = useState23(profile?.image_url), fileInputRef = useRef8(null);
+  let { toast: toast5 } = useToast(), loaderData = useLoaderData28(), actionData = useActionData3(), navigate = useNavigate11(), [profile, setProfile] = useState23(loaderData?.data?.user_profile || null), [email, setEmail] = useState23(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState23(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState23(profile?.image_url), fileInputRef = useRef8(null);
   return useEffect14(() => {
     actionData?.error && toast5({
       variant: "destructive",
@@ -6846,14 +6886,14 @@ function useUserProfileController() {
       variant: "default",
       title: "Profile Updated",
       description: "Your profile has been updated successfully."
-    }), setProfile(actionData.data.user_profile || null), setEmail(actionData.data.email || ""), setImagePreview(actionData.data.user_profile?.image_url));
+    }), setProfile(actionData.data.user_profile || null), setEmail(actionData.data.email || ""), setReferralCode(actionData.data.referral_code || ""), setImagePreview(actionData.data.user_profile?.image_url));
   }, [actionData]), { profile, email, imagePreview, fileInputRef, handleImageChange: (e) => {
     let file = e.target.files?.[0];
     file && setImagePreview(URL.createObjectURL(file));
-  } };
+  }, referralCode };
 }
 function UserProfilePage() {
-  let { profile, email, imagePreview, fileInputRef, handleImageChange } = useUserProfileController(), isLoading = !profile && !email;
+  let { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController(), isLoading = !profile && !email;
   return /* @__PURE__ */ jsx112("div", { className: "min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16", children: /* @__PURE__ */ jsxs94("div", { className: "max-w-2xl w-full px-4 sm:px-6 lg:px-8", children: [
     /* @__PURE__ */ jsxs94("div", { className: "flex flex-col items-center mb-8", children: [
       /* @__PURE__ */ jsx112("div", { className: "w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-200 mb-4", children: isLoading ? /* @__PURE__ */ jsx112("div", { className: "w-full h-full bg-gray-200 animate-pulse" }) : imagePreview ? /* @__PURE__ */ jsx112("img", { src: imagePreview, alt: "Profile", className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx112(Svg, { src: icons.avatarIcon, className: "w-full h-full" }) }),
@@ -6881,6 +6921,7 @@ function UserProfilePage() {
       /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 }),
       /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "email", name: "email", labelText: "Email", defaultValue: email, icon: icons.avatarIcon, required: !0, readOnly: !0 }),
       /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "status", name: "status", labelText: "Status", defaultValue: profile?.status, icon: icons.avatarIcon }),
+      /* @__PURE__ */ jsx112(FormControl, { as: "input", id: "", name: "", labelText: "Referral code", defaultValue: referralCode, icon: icons.lockIcon, required: !0, readOnly: !0 }),
       /* @__PURE__ */ jsxs94("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
         /* @__PURE__ */ jsx112(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
         "Profile Image"
@@ -6889,6 +6930,206 @@ function UserProfilePage() {
       /* @__PURE__ */ jsx112(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Update Profile" })
     ] })
   ] }) });
+}
+
+// app/routes/user.wallet.tsx
+var user_wallet_exports = {};
+__export(user_wallet_exports, {
+  default: () => WalletPage,
+  loader: () => loader30
+});
+import { json as json29, redirect as redirect17 } from "@remix-run/node";
+import { useLoaderData as useLoaderData29 } from "@remix-run/react";
+import { useState as useState24, useMemo } from "react";
+
+// app/services/wallet/wallet.server.ts
+var WalletRepository = class {
+  async getUserWallets(cookies) {
+    let { data, error, authRequired } = await ApiCall.call({
+      method: "GET",
+      url: ApiEndPoints.userWallets
+    }, cookies);
+    return console.log({ data, error }), data ? { data } : { error, authRequired };
+  }
+  async getUserLedgersForWallet(cookies, query = null) {
+    let url = ApiEndPoints.userLedgers;
+    if (query) {
+      let queryString = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => (value != null && (acc[key] = String(value)), acc), {})).toString();
+      queryString && (url = `${url}?${queryString}`);
+    }
+    let { data, error, authRequired } = await ApiCall.call({
+      method: "GET",
+      url
+    }, cookies);
+    return console.log({ data, error }), data ? { data } : { error, authRequired };
+  }
+}, walletRepo = new WalletRepository();
+
+// app/routes/user.wallet.tsx
+import { jsx as jsx113, jsxs as jsxs95 } from "react/jsx-runtime";
+async function loader30({ request }) {
+  let cookieHeader = request.headers.get("Cookie");
+  if (!cookieHeader)
+    return redirect17("/login");
+  let walletsResponse = await walletRepo.getUserWallets(cookieHeader), wallets = [];
+  if (walletsResponse.data?.length)
+    for (let _wallet of walletsResponse.data) {
+      let pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, {
+        wallet_id: _wallet._id,
+        page_size: 10
+      });
+      pagedLedgers.data && wallets.push({ wallet: _wallet, pagedLedgers: pagedLedgers.data });
+    }
+  return json29({ wallets });
+}
+function useWalletController() {
+  let { wallets } = useLoaderData29(), [activeWalletId, setActiveWalletId] = useState24(
+    wallets.length > 0 ? wallets[0].wallet._id : null
+  ), activeData = useMemo(() => wallets.find((w) => w.wallet._id === activeWalletId) || null, [activeWalletId, wallets]);
+  return {
+    wallets,
+    activeData,
+    setActiveWalletId,
+    formatCurrency: (amount, currency) => new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency
+    }).format(amount)
+  };
+}
+function WalletPage() {
+  let { wallets, activeData, setActiveWalletId, formatCurrency } = useWalletController();
+  if (!activeData)
+    return /* @__PURE__ */ jsx113("div", { className: "p-8", children: "No wallets found." });
+  let { wallet, pagedLedgers } = activeData;
+  return /* @__PURE__ */ jsxs95("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
+    /* @__PURE__ */ jsx113("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }),
+    /* @__PURE__ */ jsxs95("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
+      /* @__PURE__ */ jsxs95("div", { className: "flex items-center justify-between mb-4", children: [
+        /* @__PURE__ */ jsxs95("div", { className: "flex items-center gap-2 text-gray-500", children: [
+          /* @__PURE__ */ jsx113("span", { className: "text-sm", children: "Wallet balances" }),
+          /* @__PURE__ */ jsx113("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" })
+        ] }),
+        /* @__PURE__ */ jsx113(
+          "select",
+          {
+            className: "border rounded-full px-4 py-2 bg-gray-50 text-sm font-medium outline-none cursor-pointer",
+            value: wallet._id,
+            onChange: (e) => setActiveWalletId(e.target.value),
+            children: wallets.map((w) => /* @__PURE__ */ jsxs95("option", { value: w.wallet._id, children: [
+              w.wallet.wallet_currency,
+              " - ",
+              w.wallet.account_number
+            ] }, w.wallet._id))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx113("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs95("div", { children: [
+        /* @__PURE__ */ jsx113("div", { className: "text-4xl font-bold mb-1", children: formatCurrency(wallet.account_balance, wallet.wallet_currency) }),
+        /* @__PURE__ */ jsx113("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name })
+      ] }) }),
+      /* @__PURE__ */ jsxs95("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
+        /* @__PURE__ */ jsx113("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }),
+        /* @__PURE__ */ jsx113("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Add Withdrawal Account" }),
+        /* @__PURE__ */ jsx113("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs95("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs95("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
+        /* @__PURE__ */ jsx113("span", { children: "\u{1F4C1}" }),
+        /* @__PURE__ */ jsxs95("h2", { className: "font-medium", children: [
+          "Recent wallet activity (",
+          wallet.wallet_currency,
+          ")"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs95("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
+        /* @__PURE__ */ jsx113(
+          MetricItem,
+          {
+            label: "Net change this month",
+            value: formatCurrency(wallet.metrics.net_change_this_month, wallet.wallet_currency),
+            tooltip: !0
+          }
+        ),
+        /* @__PURE__ */ jsx113(
+          MetricItem,
+          {
+            label: "Money in",
+            value: formatCurrency(wallet.metrics.money_in, wallet.wallet_currency)
+          }
+        ),
+        /* @__PURE__ */ jsx113(
+          MetricItem,
+          {
+            label: "Money out",
+            value: formatCurrency(wallet.metrics.money_out, wallet.wallet_currency)
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx113("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs95("table", { className: "w-full text-left text-sm", children: [
+        /* @__PURE__ */ jsx113("thead", { children: /* @__PURE__ */ jsxs95("tr", { className: "text-gray-400 border-b", children: [
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "S/N" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Date" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Ref ID" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Narration" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Beneficiary name" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Type" }),
+          /* @__PURE__ */ jsx113("th", { className: "pb-4 font-medium", children: "Amount" })
+        ] }) }),
+        /* @__PURE__ */ jsx113("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxs95("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
+          /* @__PURE__ */ jsx113("td", { className: "py-4 text-gray-500", children: idx + 1 }),
+          /* @__PURE__ */ jsxs95("td", { className: "py-4 text-gray-900 leading-tight", children: [
+            new Date(item.completed_at || "").toLocaleDateString(),
+            /* @__PURE__ */ jsx113("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() })
+          ] }),
+          /* @__PURE__ */ jsx113("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }),
+          /* @__PURE__ */ jsx113("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }),
+          /* @__PURE__ */ jsx113("td", { className: "py-4 text-gray-600 truncate", children: item.wallet_name }),
+          /* @__PURE__ */ jsx113("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }),
+          /* @__PURE__ */ jsx113("td", { className: "py-4", children: /* @__PURE__ */ jsxs95("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx113("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency(item.amount, item.currency) }),
+            /* @__PURE__ */ jsx113(StatusBadge, { status: item.status })
+          ] }) })
+        ] }, item._id)) })
+      ] }) }),
+      /* @__PURE__ */ jsxs95("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
+        /* @__PURE__ */ jsxs95("div", { children: [
+          "Showing ",
+          pagedLedgers.items.length,
+          " of ",
+          pagedLedgers.total_items,
+          " items"
+        ] }),
+        /* @__PURE__ */ jsx113("div", { className: "flex gap-2", children: /* @__PURE__ */ jsx113("button", { disabled: !pagedLedgers.last_key_id, className: "px-4 py-2 border rounded-lg disabled:opacity-50", children: "Next Page" }) })
+      ] })
+    ] })
+  ] });
+}
+function MetricItem({ label, value, tooltip = !1 }) {
+  return /* @__PURE__ */ jsxs95("div", { children: [
+    /* @__PURE__ */ jsxs95("div", { className: "text-xs text-gray-400 flex items-center gap-1 mb-1", children: [
+      label,
+      " ",
+      tooltip && /* @__PURE__ */ jsx113("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" })
+    ] }),
+    /* @__PURE__ */ jsx113("div", { className: "text-lg font-bold text-gray-800", children: value })
+  ] });
+}
+function StatusBadge({ status }) {
+  let styles = {
+    Pending: "bg-orange-50 text-orange-500 border-orange-100",
+    Failed: "bg-red-50 text-red-500 border-red-100",
+    Completed: "bg-green-50 text-green-500 border-green-100"
+  }, icons2 = {
+    Pending: "\u23F1",
+    Failed: "\u26A0\uFE0F",
+    Completed: "\u2713"
+  };
+  return /* @__PURE__ */ jsxs95("span", { className: `px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 ${styles[status] || ""}`, children: [
+    icons2[status],
+    " ",
+    status
+  ] });
 }
 
 // app/routes/_public.tsx
@@ -6901,79 +7142,79 @@ import { Outlet as Outlet3 } from "@remix-run/react";
 
 // app/components/public/Footer.tsx
 import { Link as Link12 } from "@remix-run/react";
-import { jsx as jsx113, jsxs as jsxs95 } from "react/jsx-runtime";
+import { jsx as jsx114, jsxs as jsxs96 } from "react/jsx-runtime";
 function Footer() {
-  return /* @__PURE__ */ jsx113("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs95("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
-    /* @__PURE__ */ jsx113("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs95("ul", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/contests", children: "Contests" }) }),
-      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/#contact", children: "Contact" }) }),
-      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/winners", children: "Winners" }) }),
-      /* @__PURE__ */ jsx113("li", { children: /* @__PURE__ */ jsx113(Link12, { to: "/results", children: "Results" }) })
+  return /* @__PURE__ */ jsx114("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs96("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
+    /* @__PURE__ */ jsx114("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs96("ul", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(Link12, { to: "/contests", children: "Contests" }) }),
+      /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(Link12, { to: "/#contact", children: "Contact" }) }),
+      /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(Link12, { to: "/winners", children: "Winners" }) }),
+      /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(Link12, { to: "/results", children: "Results" }) })
     ] }) }),
-    /* @__PURE__ */ jsx113("span", { children: "Privacy Policy" }),
-    /* @__PURE__ */ jsx113("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" })
+    /* @__PURE__ */ jsx114("span", { children: "Privacy Policy" }),
+    /* @__PURE__ */ jsx114("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" })
   ] }) });
 }
 
 // app/components/public/Navigation.tsx
-import { useEffect as useEffect16, useState as useState25 } from "react";
+import { useEffect as useEffect16, useState as useState26 } from "react";
 import { Link as Link14, NavLink as NavLink2, useLocation as useLocation5 } from "@remix-run/react";
 
 // app/components/public/MobileNavigation.tsx
 import { Link as Link13, NavLink, useLocation as useLocation4 } from "@remix-run/react";
-import { useEffect as useEffect15, useRef as useRef9, useState as useState24 } from "react";
-import { jsx as jsx114, jsxs as jsxs96 } from "react/jsx-runtime";
+import { useEffect as useEffect15, useRef as useRef9, useState as useState25 } from "react";
+import { jsx as jsx115, jsxs as jsxs97 } from "react/jsx-runtime";
 function MobileNavigation({ show, onClose }) {
-  let { pathname } = useLocation4(), [user, setUser] = useState24(null), mobileNav = useRef9(null);
+  let { pathname } = useLocation4(), [user, setUser] = useState25(null), mobileNav = useRef9(null);
   mobileNav.current?.style.setProperty("--left", "0%");
   let { getUserStoreManager } = useUserManager();
   return useEffect15(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs96(
+  }, []), /* @__PURE__ */ jsxs97(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "sm:hidden fixed top-0 left-0 bg-primary w-full h-dvh z-10 flex flex-col justify-between mobileNav data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left",
       children: [
-        /* @__PURE__ */ jsxs96("header", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs96("div", { className: "flex justify-between items-center", children: [
-            /* @__PURE__ */ jsx114(Link13, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx114(Svg, { src: icons.logoIcon, width: 37, height: 36 }) }),
-            /* @__PURE__ */ jsx114("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx114(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
+        /* @__PURE__ */ jsxs97("header", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs97("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsx115(Link13, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx115(Svg, { src: icons.logoIcon, width: 37, height: 36 }) }),
+            /* @__PURE__ */ jsx115("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx115(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
           ] }),
-          /* @__PURE__ */ jsxs96("nav", { className: "", children: [
-            /* @__PURE__ */ jsxs96("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
-              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/contests") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+          /* @__PURE__ */ jsxs97("nav", { className: "", children: [
+            /* @__PURE__ */ jsxs97("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
+              /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/contests") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Contests"
               ] }) }),
-              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/winners") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/winners") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Winners"
               ] }) }),
-              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsxs96(NavLink, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/results") ? /* @__PURE__ */ jsx114(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/results") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Results"
               ] }) }),
-              /* @__PURE__ */ jsx114("li", { children: /* @__PURE__ */ jsx114(NavLink, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
+              /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsx115(NavLink, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
             ] }),
-            /* @__PURE__ */ jsx114(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
+            /* @__PURE__ */ jsx115(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs96("aside", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs96("div", { className: "mb-12", children: [
-            /* @__PURE__ */ jsx114("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
-            /* @__PURE__ */ jsxs96("span", { className: "flex gap-4", children: [
-              /* @__PURE__ */ jsx114(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx114(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx114(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx114(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
+        /* @__PURE__ */ jsxs97("aside", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs97("div", { className: "mb-12", children: [
+            /* @__PURE__ */ jsx115("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
+            /* @__PURE__ */ jsxs97("span", { className: "flex gap-4", children: [
+              /* @__PURE__ */ jsx115(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx115(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx115(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx115(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs96("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
-            /* @__PURE__ */ jsx114("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
-            /* @__PURE__ */ jsx114("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
+          /* @__PURE__ */ jsxs97("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
+            /* @__PURE__ */ jsx115("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
+            /* @__PURE__ */ jsx115("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
           ] })
         ] })
       ]
@@ -6982,33 +7223,33 @@ function MobileNavigation({ show, onClose }) {
 }
 
 // app/components/public/Navigation.tsx
-import { jsx as jsx115, jsxs as jsxs97 } from "react/jsx-runtime";
+import { jsx as jsx116, jsxs as jsxs98 } from "react/jsx-runtime";
 function Navigation() {
-  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState25(!1), { pathname } = useLocation5(), [user, setUser] = useState25(null);
+  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState26(!1), { pathname } = useLocation5(), [user, setUser] = useState26(null);
   return useEffect16(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs97("header", { className: "flex justify-between items-center wrapper py-5", children: [
-    /* @__PURE__ */ jsx115(Link14, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx115(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsxs97("nav", { className: "hidden md:flex gap-16 items-center", children: [
-      /* @__PURE__ */ jsxs97("ul", { className: "flex gap-6 text-xl font-bold", children: [
-        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/contests") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+  }, []), /* @__PURE__ */ jsxs98("header", { className: "flex justify-between items-center wrapper py-5", children: [
+    /* @__PURE__ */ jsx116(Link14, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx116(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsxs98("nav", { className: "hidden md:flex gap-16 items-center", children: [
+      /* @__PURE__ */ jsxs98("ul", { className: "flex gap-6 text-xl font-bold", children: [
+        /* @__PURE__ */ jsx116("li", { children: /* @__PURE__ */ jsxs98(NavLink2, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/contests") ? /* @__PURE__ */ jsx116(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Contests"
         ] }) }),
-        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/winners") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx116("li", { children: /* @__PURE__ */ jsxs98(NavLink2, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/winners") ? /* @__PURE__ */ jsx116(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Winners"
         ] }) }),
-        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsxs97(NavLink2, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/results") ? /* @__PURE__ */ jsx115(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx116("li", { children: /* @__PURE__ */ jsxs98(NavLink2, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/results") ? /* @__PURE__ */ jsx116(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Results"
         ] }) }),
-        /* @__PURE__ */ jsx115("li", { children: /* @__PURE__ */ jsx115(NavLink2, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
+        /* @__PURE__ */ jsx116("li", { children: /* @__PURE__ */ jsx116(NavLink2, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
       ] }),
-      /* @__PURE__ */ jsx115(Button, { element: "a", href: "/signup", children: "Join Now" })
+      /* @__PURE__ */ jsx116(Button, { element: "a", href: "/signup", children: "Join Now" })
     ] }),
-    /* @__PURE__ */ jsx115(
+    /* @__PURE__ */ jsx116(
       "button",
       {
         onClick: () => {
@@ -7016,26 +7257,26 @@ function Navigation() {
         },
         title: "hamburger",
         className: "sm:hidden flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx115(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 })
+        children: /* @__PURE__ */ jsx116(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 })
       }
     ),
-    /* @__PURE__ */ jsx115(MobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx116(MobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav })
   ] });
 }
 
 // app/routes/_public.tsx
-import { jsx as jsx116, jsxs as jsxs98 } from "react/jsx-runtime";
+import { jsx as jsx117, jsxs as jsxs99 } from "react/jsx-runtime";
 var meta = () => [
   { title: "Kid of the Month & Year" },
   { name: "description", content: "Welcome to the best contest platform for children of all ages!" }
 ];
 function Index() {
-  return /* @__PURE__ */ jsxs98("div", { className: "min-h-screen bg-primary flex flex-col", children: [
-    /* @__PURE__ */ jsx116(Navigation, {}),
-    /* @__PURE__ */ jsx116(Outlet3, {}),
-    /* @__PURE__ */ jsx116(Footer, {})
+  return /* @__PURE__ */ jsxs99("div", { className: "min-h-screen bg-primary flex flex-col", children: [
+    /* @__PURE__ */ jsx117(Navigation, {}),
+    /* @__PURE__ */ jsx117(Outlet3, {}),
+    /* @__PURE__ */ jsx117(Footer, {})
   ] });
 }
 
@@ -7046,7 +7287,7 @@ __export(logout_exports, {
 });
 import { Link as Link15, useSearchParams as useSearchParams4 } from "@remix-run/react";
 import { useEffect as useEffect17 } from "react";
-import { jsx as jsx117, jsxs as jsxs99 } from "react/jsx-runtime";
+import { jsx as jsx118, jsxs as jsxs100 } from "react/jsx-runtime";
 function useLogoutController() {
   let [searchQuery] = useSearchParams4(), { deleteUserStoreManager } = useUserManager();
   useEffect17(() => {
@@ -7054,11 +7295,11 @@ function useLogoutController() {
   }, []);
 }
 function Logout() {
-  return useLogoutController(), /* @__PURE__ */ jsxs99("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx117(Link15, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx117(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }) }),
-    /* @__PURE__ */ jsxs99("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
-      /* @__PURE__ */ jsx117("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
-      /* @__PURE__ */ jsx117(Link15, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
+  return useLogoutController(), /* @__PURE__ */ jsxs100("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx118(Link15, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx118(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }) }),
+    /* @__PURE__ */ jsxs100("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
+      /* @__PURE__ */ jsx118("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
+      /* @__PURE__ */ jsx118(Link15, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
     ] })
   ] });
 }
@@ -7068,20 +7309,20 @@ var signup_exports = {};
 __export(signup_exports, {
   action: () => action18,
   default: () => Signup,
-  loader: () => loader30
+  loader: () => loader31
 });
 import { Form as Form15, Link as Link16, useActionData as useActionData4, useNavigate as useNavigate12, useSearchParams as useSearchParams5 } from "@remix-run/react";
-import { json as json29 } from "@remix-run/node";
+import { json as json30 } from "@remix-run/node";
 import { useEffect as useEffect18 } from "react";
-import { jsx as jsx118, jsxs as jsxs100 } from "react/jsx-runtime";
-async function loader30({ request }) {
+import { jsx as jsx119, jsxs as jsxs101 } from "react/jsx-runtime";
+async function loader31({ request }) {
   return null;
 }
 async function action18({ request }) {
   let formData = await request.formData(), signupData = authServer.prepareUserSignupPayload(formData), { error, data, headers } = await authServer.signup(signupData), responseHeaders = {};
-  return error ? { error: error.detail?.toString() || "An error occurred during login.", data: null } : headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json29({ data, error: null }, {
+  return error ? { error: error.detail?.toString() || "An error occurred during login.", data: null } : headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json30({ data, error: null }, {
     headers: responseHeaders
-  })) : json29({ error, data, headers });
+  })) : json30({ error, data, headers });
 }
 function useSignupController() {
   let actionData = useActionData4(), [searchQuery] = useSearchParams5(), { setUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate12();
@@ -7100,29 +7341,29 @@ function useSignupController() {
 }
 function Signup() {
   let { actionData } = useSignupController();
-  return /* @__PURE__ */ jsxs100("main", { className: "bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx118(Link16, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx118(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsx118("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs100(Form15, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsx118("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx118("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx118("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
-      /* @__PURE__ */ jsx118("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
-      /* @__PURE__ */ jsx118("hr", {}),
-      /* @__PURE__ */ jsxs100("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs101("main", { className: "bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx119(Link16, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx119(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx119("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs101(Form15, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx119("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx119("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx119("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx119("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
+      /* @__PURE__ */ jsx119("hr", {}),
+      /* @__PURE__ */ jsxs101("p", { className: "text-center text-sm mt-2", children: [
         "Already have an account? ",
-        /* @__PURE__ */ jsx118(Link16, { to: "/login", className: "text-primary underline", children: "Login" })
+        /* @__PURE__ */ jsx119(Link16, { to: "/login", className: "text-primary underline", children: "Login" })
       ] }),
-      /* @__PURE__ */ jsxs100("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }),
-        /* @__PURE__ */ jsx118(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
-        /* @__PURE__ */ jsxs100("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
-          /* @__PURE__ */ jsx118(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
+      /* @__PURE__ */ jsxs101("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx119(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx119(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx119(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx119(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }),
+        /* @__PURE__ */ jsx119(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
+        /* @__PURE__ */ jsxs101("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+          /* @__PURE__ */ jsx119(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
           "Profile Image"
         ] }),
-        /* @__PURE__ */ jsx118(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
+        /* @__PURE__ */ jsx119(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
       ] }),
-      /* @__PURE__ */ jsx118(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" })
+      /* @__PURE__ */ jsx119(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" })
     ] }) })
   ] });
 }
@@ -7135,7 +7376,7 @@ __export(admin_exports, {
   meta: () => meta2
 });
 import { Outlet as Outlet4, useLocation as useLocation8 } from "@remix-run/react";
-import { useEffect as useEffect20, useState as useState26 } from "react";
+import { useEffect as useEffect20, useState as useState27 } from "react";
 
 // app/components/admin/AdminMobileNavigation.tsx
 import { NavLink as NavLink3, useLocation as useLocation6 } from "@remix-run/react";
@@ -7143,8 +7384,8 @@ import { NavLink as NavLink3, useLocation as useLocation6 } from "@remix-run/rea
 // app/components/reusables/Accordion.tsx
 import * as React13 from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { jsx as jsx119, jsxs as jsxs101 } from "react/jsx-runtime";
-var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx119(
+import { jsx as jsx120, jsxs as jsxs102 } from "react/jsx-runtime";
+var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx120(
   AccordionPrimitive.Item,
   {
     ref,
@@ -7153,7 +7394,7 @@ var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ c
   }
 ));
 AccordionItem.displayName = "AccordionItem";
-var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx119(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs101(
+var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx120(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs102(
   AccordionPrimitive.Trigger,
   {
     ref,
@@ -7164,25 +7405,25 @@ var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, re
     ...props,
     children: [
       children,
-      /* @__PURE__ */ jsx119(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" })
+      /* @__PURE__ */ jsx120(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" })
     ]
   }
 ) }));
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
-var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx119(
+var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx120(
   AccordionPrimitive.Content,
   {
     ref,
     className: "overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
     ...props,
-    children: /* @__PURE__ */ jsx119("div", { className: cn("", className), children })
+    children: /* @__PURE__ */ jsx120("div", { className: cn("", className), children })
   }
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
 // app/components/admin/AdminMobileNavigation.tsx
 import { useEffect as useEffect19, useRef as useRef10 } from "react";
-import { jsx as jsx120, jsxs as jsxs102 } from "react/jsx-runtime";
+import { jsx as jsx121, jsxs as jsxs103 } from "react/jsx-runtime";
 var primaryNavs = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview" },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts" },
@@ -7210,53 +7451,53 @@ function AdminMobileNavigation({ show, onClose }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs102("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs103("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx120(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx121(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs102(
+  return /* @__PURE__ */ jsxs103(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs102("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsx120("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
-          /* @__PURE__ */ jsx120(
+        /* @__PURE__ */ jsxs103("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx121("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx121(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsx120(Svg, { src: icons.closeIcon })
+              children: /* @__PURE__ */ jsx121(Svg, { src: icons.closeIcon })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs102("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs102("header", { children: [
-            /* @__PURE__ */ jsxs102("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs102("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsx120("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx120("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs102("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsx120("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
-                  /* @__PURE__ */ jsx120("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
+        /* @__PURE__ */ jsxs103("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs103("header", { children: [
+            /* @__PURE__ */ jsxs103("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs103("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx121("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx121("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs103("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx121("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
+                  /* @__PURE__ */ jsx121("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx120(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx120("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs102(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx120(
+              /* @__PURE__ */ jsx121(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx121("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs103(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx121(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs102("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
+                    children: /* @__PURE__ */ jsxs103("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx121(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
                   }
                 ),
-                /* @__PURE__ */ jsx120(AccordionContent, { children: /* @__PURE__ */ jsx120("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx120("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx120(
+                /* @__PURE__ */ jsx121(AccordionContent, { children: /* @__PURE__ */ jsx121("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx121("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx121(
                   NavLink3,
                   {
                     to: subitem.url,
@@ -7265,46 +7506,46 @@ function AdminMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx120("li", { children: /* @__PURE__ */ jsxs102(
+              ] }, navItem.label) : /* @__PURE__ */ jsx121("li", { children: /* @__PURE__ */ jsxs103(
                 NavLink3,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
+                    /* @__PURE__ */ jsx121(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx120("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx120("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx120("li", { children: /* @__PURE__ */ jsxs102(
+            /* @__PURE__ */ jsx121("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx121("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx121("li", { children: /* @__PURE__ */ jsxs103(
               NavLink3,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsx120(Svg, { src: navItem.icon }),
+                  /* @__PURE__ */ jsx121(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs102("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs102("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsx120(Svg, { src: icons.themeIcon }),
+          /* @__PURE__ */ jsxs103("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs103("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx121(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs102(
+            /* @__PURE__ */ jsxs103(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-                  /* @__PURE__ */ jsx120("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+                  /* @__PURE__ */ jsx121("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx121("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx121("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
               }
             )
@@ -7317,20 +7558,20 @@ function AdminMobileNavigation({ show, onClose }) {
 
 // app/components/admin/MobileHeader.tsx
 import { Link as Link17 } from "@remix-run/react";
-import { jsx as jsx121, jsxs as jsxs103 } from "react/jsx-runtime";
+import { jsx as jsx122, jsxs as jsxs104 } from "react/jsx-runtime";
 function MobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs103("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxs103(Link17, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsx121(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+  return /* @__PURE__ */ jsxs104("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs104(Link17, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx122(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-ADMIN"
     ] }),
-    /* @__PURE__ */ jsx121(
+    /* @__PURE__ */ jsx122(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx121(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+        children: /* @__PURE__ */ jsx122(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
       }
     )
   ] });
@@ -7339,7 +7580,7 @@ function MobileHeader({ toggleNav }) {
 // app/components/admin/AdminNav.tsx
 import { NavLink as NavLink4, useLocation as useLocation7 } from "@remix-run/react";
 import { Accordion as Accordion2, AccordionContent as AccordionContent2, AccordionItem as AccordionItem2, AccordionTrigger as AccordionTrigger2 } from "@radix-ui/react-accordion";
-import { jsx as jsx122, jsxs as jsxs104 } from "react/jsx-runtime";
+import { jsx as jsx123, jsxs as jsxs105 } from "react/jsx-runtime";
 var navs = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview" },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts" },
@@ -7361,41 +7602,41 @@ function AdminNavigation({ show }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs104("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs105("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx122(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx123(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs104("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
-    /* @__PURE__ */ jsxs104("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsx122("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx122("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx122("li", { children: /* @__PURE__ */ jsxs104(
+  return show ? /* @__PURE__ */ jsxs105("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
+    /* @__PURE__ */ jsxs105("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx123("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx123("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx123("li", { children: /* @__PURE__ */ jsxs105(
         NavLink4,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsx122(Svg, { src: navItem.icon }),
+            /* @__PURE__ */ jsx123(Svg, { src: navItem.icon }),
             navItem.label
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx122(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs104(AccordionItem2, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs104(
+      /* @__PURE__ */ jsx123(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs105(AccordionItem2, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs105(
           AccordionTrigger2,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs104("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsx122(Svg, { src: item.icon }),
+              /* @__PURE__ */ jsxs105("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx123(Svg, { src: item.icon }),
                 item.label
               ] }),
-              /* @__PURE__ */ jsx122(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
+              /* @__PURE__ */ jsx123(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
           }
         ),
-        /* @__PURE__ */ jsx122(AccordionContent2, { children: /* @__PURE__ */ jsx122("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx122("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx122(
+        /* @__PURE__ */ jsx123(AccordionContent2, { children: /* @__PURE__ */ jsx123("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx123("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx123(
           NavLink4,
           {
             to: subitem.url,
@@ -7405,20 +7646,20 @@ function AdminNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs104("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs104("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsx122(Svg, { src: icons.themeIcon }),
+    /* @__PURE__ */ jsxs105("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs105("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx123(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs104(
+      /* @__PURE__ */ jsxs105(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-            /* @__PURE__ */ jsx122("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+            /* @__PURE__ */ jsx123("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx123("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx123("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
         }
       )
@@ -7431,37 +7672,37 @@ import { Link as Link19 } from "@remix-run/react";
 
 // app/components/admin/AdminToolbar.tsx
 import { Link as Link18 } from "@remix-run/react";
-import { jsx as jsx123, jsxs as jsxs105 } from "react/jsx-runtime";
+import { jsx as jsx124, jsxs as jsxs106 } from "react/jsx-runtime";
 function AdminToolbar() {
-  let mainComponent = /* @__PURE__ */ jsxs105(
+  let mainComponent = /* @__PURE__ */ jsxs106(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs105("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx123("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx123("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs105("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx123("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
-            /* @__PURE__ */ jsx123("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
+        /* @__PURE__ */ jsxs106("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx124("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx124("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs106("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx124("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
+            /* @__PURE__ */ jsx124("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
           ] })
         ] }),
-        /* @__PURE__ */ jsx123(Svg, { src: icons.arrowDownIcon })
+        /* @__PURE__ */ jsx124(Svg, { src: icons.arrowDownIcon })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs105(
+  return /* @__PURE__ */ jsxs106(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs105(Link18, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx123(Svg, { src: icons.profileIcon }),
+        /* @__PURE__ */ jsxs106(Link18, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx124(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs105(Link18, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx123(Svg, { src: icons.signoutIcon }),
+        /* @__PURE__ */ jsxs106(Link18, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx124(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
       ]
@@ -7470,65 +7711,65 @@ function AdminToolbar() {
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { jsx as jsx124, jsxs as jsxs106 } from "react/jsx-runtime";
+import { jsx as jsx125, jsxs as jsxs107 } from "react/jsx-runtime";
 function PrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs106("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxs106("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx124(
+  return /* @__PURE__ */ jsxs107("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs107("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx125(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsx124(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+          children: /* @__PURE__ */ jsx125(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsxs106(Link19, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsx124(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+      /* @__PURE__ */ jsxs107(Link19, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx125(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-ADMIN"
       ] })
     ] }),
-    /* @__PURE__ */ jsx124(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
-    /* @__PURE__ */ jsx124(AdminToolbar, {})
+    /* @__PURE__ */ jsx125(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx125(AdminToolbar, {})
   ] });
 }
 
 // app/routes/admin.tsx
-import { jsx as jsx125, jsxs as jsxs107 } from "react/jsx-runtime";
+import { jsx as jsx126, jsxs as jsxs108 } from "react/jsx-runtime";
 var meta2 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout({ children }) {
-  let [showNav, setShowNav] = useState26(!1);
+  let [showNav, setShowNav] = useState27(!1);
   return useEffect20(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs107("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsx125(PrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs108("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx126(PrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx125(MobileHeader, { toggleNav: () => {
+    /* @__PURE__ */ jsx126(MobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx125(AdminMobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx126(AdminMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs107("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsx125(AdminNavigation, { show: showNav }),
+    /* @__PURE__ */ jsxs108("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx126(AdminNavigation, { show: showNav }),
       children
     ] })
   ] });
 }
 function AdminLayout() {
-  return /* @__PURE__ */ jsx125(Layout, { children: /* @__PURE__ */ jsx125(Outlet4, {}) });
+  return /* @__PURE__ */ jsx126(Layout, { children: /* @__PURE__ */ jsx126(Outlet4, {}) });
 }
 function ErrorBoundary2() {
   let { pathname } = useLocation8();
-  return /* @__PURE__ */ jsx125(Layout, { children: /* @__PURE__ */ jsxs107("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsx125("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
-    /* @__PURE__ */ jsx125("p", { children: "Apologies, something went wrong on our end. Please try again." }),
-    /* @__PURE__ */ jsx125(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
-    /* @__PURE__ */ jsx125(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" })
+  return /* @__PURE__ */ jsx126(Layout, { children: /* @__PURE__ */ jsxs108("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx126("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx126("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx126(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx126(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" })
   ] }) });
 }
 
@@ -7537,13 +7778,13 @@ var login_exports = {};
 __export(login_exports, {
   action: () => action19,
   default: () => Login,
-  loader: () => loader31
+  loader: () => loader32
 });
 import { Form as Form16, Link as Link20, useActionData as useActionData5, useNavigate as useNavigate13, useSearchParams as useSearchParams6 } from "@remix-run/react";
-import { json as json30 } from "@remix-run/node";
+import { json as json31 } from "@remix-run/node";
 import { useEffect as useEffect21 } from "react";
-import { jsx as jsx126, jsxs as jsxs108 } from "react/jsx-runtime";
-async function loader31({ request }) {
+import { jsx as jsx127, jsxs as jsxs109 } from "react/jsx-runtime";
+async function loader32({ request }) {
   return null;
 }
 async function action19({ request }) {
@@ -7555,9 +7796,9 @@ async function action19({ request }) {
     return { error: error.detail?.toString() || "An error occurred during login.", data: null };
   console.log("God abeg o, HEADERS", headers);
   let responseHeaders = {};
-  return headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json30({ data, error: null }, {
+  return headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json31({ data, error: null }, {
     headers: responseHeaders
-  })) : json30({ data, error: null });
+  })) : json31({ data, error: null });
 }
 function useLoginController() {
   let actionData = useActionData5(), [searchQuery] = useSearchParams6(), { setUserStoreManager, getUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate13();
@@ -7578,18 +7819,18 @@ function useLoginController() {
 }
 function Login() {
   let { actionData } = useLoginController();
-  return /* @__PURE__ */ jsxs108("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx126(Link20, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx126(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsx126("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs108(Form16, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsx126("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx126("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx126("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
-      /* @__PURE__ */ jsx126("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
-      /* @__PURE__ */ jsx126("hr", {}),
-      /* @__PURE__ */ jsxs108("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs109("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx127(Link20, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx127(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx127("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs109(Form16, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx127("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx127("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx127("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx127("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
+      /* @__PURE__ */ jsx127("hr", {}),
+      /* @__PURE__ */ jsxs109("p", { className: "text-center text-sm mt-2", children: [
         "Don't have an account yet? ",
-        /* @__PURE__ */ jsx126(Link20, { to: "/signup", className: "text-primary underline", children: "Register" })
+        /* @__PURE__ */ jsx127(Link20, { to: "/signup", className: "text-primary underline", children: "Register" })
       ] }),
-      /* @__PURE__ */ jsxs108("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsx126(
+      /* @__PURE__ */ jsxs109("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx127(
           FormControl,
           {
             as: "input",
@@ -7601,7 +7842,7 @@ function Login() {
             required: !0
           }
         ),
-        /* @__PURE__ */ jsx126(
+        /* @__PURE__ */ jsx127(
           FormControl,
           {
             as: "input",
@@ -7615,7 +7856,7 @@ function Login() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx126(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
+      /* @__PURE__ */ jsx127(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
     ] }) })
   ] });
 }
@@ -7628,50 +7869,50 @@ __export(user_exports, {
   meta: () => meta3
 });
 import { Outlet as Outlet5, useLocation as useLocation11 } from "@remix-run/react";
-import { useEffect as useEffect24, useState as useState29 } from "react";
+import { useEffect as useEffect24, useState as useState30 } from "react";
 
 // app/components/user/UserPrimaryHeader.tsx
 import { Link as Link22 } from "@remix-run/react";
 
 // app/components/user/UserToolBar.tsx
 import { Link as Link21, useNavigate as useNavigate14 } from "@remix-run/react";
-import { useEffect as useEffect22, useState as useState27 } from "react";
-import { jsx as jsx127, jsxs as jsxs109 } from "react/jsx-runtime";
+import { useEffect as useEffect22, useState as useState28 } from "react";
+import { jsx as jsx128, jsxs as jsxs110 } from "react/jsx-runtime";
 function UserToolbar() {
-  let [user, setUser] = useState27(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate14();
+  let [user, setUser] = useState28(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate14();
   useEffect22(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs109(
+  let mainComponent = /* @__PURE__ */ jsxs110(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs109("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx127("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx127("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx127("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-            /* @__PURE__ */ jsx127("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs110("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx128("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx128("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx128("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+            /* @__PURE__ */ jsx128("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
         ] }),
-        /* @__PURE__ */ jsx127(Svg, { src: icons.arrowDownIcon })
+        /* @__PURE__ */ jsx128(Svg, { src: icons.arrowDownIcon })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs109(
+  return /* @__PURE__ */ jsxs110(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs109(Link21, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx127(Svg, { src: icons.profileIcon }),
+        /* @__PURE__ */ jsxs110(Link21, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx128(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs109(Link21, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx127(Svg, { src: icons.signoutIcon }),
+        /* @__PURE__ */ jsxs110(Link21, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx128(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
       ]
@@ -7680,45 +7921,45 @@ function UserToolbar() {
 }
 
 // app/components/user/UserPrimaryHeader.tsx
-import { jsx as jsx128, jsxs as jsxs110 } from "react/jsx-runtime";
+import { jsx as jsx129, jsxs as jsxs111 } from "react/jsx-runtime";
 function UserPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs110("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxs110("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx128(
+  return /* @__PURE__ */ jsxs111("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs111("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx129(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsx128(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+          children: /* @__PURE__ */ jsx129(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsxs110(Link22, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsx128(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+      /* @__PURE__ */ jsxs111(Link22, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx129(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-USER"
       ] })
     ] }),
-    /* @__PURE__ */ jsx128(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
-    /* @__PURE__ */ jsx128(UserToolbar, {})
+    /* @__PURE__ */ jsx129(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx129(UserToolbar, {})
   ] });
 }
 
 // app/components/user/UserMobileHeader.tsx
 import { Link as Link23 } from "@remix-run/react";
-import { jsx as jsx129, jsxs as jsxs111 } from "react/jsx-runtime";
+import { jsx as jsx130, jsxs as jsxs112 } from "react/jsx-runtime";
 function UserMobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs111("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxs111(Link23, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsx129(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+  return /* @__PURE__ */ jsxs112("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs112(Link23, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx130(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-USER"
     ] }),
-    /* @__PURE__ */ jsx129(
+    /* @__PURE__ */ jsx130(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx129(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+        children: /* @__PURE__ */ jsx130(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
       }
     )
   ] });
@@ -7726,8 +7967,8 @@ function UserMobileHeader({ toggleNav }) {
 
 // app/components/user/UserMobileNavigation.tsx
 import { NavLink as NavLink5, useLocation as useLocation9, useNavigate as useNavigate15 } from "@remix-run/react";
-import { useEffect as useEffect23, useRef as useRef11, useState as useState28 } from "react";
-import { jsx as jsx130, jsxs as jsxs112 } from "react/jsx-runtime";
+import { useEffect as useEffect23, useRef as useRef11, useState as useState29 } from "react";
+import { jsx as jsx131, jsxs as jsxs113 } from "react/jsx-runtime";
 var primaryNavs2 = [
   { label: "Contests", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -7739,7 +7980,7 @@ var primaryNavs2 = [
       { label: "Pending Uploads", icon: icons.adminTournamentIcon, url: "/user/pending-uploads" },
       { label: "Contest Registrations", url: "transactions/contest-registrations" },
       { label: "Your Profile", url: "/user/profile" },
-      { label: "Income History", url: "transactions/income-history" }
+      { label: "Wallet", url: "/user/wallet" }
     ]
   }
 ], secondaryNavs2 = [
@@ -7747,7 +7988,7 @@ var primaryNavs2 = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function UserMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef11(null), [user, setUser] = useState28(null), navigate = useNavigate15(), { getUserStoreManager } = useUserManager();
+  let mobileNav = useRef11(null), [user, setUser] = useState29(null), navigate = useNavigate15(), { getUserStoreManager } = useUserManager();
   useEffect23(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
@@ -7756,53 +7997,53 @@ function UserMobileNavigation({ show, onClose }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs112("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs113("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx130(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx131(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs112(
+  return /* @__PURE__ */ jsxs113(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs112("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsx130("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
-          /* @__PURE__ */ jsx130(
+        /* @__PURE__ */ jsxs113("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx131("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx131(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsx130(Svg, { src: icons.closeIcon })
+              children: /* @__PURE__ */ jsx131(Svg, { src: icons.closeIcon })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs112("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs112("header", { children: [
-            /* @__PURE__ */ jsxs112("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs112("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsx130("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx130("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs112("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsx130("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-                  /* @__PURE__ */ jsx130("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs113("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs113("header", { children: [
+            /* @__PURE__ */ jsxs113("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs113("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx131("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx131("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs113("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx131("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+                  /* @__PURE__ */ jsx131("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx130(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx130("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs112(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx130(
+              /* @__PURE__ */ jsx131(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx131("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs113(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx131(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs112("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
+                    children: /* @__PURE__ */ jsxs113("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx131(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
                   }
                 ),
-                /* @__PURE__ */ jsx130(AccordionContent, { children: /* @__PURE__ */ jsx130("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx130("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx130(
+                /* @__PURE__ */ jsx131(AccordionContent, { children: /* @__PURE__ */ jsx131("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx131("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx131(
                   NavLink5,
                   {
                     to: subitem.url,
@@ -7811,46 +8052,46 @@ function UserMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx130("li", { children: /* @__PURE__ */ jsxs112(
+              ] }, navItem.label) : /* @__PURE__ */ jsx131("li", { children: /* @__PURE__ */ jsxs113(
                 NavLink5,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
+                    /* @__PURE__ */ jsx131(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx130("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx130("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx130("li", { children: /* @__PURE__ */ jsxs112(
+            /* @__PURE__ */ jsx131("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx131("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx131("li", { children: /* @__PURE__ */ jsxs113(
               NavLink5,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsx130(Svg, { src: navItem.icon }),
+                  /* @__PURE__ */ jsx131(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs112("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs112("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsx130(Svg, { src: icons.themeIcon }),
+          /* @__PURE__ */ jsxs113("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs113("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx131(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs112(
+            /* @__PURE__ */ jsxs113(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-                  /* @__PURE__ */ jsx130("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+                  /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
               }
             )
@@ -7864,7 +8105,7 @@ function UserMobileNavigation({ show, onClose }) {
 // app/components/user/UserNavigation.tsx
 import { NavLink as NavLink6, useLocation as useLocation10 } from "@remix-run/react";
 import { Accordion as Accordion3, AccordionContent as AccordionContent3, AccordionItem as AccordionItem3, AccordionTrigger as AccordionTrigger3 } from "@radix-ui/react-accordion";
-import { jsx as jsx131, jsxs as jsxs113 } from "react/jsx-runtime";
+import { jsx as jsx132, jsxs as jsxs114 } from "react/jsx-runtime";
 var navs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -7877,7 +8118,7 @@ var navs2 = [
       { label: "Pending Uploads", icon: icons.adminTournamentIcon, url: "/user/pending-uploads" },
       { label: "Contest Registrations", url: "transactions/contest-registrations" },
       { label: "Your Profile", url: "/user/profile" },
-      { label: "Income History", url: "transactions/income-history" }
+      { label: "Wallet", url: "/user/wallet" }
     ]
   }
 ];
@@ -7886,41 +8127,41 @@ function UserNavigation({ show }) {
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs113("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs114("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx131(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx132(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs113("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxs113("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsx131("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx131("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx131("li", { children: /* @__PURE__ */ jsxs113(
+  return show ? /* @__PURE__ */ jsxs114("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs114("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx132("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx132("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx132("li", { children: /* @__PURE__ */ jsxs114(
         NavLink6,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsx131(Svg, { src: navItem.icon }),
+            /* @__PURE__ */ jsx132(Svg, { src: navItem.icon }),
             navItem.label
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx131(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs113(AccordionItem3, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs113(
+      /* @__PURE__ */ jsx132(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs114(AccordionItem3, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs114(
           AccordionTrigger3,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs113("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsx131(Svg, { src: item.icon }),
+              /* @__PURE__ */ jsxs114("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx132(Svg, { src: item.icon }),
                 item.label
               ] }),
-              /* @__PURE__ */ jsx131(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
+              /* @__PURE__ */ jsx132(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
           }
         ),
-        /* @__PURE__ */ jsx131(AccordionContent3, { children: /* @__PURE__ */ jsx131("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx131("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx131(
+        /* @__PURE__ */ jsx132(AccordionContent3, { children: /* @__PURE__ */ jsx132("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx132("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx132(
           NavLink6,
           {
             to: subitem.url,
@@ -7930,20 +8171,20 @@ function UserNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs113("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs113("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsx131(Svg, { src: icons.themeIcon }),
+    /* @__PURE__ */ jsxs114("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs114("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx132(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs113(
+      /* @__PURE__ */ jsxs114(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-            /* @__PURE__ */ jsx131("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+            /* @__PURE__ */ jsx132("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx132("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx132("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
         }
       )
@@ -7952,46 +8193,46 @@ function UserNavigation({ show }) {
 }
 
 // app/routes/user.tsx
-import { jsx as jsx132, jsxs as jsxs114 } from "react/jsx-runtime";
+import { jsx as jsx133, jsxs as jsxs115 } from "react/jsx-runtime";
 var meta3 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout2({ children }) {
-  let [showNav, setShowNav] = useState29(!1);
+  let [showNav, setShowNav] = useState30(!1);
   return useEffect24(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs114("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsx132(UserPrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs115("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx133(UserPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx132(UserMobileHeader, { toggleNav: () => {
+    /* @__PURE__ */ jsx133(UserMobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx132(UserMobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx133(UserMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs114("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsx132(UserNavigation, { show: showNav }),
-      /* @__PURE__ */ jsx132("div", { className: "flex-grow overflow-y-auto", children })
+    /* @__PURE__ */ jsxs115("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx133(UserNavigation, { show: showNav }),
+      /* @__PURE__ */ jsx133("div", { className: "flex-grow overflow-y-auto", children })
     ] })
   ] });
 }
 function UserLayout() {
-  return /* @__PURE__ */ jsx132(Layout2, { children: /* @__PURE__ */ jsx132(Outlet5, {}) });
+  return /* @__PURE__ */ jsx133(Layout2, { children: /* @__PURE__ */ jsx133(Outlet5, {}) });
 }
 function ErrorBoundary3() {
   let { pathname } = useLocation11();
-  return /* @__PURE__ */ jsx132(Layout2, { children: /* @__PURE__ */ jsxs114("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsx132("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
-    /* @__PURE__ */ jsx132("p", { children: "Apologies, something went wrong on our end. Please try again." }),
-    /* @__PURE__ */ jsx132(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
-    /* @__PURE__ */ jsx132(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" })
+  return /* @__PURE__ */ jsx133(Layout2, { children: /* @__PURE__ */ jsxs115("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx133("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx133("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx133(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx133(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" })
   ] }) });
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-GDHIIEYX.js", imports: ["/build/_shared/chunk-SN2BHVXC.js", "/build/_shared/chunk-653BTUZP.js", "/build/_shared/chunk-W5DRAD4K.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-MDX27GOP.js", imports: ["/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-2TUTWVQI.js", imports: ["/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-CSPLMEIL.js", imports: ["/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-WEJVIA7J.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-GBPYRWQN.js", "/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-FSVCQBID.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-NSCR7CIU.js", imports: ["/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-W7JOCOSD.js", imports: ["/build/_shared/chunk-GBPYRWQN.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-FSVCQBID.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-FIJJJWCR.js", imports: ["/build/_shared/chunk-FSVCQBID.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-YA5DUSPG.js", imports: ["/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-CPGA6PPH.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-TU7746Z2.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-LTSJ5K3C.js", imports: ["/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-FQXRYZG4.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-DYULOVYU.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-W2CKHRSB.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-KNAMJTWY.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-5TGBFPUR.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-NQWKK5ZN.js", imports: ["/build/_shared/chunk-FNH2M23H.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-HSD2WFLA.js", imports: ["/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-CZ7QEQUS.js", imports: ["/build/_shared/chunk-FNH2M23H.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-Q6UWC4L6.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-H4I4T7LF.js", imports: ["/build/_shared/chunk-3VWY66MZ.js", "/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-RIPXT4KZ.js", imports: ["/build/_shared/chunk-26UQH44U.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-D5GFACKK.js", imports: ["/build/_shared/chunk-3VWY66MZ.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-F7SUEVVD.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-26UQH44U.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-SNNMXPO6.js", imports: ["/build/_shared/chunk-26UQH44U.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-E4725CAH.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-NEOK76XA.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-KXGARNLM.js", imports: ["/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-T5NB2AME.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-564NMG47.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-ILQTHGBA.js", imports: ["/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-CNTALILS.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-2VXK2N7L.js", imports: ["/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-QLRXYJ5U.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-L5PQ46GC.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-DU3ERRUZ.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-JGLCKT2D.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-MBWFER3K.js", imports: ["/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-HRYP4HKG.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-OB2ASLHA.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-QPE5NVX7.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "0b9c2f92", hmr: void 0, url: "/build/manifest-0B9C2F92.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-GDHIIEYX.js", imports: ["/build/_shared/chunk-SN2BHVXC.js", "/build/_shared/chunk-653BTUZP.js", "/build/_shared/chunk-W5DRAD4K.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-OK33AVLA.js", imports: ["/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-2TUTWVQI.js", imports: ["/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-QELSAYD5.js", imports: ["/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-U2MQZCM6.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-2COAH4JX.js", "/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WKKMBJEL.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-NSCR7CIU.js", imports: ["/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-GJ6QERDJ.js", imports: ["/build/_shared/chunk-2COAH4JX.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-YRW625FK.js", "/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WKKMBJEL.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-DLHGFREA.js", imports: ["/build/_shared/chunk-WKKMBJEL.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-MJE7SR3U.js", imports: ["/build/_shared/chunk-XFBWWOMJ.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-OOBZAV5T.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-7ERNTC7H.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-CPGA6PPH.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-TU7746Z2.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-LTSJ5K3C.js", imports: ["/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-FQXRYZG4.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-DYULOVYU.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-W2CKHRSB.js", imports: ["/build/_shared/chunk-56NY7JRB.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-5ZAJHBG4.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-5TGBFPUR.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-DASEKTNS.js", imports: ["/build/_shared/chunk-INHJUKJK.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-GMPR3BQ4.js", imports: ["/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-5TZGXZGF.js", imports: ["/build/_shared/chunk-INHJUKJK.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-Z7YVHEJV.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-PCPGSTDU.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-5P7IWBWG.js", imports: ["/build/_shared/chunk-O37Z5I7H.js", "/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-YBV4MUP7.js", imports: ["/build/_shared/chunk-FFUJDPDJ.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-LNEH4WLP.js", imports: ["/build/_shared/chunk-O37Z5I7H.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-6Y722YOL.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-AUMTU4IT.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-AQCDK7MY.js", "/build/_shared/chunk-FFUJDPDJ.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-UESXGX3W.js", imports: ["/build/_shared/chunk-FFUJDPDJ.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-56NY7JRB.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-UYDL5FGS.js", imports: ["/build/_shared/chunk-Z25BEM5B.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-NEOK76XA.js", imports: ["/build/_shared/chunk-JSTHOSC5.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-QMMHB3VK.js", imports: ["/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-DLUBBNLS.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-T5NB2AME.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-564NMG47.js", imports: ["/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-6ASTMTPG.js", imports: ["/build/_shared/chunk-L3MRYEEI.js", "/build/_shared/chunk-R3PEEDBD.js", "/build/_shared/chunk-HYPIXEO2.js", "/build/_shared/chunk-E6DLCIAF.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-DFX53F3J.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PAN7QPZK.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-OS2L5QU2.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-CWCC7VKF.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-2VXK2N7L.js", imports: ["/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-CDFLUMVZ.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-V5QZ2UIA.js", imports: ["/build/_shared/chunk-2DN4APTZ.js", "/build/_shared/chunk-Q7CCUDAZ.js", "/build/_shared/chunk-KQV2E3MX.js", "/build/_shared/chunk-7FR7ZJEG.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-LTJF3XWP.js", "/build/_shared/chunk-K5L76TSM.js", "/build/_shared/chunk-7ERNTC7H.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-JGLCKT2D.js", imports: ["/build/_shared/chunk-3ZSW5DV4.js", "/build/_shared/chunk-23PB4SGP.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-VMWUNDBW.js", imports: ["/build/_shared/chunk-7WQOGNXA.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-XLO4HCR6.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-BI2ASFVQ.js", "/build/_shared/chunk-HBHTWN7R.js", "/build/_shared/chunk-IQWR6URL.js", "/build/_shared/chunk-UJQ7BYHA.js", "/build/_shared/chunk-ZJKJC2ET.js", "/build/_shared/chunk-SV3SHFZF.js", "/build/_shared/chunk-FNRBHFIN.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-IXKRAC64.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-HRYP4HKG.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-34TZJLHQ.js", imports: ["/build/_shared/chunk-S5RL25IG.js", "/build/_shared/chunk-ZDHH7VAG.js", "/build/_shared/chunk-F2WFPRXU.js", "/build/_shared/chunk-IWGJOQMS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-G6RWU2BR.js", "/build/_shared/chunk-74OT6ATM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-7JHLVDBY.js", imports: ["/build/_shared/chunk-74OT6ATM.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "43c0dde3", hmr: void 0, url: "/build/manifest-43C0DDE3.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
@@ -8258,6 +8499,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: user_profile_exports
+  },
+  "routes/user.wallet": {
+    id: "routes/user.wallet",
+    parentId: "routes/user",
+    path: "wallet",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_wallet_exports
   },
   "routes/_public": {
     id: "routes/_public",

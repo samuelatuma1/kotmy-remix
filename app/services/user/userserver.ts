@@ -25,7 +25,7 @@ export class UserServer implements IUserServer {
     }
 
     async updateUserContestant(payload: {contestantId: string, formData: FormData, editContestantDTO?: IEditContestantDTO}, cookies?: string){
-       const {error, authRequired, data} = await contestantRepo.updateUserContestant(payload, cookies)
+       const {error, authRequired, data} = await this.contestantServer.updateUserContestant(payload, cookies)
 
        return {error, authRequired, data};
     }

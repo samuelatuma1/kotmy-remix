@@ -120,7 +120,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                 />
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
-                <label htmlFor="gender" className="font-bold flex flex-col">Gender
+                <label htmlFor="gender" className="font-bold flex flex-col"><span>Gender<span className="text-red-400">*</span></span>
                     <Select name="sex" required>
                         <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
                             <SelectValue placeholder={"Gender"} />
@@ -131,7 +131,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                         </SelectContent>
                     </Select>
                 </label>
-                <label htmlFor="state_of_residence" className="font-bold flex flex-col">State of Residence
+                <label htmlFor="state_of_residence" className="font-bold flex flex-col"><span>State of Residence<span className="text-red-400">*</span></span>
                     <Select name="state_of_residence" required>
                         <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
                             <SelectValue placeholder={"Select a state"} />
@@ -150,7 +150,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                 <FormControl as="input" type="tel" labelText="Whatsapp Number" id="whatsapp_no" name="whatsapp_no"
                     placeholder="Enter your whatsapp number" required
                 />
-                <label htmlFor="category" className="font-bold flex flex-col">Category
+                <label htmlFor="category" className="font-bold flex flex-col"><span>Category<span className="text-red-400">*</span></span>
                     <Select name="category" required={!!contest.categories.length}>
                         <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
                             <SelectValue placeholder={"Select a category"} />
@@ -167,7 +167,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
-                <FormControl as="input" labelClassNames="col-span-1 max-w-full" labelText="Referral code" id="referral_code" name="referral_code"
+                <FormControl as="input" labelClassNames="col-span-1 max-w-full text-gray-500" labelText="Referral code (Optional)" id="referral_code" name="referral_code"
                     placeholder="" defaultValue={`${getQueryParam(referralKey)}`}
                 />
             </div>

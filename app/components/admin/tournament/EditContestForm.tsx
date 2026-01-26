@@ -58,6 +58,16 @@ export default function EditContestForm({ tournaments, contest }: { tournaments:
             <CategoryInputs categories={Object.values(contest.categories)} />
             <StageInputs key={contest.stages.length} stages={contest.stages} />
 
+
+
+            <fieldset className="grid gap-3 sm:gap-6 sm:grid-cols-2">
+                <legend className='text-lg mb-4 font-bold'>Contestants and Referrals Earnings (Can only be edited before contest starts)</legend>
+                <FormControl as='input' type="number" step={1} max={100} min={0} labelText='Contestant Share Percentage' id='contestant_share_percent' name='contestant_share_percent' defaultValue={contest.tally_vote_split_earnings.contestant_share_percent} readOnly={contest.status !== 'yet_to_start'} />
+                <FormControl as='input' type="number" labelText='Minimum amount for affiliate to earn' id='min_for_referral_earning' name='min_for_referral_earning' defaultValue={contest.tally_vote_split_earnings.min_for_referral_earning} readOnly={contest.status !== 'yet_to_start'} />
+                <FormControl as='input' type="number" labelText='Amount affiliate would earn from minimum' id='referral_bonus_from_min' name='referral_bonus_from_min' defaultValue={contest.tally_vote_split_earnings.referral_bonus_from_min} readOnly={contest.status !== 'yet_to_start'} />
+                <FormControl as='input' type="number" step={1} max={100} min={0} labelText='Affiliate percentage earnings after minimum'  id='referral_percent_after_min' name='referral_percent_after_min' defaultValue={contest.tally_vote_split_earnings.referral_percent_after_min} readOnly={contest.status !== 'yet_to_start'} />
+            </fieldset>
+
             <fieldset className="grid gap-6">
                 <legend className='text-lg mb-4 font-bold'>Submission Guidelines</legend>
                 <FormControl as='textarea' rows={4} labelText='Submission Requirements' placeholder='Enter text here...' id='sub_req' name='sub_req' defaultValue={contest.sub_req} required />
