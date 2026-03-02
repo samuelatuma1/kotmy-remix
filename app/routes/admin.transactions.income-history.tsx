@@ -86,6 +86,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     // call wallet_search
     const walletResp = await walletRepo.wallet_search(query, cookieHeader);
+    console.log("_MYMY walletResp", walletResp)
     if (walletResp.error) {
       return json({ error: walletResp.error }, { status: 400 });
     }
@@ -97,7 +98,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     // rebuild wallets list: get all wallets again and replace/update the matched wallet
-    const walletsResp = await walletRepo.getUserWallets(cookieHeader);
+    const walletsResp = await walletRepo.getOrganizationWallets(cookieHeader);
     let wallets: WalletWithLedger[] = [];
     if (walletsResp.data?.length) {
       let cleanedWallets: WalletWithLedger[] = []

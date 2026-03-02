@@ -144,7 +144,7 @@ export class WalletRepository{
             method: 'GET',
             url,
         }, cookies);
-
+        console.log("MY DATA", data)
         if (data) return { data };
         return { error, authRequired };
     }

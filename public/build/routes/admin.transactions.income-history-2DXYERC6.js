@@ -56,7 +56,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/routes/admin.transactions.income-history.tsx"
   );
-  import.meta.hot.lastModified = "1772404219969.7786";
+  import.meta.hot.lastModified = "1772481818881.9194";
 }
 function useWalletController() {
   _s();
@@ -136,7 +136,7 @@ function WalletPage() {
   if (!activeData)
     return /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "p-8", children: "No wallets found." }, void 0, false, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 257,
+      lineNumber: 258,
       columnNumber: 27
     }, this);
   const activeDataLocal = walletsState.find((w) => w.wallet._id === activeData?.wallet._id) ?? activeData;
@@ -147,7 +147,7 @@ function WalletPage() {
   return /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }, void 0, false, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 266,
+      lineNumber: 267,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
@@ -155,17 +155,17 @@ function WalletPage() {
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex items-center gap-2 text-gray-500", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "text-sm", children: "Wallet balances" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 272,
+            lineNumber: 273,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 273,
+            lineNumber: 274,
             columnNumber: 13
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 271,
+          lineNumber: 272,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { className: "border rounded-full px-4 py-2 bg-gray-50 text-sm font-medium outline-none cursor-pointer", value: wallet._id, onChange: (e) => setActiveWalletId(e.target.value), children: walletsState.map((w) => /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: w.wallet._id, children: [
@@ -174,336 +174,336 @@ function WalletPage() {
           w.wallet.account_number
         ] }, w.wallet._id, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 278,
+          lineNumber: 279,
           columnNumber: 36
         }, this)) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 277,
+          lineNumber: 278,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 270,
+        lineNumber: 271,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "text-4xl font-bold mb-1", children: formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 286,
+          lineNumber: 287,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 289,
+          lineNumber: 290,
           columnNumber: 13
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 285,
+        lineNumber: 286,
         columnNumber: 11
       }, this) }, void 0, false, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 284,
+        lineNumber: 285,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Link, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 295,
+          lineNumber: 296,
           columnNumber: 12
         }, this) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 294,
+          lineNumber: 295,
           columnNumber: 11
         }, this),
         user?.withdrawal_pin_set ? /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Link, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 301,
+          lineNumber: 302,
           columnNumber: 15
         }, this) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 300,
+          lineNumber: 301,
           columnNumber: 39
         }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Link, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 305,
+          lineNumber: 306,
           columnNumber: 13
         }, this) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 304,
+          lineNumber: 305,
           columnNumber: 23
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 308,
+          lineNumber: 309,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 293,
+        lineNumber: 294,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 269,
+      lineNumber: 270,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "mb-6", children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex items-center justify-between mb-3", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 317,
+          lineNumber: 318,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "button", onClick: () => setSearchOpen((s) => !s), className: "flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800", "aria-expanded": searchOpen, children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { children: searchOpen ? "Hide" : "Show" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 319,
+            lineNumber: 320,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("svg", { className: `w-4 h-4 transition-transform ${searchOpen ? "rotate-180" : ""}`, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 321,
+            lineNumber: 322,
             columnNumber: 15
           }, this) }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 320,
+            lineNumber: 321,
             columnNumber: 13
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 318,
+          lineNumber: 319,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 316,
+        lineNumber: 317,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Transaction type" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 331,
+            lineNumber: 332,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "All transaction types" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 333,
+              lineNumber: 334,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "credit", children: "Credit" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 334,
+              lineNumber: 335,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "debit", children: "Debit" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 335,
+              lineNumber: 336,
               columnNumber: 19
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 332,
+            lineNumber: 333,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 330,
+          lineNumber: 331,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Status" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 341,
+            lineNumber: 342,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Any status" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 343,
+              lineNumber: 344,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "pending", children: "Pending" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 344,
+              lineNumber: 345,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "completed", children: "Completed" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 345,
+              lineNumber: 346,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "void", children: "Void" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 346,
+              lineNumber: 347,
               columnNumber: 19
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 342,
+            lineNumber: 343,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 340,
+          lineNumber: 341,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Min amount" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 352,
+            lineNumber: 353,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 353,
+            lineNumber: 354,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 351,
+          lineNumber: 352,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Max amount" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 358,
+            lineNumber: 359,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 359,
+            lineNumber: 360,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 357,
+          lineNumber: 358,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "From date" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 364,
+            lineNumber: 365,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 365,
+            lineNumber: 366,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 363,
+          lineNumber: 364,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "To date" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 369,
+            lineNumber: 370,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 370,
+            lineNumber: 371,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 368,
+          lineNumber: 369,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Payment method" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 375,
+            lineNumber: 376,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Any payment method" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 377,
+              lineNumber: 378,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "flutterwave", children: "Flutterwave" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 378,
+              lineNumber: 379,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "bank", children: "Bank" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 379,
+              lineNumber: 380,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "paystack", children: "Paystack" }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 380,
+              lineNumber: 381,
               columnNumber: 19
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 376,
+            lineNumber: 377,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 374,
+          lineNumber: 375,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "mb-1", children: "Contest code" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 385,
+            lineNumber: 386,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 386,
+            lineNumber: 387,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 384,
+          lineNumber: 385,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { type: "hidden", name: "wallet_id", value: wallet._id }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 390,
+          lineNumber: 391,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 393,
+          lineNumber: 394,
           columnNumber: 17
         }, this) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 392,
+          lineNumber: 393,
           columnNumber: 15
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 328,
+        lineNumber: 329,
         columnNumber: 13
       }, this) }, void 0, false, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 327,
+        lineNumber: 328,
         columnNumber: 11
       }, this) }, void 0, false, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 326,
+        lineNumber: 327,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 315,
+      lineNumber: 316,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "mb-6", children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { children: "\u{1F4C1}" }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 405,
+          lineNumber: 406,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("h2", { className: "font-medium", children: [
@@ -512,155 +512,155 @@ function WalletPage() {
           ")"
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 406,
+          lineNumber: 407,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 404,
+        lineNumber: 405,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(MetricItem, { label: "Net change this month", value: formatCurrency(wallet.metrics.net_change_this_month, wallet.wallet_currency), tooltip: true }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 411,
+          lineNumber: 412,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(MetricItem, { label: "Money in", value: formatCurrency(wallet.metrics.money_in, wallet.wallet_currency) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 412,
+          lineNumber: 413,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(MetricItem, { label: "Money out", value: formatCurrency(wallet.metrics.money_out, wallet.wallet_currency) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 413,
+          lineNumber: 414,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 410,
+        lineNumber: 411,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "overflow-x-auto", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("table", { className: "w-full text-left text-sm", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("thead", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("tr", { className: "text-gray-400 border-b", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "S/N" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 421,
+            lineNumber: 422,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Date" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 422,
+            lineNumber: 423,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Ref ID" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 423,
+            lineNumber: 424,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Narration" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 424,
+            lineNumber: 425,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Beneficiary name" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 425,
+            lineNumber: 426,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Type" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 426,
+            lineNumber: 427,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("th", { className: "pb-4 font-medium", children: "Amount" }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 427,
+            lineNumber: 428,
             columnNumber: 17
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 420,
+          lineNumber: 421,
           columnNumber: 15
         }, this) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 419,
+          lineNumber: 420,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 text-gray-500", children: idx + 1 }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 432,
+            lineNumber: 433,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 text-gray-900 leading-tight", children: [
             new Date(item.completed_at || "").toLocaleDateString(),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 435,
+              lineNumber: 436,
               columnNumber: 21
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 433,
+            lineNumber: 434,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 437,
+            lineNumber: 438,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 438,
+            lineNumber: 439,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 text-gray-600 truncate", children: item.wallet_name }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 439,
+            lineNumber: 440,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 440,
+            lineNumber: 441,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("td", { className: "py-4", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency(item.amount, item.currency) }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 443,
+              lineNumber: 444,
               columnNumber: 23
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(StatusBadge, { status: item.status }, void 0, false, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 446,
+              lineNumber: 447,
               columnNumber: 23
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 442,
+            lineNumber: 443,
             columnNumber: 21
           }, this) }, void 0, false, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 441,
+            lineNumber: 442,
             columnNumber: 19
           }, this)
         ] }, item._id, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 431,
+          lineNumber: 432,
           columnNumber: 54
         }, this)) }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 430,
+          lineNumber: 431,
           columnNumber: 13
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 418,
+        lineNumber: 419,
         columnNumber: 11
       }, this) }, void 0, false, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 417,
+        lineNumber: 418,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
@@ -672,27 +672,27 @@ function WalletPage() {
           " items"
         ] }, void 0, true, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 456,
+          lineNumber: 457,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id }, void 0, false, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 459,
+          lineNumber: 460,
           columnNumber: 11
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 455,
+        lineNumber: 456,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 403,
+      lineNumber: 404,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 265,
+    lineNumber: 266,
     columnNumber: 10
   }, this);
 }
@@ -711,22 +711,22 @@ function MetricItem({
       " ",
       tooltip && /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" }, void 0, false, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 478,
+        lineNumber: 479,
         columnNumber: 29
       }, this)
     ] }, void 0, true, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 477,
+      lineNumber: 478,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "text-lg font-bold text-gray-800", children: value }, void 0, false, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 480,
+      lineNumber: 481,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 476,
+    lineNumber: 477,
     columnNumber: 10
   }, this);
 }
@@ -750,7 +750,7 @@ function StatusBadge({
     status
   ] }, void 0, true, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 497,
+    lineNumber: 498,
     columnNumber: 10
   }, this);
 }
@@ -766,4 +766,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   WalletPage as default
 };
-//# sourceMappingURL=/build/routes/admin.transactions.income-history-KV22YISF.js.map
+//# sourceMappingURL=/build/routes/admin.transactions.income-history-2DXYERC6.js.map

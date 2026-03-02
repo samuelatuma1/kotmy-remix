@@ -5552,7 +5552,7 @@ var WalletRepository = class {
       method: "GET",
       url
     }, cookies);
-    return data ? { data } : { error, authRequired };
+    return console.log("MY DATA", data), data ? { data } : { error, authRequired };
   }
   async requestWithdrawalToken(cookies) {
     let { data, error, authRequired } = await ApiCall.call({
@@ -8335,12 +8335,12 @@ async function action7({ request }) {
   let query = {};
   cleaned.transaction_type && (query.transaction_type = cleaned.transaction_type), cleaned.status && (query.status = cleaned.status), cleaned.min_amount && (query.min_amount = Number(cleaned.min_amount)), cleaned.max_amount && (query.max_amount = Number(cleaned.max_amount)), cleaned.min_created_at && (query.min_created_at = cleaned.min_created_at), cleaned.max_created_at && (query.max_created_at = cleaned.max_created_at), cleaned.user_id && (query.user_id = cleaned.user_id), cleaned.wallet_id && (query.wallet_id = cleaned.wallet_id), cleaned.currency && (query.currency = cleaned.currency), cleaned.payment_method && (query.payment_method = cleaned.payment_method), cleaned.contest_code && (query.contest_code = cleaned.contest_code);
   let walletResp = await walletRepo.wallet_search(query, cookieHeader);
-  if (walletResp.error)
+  if (console.log("_MYMY walletResp", walletResp), walletResp.error)
     return json12({ error: walletResp.error }, { status: 400 });
   let ledgersResp = await walletRepo.getOrganizationLedgersForWallet(cookieHeader, query);
   if (ledgersResp.error)
     return json12({ error: ledgersResp.error }, { status: 400 });
-  let walletsResp = await walletRepo.getUserWallets(cookieHeader), wallets = [];
+  let walletsResp = await walletRepo.getOrganizationWallets(cookieHeader), wallets = [];
   if (walletsResp.data?.length) {
     let cleanedWallets = [];
     for (let _wallet of walletsResp.data)
@@ -8393,14 +8393,14 @@ function WalletPage() {
   if (!activeData)
     return /* @__PURE__ */ jsxDEV56("div", { className: "p-8", children: "No wallets found." }, void 0, !1, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 194,
+      lineNumber: 195,
       columnNumber: 27
     }, this);
   let activeDataLocal = walletsState.find((w) => w.wallet._id === activeData?.wallet._id) ?? activeData, { wallet, pagedLedgers } = activeDataLocal;
   return /* @__PURE__ */ jsxDEV56("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
     /* @__PURE__ */ jsxDEV56("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }, void 0, !1, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 202,
+      lineNumber: 203,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV56("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
@@ -8408,17 +8408,17 @@ function WalletPage() {
         /* @__PURE__ */ jsxDEV56("div", { className: "flex items-center gap-2 text-gray-500", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "text-sm", children: "Wallet balances" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 208,
+            lineNumber: 209,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV56("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 209,
+            lineNumber: 210,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 207,
+          lineNumber: 208,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV56(
@@ -8433,7 +8433,7 @@ function WalletPage() {
               w.wallet.account_number
             ] }, w.wallet._id, !0, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 219,
+              lineNumber: 220,
               columnNumber: 15
             }, this))
           },
@@ -8441,83 +8441,83 @@ function WalletPage() {
           !1,
           {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 213,
+            lineNumber: 214,
             columnNumber: 11
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 206,
+        lineNumber: 207,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxDEV56("div", { children: [
         /* @__PURE__ */ jsxDEV56("div", { className: "text-4xl font-bold mb-1", children: formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 228,
+          lineNumber: 229,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV56("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 231,
+          lineNumber: 232,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 227,
+        lineNumber: 228,
         columnNumber: 11
       }, this) }, void 0, !1, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 226,
+        lineNumber: 227,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
         /* @__PURE__ */ jsxDEV56(Link10, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ jsxDEV56("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 237,
+          lineNumber: 238,
           columnNumber: 12
         }, this) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 236,
+          lineNumber: 237,
           columnNumber: 11
         }, this),
         user?.withdrawal_pin_set ? /* @__PURE__ */ jsxDEV56(Link10, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ jsxDEV56("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 244,
+          lineNumber: 245,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 243,
+          lineNumber: 244,
           columnNumber: 13
         }, this) : /* @__PURE__ */ jsxDEV56(Link10, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ jsxDEV56("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 251,
+          lineNumber: 252,
           columnNumber: 13
         }, this) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 250,
+          lineNumber: 251,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV56("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 255,
+          lineNumber: 256,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 235,
+        lineNumber: 236,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 205,
+      lineNumber: 206,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV56("div", { className: "mb-6", children: [
       /* @__PURE__ */ jsxDEV56("div", { className: "flex items-center justify-between mb-3", children: [
         /* @__PURE__ */ jsxDEV56("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 264,
+          lineNumber: 265,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV56(
@@ -8530,7 +8530,7 @@ function WalletPage() {
             children: [
               /* @__PURE__ */ jsxDEV56("span", { children: searchOpen ? "Hide" : "Show" }, void 0, !1, {
                 fileName: "app/routes/admin.transactions.income-history.tsx",
-                lineNumber: 271,
+                lineNumber: 272,
                 columnNumber: 13
               }, this),
               /* @__PURE__ */ jsxDEV56(
@@ -8543,7 +8543,7 @@ function WalletPage() {
                   xmlns: "http://www.w3.org/2000/svg",
                   children: /* @__PURE__ */ jsxDEV56("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }, void 0, !1, {
                     fileName: "app/routes/admin.transactions.income-history.tsx",
-                    lineNumber: 279,
+                    lineNumber: 280,
                     columnNumber: 15
                   }, this)
                 },
@@ -8551,7 +8551,7 @@ function WalletPage() {
                 !1,
                 {
                   fileName: "app/routes/admin.transactions.income-history.tsx",
-                  lineNumber: 272,
+                  lineNumber: 273,
                   columnNumber: 13
                 },
                 this
@@ -8562,240 +8562,240 @@ function WalletPage() {
           !0,
           {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 265,
+            lineNumber: 266,
             columnNumber: 11
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 263,
+        lineNumber: 264,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ jsxDEV56("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxDEV56(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Transaction type" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 289,
+            lineNumber: 290,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ jsxDEV56("option", { value: "", children: "All transaction types" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 291,
+              lineNumber: 292,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "credit", children: "Credit" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 292,
+              lineNumber: 293,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "debit", children: "Debit" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 293,
+              lineNumber: 294,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 290,
+            lineNumber: 291,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 288,
+          lineNumber: 289,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Status" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 299,
+            lineNumber: 300,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ jsxDEV56("option", { value: "", children: "Any status" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 301,
+              lineNumber: 302,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "pending", children: "Pending" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 302,
+              lineNumber: 303,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "completed", children: "Completed" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 303,
+              lineNumber: 304,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "void", children: "Void" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 304,
+              lineNumber: 305,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 300,
+            lineNumber: 301,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 298,
+          lineNumber: 299,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Min amount" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 310,
+            lineNumber: 311,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 311,
+            lineNumber: 312,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 309,
+          lineNumber: 310,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Max amount" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 316,
+            lineNumber: 317,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 317,
+            lineNumber: 318,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 315,
+          lineNumber: 316,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "From date" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 322,
+            lineNumber: 323,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 323,
+            lineNumber: 324,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 321,
+          lineNumber: 322,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "To date" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 327,
+            lineNumber: 328,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 328,
+            lineNumber: 329,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 326,
+          lineNumber: 327,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Payment method" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 333,
+            lineNumber: 334,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
             /* @__PURE__ */ jsxDEV56("option", { value: "", children: "Any payment method" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 335,
+              lineNumber: 336,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "flutterwave", children: "Flutterwave" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 336,
+              lineNumber: 337,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "bank", children: "Bank" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 337,
+              lineNumber: 338,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV56("option", { value: "paystack", children: "Paystack" }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 338,
+              lineNumber: 339,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 334,
+            lineNumber: 335,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 332,
+          lineNumber: 333,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("label", { className: "flex flex-col text-xs text-gray-600", children: [
           /* @__PURE__ */ jsxDEV56("span", { className: "mb-1", children: "Contest code" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 343,
+            lineNumber: 344,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 344,
+            lineNumber: 345,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 342,
+          lineNumber: 343,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("input", { type: "hidden", name: "wallet_id", value: wallet._id }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 348,
+          lineNumber: 349,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV56("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ jsxDEV56("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 351,
+          lineNumber: 352,
           columnNumber: 17
         }, this) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 350,
+          lineNumber: 351,
           columnNumber: 15
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 286,
+        lineNumber: 287,
         columnNumber: 13
       }, this) }, void 0, !1, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 285,
+        lineNumber: 286,
         columnNumber: 11
       }, this) }, void 0, !1, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 284,
+        lineNumber: 285,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 262,
+      lineNumber: 263,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV56("div", { className: "mb-6", children: [
       /* @__PURE__ */ jsxDEV56("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
         /* @__PURE__ */ jsxDEV56("span", { children: "\u{1F4C1}" }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 363,
+          lineNumber: 364,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV56("h2", { className: "font-medium", children: [
@@ -8804,12 +8804,12 @@ function WalletPage() {
           ")"
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 364,
+          lineNumber: 365,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 362,
+        lineNumber: 363,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
@@ -8824,7 +8824,7 @@ function WalletPage() {
           !1,
           {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 369,
+            lineNumber: 370,
             columnNumber: 11
           },
           this
@@ -8839,7 +8839,7 @@ function WalletPage() {
           !1,
           {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 374,
+            lineNumber: 375,
             columnNumber: 11
           },
           this
@@ -8854,136 +8854,136 @@ function WalletPage() {
           !1,
           {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 378,
+            lineNumber: 379,
             columnNumber: 11
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 368,
+        lineNumber: 369,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxDEV56("table", { className: "w-full text-left text-sm", children: [
         /* @__PURE__ */ jsxDEV56("thead", { children: /* @__PURE__ */ jsxDEV56("tr", { className: "text-gray-400 border-b", children: [
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "S/N" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 389,
+            lineNumber: 390,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Date" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 390,
+            lineNumber: 391,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Ref ID" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 391,
+            lineNumber: 392,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Narration" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 392,
+            lineNumber: 393,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Beneficiary name" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 393,
+            lineNumber: 394,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Type" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 394,
+            lineNumber: 395,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV56("th", { className: "pb-4 font-medium", children: "Amount" }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 395,
+            lineNumber: 396,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 388,
+          lineNumber: 389,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 387,
+          lineNumber: 388,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV56("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxDEV56("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 text-gray-500", children: idx + 1 }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 401,
+            lineNumber: 402,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 text-gray-900 leading-tight", children: [
             new Date(item.completed_at || "").toLocaleDateString(),
             /* @__PURE__ */ jsxDEV56("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 404,
+              lineNumber: 405,
               columnNumber: 21
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 402,
+            lineNumber: 403,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 406,
+            lineNumber: 407,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 407,
+            lineNumber: 408,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 text-gray-600 truncate", children: item.wallet_name }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 408,
+            lineNumber: 409,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 409,
+            lineNumber: 410,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV56("td", { className: "py-4", children: /* @__PURE__ */ jsxDEV56("div", { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsxDEV56("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency(item.amount, item.currency) }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 412,
+              lineNumber: 413,
               columnNumber: 23
             }, this),
             /* @__PURE__ */ jsxDEV56(StatusBadge, { status: item.status }, void 0, !1, {
               fileName: "app/routes/admin.transactions.income-history.tsx",
-              lineNumber: 415,
+              lineNumber: 416,
               columnNumber: 23
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 411,
+            lineNumber: 412,
             columnNumber: 21
           }, this) }, void 0, !1, {
             fileName: "app/routes/admin.transactions.income-history.tsx",
-            lineNumber: 410,
+            lineNumber: 411,
             columnNumber: 19
           }, this)
         ] }, item._id, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 400,
+          lineNumber: 401,
           columnNumber: 17
         }, this)) }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 398,
+          lineNumber: 399,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 386,
+        lineNumber: 387,
         columnNumber: 11
       }, this) }, void 0, !1, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 385,
+        lineNumber: 386,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV56("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
@@ -8995,27 +8995,27 @@ function WalletPage() {
           " items"
         ] }, void 0, !0, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 426,
+          lineNumber: 427,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV56(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id }, void 0, !1, {
           fileName: "app/routes/admin.transactions.income-history.tsx",
-          lineNumber: 429,
+          lineNumber: 430,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 425,
+        lineNumber: 426,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 361,
+      lineNumber: 362,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 201,
+    lineNumber: 202,
     columnNumber: 5
   }, this);
 }
@@ -9026,22 +9026,22 @@ function MetricItem({ label, value, tooltip = !1 }) {
       " ",
       tooltip && /* @__PURE__ */ jsxDEV56("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" }, void 0, !1, {
         fileName: "app/routes/admin.transactions.income-history.tsx",
-        lineNumber: 442,
+        lineNumber: 443,
         columnNumber: 29
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 441,
+      lineNumber: 442,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV56("div", { className: "text-lg font-bold text-gray-800", children: value }, void 0, !1, {
       fileName: "app/routes/admin.transactions.income-history.tsx",
-      lineNumber: 444,
+      lineNumber: 445,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 440,
+    lineNumber: 441,
     columnNumber: 5
   }, this);
 }
@@ -9061,7 +9061,7 @@ function StatusBadge({ status }) {
     status
   ] }, void 0, !0, {
     fileName: "app/routes/admin.transactions.income-history.tsx",
-    lineNumber: 463,
+    lineNumber: 464,
     columnNumber: 5
   }, this);
 }
@@ -19969,7 +19969,7 @@ function ErrorBoundary3() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-OV7JYJX3.js", imports: ["/build/_shared/chunk-JXHNNPNR.js", "/build/_shared/chunk-RJTUOXH3.js", "/build/_shared/chunk-H36SQQE5.js", "/build/_shared/chunk-JAFVEBEK.js", "/build/_shared/chunk-JKUASME7.js", "/build/_shared/chunk-TVZC3ZTX.js", "/build/_shared/chunk-N4FG5RPV.js", "/build/_shared/chunk-RODUX5XG.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-VM47AQ5K.js", imports: ["/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-EZLKAAH2.js", imports: ["/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-PAF25C5P.js", imports: ["/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-65L4LFQT.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-HEBSWKUR.js", "/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-ZW3GIOKT.js", imports: ["/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-XIWC4GJL.js", imports: ["/build/_shared/chunk-HEBSWKUR.js", "/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-M7XDH3VV.js", imports: ["/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-WN5YFV2V.js", imports: ["/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-F4RTARW7.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-HAA3BS4L.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-S7QHN3LM.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-LLTKGW3H.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-YWSPZHA7.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-FMPTOD3L.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-RLTRERB4.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-M2RJKA64.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-HOXROPAC.js", imports: ["/build/_shared/chunk-A5BCRUII.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-FZF4D4YN.js", imports: ["/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-J7UWR3RY.js", imports: ["/build/_shared/chunk-A5BCRUII.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-DD55ATRM.js", imports: ["/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-4ORWRAJN.js", imports: ["/build/_shared/chunk-KV3UCVPI.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-HLL6SQCV.js", imports: ["/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-IIQYB6WQ.js", imports: ["/build/_shared/chunk-KV3UCVPI.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-I5J3ZSAZ.js", imports: ["/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-HGROYNGS.js", imports: ["/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-G6OKABI6.js", imports: ["/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-JAEKKLO4.js", imports: ["/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-JNPN5WUI.js", imports: ["/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-TQBGKPBG.js", imports: ["/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-KV22YISF.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-IF7UDKK2.js", imports: ["/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-OQG64ELB.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-APKY4QDR.js", imports: ["/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-WON4MXUK.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-PQ4E5TVX.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-KPKC7UPB.js", imports: ["/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-QFLSXBOH.js", imports: ["/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-RGM4XS5O.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-BORX2XGX.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-IP4CBWXE.js", imports: ["/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-XPE5NZIL.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-KACRM5A7.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-ZQPFS7UH.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-EYEVK4FS.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-XOIPMUYH.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "45f15657", hmr: { runtime: "/build/_shared/chunk-JAFVEBEK.js", timestamp: 1772446258056 }, url: "/build/manifest-45F15657.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-OV7JYJX3.js", imports: ["/build/_shared/chunk-JXHNNPNR.js", "/build/_shared/chunk-RJTUOXH3.js", "/build/_shared/chunk-H36SQQE5.js", "/build/_shared/chunk-JAFVEBEK.js", "/build/_shared/chunk-JKUASME7.js", "/build/_shared/chunk-TVZC3ZTX.js", "/build/_shared/chunk-N4FG5RPV.js", "/build/_shared/chunk-RODUX5XG.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-VM47AQ5K.js", imports: ["/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-EZLKAAH2.js", imports: ["/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-PAF25C5P.js", imports: ["/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-65L4LFQT.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-HEBSWKUR.js", "/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-ZW3GIOKT.js", imports: ["/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-XIWC4GJL.js", imports: ["/build/_shared/chunk-HEBSWKUR.js", "/build/_shared/chunk-VUGLF3BJ.js", "/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-M7XDH3VV.js", imports: ["/build/_shared/chunk-6KSHFW2O.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-WN5YFV2V.js", imports: ["/build/_shared/chunk-2FDPDHFG.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-L77OA2DX.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-OU5XO7XO.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-F4RTARW7.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-HAA3BS4L.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-S7QHN3LM.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-LLTKGW3H.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-YWSPZHA7.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-FMPTOD3L.js", imports: ["/build/_shared/chunk-5XKVHEZW.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-RLTRERB4.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-M2RJKA64.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-HOXROPAC.js", imports: ["/build/_shared/chunk-A5BCRUII.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-FZF4D4YN.js", imports: ["/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-J7UWR3RY.js", imports: ["/build/_shared/chunk-A5BCRUII.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-DD55ATRM.js", imports: ["/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-AUWIFI2P.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-4ORWRAJN.js", imports: ["/build/_shared/chunk-KV3UCVPI.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-HLL6SQCV.js", imports: ["/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-IIQYB6WQ.js", imports: ["/build/_shared/chunk-KV3UCVPI.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-HRBSV64D.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-I5J3ZSAZ.js", imports: ["/build/_shared/chunk-RJGZPHJC.js", "/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-HGROYNGS.js", imports: ["/build/_shared/chunk-MXUTIY2R.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-G6OKABI6.js", imports: ["/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-ITNAOETV.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-JAEKKLO4.js", imports: ["/build/_shared/chunk-K6ILIU5X.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-JNPN5WUI.js", imports: ["/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-3ULBCPB3.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-TQBGKPBG.js", imports: ["/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-UNSNIDNJ.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-2DXYERC6.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-IF7UDKK2.js", imports: ["/build/_shared/chunk-MGUXDWAB.js", "/build/_shared/chunk-KRCVZZ47.js", "/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-XYTHVHY4.js", "/build/_shared/chunk-577Q6RJD.js", "/build/_shared/chunk-5XKVHEZW.js", "/build/_shared/chunk-7G67FTYO.js", "/build/_shared/chunk-PFWQNT33.js", "/build/_shared/chunk-X7MJWV53.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-OQG64ELB.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-APKY4QDR.js", imports: ["/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-WON4MXUK.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-PQ4E5TVX.js", imports: ["/build/_shared/chunk-HVPRWEHJ.js", "/build/_shared/chunk-ZTMOBMG6.js", "/build/_shared/chunk-TJ4GXEDN.js", "/build/_shared/chunk-KWJHYQH5.js", "/build/_shared/chunk-DGIR3IGL.js", "/build/_shared/chunk-4PSCNRID.js", "/build/_shared/chunk-XRWKND3D.js", "/build/_shared/chunk-OU5XO7XO.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-KPKC7UPB.js", imports: ["/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-QFLSXBOH.js", imports: ["/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-RGM4XS5O.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-BORX2XGX.js", imports: ["/build/_shared/chunk-WCE7PJHW.js", "/build/_shared/chunk-R3PEAKI3.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-IP4CBWXE.js", imports: ["/build/_shared/chunk-7WHPCUR6.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-FXW5HQF7.js", "/build/_shared/chunk-ZBCNQQYM.js", "/build/_shared/chunk-RG2STY4V.js", "/build/_shared/chunk-NOEFVVE2.js", "/build/_shared/chunk-XDSNFUTZ.js", "/build/_shared/chunk-2K2NFQ32.js", "/build/_shared/chunk-ULL45DVV.js", "/build/_shared/chunk-AV2RONJM.js", "/build/_shared/chunk-N5XOLCME.js", "/build/_shared/chunk-CMHVCBDB.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-XPE5NZIL.js", imports: ["/build/_shared/chunk-R5FEMUPW.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-KACRM5A7.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-F4X7RH4F.js", "/build/_shared/chunk-WQFJ2CRD.js", "/build/_shared/chunk-LOUTNZN4.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-ZQPFS7UH.js", imports: ["/build/_shared/chunk-34RGSVXM.js", "/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-EYEVK4FS.js", imports: ["/build/_shared/chunk-72PMFMF5.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-XOIPMUYH.js", imports: ["/build/_shared/chunk-7OO7HPYD.js", "/build/_shared/chunk-HPIVJXNV.js", "/build/_shared/chunk-NKBOX2WC.js", "/build/_shared/chunk-ZE6ILQUM.js", "/build/_shared/chunk-TMJLOEVS.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "c3e37872", hmr: { runtime: "/build/_shared/chunk-JAFVEBEK.js", timestamp: 1772481820612 }, url: "/build/manifest-C3E37872.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
