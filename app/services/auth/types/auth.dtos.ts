@@ -16,5 +16,6 @@ export class ILoginResponseDTO {
     token: string = "";
     permissions: string[] = [];
     user_profile?: UserProfile; 
-    referral_code?: string
+    referral_code?: string;
+    withdrawal_pin_set: boolean = false;
 }

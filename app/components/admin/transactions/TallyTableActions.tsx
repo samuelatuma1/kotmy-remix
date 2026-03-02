@@ -6,8 +6,8 @@ import DeleteTransactionDialog from './DeleteTransactionDialog'
 
 export default function TallyTableActions({ table }: { table: Table<TallyTransaction> }) {
     const rowsSelected = table.getFilteredSelectedRowModel().rows.length >= 1
-    const canVerify = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.status !== 'verified')
-    const canRevoke = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.status !== 'revoked')
+    const canVerify = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.payment_status !== 'verified')
+    const canRevoke = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.payment_status !== 'revoked')
     return (<div className="flex gap-4 items-center px-3 mb-3">
         <VerifyTransactionDialog disabled={!canVerify} />
         <RevokeTransactionDialog disabled={!canRevoke} />

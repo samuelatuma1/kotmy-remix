@@ -1,9 +1,12 @@
-import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { useState, useMemo } from "react";
+import { ActionFunctionArgs, json, redirect, type LoaderFunctionArgs, type SerializeFrom } from "@remix-run/node";
+import { Form, Link, useActionData, useLoaderData, useFetcher } from "@remix-run/react";
+import { useState, useMemo, useEffect } from "react";
+import { UserAtom } from "~/lib/store/atoms/token";
+import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
-import { ILedgerEntry, IWallet } from "~/services/wallet/types/wallet.interface";
+import { ILedgerEntry, IUserLedgersQuery, IWallet } from "~/services/wallet/types/wallet.interface";
 import { walletRepo } from "~/services/wallet/wallet.server";
+import Pagination from "~/components/reusables/Pagination";
 
 // Type for the combined data structure from loader
 type WalletWithLedger = {
@@ -11,180 +14,129 @@ type WalletWithLedger = {
   pagedLedgers: IPaginatedResponse<ILedgerEntry>;
 };
 
-// TODO: MOCK, please delete when integrating with real API
-function mockWalletsData(){
-  let wallets: WalletWithLedger[] = [];
-  const mockWallets: IWallet[] = [
-    {
-      _id: "wallet_ngn_001",
-      str_id: "697488b46c9b452c5ddde651",
-      created_at: "2026-01-24T09:51:32.682471+01:00",
-      updated_at: "2026-01-24T10:38:50.245569+01:00",
-      is_deleted: false,
-      account_number: "6652132270",
-      user_id: "user_001",
-      user_type: "INDIVIDUAL",
-      account_balance: 7830.0,
-      restricted_balance: 0.0,
-      wallet_currency: "NGN",
-      wallet_name: "Samuel Atuma Okpara",
-      wallet_type: "withdrawable",
-      is_active: true,
-      daily_transaction_limit: 1000000.0,
-      withdrawable_balance: 7830.0,
-      metrics: {
-        net_change_this_month: 1250.0,
-        money_out: 500.0,
-        money_in: 1750.0
-      }
-    },
-    {
-      _id: "wallet_usd_002",
-      str_id: "usd_wallet_ref_123",
-      created_at: "2026-01-20T08:00:00.000000+01:00",
-      updated_at: "2026-01-24T12:00:00.000000+01:00",
-      is_deleted: false,
-      account_number: "9900112233",
-      user_id: "user_001",
-      user_type: "INDIVIDUAL",
-      account_balance: 10500.75,
-      restricted_balance: 0.0,
-      wallet_currency: "USD",
-      wallet_name: "Samuel Atuma Okpara (Business)",
-      wallet_type: "withdrawable",
-      is_active: true,
-      daily_transaction_limit: 50000.0,
-      withdrawable_balance: 10500.75,
-      metrics: {
-        net_change_this_month: -200.0,
-        money_out: 1200.0,
-        money_in: 1000.0
-      }
-    }
-  ];
-
-  // Mocking paginated ledger responses for each wallet
-  const mockLedgers: Record<string, IPaginatedResponse<ILedgerEntry>> = {
-    wallet_ngn_001: {
-      current_page: 1,
-      total_pages: 1,
-      total_items: 2,
-      items_per_page: 10,
-      last_key_id: null,
-      items: [
-        {
-          _id: "txn_001",
-          str_id: "txn_001",
-          created_at: "2026-01-25T10:00:00Z",
-          updated_at: "2026-01-25T10:05:00Z",
-          is_deleted: false,
-          payment_ref: "REF-NGN-001",
-          amount: 450.0,
-          currency: "NGN",
-          wallet_id: "wallet_ngn_001",
-          wallet_name: "Samuel Atuma Okpara",
-          contestant_code: "C-123",
-          contest_code: "CONTEST_01",
-          stage_id: "S-01",
-          description: "CREDIT: Contestant earning",
-          entry_type: "credit",
-          balance_after: 7830.0,
-          status: "completed",
-          completed_at: "2026-01-25T10:05:00Z"
-        },
-        {
-          _id: "txn_002",
-          str_id: "txn_002",
-          created_at: "2026-01-24T15:00:00Z",
-          updated_at: "2026-01-24T15:10:00Z",
-          is_deleted: false,
-          payment_ref: "REF-NGN-002",
-          amount: 1200.0,
-          currency: "NGN",
-          wallet_id: "wallet_ngn_001",
-          wallet_name: "Samuel Atuma Okpara",
-          contestant_code: null,
-          contest_code: null,
-          stage_id: null,
-          description: "DEBIT: Withdrawal to Bank",
-          entry_type: "debit",
-          balance_after: 7380.0,
-          status: "pending",
-          completed_at: null
-        }
-      ]
-    },
-    wallet_usd_002: {
-      current_page: 1,
-      total_pages: 1,
-      total_items: 1,
-      items_per_page: 10,
-      last_key_id: null,
-      items: [
-        {
-          _id: "txn_usd_001",
-          str_id: "txn_usd_001",
-          created_at: "2026-01-25T12:00:00Z",
-          updated_at: "2026-01-25T12:00:00Z",
-          is_deleted: false,
-          payment_ref: "REF-USD-999",
-          amount: 1000.0,
-          currency: "USD",
-          wallet_id: "wallet_usd_002",
-          wallet_name: "Samuel Atuma Okpara (Business)",
-          contestant_code: null,
-          contest_code: null,
-          stage_id: null,
-          description: "CREDIT: Global Partner Payout",
-          entry_type: "credit",
-          balance_after: 10500.75,
-          status: "completed",
-          completed_at: "2026-01-25T12:00:00Z"
-        }
-      ]
-    }
-  };
-
-  // Combining them to match your intended loader output
-  wallets = mockWallets.map(w => ({
-    wallet: w,
-    pagedLedgers: mockLedgers[w._id]
-  }));
-
-   return wallets;
-}
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader) return redirect("/login");
+
+  // parse pagination/search params from URL
+  const url = new URL(request.url);
+  const page_size = Number(url.searchParams.get('page_size') ?? '10');
+  const last_key_id = url.searchParams.get('last_key_id');
+  const first_key_id = url.searchParams.get('first_key_id');
+  const wallet_id_param = url.searchParams.get('wallet_id');
 
   const walletsResponse = await walletRepo.getUserWallets(cookieHeader);
   let wallets: WalletWithLedger[] = [];
 
   if (walletsResponse.data?.length) {
     for (const _wallet of walletsResponse.data) {
-      const pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, { 
-        wallet_id: _wallet._id, 
-        page_size: 10 
+      // If a wallet_id is supplied via URL and matches this wallet, use the supplied pagination params
+      if (wallet_id_param && wallet_id_param === _wallet._id) {
+        const pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, {
+          wallet_id: _wallet._id,
+          page_size: page_size,
+          last_key_id: last_key_id ?? undefined,
+          // first_key_id: first_key_id ?? undefined,
+        });
+        if (pagedLedgers.data) {
+          wallets.push({ wallet: _wallet, pagedLedgers: pagedLedgers.data });
+        }
+        continue;
+      }
+
+      // default fetch for other wallets (first page)
+      const pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, {
+        wallet_id: _wallet._id,
+        page_size: 10,
       });
       if (pagedLedgers.data) {
         wallets.push({ wallet: _wallet, pagedLedgers: pagedLedgers.data });
       }
     }
   }
-
-
-  // wallets = mockWalletsData(); // TODO: Remove this line when integrating with real API
-
   return json({ wallets });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+    const cookieHeader = request.headers.get("Cookie") ?? "";
+
+    const formData = await request.formData();
+    // clean form data: remove empty values
+    const cleaned: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      const v = (value ?? '').toString().trim();
+      if (v !== '') cleaned[key] = v;
+    });
+
+    // build IUserLedgersQuery
+    const query: IUserLedgersQuery = {} as IUserLedgersQuery;
+    if (cleaned.transaction_type) query.transaction_type = cleaned.transaction_type as any;
+    if (cleaned.status) query.status = cleaned.status as any;
+    if (cleaned.min_amount) query.min_amount = Number(cleaned.min_amount);
+    if (cleaned.max_amount) query.max_amount = Number(cleaned.max_amount);
+    if (cleaned.min_created_at) query.min_created_at = cleaned.min_created_at;
+    if (cleaned.max_created_at) query.max_created_at = cleaned.max_created_at;
+    if (cleaned.user_id) query.user_id = cleaned.user_id;
+    if (cleaned.wallet_id) query.wallet_id = cleaned.wallet_id;
+    if (cleaned.currency) query.currency = cleaned.currency as any;
+    if (cleaned.payment_method) query.payment_method = cleaned.payment_method as any;
+    if(cleaned.contest_code) query.contest_code = cleaned.contest_code as any
+
+    // call wallet_search
+    const walletResp = await walletRepo.wallet_search(query, cookieHeader);
+    if (walletResp.error) {
+      return json({ error: walletResp.error }, { status: 400 });
+    }
+
+    // fetch ledgers for wallet using same query
+    const ledgersResp = await walletRepo.getUserLedgersForWallet(cookieHeader, query);
+    if (ledgersResp.error) {
+      return json({ error: ledgersResp.error }, { status: 400 });
+    }
+
+    // rebuild wallets list: get all wallets again and replace/update the matched wallet
+    const walletsResp = await walletRepo.getUserWallets(cookieHeader);
+    let wallets: WalletWithLedger[] = [];
+    if (walletsResp.data?.length) {
+      let cleanedWallets: WalletWithLedger[] = []
+      for (const _wallet of walletsResp.data) {
+        if (_wallet._id === walletResp.data?._id) {
+          var updatedWallet = {..._wallet}
+          updatedWallet.metrics.money_in = walletResp.data.metrics.money_in;updatedWallet.metrics.money_out = walletResp.data.metrics.money_out; 
+          updatedWallet.metrics.net_change_this_month = walletResp.data.metrics.net_change_this_month; updatedWallet.metrics.net_change = walletResp.data.metrics.net_change;
+          
+          cleanedWallets.push({ wallet: updatedWallet, pagedLedgers: ledgersResp.data });
+        } else {
+          const paged = await walletRepo.getUserLedgersForWallet(cookieHeader, { wallet_id: _wallet._id, page_size: 10 });
+          cleanedWallets.push({ wallet: _wallet, pagedLedgers: paged.data ?? { items: [], total_items: 0, items_per_page: 10 } as any });
+        }
+      }
+      if(cleanedWallets.length){
+        wallets = cleanedWallets;
+      }
+    }
+    console.log("WALLET RESP", walletResp, wallets)
+    return json({ wallets });
 }
 
 function useWalletController() {
   const { wallets } = useLoaderData<{ wallets: WalletWithLedger[] }>();
-  
+  const {setUserStoreManager, getUserStoreManager} = useUserManager();
+  const [user, setUser] = useState<UserAtom | null>(null)
   // Track which wallet is currently selected (default to the first one)
+
   const [activeWalletId, setActiveWalletId] = useState<string | null>(
     wallets.length > 0 ? wallets[0].wallet._id : null
   );
+
+  
+
+  useEffect(() => {
+    const _user = getUserStoreManager()
+    if(_user){
+      setUser(_user)
+    }
+  }, [getUserStoreManager]);
 
   const activeData = useMemo(() => {
     return wallets.find((w) => w.wallet._id === activeWalletId) || null;
@@ -197,20 +149,51 @@ function useWalletController() {
     }).format(amount);
   };
 
+  // const { wallets, activeData, setActiveWalletId, formatCurrency, user } = useWalletController();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const fetcher = useFetcher();
+  const isSubmitting = fetcher.state === 'submitting';
+  const actionData = useActionData<typeof action>();
+
+  // local wallets state so we can update UI when action/fetcher returns updated wallets
+  const [walletsState, setWalletsState] = useState<WalletWithLedger[]>(wallets);
+
+  // keep local state in sync with loader updates
+  useEffect(() => {
+    // If a fetcher or action has returned updated wallets, prefer that and don't overwrite.
+    const latestFromFetcherOrAction = (fetcher.data as any)?.wallets ?? (actionData as any)?.wallets;
+    if (!latestFromFetcherOrAction) {
+      setWalletsState(wallets);
+    }
+  }, [wallets, fetcher.data, actionData]);
+
+  // update local wallets when fetcher or action returns updated data
+  useEffect(() => {
+    const fw = (fetcher.data as any)?.wallets ?? (actionData as any)?.wallets;
+    if (fw && Array.isArray(fw)) {
+      setWalletsState(fw as WalletWithLedger[]);
+    }
+  }, [fetcher.data, actionData]);
+
   return { 
     wallets, 
     activeData, 
     setActiveWalletId, 
-    formatCurrency 
+    formatCurrency,
+    user,
+    actionData,
+    searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher
   };
 }
 
 export default function WalletPage() {
-  const { wallets, activeData, setActiveWalletId, formatCurrency } = useWalletController();
+   const { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher } = useWalletController();
 
   if (!activeData) return <div className="p-8">No wallets found.</div>;
 
-  const { wallet, pagedLedgers } = activeData;
+  // derive active data from local wallets state so UI reflects updates
+  const activeDataLocal = walletsState.find(w => w.wallet._id === activeData?.wallet._id) ?? activeData;
+  const { wallet, pagedLedgers } = activeDataLocal;
 
   return (
     <div className="p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen">
@@ -230,7 +213,7 @@ export default function WalletPage() {
             value={wallet._id}
             onChange={(e) => setActiveWalletId(e.target.value)}
           >
-            {wallets.map((w) => (
+            {walletsState.map((w) => (
               <option key={w.wallet._id} value={w.wallet._id}>
                 {w.wallet.wallet_currency} - {w.wallet.account_number}
               </option>
@@ -241,22 +224,134 @@ export default function WalletPage() {
         <div className="flex justify-between items-start">
           <div>
             <div className="text-4xl font-bold mb-1">
-              {formatCurrency(wallet.account_balance, wallet.wallet_currency)}
+              {formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency)}
             </div>
             <div className="text-gray-400 text-sm">{wallet.wallet_name}</div>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
-          <button className="bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
+          <Link to={`/user/withdraw/${wallet._id}`}>
+           <button className="bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
             ↗ Withdraw
           </button>
-          <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
-            + Add Withdrawal Account
-          </button>
+          </Link>
+         
+          {user?.withdrawal_pin_set ? (
+            <Link to={`/user/addwithdrawalaccount/${wallet._id}`}>
+              <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
+                Add withdrawal account
+              </button>
+            </Link>
+          
+          ) : (
+            <Link to='/user/setwithdrawalpin'>
+            <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
+              + Set withdrawal PIN
+            </button></Link>
+          )}
           <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
             ⇄ Transfer to another wallet
           </button>
+        </div>
+      </div>
+
+      {/* Search (collapsible) */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-medium text-gray-700">Search</h2>
+          <button
+            type="button"
+            onClick={() => setSearchOpen((s) => !s)}
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"
+            aria-expanded={searchOpen}
+          >
+            <span>{searchOpen ? 'Hide' : 'Show'}</span>
+            <svg
+              className={`w-4 h-4 transition-transform ${searchOpen ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div className={`transition-all ${searchOpen ? 'overflow-scroll max-h-96' : 'overflow-hidden max-h-0'}`}>
+          <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+            <fetcher.Form method="post" className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+              {/* transaction_type */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Transaction type</span>
+                <select id="transaction_type" name="transaction_type" className="border rounded-md px-3 py-2 bg-gray-50 outline-none">
+                  <option value="">All transaction types</option>
+                  <option value="credit">Credit</option>
+                  <option value="debit">Debit</option>
+                </select>
+              </label>
+
+              {/* status */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Status</span>
+                <select id="status" name="status" className="border rounded-md px-3 py-2 bg-gray-50 outline-none">
+                  <option value="">Any status</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  <option value="void">Void</option>
+                </select>
+              </label>
+
+              {/* min_amount */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Min amount</span>
+                <input id="min_amount" name="min_amount" type="number" step="0.01" placeholder="Min amount" className="border rounded-md px-3 py-2 bg-gray-50 outline-none" />
+              </label>
+
+              {/* max_amount */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Max amount</span>
+                <input id="max_amount" name="max_amount" type="number" step="0.01" placeholder="Max amount" className="border rounded-md px-3 py-2 bg-gray-50 outline-none" />
+              </label>
+
+              {/* min_created_at */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">From date</span>
+                <input id="min_created_at" name="min_created_at" type="date" className="border rounded-md px-3 py-2 bg-gray-50 outline-none" />
+              </label>
+
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">To date</span>
+                <input id="max_created_at" name="max_created_at" type="date" className="border rounded-md px-3 py-2 bg-gray-50 outline-none" />
+              </label>
+
+              {/* payment_method */}
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Payment method</span>
+                <select id="payment_method" name="payment_method" className="border rounded-md px-3 py-2 bg-gray-50 outline-none">
+                  <option value="">Any payment method</option>
+                  <option value="flutterwave">Flutterwave</option>
+                  <option value="bank">Bank</option>
+                  <option value="paystack">Paystack</option>
+                </select>
+              </label>
+
+              <label className="flex flex-col text-xs text-gray-600">
+                <span className="mb-1">Contest code</span>
+                <input id="contest_code" name="contest_code" className="border rounded-md px-3 py-2 bg-gray-50 outline-none" />
+              </label>
+
+              {/* include hidden wallet_id so server action can know currently selected wallet */}
+              <input type="hidden" name="wallet_id" value={wallet._id} />
+
+              <div className="sm:col-span-3 flex justify-end mt-2">
+                <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50">
+                  {isSubmitting ? 'Searching...' : 'Search'}
+                </button>
+              </div>
+            </fetcher.Form>
+          </div>
         </div>
       </div>
 
@@ -329,11 +424,7 @@ export default function WalletPage() {
           <div>
             Showing {pagedLedgers.items.length} of {pagedLedgers.total_items} items
           </div>
-          <div className="flex gap-2">
-             <button disabled={!pagedLedgers.last_key_id} className="px-4 py-2 border rounded-lg disabled:opacity-50">
-               Next Page
-             </button>
-          </div>
+          <Pagination lastKey={pagedLedgers.last_key_id} pageSize={pagedLedgers.items_per_page} firstKey={pagedLedgers.first_key_id} />
         </div>
       </div>
     </div>

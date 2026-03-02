@@ -6,7 +6,8 @@ export class ApiCall {
     
     static _instance = axios.create({
         baseURL: this._proxy,
-        timeout: 20000,
+        // increased timeout to 20 minutes (1200000 ms)
+        timeout: 20 * 60 * 1000,
         withCredentials: true
     })
 

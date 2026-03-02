@@ -37,11 +37,11 @@ export default class AuthServer {
     async getMe(cookie: string) {
         console.log({cookie, d: "updating profile"})
 
-        let { data, error, headers } = await ApiCall.call<ILoginResponseDTO, unknown>({
+        let { data, error, headers, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
             url: ApiEndPoints.me,
             method: "GET",
         }, cookie);
-        return { data, error, headers };
+        return { data, error, headers, authRequired };
     }
 
     async updateProfile(formData: FormData, cookie: string) {

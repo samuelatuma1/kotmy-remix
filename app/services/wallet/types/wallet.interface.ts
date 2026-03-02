@@ -2,6 +2,7 @@ export interface WalletMetrics {
   net_change_this_month: number;
   money_out: number;
   money_in: number;
+  net_change: number;
 }
 
 export interface IWallet {
@@ -63,8 +64,92 @@ export interface IUserLedgersQuery{
   currency?: WalletCurrency | null;
   last_key_id?: string | null;
   page_size?: number;
+  payment_method?: "flutterwave" | "paystack" | "bank"
+  contest_code?: string | null
 }
 
-export interface IWalletRepository{
-
+export interface IWalletAccount {
+  _id: string;
+  str_id: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  wallet_id: string;
+  name: string;
+  acct_number: string;
+  acct_type: "personal" | string;
+  bankcode: string;
+  bankname: string;
+  paid_creation_fee: "yes" | "no";
+  creation_fee_paid: number;
+  creation_fee_paid_at: string | null;
+  status: "verified" | string;
 }
+
+export interface ICurrencyBanks{
+  name: string;
+  code: string;
+  country?: string | null | undefined 
+}
+
+export interface IResolveAccountDetailsResponse{
+    country: string
+    account_number: string
+    bank_code: string
+    account_name: string
+}
+
+export interface IResolveAccountRequest{
+    currency: string
+    account_number: string
+    bank_code: string,
+    wallet_id: string
+}
+export interface IGetWithdrawalCharge{
+    wallet_id: string
+    amount: number
+    withdrawal_account_id: string
+    withdrawal_pin: string
+    accepted_charges: number,
+}
+
+export interface IWithdrawalChargeResponse {
+    transaction_charge: number;
+    other_charges: {
+        [key: string]: number;
+    };
+    remark: string;
+    currency: string;
+    total_charge: number;
+}
+export interface IAddAccountDetailsRequest{
+    currency: string
+    account_number: string
+    bank_code: string,
+    wallet_id: string,
+    pin: string
+}
+
+export interface IRequestWithdrawal {
+    wallet_id: string;
+    amount: number;
+    withdrawal_account_id: string;
+    withdrawal_pin: string;
+    narration: string;
+    accepted_charges: number;
+}
+
+export interface ICreateWithdrawalPinDTO {
+  token: string;
+  withdrawal_pin: string;
+  confirm_withdrawal_pin: string;
+}
+
+
+export interface IRequestWithdrawalResponse {
+    status: string;
+    message: string;
+    is_produced: string;
+    reference: string;
+}
+

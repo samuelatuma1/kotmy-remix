@@ -10,12 +10,14 @@ type Props = (
     labelClassNames?: string;
     type?: string;
     icon?: string;
-  } & React.InputHTMLAttributes<HTMLInputElement>
+    name: string;
+  } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>
   | {
     labelText?: string;
     labelClassNames?: string;
     as: 'textarea';
-  } & React.TextareaHTMLAttributes<HTMLTextAreaElement>)
+    name: string;
+  } & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'name'>)
   & { error?: string }
 
 export default function FormControl({ labelClassNames, labelText, error, ...props }: Props) {
@@ -27,7 +29,7 @@ export default function FormControl({ labelClassNames, labelText, error, ...prop
     <Svg src={icons.warningIcon} />{error}
   </span>
   return (
-    <label htmlFor={props.id} className={`block font-bold ${labelClassNames}`}>{labelText}{props.required ? <span className="text-red-400" >*</span> : ""}
+    <label htmlFor={props.name} className={`block font-bold ${labelClassNames}`}>{labelText}{props.required ? <span className="text-red-400" >*</span> : ""}
       {props.as === 'input'
         ? <>
           <div aria-invalid={!!error} className={formControlClasses}>

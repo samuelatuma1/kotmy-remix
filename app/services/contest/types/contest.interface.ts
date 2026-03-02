@@ -239,6 +239,17 @@ export interface WinnerQueryDTO {
   user_id?: string | null;
 }
 
+// Query DTO for searching/listing contests (matches FastAPI ContestQuery)
+export interface IContestQuery {
+  name?: string | null;
+  tournament_unique_id?: string | null;
+  contest_unique_id?: string | null;
+  uploaded_by?: string | null;
+  min_created_at?: string | null; // ISO date string
+  max_created_at?: string | null; // ISO date string
+  status?: ContestStatus | null;
+}
+
 export interface IContestRepository {
     getContests(): Promise<TFetcherResponse<IContest[]>>
     getContestById(contestId: string): Promise<TFetcherResponse<IContest>>

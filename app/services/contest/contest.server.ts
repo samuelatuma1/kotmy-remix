@@ -1,12 +1,12 @@
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { Grade, IContest, IContestDto, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
+import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json } from "@remix-run/node"
 
-let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3NzExNzM0NDJ9.sHAuj-OTgwKuSpgrsY0vjPeHHnOJNzENSxmYIFo414k"
+let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
 
 export class ContestRepository implements IContestRepository {
 
@@ -159,7 +159,28 @@ export class ContestRepository implements IContestRepository {
         return { data }
     }
 
-    
+    async query_contest(query: IContestQuery | null = null, token = TOKEN): Promise<TFetcherResponse<IContestWStage[]>> {
+        let url = `/v2/api/admin/contest/query`;
+        if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
+                if (value !== null && value !== undefined && value !== '') {
+                    acc[key] = String(value);
+                }
+                return acc;
+            }, {} as Record<string, string>));
+            const queryString = params.toString();
+            if (queryString) url = `${url}?${queryString}`;
+        }
+
+        const { data, error, authRequired } = await ApiCall.call<IContestDto[], unknown>({
+            url,
+            method: MethodsEnum.GET,
+            headers: { Authorization: `Bearer ${token}` }
+        })
+
+        if (data) return { data: data.map(contest => dtoToContest(contest) as IContestWStage) }
+        return { error, authRequired }
+    }
 }
 export const contestRepo = new ContestRepository()
 

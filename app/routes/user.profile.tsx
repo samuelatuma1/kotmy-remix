@@ -1,5 +1,5 @@
 import { Form, useLoaderData, useActionData, useNavigate } from "@remix-run/react";
-import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { useEffect, useRef, useState } from "react";
 import { authServer } from "~/services/auth/auth.server";
 import { ILoginResponseDTO, UserProfile } from "~/services/auth/types/auth.dtos";
@@ -12,7 +12,15 @@ import DragnDrop from "~/components/public/contests/DragnDrop";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
-  const { data, error } = await authServer.getMe(cookieHeader || "");
+  if (!cookieHeader) {
+      // User is not signed in
+      return redirect("/login"); 
+    }
+  const { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
+    if (authRequired) {
+      // User is authenticated
+      return redirect("/login"); 
+    }
   return json({ data, error });
 }
 

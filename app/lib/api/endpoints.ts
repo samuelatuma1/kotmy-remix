@@ -142,7 +142,62 @@ export class ApiEndPoints {
         return `/v2/api/wallet/user_wallets`
     }
 
+    static get organizationWallets(){
+        return  `/v2/api/wallet/organizations_wallets`
+    }
+
     static get userLedgers(){
         return `/v2/api/wallet/ledgers`
+    }
+
+    static get organizationLedgers(){
+        return `/v2/api/wallet/organization_ledgers`
+    }
+    static get walletMetrics(){
+        return `/v2/api/wallet/wallet_metrics`
+    }
+
+    static get adminPayments(){
+        return `/v2/api/admin/payment/payments`
+    }
+
+    static get createBankPayment (){
+        return `/v2/api/admin/create_payment`
+    }
+
+    static get createWithdrawalPin(){
+        return `/v2/api/wallet/create_withdrawal_pin`
+    }
+
+    static get requestWithdrawalTokenForPinCreation(){
+        return `/v2/api/wallet/request_create_withdrawal_token`
+    }
+
+    static get setWithdrawalPin(){
+        return `/v2/api/wallet/create_withdrawal_pin`
+    }
+
+    static getWalletWithdrawalAccounts(walletId: string){
+        return `/v2/api/wallet/get_wallet_withdrawal_accounts/${walletId}`
+    }
+
+    static getBanksForCurrency(currency: string){
+        return `/v2/api/wallet/get_banks_for_currency/${currency}`
+    }
+
+    static get resolveAccountDetails(){
+        return `/v2/api/wallet/resolve_account_details`
+    }
+
+    static get addACCountDetails(){
+        return `/v2/api/wallet/save_personal_withdrawal_account`
+    }
+
+    static get getWithdrawalCharges(){
+        return `/v2/api/wallet/get_withdrawal_charge_for_account`
+    }
+
+    static get requestWithdrawal() {
+        return '/v2/api/wallet/request_withdrawal';
     }
 }
