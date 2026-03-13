@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node"
+import { LoaderFunctionArgs, json, redirect } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
 import AdminSummary from "~/components/admin/AdminSummary"
 import ArticleSummary from "~/components/admin/ArticleSummary"
@@ -6,14 +6,23 @@ import ContestSummary from "~/components/admin/ContestSummary"
 import TournamentSummary from "~/components/admin/TournamentSummary"
 import TransactionSummary from "~/components/admin/TransactionSummary"
 import { adminUsers } from "~/lib/data/admin"
+import { adminRepo } from "~/services/admin/admin.server"
+import { IUserQueryDTO } from "~/services/admin/types/admin.interface"
 import { contestRepo } from "~/services/contest/contest.server"
 import { tournamentRepo } from "~/services/tournament/tournament.server"
 
-export async function loader({ }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+        if (!cookieHeader) return redirect("/login"); 
     const { data: contests } = await contestRepo.getContests()
+    const adminUsersquery: IUserQueryDTO = {
+        has_admin_access: true
+    }
+    const pagedAdminUsersRes = await adminRepo.queryUsers(cookieHeader, adminUsersquery)
+    const adminUsers = pagedAdminUsersRes.data?.items ?? []
     const { data: tournaments } = await tournamentRepo.getTournaments()
     return json({
-        adminUsers: adminUsers,
+        adminUsers,
         tournaments: tournaments ?? [],
         contests: contests ?? [],
         transactions: {
@@ -36,7 +45,7 @@ export default function Home() {
                 <AdminSummary users={adminUsers} />
                 <ArticleSummary />
                 <TournamentSummary tournaments={tournaments} />
-                <TransactionSummary data={transactions} />
+                {/* <TransactionSummary data={transactions} /> */}
                 <ContestSummary contests={contests} />
             </section>
         </main>

@@ -15,7 +15,17 @@ export class ILoginResponseDTO {
     fullName: string = "";
     token: string = "";
     permissions: string[] = [];
+    roles: string[] = [];
     user_profile?: UserProfile; 
     referral_code?: string;
     withdrawal_pin_set: boolean = false;
+    full_name: string = "";
+    username: string = "";
+    password: string = "";
+    has_admin_access: boolean = false;
+    is_superuser: boolean = false;
+    is_staff: boolean = false;
+    is_active: boolean = false;
+    _id: string = "";
+    str_id: string = "";
 }

@@ -62,8 +62,13 @@ export type RegistrationTableData = {
 
 export interface IUpdateAdminDto extends ICreateAdminDto {}
 
+export interface IBasePaginationQuery{
+    last_key_id?: string | null;
+    page_size?: number;
+    first_key_id?: string | null;
+}
 
-export interface IGetPaymentsDTO {
+export interface IGetPaymentsDTO extends IBasePaginationQuery {
   reference?: string | null;
   amount?: number | null;
   verified?: boolean | null;
@@ -74,8 +79,21 @@ export interface IGetPaymentsDTO {
   contest_id?: string | null;
   min_created_at?: string | null;
   max_created_at?: string | null;
-  last_key_id?: string | null;
-  page_size?: number;
+  
+}
+
+export interface IUserQueryDTO extends IBasePaginationQuery  {
+  email?: string;
+  fullName?: string;
+  is_staff?: boolean;
+  is_superuser?: boolean;
+  is_active?: boolean;
+  roles?: string[];
+  wild_card?: string;
+  referral_code?: string;
+  min_created_at?: string | Date; // ISO string or Date object
+  max_created_at?: string | Date;
+  has_admin_access?: boolean
 }
 
 // Payload for creating a bank/tally transaction from admin UI
@@ -89,4 +107,27 @@ export interface ICreateBankTransaction {
   currency: string;
   gateway_status: string;
   bank_ref: string;
+}
+
+export interface ICreateAdminUser {
+    fullName: string;
+    email: string;
+    password: string;
+    has_admin_access: boolean;
+    is_superuser: boolean;
+    is_staff: boolean;
+    is_active: boolean;
+    username: string;
+    roles: string[];
+}
+
+export interface IUpdateAdminUser {
+    fullName?: string;
+    email?: string;
+    has_admin_access?: boolean;
+    is_superuser?: boolean;
+    is_staff?: boolean;
+    is_active?: boolean;
+    username?: string;
+    roles?: string[];
 }

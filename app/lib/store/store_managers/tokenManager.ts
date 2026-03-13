@@ -20,9 +20,19 @@ export const useTokenManager = () => {
     return {token, setTokenManager}
 }
 
+ // these were gotten from the back end. Shou;d be synced often 
+export  enum rolesEnum {
+            admin = "admin",
+            "sales rep" = "sales rep",
+            "content manager" =  "content manager",
+            "contestant manager" = "contestant manager",
+            "manage user" = "manage user"
+        } 
 
 export const useUserManager = () => {
     const [userStore, setUserStore] = useAtom(userAtom);
+
+
     
     const setUserStoreManager = (newUser: UserAtom | null, persist: boolean) => {
         setUserStore(newUser);
@@ -35,7 +45,7 @@ export const useUserManager = () => {
         return newUser;
     }
 
-    const getUserStoreManager = () => {
+    const getUserStoreManager = (): UserAtom | null => {
         try{
             if(!userStore){
             const storedUser = localStorage.getItem('atom_user');
@@ -56,5 +66,35 @@ export const useUserManager = () => {
         localStorage.removeItem('atom_user');
     }
 
-    return {setUserStoreManager, getUserStoreManager, deleteUserStoreManager}
+    const hasAcceptedRole = (user: UserAtom | null, acceptedRoles: [] = []): boolean => {
+        const userRoles = getUserStoreManager()?.roles.map(r => r.toLowerCase()) ?? []
+        const userRolesSet = new Set(userRoles)
+        console.log(userRolesSet)
+        console.log(acceptedRoles)
+        if(!user){
+            return false;
+        }
+        if(acceptedRoles.length === 0){
+            return true;
+        }
+        if(user.is_superuser){
+            console.log("Na super user be this o")
+            return true;
+        }
+
+        for(const role of acceptedRoles){
+            console.log("Here now", role, userRolesSet)
+            if (userRolesSet.has(role.toLowerCase())){
+                return true;
+            }
+            }
+        return false;
+        }
+
+        
+
+       
+    
+
+    return {setUserStoreManager, getUserStoreManager, deleteUserStoreManager, hasAcceptedRole, rolesEnum}
 }

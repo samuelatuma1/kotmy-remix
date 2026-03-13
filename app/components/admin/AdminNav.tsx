@@ -4,25 +4,37 @@ import { icons } from '~/assets/icons'
 import Svg from '../reusables/Svg'
 import Toggletip from '../reusables/ToggleTip'
 import { cn } from '~/lib/utils'
+import { rolesEnum, useUserManager } from '~/lib/store/store_managers/tokenManager'
+import { useEffect, useState } from 'react'
+import { UserAtom } from '~/lib/store/atoms/token'
 
 const navs = [
-    { label: 'Home', icon: icons.adminHomeIcon, url: '/admin/overview' },
-    { label: 'Admin Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts' },
-    { label: 'Tournaments', icon: icons.adminTournamentIcon, url: '/admin/tournaments' },
-    { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests' },
+    { label: 'Home', icon: icons.adminHomeIcon, url: '/admin/overview', acceptedRoles: [] },
+    { label: 'Admin Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts' , acceptedRoles: [rolesEnum['manage user']] },
+    { label: 'User Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts/allusers' , acceptedRoles: [rolesEnum['manage user']] },
+    { label: 'Tournaments', icon: icons.adminTournamentIcon, url: '/admin/tournaments', acceptedRoles: []  },
+    { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests', acceptedRoles: []  },
 ]
 
 const navsWSubs = [
     {
         label: 'Transactions', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Tally Votes', url: 'transactions/tally-votes' },
-            { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
-            { label: 'Income History', url: 'transactions/income-history' },
+            { label: 'Tally Votes', url: 'transactions/tally-votes', acceptedRoles: []  },
+            { label: 'Contest Registrations', url: 'transactions/contest-registrations' , acceptedRoles: [] },
+            { label: 'Income History', url: 'transactions/income-history', acceptedRoles: []  },
         ]
     },
 ]
 
 export default function AdminNavigation({ show }: { show: boolean }) {
+    const { getUserStoreManager, hasAcceptedRole} = useUserManager();
+    const userRoles = getUserStoreManager()?.roles.map(r => r.toLowerCase()) ?? []
+    const [user, setUser] = useState<UserAtom | null>(null)
+    const userRolesSet = new Set(userRoles)
+    useEffect(() => {
+        setUser(getUserStoreManager())
+    }, [getUserStoreManager])
+   
     const { pathname } = useLocation()
     function isSublinkActive(url: string) { return new RegExp(url, 'i').test(pathname) }
     const mainComponent = (
@@ -37,7 +49,7 @@ export default function AdminNavigation({ show }: { show: boolean }) {
                 <ul className='grid gap-2 font-bold'>
                     {navs.map(navItem => (
                         <li key={navItem.label}><NavLink to={navItem.url}
-                            className={({ isActive }) => `${isActive ? 'text-accent bg-[#EEF0FF] border-accent' : 'border-transparent'} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`}
+                            className={  ({ isActive }) => `${isActive ? 'text-accent bg-[#EEF0FF] border-accent' : 'border-transparent'} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ` +  `${!hasAcceptedRole(user, (navItem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }
                         >
                             <Svg src={navItem.icon} />{navItem.label}
                         </NavLink></li>
@@ -61,7 +73,7 @@ export default function AdminNavigation({ show }: { show: boolean }) {
                                     {item.subitems.map(subitem => (
                                         <li key={subitem.label} className='py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'>
                                             <NavLink to={subitem.url}
-                                                className={({ isActive }) => `${isActive ? 'active' : ''}`}>
+                                                className={({ isActive }) => `${isActive ? 'active' : ''}` +  `${!hasAcceptedRole(user, (subitem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }>
                                                 {subitem.label}
                                             </NavLink>
                                         </li>

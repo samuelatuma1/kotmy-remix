@@ -1,8 +1,9 @@
 import { AdminUser } from "~/lib/types/user.interface"
 import Cta from "../reusables/Cta"
 import AdminUserCard from "./accounts/AdminUserCard"
+import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos"
 
-export default function AdminSummary({ users }: { users: AdminUser[] }) {
+export default function AdminSummary({ users }: { users: ILoginResponseDTO[] }) {
     return (
         <div className="border rounded-xl overflow-hidden basis-3/5 max-w-xl">
             <div className="flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b">
@@ -14,7 +15,7 @@ export default function AdminSummary({ users }: { users: AdminUser[] }) {
             </div>
             <div className="px-4 grid">
                 {users.slice(0, 5).map(user => (
-                    <AdminUserCard key={user.id} user={user} className="border-0 shadow-none rounded-none border-b last:border-b-0" />
+                    <AdminUserCard key={user._id} user={user} className="border-0 shadow-none rounded-none border-b last:border-b-0" />
                 ))}
             </div>
         </div>

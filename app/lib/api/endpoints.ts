@@ -46,7 +46,7 @@ export class ApiEndPoints {
         return "/users/get_admin_accounts"
     }
     static get getAllRoles(): string {
-        return "/users/all_roles"
+        return "/v2/api/users/all_roles"
     }
     static get createTournament() {
         return "v2/api/admin/tournament"
@@ -199,5 +199,21 @@ export class ApiEndPoints {
 
     static get requestWithdrawal() {
         return '/v2/api/wallet/request_withdrawal';
+    }
+
+    static get createAdminUser(){
+        return `/v2/api/users/admin_create_user`
+    }
+
+    static getUserById(id: string){
+        return `/v2/api/admin/user/${id}`
+    }
+
+    static updateUser(id: string){
+        return `/v2/api/users/update_user/${id}`
+    }
+
+    static get pagedUsers(){
+        return `/v2/api/users/get_paged_staff_accounts`
     }
 }

@@ -5,18 +5,21 @@ import Svg from '../reusables/Svg'
 import Toggletip from '../reusables/ToggleTip'
 import { cn } from '~/lib/utils'
 import { adminAvatar } from '~/assets/images'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { rolesEnum, useUserManager } from '~/lib/store/store_managers/tokenManager'
+import { UserAtom } from '~/lib/store/atoms/token'
 
 const primaryNavs = [
-    { label: 'Home', icon: icons.adminHomeIcon, url: '/admin/overview' },
-    { label: 'Admin Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts' },
-    { label: 'Tournaments', icon: icons.adminTournamentIcon, url: '/admin/tournaments' },
-    { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests' },
+    { label: 'Home', icon: icons.adminHomeIcon, url: '/admin/overview', acceptedRoles: [] },
+    { label: 'Admin Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts' , acceptedRoles: [rolesEnum['manage user']]},
+    { label: 'User Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts/allusers', acceptedRoles: [rolesEnum['manage user']]},
+    { label: 'Tournaments', icon: icons.adminTournamentIcon, url: '/admin/tournaments', acceptedRoles: [] },
+    { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests', acceptedRoles: [] },
     {
-        label: 'Transactions', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Tally Votes', url: 'transactions/tally-votes' },
-            { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
-            { label: 'Income History', url: 'transactions/income-history' },
+        label: 'Transactions', icon: icons.adminFinanceIcon, acceptedRoles: [], subitems: [
+            { label: 'Tally Votes', url: 'transactions/tally-votes', acceptedRoles: [] },
+            { label: 'Contest Registrations', url: 'transactions/contest-registrations', acceptedRoles: [] },
+            { label: 'Income History', url: 'transactions/income-history', acceptedRoles: [] },
         ]
     },
 ]
@@ -32,6 +35,18 @@ export default function AdminMobileNavigation({ show, onClose }: { show: boolean
     }, [])
     const { pathname } = useLocation()
     function isSublinkActive(url: string) { return new RegExp(url, 'i').test(pathname) }
+
+
+
+    const { getUserStoreManager, hasAcceptedRole} = useUserManager();
+        const userRoles = getUserStoreManager()?.roles.map(r => r.toLowerCase()) ?? []
+        const [user, setUser] = useState<UserAtom | null>(null)
+        
+        useEffect(() => {
+            setUser(getUserStoreManager())
+        }, [getUserStoreManager])
+       
+        
     const mainComponent = (
         <div className="flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary">
             System default
@@ -57,8 +72,8 @@ export default function AdminMobileNavigation({ show, onClose }: { show: boolean
                             <img src={adminAvatar} alt="cartoon head" width={24} height={24} />
                         </span>
                         <span className="grid">
-                            <span className='block text-sm font-satoshi-bold'>Admin</span>
-                            <span className='block text-xs font-satoshi-medium'>admin@kotmy.com</span>
+                            <span className='block text-sm font-satoshi-bold'>{user?.fullName}</span>
+                            <span className='block text-xs font-satoshi-medium'>{user?.email}</span>
                         </span>
                     </div>
                     <Accordion type="single" collapsible className='w-full py-2 border-b'>
@@ -67,7 +82,7 @@ export default function AdminMobileNavigation({ show, onClose }: { show: boolean
                                 ? <li key={navItem.label}><NavLink
                                     className={({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive
                                         ? 'text-accent bg-[#EEF0FF] border-accent'
-                                        : 'border-transparent'}`}
+                                        : 'border-transparent'}`  +  `${!hasAcceptedRole(user, (navItem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }
                                     to={navItem.url} onClick={onClose}>
                                     <Svg src={navItem.icon} />{navItem.label}
                                 </NavLink></li>
@@ -84,7 +99,7 @@ export default function AdminMobileNavigation({ show, onClose }: { show: boolean
                                     <AccordionContent>
                                         <ul className='list-disc list-inside p-3 font-normal'>
                                             {navItem.subitems.map(subitem => (
-                                                <li key={subitem.label} className='py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'>
+                                                <li key={subitem.label} className={'py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'  +  `${!hasAcceptedRole(user, (subitem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}`}>
                                                     <NavLink to={subitem.url} onClick={onClose}
                                                         className={({ isActive }) => `${isActive ? 'active' : ''}`}>
                                                         {subitem.label}
