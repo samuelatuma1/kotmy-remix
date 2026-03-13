@@ -83,8 +83,7 @@ export const useUserManager = () => {
         }
 
         for(const role of acceptedRoles){
-            console.log("Here now", role, userRolesSet)
-            if (userRolesSet.has(role.toLowerCase())){
+            if (userRolesSet.has((role as unknown as string).toLowerCase())){
                 return true;
             }
             }
