@@ -66,6 +66,7 @@ export interface IBasePaginationQuery{
     last_key_id?: string | null;
     page_size?: number;
     first_key_id?: string | null;
+    direction?: "next" | "previous"
 }
 
 export interface IGetPaymentsDTO extends IBasePaginationQuery {

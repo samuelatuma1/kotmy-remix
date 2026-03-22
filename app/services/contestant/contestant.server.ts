@@ -50,13 +50,13 @@ export class ContestantRepository implements IContestantRepository {
             data: dto
         })
     }
-    async voteContestant(payload: { dto: IVoteContestantDto; stageId: string; fingerprint: string }): Promise<TFetcherResponse<ILeanContestant>> {
+    async voteContestant(payload: { dto: IVoteContestantDto; stageId: string; /*fingerprint: string*/ }, cookies: string): Promise<TFetcherResponse<ILeanContestant>> {
         return await ApiCall.call({
             method: MethodsEnum.POST,
             url: ApiEndPoints.voteContestant(payload.stageId),
-            headers: { device_fingerprint: payload.fingerprint },
+            // headers: { device_fingerprint: payload.fingerprint },
             data: payload.dto
-        })
+        }, cookies)
     }
     async getContestantViaHash(hash: string): Promise<TFetcherResponse<IContestWStageWContestant>> {
         return await ApiCall.call({

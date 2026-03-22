@@ -10,7 +10,7 @@ type Props = (
     labelClassNames?: string;
     type?: string;
     icon?: string;
-    name: string;
+    name?: string;
   } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>
   | {
     labelText?: string;

@@ -7,4 +7,5 @@ export interface IPaginatedResponse<T> {
   items: T[];
   last_key_id: string | null;
   first_key_id: string | null;
+  summary?: object
 }

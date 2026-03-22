@@ -1,3 +1,9 @@
+import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
+import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
+import { IPaginatedResponse } from "~/services/common/types/paginated_data";
+import { IContestDto } from "~/services/contest/types/contest.interface";
+import { IContestant, IContestantBiodata } from "~/services/contestant/types/contestant.interface";
+
 export interface WalletMetrics {
   net_change_this_month: number;
   money_out: number;
@@ -153,3 +159,54 @@ export interface IRequestWithdrawalResponse {
     reference: string;
 }
 
+
+
+export interface IReferrerBoardQuery extends IBasePaginationQuery  {
+  wallet_id?: string;
+  min_created_at?: string | Date; // ISO string or Date object
+  max_created_at?: string | Date;
+}
+
+export interface IReferrerBoardResponse {
+  contestant_biodata: IContestantBiodata;
+  contestant_deets: IContestant[];
+  current_contest: IContestDto;
+  referrer_earnings_ledgers: ILedgerEntry[]
+  total_earning: number;
+  currency: string;
+  contestant_biodata_id: string
+
+}
+
+export interface IReferrerBoardResponseSummary{
+  currency: string;
+  total_earning: number;
+  total_contestants: number
+}
+
+export interface ReferrerBoardPagedResponse extends IPaginatedResponse<IReferrerBoardResponse> {
+  summary: IReferrerBoardResponseSummary
+}
+
+export interface IAdminReferrerBoardQuery extends IBasePaginationQuery  {
+  min_created_at?: string | Date; // ISO string or Date object
+  max_created_at?: string | Date;
+  wallet_id?: string;
+  currency?: string
+}
+
+export interface IAdminIncomeForReferrer{
+  referrer: ILoginResponseDTO;
+  referrer_earnings_ledgers: ILedgerEntry[]
+  total_earning: number;
+  currency: string;
+  referrer_id: string;
+}
+export interface IAdminReferralsIncomeForReferrerSummary{
+  currency: string;
+  total_earning: number;
+  total_referrals: number
+}
+export interface IAdminRefereeIncomeForReferrerPagedResponse extends IPaginatedResponse<IAdminIncomeForReferrer>{
+  summary: IAdminReferralsIncomeForReferrerSummary
+}

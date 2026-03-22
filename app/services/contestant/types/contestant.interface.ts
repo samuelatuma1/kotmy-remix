@@ -144,8 +144,8 @@ export interface IContestantRepository {
   voteContestant(payload: {
     dto: IVoteContestantDto;
     stageId: string;
-    fingerprint: string;
-  }): Promise<TFetcherResponse<ILeanContestant>>;
+    // fingerprint: string;
+  }, cookies: string): Promise<TFetcherResponse<ILeanContestant>>;
   getContestantViaHash(hash: string): Promise<TFetcherResponse<IContestWStageWContestant>>;
 }
 

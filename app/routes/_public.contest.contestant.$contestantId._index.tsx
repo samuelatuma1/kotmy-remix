@@ -10,7 +10,6 @@ import { getFingerprint } from '~/lib/session.server';
 import { contestantRepo } from '~/services/contestant/contestant.server';
 import { EnrichedContestant } from '~/services/contestant/types/contestant.interface';
 import { action as registerAction, RegisterAction } from './_public.contests.$tournamentId.$contestId._index';
-import { useLocation } from '@remix-run/react';
 // ... (loader and useContestContestantController remain the same) ...
 // type RegisterAction = typeof action
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -30,7 +29,6 @@ export function useContestContestantController(){
   const [enrichedContestants, setEnrichedcontestants] = useState<EnrichedContestant[]>([]);
   const [contestantDetailsForActiveStage, setContestantDetailsForActiveStage] = useState<EnrichedContestant | null>(null);
   const {data, error, url} = useLoaderData<typeof loader>()
-const location = useLocation();
   // console.log({data, error}) // Removed for production
   // Use a ref for the toast logic to ensure it doesn't fire multiple times in strict mode
   const [isToastFired, setIsToastFired] = useState(false);

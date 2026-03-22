@@ -75,8 +75,17 @@ export async function voteContestant(formData: FormData, request: Request) {
         contestant_id: formData.get("contestant_id") as string
     }
     const stageId = formData.get("stage_id") as string
+    const cookieHeader = request.headers.get("Cookie");
+    if (!cookieHeader) {
+        // User is not signed in
+        const url = new URL(request.url);
+        return {errorCode: "LOGIN_REQUIRED" }
+        }
     const { fingerprint, headers: fingerprintHeaders } = await getFingerprint({ request })
-    const { error } = await contestantRepo.voteContestant({ dto, stageId, fingerprint })
+    const { error, authRequired } = await contestantRepo.voteContestant({ dto, stageId }, cookieHeader)
+    if(authRequired){
+        return {errorCode: "LOGIN_REQUIRED" }
+    }
     if (error) {
         const { headers } = await setToast({ request, headers: fingerprintHeaders, toast: `error::${error.detail ?? "We're sorry, but there seems to be an issue with this action. Please try again later."}::${Date.now()}` })
         return json(error, { headers })

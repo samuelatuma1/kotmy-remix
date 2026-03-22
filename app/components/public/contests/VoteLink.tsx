@@ -10,6 +10,7 @@ type Props = {
     url?: string,
     count: number | string,
     className?: string,
+    onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLAnchorElement | HTMLElement>,
 }
 
 export default React.forwardRef(function VoteLink({ type, url, count, className = '', ...rest }: Props, ref: React.ForwardedRef<HTMLButtonElement>) {

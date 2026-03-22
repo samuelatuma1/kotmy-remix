@@ -1,9 +1,10 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { IAddAccountDetailsRequest, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse } from "./types/wallet.interface";
+import { IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse } from "./types/wallet.interface";
 import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 import { ILoginResponseDTO } from "../auth/types/auth.dtos";
+import { IUserQueryDTO } from "../admin/types/admin.interface";
 
 export class WalletRepository{
     async getUserWallets(cookies: string): Promise<TFetcherResponse<IWallet[]>> {
@@ -221,6 +222,51 @@ export class WalletRepository{
         if (data) return { data };
         return { error, authRequired };
     }
+
+    async queryReferralBoard(cookies: string, query: IReferrerBoardQuery | null = null): Promise<TFetcherResponse<ReferrerBoardPagedResponse>>{
+          let url = ApiEndPoints.pagedReferralBoard;
+          if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
+              if (v !== undefined && v !== null) acc[k] = String(v);
+              return acc;
+            }, {} as Record<string, string>));
+
+            const qs = params.toString();
+            console.log({qs})
+            if (qs) url = `${url}?${qs}`;
+          }
+    
+          const { data, error, authRequired } = await ApiCall.call<ReferrerBoardPagedResponse, unknown>({
+            method: "GET",
+            url,
+          }, cookies);
+    
+          if (data) return { data };
+          return { error, authRequired };
+      }
+
+
+    async queryAdminAffiliateBoard(cookies: string, query: IAdminReferrerBoardQuery | null = null): Promise<TFetcherResponse<IAdminRefereeIncomeForReferrerPagedResponse>>{
+          let url = ApiEndPoints.adminAffiliateBoard;
+          if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
+              if (v !== undefined && v !== null) acc[k] = String(v);
+              return acc;
+            }, {} as Record<string, string>));
+
+            const qs = params.toString();
+            console.log({qs})
+            if (qs) url = `${url}?${qs}`;
+          }
+    
+          const { data, error, authRequired } = await ApiCall.call<IAdminRefereeIncomeForReferrerPagedResponse, unknown>({
+            method: "GET",
+            url,
+          }, cookies);
+    
+          if (data) return { data };
+          return { error, authRequired };
+      }
 
     
 }

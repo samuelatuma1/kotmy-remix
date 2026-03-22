@@ -115,11 +115,13 @@ export default function ContestantCard({ contestant, socialMedia }: { contestant
                             voted={contestant.result.device_voted_for_contestant}
                             contestantId={contestant._id}
                             stageId={contestant.stage_id}
+                            contestant={contestant}
                         />
                         : <SocialLink
                             type={socialMedia}
                             url={contestant.social_media_url}
                             voted={contestant.result.device_voted_for_contestant}
+                            contestant={contestant}
                         />
                     }
                     <TallyVoteDialog contestant={contestant}>

@@ -216,4 +216,12 @@ export class ApiEndPoints {
     static get pagedUsers(){
         return `/v2/api/users/get_paged_staff_accounts`
     }
+
+    static get pagedReferralBoard(){
+        return `/v2/api/wallet/affiliate_leaderboard`
+    }
+
+    static get adminAffiliateBoard(){
+        return `/v2/api/admin/affiliate_leaderboard`
+    }
 }
