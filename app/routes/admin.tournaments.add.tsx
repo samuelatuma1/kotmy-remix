@@ -7,9 +7,11 @@ import { setToast } from '~/lib/session.server'
 import { prepareTournamentDto, tournamentRepo } from '~/services/tournament/tournament.server'
 
 export async function action({ request }: ActionFunctionArgs) {
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+        if (!cookieHeader) return redirect("/login"); 
     const formData = await request.formData()
     const payload = prepareTournamentDto(formData)
-    const { error } = await tournamentRepo.createTournament(payload)
+    const { error } = await tournamentRepo.createTournament(payload, cookieHeader);
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` })
         return json(error, { headers })

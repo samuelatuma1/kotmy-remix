@@ -37,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         query[k] = v;
     }
 
-    const [res, ongoingContests] = await Promise.all([adminRepo.getPayments(cookieHeader, query), contestRepo.query_contest({status: 'ongoing'})])
+    const [res, ongoingContests] = await Promise.all([adminRepo.getPayments(cookieHeader, query), contestRepo.query_contest({status: 'ongoing'}, cookieHeader)])
     // const res = await adminRepo.getPayments(cookieHeader, query);
     // if (res.data) {
     //     return json({ tranasctions: res.data.items, last_key_id: res.data.last_key_id });

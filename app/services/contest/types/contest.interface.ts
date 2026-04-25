@@ -256,11 +256,11 @@ export interface IContestRepository {
     adminGetContestsInTournament(tournamentUniqueId: string, token: string): Promise<TFetcherResponse<IContestWStage[]>>
     getContestsInTournament(tournamentUniqueId: string): Promise<TFetcherResponse<IContestWStage[]>>
     createContest(contest: FormData, token: string): Promise<TFetcherResponse<IContest>>
-    deleteContest(contestId: string): Promise<TFetcherResponse<boolean>>
-    updateContest(payload: { contestId: string, dto: FormData, token: string }): Promise<TFetcherResponse<IContest>>
-    updateStage(payload: { stageId: string, dto: IStage, token: string }): Promise<TFetcherResponse<IStage>>
-    deleteStage(payload: { stageId: string, token: string }): Promise<TFetcherResponse<null>>
-    toggleRegistration(payload: { contestId: string, token: string }): Promise<TFetcherResponse<IContest>>
+    deleteContest(contestId: string, cookie: string): Promise<TFetcherResponse<boolean>>
+   updateContest({ contestId, dto }: { contestId: string, dto: FormData}, cookie: string): Promise<TFetcherResponse<IContest>>
+    updateStage({ stageId, dto}: { stageId: string; dto: Partial<IStage>;},token : string ): Promise<TFetcherResponse<IStage>>
+    deleteStage({ stageId}: { stageId: string; }, token: string ): Promise<TFetcherResponse<null>>
+    toggleRegistration({ contestId }: { contestId: string},  token: string ): Promise<TFetcherResponse<IContest>>
     getContestantsInStage(stageId: string, headers: { fingerprint: string }): Promise<TFetcherResponse<IStageWContestant>>
     migrateStage(payload: IMigrateStageDTO, token: string): Promise<TFetcherResponse<IStageWContestant>>
     getWinners(query?: WinnerQueryDTO): Promise<TFetcherResponse<WinnerResponse[]>>

@@ -15,7 +15,9 @@ export async function loader({ }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
     const payload = prepareContestPayload(await request.formData())
-    const { data, error } = await contestRepo.createContest(payload)
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await contestRepo.createContest(payload, cookieHeader)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::A new contest has been created::${Date.now()}` })
         return redirect('/admin/contests', { headers })

@@ -22,8 +22,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
     const intent = formData.get('intent')
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
     if (intent) {
-        const { error } = await contestRepo.deleteStage({ stageId: formData.get('intent') as string })
+        const { error } = await contestRepo.deleteStage({ stageId: formData.get('intent') as string }, cookieHeader)
         if (error) {
             console.log(JSON.stringify(error))
             const { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` })
@@ -32,7 +34,8 @@ export async function action({ request }: ActionFunctionArgs) {
         return json({ data: 'deleted' })
     }
     const payload = prepareContestPayload(formData)
-    const { data, error } = await contestRepo.updateContest({ contestId: formData.get('contestId') as string, dto: payload })
+
+    const { data, error } = await contestRepo.updateContest({ contestId: formData.get('contestId') as string, dto: payload }, cookieHeader)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contest has been updated::${Date.now()}` })
         return redirect('/admin/contests', { headers })

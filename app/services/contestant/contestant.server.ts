@@ -5,7 +5,8 @@ import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
 import { IContestWStageWContestant } from "../contest/types/contest.interface"
 
-const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3NzExNzM0NDJ9.sHAuj-OTgwKuSpgrsY0vjPeHHnOJNzENSxmYIFo414k"
+// const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3NzExNzM0NDJ9.sHAuj-OTgwKuSpgrsY0vjPeHHnOJNzENSxmYIFo414k"
+// const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NWZjNTg0ZDdiNmI5Y2RlODI2MTg3MCIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZSwiaXNfYWN0aXZlIjp0cnVlLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbIm1hbmFnZSB1c2VycyIsIm1hbmFnZSBjb250ZW50IiwibWFuYWdlIGJsb2ciLCJtYW5hZ2UgcGF5bWVudCIsIm1hbmFnZSBjb250ZXN0IiwibWFuYWdlIHZvdGVzIl0sImV4cCI6MTgwMTIyOTgyMH0.hvXKQTbFqe1roaqPJQAJrngxPRS5kbyu_UHgJkq2Hy8"
 
 export class ContestantRepository implements IContestantRepository {
     async callTallyWebhook(dto: unknown): Promise<TFetcherResponse<unknown>> {
@@ -18,13 +19,15 @@ export class ContestantRepository implements IContestantRepository {
         console.log("Tally webhook called. Response:", JSON.stringify(res))
         return res
     }
-    async editContestantAdmin(payload: { dto: FormData, contestantId: string }, token = TOKEN): Promise<TFetcherResponse<IContestant>> {
+    async editContestantAdmin(payload: { dto: FormData, contestantId: string }, token: string): Promise<TFetcherResponse<IContestant>> {
         return await ApiCall.call({
             method: MethodsEnum.PUT,
             url: ApiEndPoints.editContestant(payload.contestantId),
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+            headers: { 
+                // Authorization: `Bearer ${token}`, 
+                "Content-Type": "multipart/form-data" },
             data: payload.dto
-        })
+        }, token)
     }
     async getTallyLink(dto: IGetTallyLinkDTO): Promise<TFetcherResponse<{ payment_link: string }>> {
         return await ApiCall.call({
@@ -42,13 +45,13 @@ export class ContestantRepository implements IContestantRepository {
             data: payload.dto
         }, cookies)
     }
-    async toggleEvictContestants(dto: IToggleEvictContestantDTO, token = TOKEN): Promise<TFetcherResponse<void>> {
+    async toggleEvictContestants(dto: IToggleEvictContestantDTO, token: string): Promise<TFetcherResponse<void>> {
         return await ApiCall.call({
             method: MethodsEnum.PATCH,
             url: ApiEndPoints.toggleEvictContestants,
-            headers: { Authorization: `Bearer ${token}` },
+            // headers: { Authorization: `Bearer ${token}` },
             data: dto
-        })
+        }, token)
     }
     async voteContestant(payload: { dto: IVoteContestantDto; stageId: string; /*fingerprint: string*/ }, cookies: string): Promise<TFetcherResponse<ILeanContestant>> {
         return await ApiCall.call({

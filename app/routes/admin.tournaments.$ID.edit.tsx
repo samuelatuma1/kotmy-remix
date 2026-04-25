@@ -22,7 +22,9 @@ export async function action({ request }: ActionFunctionArgs) {
     console.log("###############")
    console.log(Object.fromEntries(payload.entries()))
     ///
-    const { data, error } = await tournamentRepo.updateTournament({ id: formData.get('tournamentId') as string, dto: payload })
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await tournamentRepo.updateTournament({ id: formData.get('tournamentId') as string, dto: payload }, cookieHeader)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The tournament has been updated::${Date.now()}` })
         return redirect('/admin/tournaments', { headers })

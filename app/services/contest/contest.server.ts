@@ -4,9 +4,9 @@ import { ApiEndPoints } from "~/lib/api/endpoints"
 import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
-import { json } from "@remix-run/node"
+import { json, redirect } from "@remix-run/node"
 
-let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
+// let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
 
 export class ContestRepository implements IContestRepository {
 
@@ -16,7 +16,7 @@ export class ContestRepository implements IContestRepository {
      */
     constructor() {
     }
-    async createContest(contest: FormData,  token = TOKEN): Promise<TFetcherResponse<IContest>> {
+    async createContest(contest: FormData,  token: string): Promise<TFetcherResponse<IContest>> {
         console.log("Damn, that's interesting")
         contest.entries().forEach(([key, value]) => {
             console.log(`${key}: ${value}`)
@@ -26,17 +26,17 @@ export class ContestRepository implements IContestRepository {
             url: ApiEndPoints.createContest,
             headers: {
                 "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`
+                // Authorization: `Bearer ${token}`
             },
             data: contest
-        })
+        }, token)
     }
-    async deleteContest(contestId: string, token = TOKEN): Promise<TFetcherResponse<boolean>> {
+    async deleteContest(contestId: string, cookie: string): Promise<TFetcherResponse<boolean>> {
         return await ApiCall.call({
             method: MethodsEnum.DELETE,
             url: ApiEndPoints.deleteContest(contestId),
-            headers: { Authorization: `Bearer ${token}` },
-        })
+            // headers: { Authorization: `Bearer ${token}` },
+        }, cookie)
     }
     async getContests(): Promise<TFetcherResponse<IContestWStage[]>> {
         const { data: contests, error } = await ApiCall.call<IContestDto[], unknown>({
@@ -52,11 +52,11 @@ export class ContestRepository implements IContestRepository {
         if (error || !contest) return { error: error ?? { detail: "The contest was not found" } }
         return { data: dtoToContest(contest) as IContestWStage }
     }
-    async adminGetContestsInTournament(tournamentUniqueId: string, token = TOKEN): Promise<TFetcherResponse<IContestWStage[]>> {
+    async adminGetContestsInTournament(tournamentUniqueId: string, token: string): Promise<TFetcherResponse<IContestWStage[]>> {
         const { data: contests, error } = await ApiCall.call<IContestDto[], unknown>({
             url: ApiEndPoints.adminGetContestsInTournament(tournamentUniqueId),
-            headers: { Authorization: `Bearer ${token}` },
-        })
+            // headers: { Authorization: `Bearer ${token}` },
+        }, token)
         if (contests) return { data: contests.map(contest => dtoToContest(contest) as IContestWStage) }
         return { error }
     }
@@ -67,55 +67,55 @@ export class ContestRepository implements IContestRepository {
         if (contests) return { data: contests.map(contest => dtoToContest(contest) as IContestWStage) }
         return { error }
     }
-    async updateContest({ contestId, dto, token = TOKEN }: { contestId: string, dto: FormData, token?: string }): Promise<TFetcherResponse<IContestWStage>> {
+    async updateContest({ contestId, dto }: { contestId: string, dto: FormData}, cookie: string): Promise<TFetcherResponse<IContestWStage>> {
         const { data: contest, error } = await ApiCall.call<IContestDto | null, unknown>({
             url: ApiEndPoints.updateContest(contestId),
             method: MethodsEnum.PUT,
             headers: {
                 "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`
+                // Authorization: `Bearer ${token}`
             },
             data: dto
-        })
+        }, cookie)
         if (error || !contest) return { error: error ?? { detail: "This contest no longer exists" } }
         return { data: dtoToContest(contest) as IContestWStage }
     }
-    async updateStage({ stageId, dto, token = TOKEN }: { stageId: string; dto: Partial<IStage>; token?: string }): Promise<TFetcherResponse<IStage>> {
+    async updateStage({ stageId, dto}: { stageId: string; dto: Partial<IStage>;},token : string ): Promise<TFetcherResponse<IStage>> {
         const { data: stage, error } = await ApiCall.call<IStage | null, unknown>({
             url: ApiEndPoints.updateStage(stageId),
             method: MethodsEnum.PATCH,
-            headers: { Authorization: `Bearer ${token}` },
+            // headers: { Authorization: `Bearer ${token}` },
             data: dto
-        })
+        }, token)
         if (error || !stage) return { error: error ?? { detail: "The stage was not found" } }
         return { data: stage }
     }
 
-    async toggleEnableBonus({ stageId, dto, token = TOKEN }: { stageId: string; dto: Partial<{enable: boolean, hours: number, minutes: number}>; token?: string }): Promise<TFetcherResponse<StageBonusJob>> {
+    async toggleEnableBonus({ stageId, dto}: { stageId: string; dto: Partial<{enable: boolean, hours: number, minutes: number}>;}, token: string): Promise<TFetcherResponse<StageBonusJob>> {
         const { data: stageBonus, error } = await ApiCall.call<StageBonusJob | null, unknown>({
             url: ApiEndPoints.toggleEnableStageBonus(),
             method: MethodsEnum.POST,
-            headers: { Authorization: `Bearer ${token}` },
+            // headers: { Authorization: `Bearer ${token}` },
             data: { stage_id: stageId, ...dto }
-        })
+        }, token)
         if (error || !stageBonus) return { error: error ?? { detail: "The stage was not found" } }
         return { data: stageBonus }
     }
-    async deleteStage({ stageId, token = TOKEN }: { stageId: string; token?: string }): Promise<TFetcherResponse<null>> {
+    async deleteStage({ stageId}: { stageId: string; }, token: string ): Promise<TFetcherResponse<null>> {
         const { data, error } = await ApiCall.call<null, unknown>({
             url: ApiEndPoints.deleteStage(stageId),
             method: MethodsEnum.DELETE,
-            headers: { Authorization: `Bearer ${token}` }
-        })
+            // headers: { Authorization: `Bearer ${token}` }
+        }, token)
         if (error) return { error: error }
         return { data }
     }
-    async toggleRegistration({ contestId, token = TOKEN }: { contestId: string; token?: string }): Promise<TFetcherResponse<IContest>> {
+    async toggleRegistration({ contestId }: { contestId: string},  token: string ): Promise<TFetcherResponse<IContest>> {
         const { data: contest, error } = await ApiCall.call<IContestDto | null, unknown>({
             url: ApiEndPoints.toggleRegistration({ contestId }),
             method: MethodsEnum.PATCH,
-            headers: { Authorization: `Bearer ${token}` }
-        })
+            // headers: { Authorization: `Bearer ${token}` }
+        }, token)
         if (error || !contest) return { error: error ?? { detail: "The contest was not found" } }
         return { data: dtoToContest(contest) as IContestWStage }
     }
@@ -123,19 +123,19 @@ export class ContestRepository implements IContestRepository {
         const { data, error } = await ApiCall.call<IStageWContestant, unknown>({
             url: ApiEndPoints.getContestantsInStage(stageId),
             headers: { device_fingerprint: headers.fingerprint }
-        })
+        }) 
         if (error) return { error: error ?? { detail: "Could not fetch the stage data" } }
         return { data }
     }
-    async migrateStage(payload: IMigrateStageDTO, token = TOKEN): Promise<TFetcherResponse<IStageWContestant>> {
+    async migrateStage(payload: IMigrateStageDTO, token: string): Promise<TFetcherResponse<IStageWContestant>> {
         return await ApiCall.call({
             url: ApiEndPoints.migrateStage,
             method: MethodsEnum.POST,
             headers: {
-                Authorization: `Bearer ${token}`
+                // Authorization: `Bearer ${token}` 
             },
             data: payload
-        })
+        }, token)
     }
 
     async getWinners(query?: WinnerQueryDTO): Promise<TFetcherResponse<WinnerResponse[]>> {
@@ -159,7 +159,7 @@ export class ContestRepository implements IContestRepository {
         return { data }
     }
 
-    async query_contest(query: IContestQuery | null = null, token = TOKEN): Promise<TFetcherResponse<IContestWStage[]>> {
+    async query_contest(query: IContestQuery | null = null, token: string): Promise<TFetcherResponse<IContestWStage[]>> {
         let url = `/v2/api/admin/contest/query`;
         if (query) {
             const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
@@ -175,8 +175,9 @@ export class ContestRepository implements IContestRepository {
         const { data, error, authRequired } = await ApiCall.call<IContestDto[], unknown>({
             url,
             method: MethodsEnum.GET,
-            headers: { Authorization: `Bearer ${token}` }
-        })
+            // headers: { Authorization: `Bearer ${token}` 
+        
+        }, token)
 
         if (data) return { data: data.map(contest => dtoToContest(contest) as IContestWStage) }
         return { error, authRequired }
@@ -237,7 +238,9 @@ export function prepareContestPayload(formData: FormData) {
 
 export async function deleteContest(formData: FormData, request: Request) {
     const contestId = formData.get('contestId') as string
-    const { data, error } = await contestRepo.deleteContest(contestId)
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await contestRepo.deleteContest(contestId, cookieHeader)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contest has been deleted::${Date.now()}` })
         return json(null, { headers })
@@ -249,7 +252,9 @@ export async function deleteContest(formData: FormData, request: Request) {
 export async function updateStage(formData: FormData, request: Request) {
     const stageId = formData.get("stageId") as string
     const dto = prepareStageDto(formData)
-    const { data, error } = await contestRepo.updateStage({ stageId, dto })
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await contestRepo.updateStage({ stageId, dto }, cookieHeader)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` })
         return json(error, { headers })
@@ -265,7 +270,10 @@ export async function toggleEnableStageBonus(formData: FormData, request: Reques
     const hours = parseInt(formData.get("hours") as string)
     const minutes = parseInt(formData.get("minutes") as string)
 
-    const { data, error } = await contestRepo.toggleEnableBonus({ stageId: stage_id, dto: { enable: enable_bonus, hours, minutes } })
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+
+    const { data, error } = await contestRepo.toggleEnableBonus({ stageId: stage_id, dto: { enable: enable_bonus, hours, minutes } }, cookieHeader)
     console.log("ERROR!!")
     console.log(error)
     if (error) {
@@ -278,7 +286,9 @@ export async function toggleEnableStageBonus(formData: FormData, request: Reques
 }
 export async function toggleRegistration(formData: FormData, request: Request) {
     const contestId = formData.get("contestId") as string
-    const { data, error } = await contestRepo.toggleRegistration({ contestId })
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await contestRepo.toggleRegistration({ contestId }, cookieHeader)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail || 'Could not perform the action'}::${Date.now()}` })
         return json(error, { headers })
@@ -318,11 +328,13 @@ export function prepareStageDto(formData: FormData) {
 }
 
 export async function migrateStage(formData: FormData, request: Request) {
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
     const payload: IMigrateStageDTO = {
         current_stage_id: formData.get("from") as string,
         new_stage_id: formData.get("to") as string
     }
-    const { data, error } = await contestRepo.migrateStage(payload)
+    const { data, error } = await contestRepo.migrateStage(payload, cookieHeader)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail || 'Could not perform the action'}::${Date.now()}` })
         return json(error, { headers })

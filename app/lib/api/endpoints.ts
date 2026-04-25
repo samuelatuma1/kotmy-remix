@@ -224,4 +224,7 @@ export class ApiEndPoints {
     static get adminAffiliateBoard(){
         return `/v2/api/admin/affiliate_leaderboard`
     }
+    static get requestPartnership() {
+        return "/v2/api/partner";
+    }
 }

@@ -13,8 +13,9 @@ export class ContestantServer{
 
 export async function editContestant(payload: { dto: FormData, contestantId: string }, request: Request) {
     const dto = prepareContestantDTO(payload.dto)
-    
-    const { data, error } = await contestantRepo.editContestantAdmin({ dto, contestantId: payload.contestantId })
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
+    const { data, error } = await contestantRepo.editContestantAdmin({ dto, contestantId: payload.contestantId }, cookieHeader)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contestant info has been updated::${Date.now()}` })
         return json(null, { headers })
@@ -27,12 +28,14 @@ export async function editContestant(payload: { dto: FormData, contestantId: str
 }
 
 export async function toggleEvictContestants(formData: FormData, request: Request) {
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
     const dto: IToggleEvictContestantDTO = {
         action: formData.get("intent") as "evict" | "admit",
         stage_id: formData.get("stage_id") as string,
         contestants_ids: (formData.get("contestants_ids") as string).split("|")
     }
-    const { error } = await contestantRepo.toggleEvictContestants(dto)
+    const { error } = await contestantRepo.toggleEvictContestants(dto, cookieHeader)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail ?? "Sorry, we could not update the contestants statuses at this time"}::${Date.now()}` })
         return json(error, { headers })

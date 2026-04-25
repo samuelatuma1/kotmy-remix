@@ -12,8 +12,10 @@ import Svg from '~/components/reusables/Svg'
 import { icons } from '~/assets/icons'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
+    const cookieHeader = request.headers.get('Cookie') ?? '';
+    if (!cookieHeader) return redirect("/login"); 
     const { data: tournament, error: tournamentError } = await tournamentRepo.getTournamentById(params.ID!)
-    const { data: contests, error: contestError } = await contestRepo.adminGetContestsInTournament(params.ID!)
+    const { data: contests, error: contestError } = await contestRepo.adminGetContestsInTournament(params.ID!, cookieHeader)
     if (tournamentError || contestError) {
         let error = tournamentError?.detail ?? contestError?.detail ?? 'An error occured while fetching the contests'
         const { headers } = await setToast({ request, toast: `error::${error}::${Date.now()}` })
