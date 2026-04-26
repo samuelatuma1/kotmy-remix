@@ -23,6 +23,11 @@ const primaryNavs = [
             { label: 'Affiliate Leaderboard', url: 'transactions/affiliate-board', acceptedRoles: [] },
         ]
     },
+    {
+        label: 'Partners', icon: icons.adminFinanceIcon, acceptedRoles: [], subitems: [
+            { label: 'Show Partners', url: 'partners', acceptedRoles: [] }
+        ]
+    },
 ]
 const secondaryNavs = [
     { label: 'Profile', icon: icons.profileIcon, url: '/user/profile' },

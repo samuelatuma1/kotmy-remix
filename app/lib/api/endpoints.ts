@@ -227,4 +227,8 @@ export class ApiEndPoints {
     static get requestPartnership() {
         return "/v2/api/partner";
     }
+
+    static get partnerSearch(){
+        return `/v2/api/partner`
+    }
 }

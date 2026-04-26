@@ -81,7 +81,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/admin/AdminMobileNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1774020652823.836";
+  import.meta.hot.lastModified = "1777176021443.711";
 }
 var primaryNavs = [{
   label: "Home",
@@ -129,6 +129,15 @@ var primaryNavs = [{
     url: "transactions/affiliate-board",
     acceptedRoles: []
   }]
+}, {
+  label: "Partners",
+  icon: icons.adminFinanceIcon,
+  acceptedRoles: [],
+  subitems: [{
+    label: "Show Partners",
+    url: "partners",
+    acceptedRoles: []
+  }]
 }];
 var secondaryNavs = [{
   label: "Profile",
@@ -167,33 +176,33 @@ function AdminMobileNavigation({
     "System default",
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: icons.arrowDownIcon }, void 0, false, {
       fileName: "app/components/admin/AdminMobileNavigation.tsx",
-      lineNumber: 113,
+      lineNumber: 122,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "app/components/admin/AdminMobileNavigation.tsx",
-    lineNumber: 111,
+    lineNumber: 120,
     columnNumber: 25
   }, this);
   return /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { "data-show": show, ref: mobileNav, className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto", children: [
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }, void 0, false, {
         fileName: "app/components/admin/AdminMobileNavigation.tsx",
-        lineNumber: 117,
+        lineNumber: 126,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { onClick: onClose, title: "open Menu", className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: icons.closeIcon }, void 0, false, {
         fileName: "app/components/admin/AdminMobileNavigation.tsx",
-        lineNumber: 119,
+        lineNumber: 128,
         columnNumber: 17
       }, this) }, void 0, false, {
         fileName: "app/components/admin/AdminMobileNavigation.tsx",
-        lineNumber: 118,
+        lineNumber: 127,
         columnNumber: 13
       }, this)
     ] }, void 0, true, {
       fileName: "app/components/admin/AdminMobileNavigation.tsx",
-      lineNumber: 116,
+      lineNumber: 125,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col justify-between grow", children: [
@@ -202,32 +211,32 @@ function AdminMobileNavigation({
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 127,
+              lineNumber: 136,
               columnNumber: 29
             }, this) }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 126,
+              lineNumber: 135,
               columnNumber: 25
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "grid", children: [
               /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }, void 0, false, {
                 fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 130,
+                lineNumber: 139,
                 columnNumber: 29
               }, this),
               /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "block text-xs font-satoshi-medium", children: user?.email }, void 0, false, {
                 fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 131,
+                lineNumber: 140,
                 columnNumber: 29
               }, this)
             ] }, void 0, true, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 129,
+              lineNumber: 138,
               columnNumber: 25
             }, this)
           ] }, void 0, true, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 125,
+            lineNumber: 134,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Accordion, { type: "single", collapsible: true, className: "w-full py-2 border-b", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => !navItem.subitems ? /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(NavLink, { className: ({
@@ -235,17 +244,17 @@ function AdminMobileNavigation({
           }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}${!hasAcceptedRole(user, navItem.acceptedRoles ?? []) ? " hidden " : ""}`, to: navItem.url, onClick: onClose, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: navItem.icon }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 139,
+              lineNumber: 148,
               columnNumber: 37
             }, this),
             navItem.label
           ] }, void 0, true, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 136,
+            lineNumber: 145,
             columnNumber: 101
           }, this) }, navItem.label, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 136,
+            lineNumber: 145,
             columnNumber: 77
           }, this) : /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(AccordionItem, { value: navItem.label, className: "group", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(AccordionTrigger, { className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
@@ -253,132 +262,132 @@ function AdminMobileNavigation({
             }), children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "flex gap-3 items-center", children: [
               /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: navItem.icon }, void 0, false, {
                 fileName: "app/components/admin/AdminMobileNavigation.tsx",
-                lineNumber: 145,
+                lineNumber: 154,
                 columnNumber: 45
               }, this),
               navItem.label
             ] }, void 0, true, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 144,
+              lineNumber: 153,
               columnNumber: 41
             }, this) }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 141,
+              lineNumber: 150,
               columnNumber: 37
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(AccordionContent, { children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("li", { className: `py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]${!hasAcceptedRole(user, subitem.acceptedRoles ?? []) ? " hidden " : ""}`, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(NavLink, { to: subitem.url, onClick: onClose, className: ({
               isActive
             }) => `${isActive ? "active" : ""}`, children: subitem.label }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 152,
+              lineNumber: 161,
               columnNumber: 53
             }, this) }, subitem.label, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 151,
+              lineNumber: 160,
               columnNumber: 78
             }, this)) }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 150,
+              lineNumber: 159,
               columnNumber: 41
             }, this) }, void 0, false, {
               fileName: "app/components/admin/AdminMobileNavigation.tsx",
-              lineNumber: 149,
+              lineNumber: 158,
               columnNumber: 37
             }, this)
           ] }, navItem.label, true, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 140,
+            lineNumber: 149,
             columnNumber: 51
           }, this)) }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 135,
+            lineNumber: 144,
             columnNumber: 25
           }, this) }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 134,
+            lineNumber: 143,
             columnNumber: 21
           }, this)
         ] }, void 0, true, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 124,
+          lineNumber: 133,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(NavLink, { className: `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent`, to: navItem.url, onClick: onClose, children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: navItem.icon }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 167,
+            lineNumber: 176,
             columnNumber: 33
           }, this),
           navItem.label
         ] }, void 0, true, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 166,
+          lineNumber: 175,
           columnNumber: 79
         }, this) }, navItem.label, false, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 166,
+          lineNumber: 175,
           columnNumber: 55
         }, this)) }, void 0, false, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 165,
+          lineNumber: 174,
           columnNumber: 21
         }, this) }, void 0, false, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 164,
+          lineNumber: 173,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
         fileName: "app/components/admin/AdminMobileNavigation.tsx",
-        lineNumber: 123,
+        lineNumber: 132,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("aside", { className: "border-t px-6 py-4", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Svg, { src: icons.themeIcon }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 174,
+            lineNumber: 183,
             columnNumber: 21
           }, this),
           "Theme"
         ] }, void 0, true, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 173,
+          lineNumber: 182,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Toggletip, { mainComponent, childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 178,
+            lineNumber: 187,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 179,
+            lineNumber: 188,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, false, {
             fileName: "app/components/admin/AdminMobileNavigation.tsx",
-            lineNumber: 180,
+            lineNumber: 189,
             columnNumber: 21
           }, this)
         ] }, void 0, true, {
           fileName: "app/components/admin/AdminMobileNavigation.tsx",
-          lineNumber: 177,
+          lineNumber: 186,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
         fileName: "app/components/admin/AdminMobileNavigation.tsx",
-        lineNumber: 172,
+        lineNumber: 181,
         columnNumber: 13
       }, this)
     ] }, void 0, true, {
       fileName: "app/components/admin/AdminMobileNavigation.tsx",
-      lineNumber: 122,
+      lineNumber: 131,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
     fileName: "app/components/admin/AdminMobileNavigation.tsx",
-    lineNumber: 115,
+    lineNumber: 124,
     columnNumber: 10
   }, this);
 }
@@ -470,7 +479,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/admin/AdminNav.tsx"
   );
-  import.meta.hot.lastModified = "1774020663052.6223";
+  import.meta.hot.lastModified = "1777176013546.238";
 }
 var navs = [{
   label: "Home",
@@ -518,6 +527,15 @@ var navsWSubs = [{
     url: "transactions/affiliate-board",
     acceptedRoles: []
   }]
+}, {
+  label: "Partners",
+  icon: icons.adminFinanceIcon,
+  acceptedRoles: [],
+  subitems: [{
+    label: "Show Partners",
+    url: "partners",
+    acceptedRoles: []
+  }]
 }];
 function AdminNavigation({
   show
@@ -543,19 +561,19 @@ function AdminNavigation({
     "System default",
     /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: icons.arrowDownIcon }, void 0, false, {
       fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 99,
+      lineNumber: 108,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "app/components/admin/AdminNav.tsx",
-    lineNumber: 97,
+    lineNumber: 106,
     columnNumber: 25
   }, this);
   return show ? /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
     /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("nav", { className: "py-6", children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }, void 0, false, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 103,
+        lineNumber: 112,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavLink, { to: navItem.url, className: ({
@@ -563,21 +581,21 @@ function AdminNavigation({
       }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${!hasAcceptedRole(user, navItem.acceptedRoles ?? []) ? " hidden " : ""}`, children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: navItem.icon }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 108,
+          lineNumber: 117,
           columnNumber: 29
         }, this),
         navItem.label
       ] }, void 0, true, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 105,
+        lineNumber: 114,
         columnNumber: 66
       }, this) }, navItem.label, false, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 105,
+        lineNumber: 114,
         columnNumber: 42
       }, this)) }, void 0, false, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 104,
+        lineNumber: 113,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)($1bf158f521e1b1b4$export$a766cd26d0d69044, { type: "single", collapsible: true, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)($1bf158f521e1b1b4$export$d99097c13d4dac9f, { value: item.label, className: "group", children: [
@@ -587,100 +605,100 @@ function AdminNavigation({
           /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "flex gap-3 items-center", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: item.icon }, void 0, false, {
               fileName: "app/components/admin/AdminNav.tsx",
-              lineNumber: 117,
+              lineNumber: 126,
               columnNumber: 37
             }, this),
             item.label
           ] }, void 0, true, {
             fileName: "app/components/admin/AdminNav.tsx",
-            lineNumber: 116,
+            lineNumber: 125,
             columnNumber: 33
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" }, void 0, false, {
             fileName: "app/components/admin/AdminNav.tsx",
-            lineNumber: 120,
+            lineNumber: 129,
             columnNumber: 33
           }, this)
         ] }, void 0, true, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 113,
+          lineNumber: 122,
           columnNumber: 29
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)($1bf158f521e1b1b4$export$985b9a77379b54a0, { children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavLink, { to: subitem.url, className: ({
           isActive
         }) => `${isActive ? "active" : ""}${!hasAcceptedRole(user, subitem.acceptedRoles ?? []) ? " hidden " : ""}`, children: subitem.label }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 125,
+          lineNumber: 134,
           columnNumber: 45
         }, this) }, subitem.label, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 124,
+          lineNumber: 133,
           columnNumber: 67
         }, this)) }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 123,
+          lineNumber: 132,
           columnNumber: 33
         }, this) }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 122,
+          lineNumber: 131,
           columnNumber: 29
         }, this)
       ] }, item.label, true, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 112,
+        lineNumber: 121,
         columnNumber: 44
       }, this)) }, void 0, false, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 111,
+        lineNumber: 120,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 102,
+      lineNumber: 111,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("aside", { className: "border-t  px-6 py-3", children: [
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: icons.themeIcon }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 139,
+          lineNumber: 148,
           columnNumber: 21
         }, this),
         "Theme"
       ] }, void 0, true, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 138,
+        lineNumber: 147,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Toggletip, { mainComponent, childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 143,
+          lineNumber: 152,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 144,
+          lineNumber: 153,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" }, void 0, false, {
           fileName: "app/components/admin/AdminNav.tsx",
-          lineNumber: 145,
+          lineNumber: 154,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "app/components/admin/AdminNav.tsx",
-        lineNumber: 142,
+        lineNumber: 151,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "app/components/admin/AdminNav.tsx",
-      lineNumber: 137,
+      lineNumber: 146,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "app/components/admin/AdminNav.tsx",
-    lineNumber: 101,
+    lineNumber: 110,
     columnNumber: 17
   }, this) : null;
 }
@@ -1016,4 +1034,4 @@ export {
   AdminLayout as default,
   meta
 };
-//# sourceMappingURL=/build/routes/admin-RPUFQOCJ.js.map
+//# sourceMappingURL=/build/routes/admin-FFLQY453.js.map

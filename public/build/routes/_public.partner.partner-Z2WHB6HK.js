@@ -1,4 +1,7 @@
 import {
+  require_partner
+} from "/build/_shared/chunk-CTOGQ3KG.js";
+import {
   toast
 } from "/build/_shared/chunk-R6F4DP54.js";
 import {
@@ -22,16 +25,8 @@ import {
   require_react
 } from "/build/_shared/chunk-BOXFZXVX.js";
 import {
-  __commonJS,
   __toESM
 } from "/build/_shared/chunk-PNG5AS42.js";
-
-// empty-module:~/services/partner/partner.server
-var require_partner = __commonJS({
-  "empty-module:~/services/partner/partner.server"(exports, module) {
-    module.exports = {};
-  }
-});
 
 // app/routes/_public.partner.partner.tsx
 var import_node = __toESM(require_node(), 1);
@@ -932,4 +927,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   PartnerOnboarding as default
 };
-//# sourceMappingURL=/build/routes/_public.partner.partner-W2HALYH3.js.map
+//# sourceMappingURL=/build/routes/_public.partner.partner-Z2WHB6HK.js.map
