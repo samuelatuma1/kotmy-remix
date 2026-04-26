@@ -6,7 +6,7 @@ import Toggletip from '../reusables/ToggleTip'
 import { cn } from '~/lib/utils'
 
 const navs = [
-    { label: 'Manage Products', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' }
+    { label: 'Manage Products', icon: icons.adminTournamentIcon, url:  '/partners/add'  }
    
     
 ]
@@ -14,7 +14,7 @@ const navs = [
 const navsWSubs = [
     {
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Manage Products', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' }
+            { label: 'Manage Products', icon: icons.adminTournamentIcon, url:  '/partners/add'}
         ]
     },
 ]

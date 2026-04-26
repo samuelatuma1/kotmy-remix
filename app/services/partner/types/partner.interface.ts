@@ -108,3 +108,44 @@ export interface BusinessPagedResponse {
   first_key_id?: string;
   summary?: any;
 }
+
+export type PartnerProductStatus = "available" | "out_of_stock" | "suspended";
+export type WalletCurrency = "NGN" | "USD";
+
+export interface ICreatePartnerProductDTO {
+  name: string;
+  description: string;
+  price_min?: number;
+  price_max?: number;
+  category?: string;
+  currency?: WalletCurrency;
+  status?: PartnerProductStatus;
+  business_id?: string;
+  sku?: string;
+  tags?: string[];
+  created_by?: string;
+  image?: File | null;
+}
+
+export interface PartnerProduct {
+  _id: string;
+  name: string;
+  description: string;
+  price_min: number;
+  price_max: number;
+  category: string;
+  currency: WalletCurrency;
+  status: PartnerProductStatus;
+  business_id?: string;
+  sku?: string;
+  tags: string[];
+  created_by?: string;
+  image_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PartnerProductResponse {
+  data: PartnerProduct;
+  message?: string;
+}

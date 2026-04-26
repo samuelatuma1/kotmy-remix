@@ -231,4 +231,8 @@ export class ApiEndPoints {
     static get partnerSearch(){
         return `/v2/api/partner`
     }
+
+    static get createPartnerProduct(){
+        return `/v2/api/partner/products`
+    }
 }

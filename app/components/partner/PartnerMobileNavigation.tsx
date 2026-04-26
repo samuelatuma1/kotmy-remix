@@ -11,11 +11,11 @@ import { UserAtom } from '~/lib/store/atoms/token'
 
 //TODO: Replace with user navs
 const primaryNavs = [
-    { label: 'Manage Products', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
+    { label: 'Manage Products', icon: icons.adminTournamentIcon, url: '/partners/add' },
     
     {
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
-            { label: 'Manage Products', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' }
+            { label: 'Manage Products', icon: icons.adminTournamentIcon, url:  '/partners/add' }
         ]
     },
 ]

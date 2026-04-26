@@ -1,7 +1,7 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { BusinessPagedResponse, BusinessQuery, ICreatePartnerDTO } from "./types/partner.interface";
+import { BusinessPagedResponse, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, PartnerProductResponse } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 
 export class PartnerServer {
@@ -31,6 +31,40 @@ export class PartnerServer {
     if (error) return { error };
     return { data };
   }
+
+  async addPartnerProduct(
+    dto: ICreatePartnerProductDTO,
+    cookie: string
+  ): Promise<TFetcherResponse<PartnerProductResponse>> {
+    const formData = new FormData();
+    formData.append("name", dto.name);
+    formData.append("description", dto.description);
+    formData.append("price_min", String(dto.price_min ?? 0));
+    formData.append("price_max", String(dto.price_max ?? 0));
+    formData.append("category", dto.category ?? "");
+    formData.append("currency", dto.currency ?? "NGN");
+    formData.append("status", dto.status ?? "available");
+    if (dto.business_id) formData.append("business_id", dto.business_id);
+    if (dto.sku) formData.append("sku", dto.sku);
+    if (dto.tags && dto.tags.length > 0) {
+      dto.tags.forEach(tag => formData.append("tags", tag));
+    }
+    if (dto.created_by) formData.append("created_by", dto.created_by);
+    if (dto.image) formData.append("image", dto.image);
+
+    const { data, error } = await ApiCall.call<PartnerProductResponse, FormData>({
+      url: ApiEndPoints.createPartnerProduct,
+      method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    }, cookie);
+
+    if (error) return { error };
+    return { data };
+  }
+  
 }
 
 export const partnerServer = new PartnerServer();
