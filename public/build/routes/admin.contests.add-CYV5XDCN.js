@@ -16,7 +16,7 @@ import {
 } from "/build/_shared/chunk-7IGOFRJC.js";
 import {
   DragnDrop
-} from "/build/_shared/chunk-DOQN75QF.js";
+} from "/build/_shared/chunk-4KHNCWYH.js";
 import "/build/_shared/chunk-NMZL6IDN.js";
 import "/build/_shared/chunk-2ZTNKWGC.js";
 import {
@@ -315,4 +315,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   AddContest as default
 };
-//# sourceMappingURL=/build/routes/admin.contests.add-KVF2EFGG.js.map
+//# sourceMappingURL=/build/routes/admin.contests.add-CYV5XDCN.js.map

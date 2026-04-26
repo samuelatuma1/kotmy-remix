@@ -6,7 +6,7 @@ import {
 } from "/build/_shared/chunk-O4R66NJX.js";
 import {
   DragnDrop
-} from "/build/_shared/chunk-DOQN75QF.js";
+} from "/build/_shared/chunk-4KHNCWYH.js";
 import "/build/_shared/chunk-NMZL6IDN.js";
 import {
   FormControl
@@ -237,4 +237,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   AddPartnerProduct as default
 };
-//# sourceMappingURL=/build/routes/partners.add-64B6GYTO.js.map
+//# sourceMappingURL=/build/routes/partners.add-LZNX5QYG.js.map

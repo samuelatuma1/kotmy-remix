@@ -332,19 +332,19 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/partner/PartnerMobileNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1777177514848.5999";
+  import.meta.hot.lastModified = "1777182694733.737";
 }
 var primaryNavs = [{
   label: "Manage Products",
   icon: icons.adminTournamentIcon,
-  url: "/user/pending-uploads"
+  url: "/partners/add"
 }, {
   label: "My Account",
   icon: icons.adminFinanceIcon,
   subitems: [{
     label: "Manage Products",
     icon: icons.adminTournamentIcon,
-    url: "/user/pending-uploads"
+    url: "/partners/add"
   }]
 }];
 var secondaryNavs = [{
@@ -630,12 +630,12 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/partner/PartnerNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1777177141076.4517";
+  import.meta.hot.lastModified = "1777182785800.9907";
 }
 var navs = [{
   label: "Manage Products",
   icon: icons.adminTournamentIcon,
-  url: "/user/pending-uploads"
+  url: "/partners/add"
 }];
 var navsWSubs = [{
   label: "My Account",
@@ -643,7 +643,7 @@ var navsWSubs = [{
   subitems: [{
     label: "Manage Products",
     icon: icons.adminTournamentIcon,
-    url: "/user/pending-uploads"
+    url: "/partners/add"
   }]
 }];
 function PartnerNavigation({
@@ -962,4 +962,4 @@ export {
   PartnerLayout as default,
   meta
 };
-//# sourceMappingURL=/build/routes/partners-QNST22K5.js.map
+//# sourceMappingURL=/build/routes/partners-HJYZFSNJ.js.map

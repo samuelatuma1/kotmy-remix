@@ -3,7 +3,7 @@ import {
 } from "/build/_shared/chunk-P6FANJ5S.js";
 import {
   DragnDrop
-} from "/build/_shared/chunk-DOQN75QF.js";
+} from "/build/_shared/chunk-4KHNCWYH.js";
 import "/build/_shared/chunk-NMZL6IDN.js";
 import {
   nigerianStates
@@ -414,4 +414,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   RegistrationForm as default
 };
-//# sourceMappingURL=/build/routes/user.contestant.$contestantId-4FYVGYRW.js.map
+//# sourceMappingURL=/build/routes/user.contestant.$contestantId-DIDSCS5Q.js.map

@@ -1844,7 +1844,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/public/contests/DragnDrop.tsx"
   );
-  import.meta.hot.lastModified = "1769058012155.438";
+  import.meta.hot.lastModified = "1777182487073.9243";
 }
 var FILE_TYPES = ["JPG", "PNG"];
 function DragnDrop({
@@ -1995,4 +1995,4 @@ react-drag-drop-files/dist/react-drag-drop-files.esm.js:
   PERFORMANCE OF THIS SOFTWARE.
   ***************************************************************************** *)
 */
-//# sourceMappingURL=/build/_shared/chunk-DOQN75QF.js.map
+//# sourceMappingURL=/build/_shared/chunk-4KHNCWYH.js.map
