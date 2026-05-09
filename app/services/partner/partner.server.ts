@@ -1,8 +1,9 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { BusinessPagedResponse, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, PartnerProductResponse } from "./types/partner.interface";
+import { Business, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
+import { IPaginatedResponse } from "../common/types/paginated_data";
 
 export class PartnerServer {
   async requestPartnership(dto: ICreatePartnerDTO): Promise<TFetcherResponse<string>> {
@@ -16,7 +17,7 @@ export class PartnerServer {
     return { data, error: undefined };
   }
 
-  async searchPartners(query: BusinessQuery, cookies: string): Promise<TFetcherResponse<BusinessPagedResponse>> {
+  async searchPartners(query: BusinessQuery, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<Business>>> {
     const params = new URLSearchParams(
       Object.entries(query).reduce((acc, [k, v]) => {
         if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
@@ -24,7 +25,7 @@ export class PartnerServer {
       }, {} as Record<string, string>)
     ).toString();
     const url = `${ApiEndPoints.partnerSearch}?${params}`;
-    const { data, error } = await ApiCall.call<BusinessPagedResponse, unknown>({
+    const { data, error } = await ApiCall.call<IPaginatedResponse<Business>, unknown>({
       url,
       method: "GET",
     }, cookies);
@@ -64,7 +65,44 @@ export class PartnerServer {
     if (error) return { error };
     return { data };
   }
-  
+
+  async getPartnerProducts(query: IQueryPartnerProduct, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+    const params = new URLSearchParams(
+      Object.entries(query).reduce((acc, [k, v]) => {
+        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
+        return acc;
+      }, {} as Record<string, string>)
+    ).toString();
+
+    const url = `${ApiEndPoints.getPartnerProducts}?${params}`;
+
+     const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerProduct>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getPartnerLocations(query: IQueryPartnerLocations, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerLocation>>> {
+    const params = new URLSearchParams(
+      Object.entries(query).reduce((acc, [k, v]) => {
+        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
+        return acc;
+      }, {} as Record<string, string>)
+    ).toString();
+
+    const url = `${ApiEndPoints.getPartnerLocations}?${params}`;
+
+     const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerLocation>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
 }
 
 export const partnerServer = new PartnerServer();

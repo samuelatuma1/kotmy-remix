@@ -59,7 +59,8 @@ function useLoginController(){
     useEffect(() => {
         // try to get user
         const user = getUserStoreManager();
-        if(user){
+        const requireNewLogin = searchQuery.get("requireNewLogin") || null
+        if(user && !requireNewLogin){
             navigate(searchQuery.get("redirectTo") || "/user/profile");
         }
         // if user is signed in already, redirect to dashboard

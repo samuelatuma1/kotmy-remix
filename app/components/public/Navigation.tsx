@@ -23,6 +23,9 @@ export default function Navigation() {
             </Link>
             <nav className='hidden md:flex gap-16 items-center'>
                 <ul className='flex gap-6 text-xl font-bold'>
+                    <li><NavLink to="/partner/account" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
+                                            {pathname.includes('/partner/account') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Partner
+                                        </NavLink></li>
                     <li><NavLink to="/contests" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/contests') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Contests
                     </NavLink></li>

@@ -28,4 +28,6 @@ export class ILoginResponseDTO {
     is_active: boolean = false;
     _id: string = "";
     str_id: string = "";
+    business_id: string = "";
+    is_partner_account: boolean = false 
 }

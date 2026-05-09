@@ -2,8 +2,9 @@ import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigation, Form } from "@remix-run/react";
 import { useState } from "react";
 import Pagination from "~/components/reusables/Pagination";
+import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { partnerServer } from "~/services/partner/partner.server";
-import type { Business, BusinessPagedResponse, BusinessQuery } from "~/services/partner/types/partner.interface";
+import type { Business, BusinessQuery } from "~/services/partner/types/partner.interface";
 
 const statusColors: Record<string, string> = {
   Approved: "text-green-600 bg-green-50 border-green-200",
@@ -32,7 +33,7 @@ export default function PartnersIndex() {
     window.location.href = data.redirect;
     return null;
   }
-  const { partnersRes, query } = data as { partnersRes: BusinessPagedResponse; query: BusinessQuery };
+  const { partnersRes, query } = data as { partnersRes: IPaginatedResponse<Business>; query: BusinessQuery };
 
   return (
     <main className="w-full overflow-y-auto p-6">

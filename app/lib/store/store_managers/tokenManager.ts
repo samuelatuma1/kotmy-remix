@@ -51,6 +51,7 @@ export const useUserManager = () => {
             const storedUser = localStorage.getItem('atom_user');
             if(storedUser){
                 const newUser: UserAtom = JSON.parse(storedUser);
+                newUser.is_partner_account = newUser.business_id ? true : false || newUser.is_partner_account;
                 setUserStore(newUser);
                 return newUser;
             }

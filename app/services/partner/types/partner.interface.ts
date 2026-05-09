@@ -1,5 +1,7 @@
 // filepath: app/services/partner/types/partner.interface.ts
 
+import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
+
 export interface AddressDTO {
   street: string;
   city: string;
@@ -98,17 +100,6 @@ export interface Business {
   business_locations: AddressDTO[];
 }
 
-export interface BusinessPagedResponse {
-  current_page: number;
-  total_pages: number;
-  total_items: number;
-  items_per_page: number;
-  items: Business[];
-  last_key_id?: string;
-  first_key_id?: string;
-  summary?: any;
-}
-
 export type PartnerProductStatus = "available" | "out_of_stock" | "suspended";
 export type WalletCurrency = "NGN" | "USD";
 
@@ -143,9 +134,92 @@ export interface PartnerProduct {
   image_url?: string;
   created_at: string;
   updated_at: string;
+  image_urls: string[];
+  main_image_url: string
 }
 
 export interface PartnerProductResponse {
   data: PartnerProduct;
   message?: string;
+}
+
+export interface IQueryPartnerProduct extends IBasePaginationQuery {
+    name?: string;
+    description?: string;
+    price_min?: number;
+    price_max?: number;
+    category?: string;
+    status?: PartnerProductStatus;
+    sku?: string;
+    tags?: string[];
+    business_id?: string;
+    wildcard?: string;
+}
+
+export interface IQueryPartnerLocations extends IBasePaginationQuery {
+     /** ID of the business/partner this location belongs to */
+  business_id?: string;
+  
+  /** Location name or label */
+  name?: string;
+  
+  street?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+  
+  latitude?: number;
+  longitude?: number;
+  
+  is_primary?: boolean;
+
+  contact_phone?: string;
+  directions_hint?: string;
+  opening_hours?: string;
+}
+
+export interface PartnerLocation {
+  /** Internal database ID */
+  _id: string;
+  /** String representation of the ID for frontend use */
+  str_id: string;
+  
+  /** ISO 8601 formatted timestamps */
+  created_at: string;
+  updated_at: string;
+  
+  /** Soft delete status */
+  is_deleted: boolean;
+  
+  /** ID of the business/partner this location belongs to */
+  business_id: string;
+  
+  /** Branch branding/name */
+  name: string;
+  
+  // Address Details
+  street: string;
+  city: string;
+  /** Short code (e.g., 'LA') */
+  state: string;
+  /** Short code (e.g., 'NG') */
+  country: string;
+  /** Full display name (e.g., 'Lagos') */
+  state_name: string;
+  /** Full display name (e.g., 'Nigeria') */
+  country_name: string;
+  postal_code: string;
+  
+  // Geographic Data
+  latitude: number;
+  longitude: number;
+  
+  /** Indicates if this is the main business branch */
+  is_primary: boolean;
+
+  // Contact & Support
+  contact_phone: string;
+  directions_hint: string;
+  opening_hours: string;
 }

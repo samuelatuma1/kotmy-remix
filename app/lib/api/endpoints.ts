@@ -235,4 +235,12 @@ export class ApiEndPoints {
     static get createPartnerProduct(){
         return `/v2/api/partner/products`
     }
+
+    static get getPartnerProducts(){
+        return `/v2/api/partner/products`
+    }
+
+    static get getPartnerLocations(){
+        return `/v2/api/partner/location`
+    }
 }

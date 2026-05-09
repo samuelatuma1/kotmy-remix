@@ -27,6 +27,9 @@ export default function MobileNavigation({ show, onClose }: { show: boolean, onC
             </div >
             <nav className=''>
                 <ul className='grid gap-6 my-12 text-xl font-bold'>
+                    <li><NavLink onClick={onClose} to="/partner/account" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
+                        {pathname.includes('/partner/account') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Partner
+                    </NavLink></li>
                     <li><NavLink onClick={onClose} to="/contests" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/contests') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Contests
                     </NavLink></li>

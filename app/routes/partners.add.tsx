@@ -23,7 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
     status: formData.get("status") as PartnerProductStatus,
     sku: formData.get("sku") as string,
     tags: formData.getAll("tags").map(t => t.toString()),
-    image: formData.get("image") as File,
+    image: formData.get("image") ? (formData.get("image") as File).size === 0 ? null : formData.get("image") : null,
   };
   const response = await partnerServer.addPartnerProduct(dto, cookieHeader);
   return response;
@@ -39,6 +39,7 @@ export default function AddPartnerProduct() {
 
   useEffect(() => {
     if (actionData?.error) {
+      console.log(actionData.error)
       toast({
         variant: "destructive",
         title: "Add product failed",
@@ -51,7 +52,7 @@ export default function AddPartnerProduct() {
         title: "Product added",
         description: "Partner product was successfully added!",
       });
-      navigate("/admin/partners");
+      navigate("/partners/home");
     }
   }, [actionData, navigate]);
 
