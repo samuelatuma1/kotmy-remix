@@ -1,13 +1,25 @@
-import { ActionFunctionArgs, redirect, json } from "@remix-run/node";
-import { Form, useActionData, useNavigate, useNavigation } from "@remix-run/react";
-import { useEffect, useRef, useState } from "react";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+import { Form, useActionData, useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { partnerServer } from "~/services/partner/partner.server";
-import type { ICreatePartnerProductDTO, PartnerProductResponse, WalletCurrency, PartnerProductStatus } from "~/services/partner/types/partner.interface";
+import type { ICreatePartnerProductDTO, PartnerLocation, PartnerProductResponse, WalletCurrency, PartnerProductStatus } from "~/services/partner/types/partner.interface";
 import { toast } from "~/components/reusables/use-toast";
 import Cta from "~/components/reusables/Cta";
 import FormControl from "~/components/reusables/FormControl";
 import Select from "~/components/reusables/Select";
 import DragnDrop from "~/components/public/contests/DragnDrop";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader) return redirect("/login");
+
+  const locationsRes = await partnerServer.getPartnerLocations({ page_size: 1000 }, cookieHeader);
+  if (locationsRes.authRequired) return redirect("/login");
+
+  return json({
+    locations: locationsRes.data?.items ?? [],
+  });
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
@@ -23,19 +35,20 @@ export async function action({ request }: ActionFunctionArgs) {
     status: formData.get("status") as PartnerProductStatus,
     sku: formData.get("sku") as string,
     tags: formData.getAll("tags").map(t => t.toString()),
-    image: formData.get("image") ? (formData.get("image") as File).size === 0 ? null : formData.get("image") : null,
+    locations: formData.getAll("locations").map(location => location.toString()),
+    image: formData.get("image") ? (formData.get("image") as File).size === 0 ? null : formData.get("image") as File : null,
   };
   const response = await partnerServer.addPartnerProduct(dto, cookieHeader);
   return response;
 }
 
 export default function AddPartnerProduct() {
+  const { locations } = useLoaderData<typeof loader>();
   const actionData = useActionData<PartnerProductResponse & { error?: any }>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const navigate = useNavigate();
   const [tags, setTags] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (actionData?.error) {
@@ -83,6 +96,32 @@ export default function AddPartnerProduct() {
         </Select>
         <FormControl as="input" labelText="SKU" name="sku" id="sku" placeholder="Stock Keeping Unit" />
         <FormControl as="input" labelText="Tags (comma separated)" name="tags" id="tags" value={tags} onChange={e => setTags(e.target.value)} placeholder="e.g. shoes, sports, men" />
+        <label className="block font-bold text-sm">
+          Locations
+          <div className="mt-2 rounded-lg border border-secondary bg-white p-3">
+            <select
+              name="locations"
+              id="locations"
+              multiple
+              className="w-full min-h-36 rounded-md border border-gray-200 bg-transparent p-3 text-sm outline-none focus:border-accent"
+            >
+              {locations.length > 0 ? (
+                locations.map((location: PartnerLocation) => (
+                  <option key={location.str_id} value={location.str_id}>
+                    {location.name}
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>
+                  No locations available
+                </option>
+              )}
+            </select>
+          </div>
+          <span className="mt-1 block text-xs font-normal text-gray-500">
+            Hold Ctrl or Cmd to select multiple locations.
+          </span>
+        </label>
         <div>
           {/* <label className="block text-sm font-semibold text-gray-700 mb-2">Product Image</label> */}
           <DragnDrop name="image" labelText="Product Image" multiple={false} required={false} />

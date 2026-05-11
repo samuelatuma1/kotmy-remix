@@ -116,7 +116,10 @@ export interface ICreatePartnerProductDTO {
   tags?: string[];
   created_by?: string;
   image?: File | null;
+  locations?: string[];
 }
+
+export interface IUpdatePartnerProductDTO extends Partial<ICreatePartnerProductDTO> {}
 
 export interface PartnerProduct {
   _id: string;
@@ -135,12 +138,11 @@ export interface PartnerProduct {
   created_at: string;
   updated_at: string;
   image_urls: string[];
-  main_image_url: string
+  main_image_url: string;
+  locations: string[];
 }
 
-export interface PartnerProductResponse {
-  data: PartnerProduct;
-  message?: string;
+export interface PartnerProductResponse extends PartnerProduct {
 }
 
 export interface IQueryPartnerProduct extends IBasePaginationQuery {

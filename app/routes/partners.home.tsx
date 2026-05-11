@@ -39,8 +39,8 @@ export default function PartnerProducts() {
         <main className='w-full overflow-y-auto p-6'>
             <div className="flex justify-between items-center mb-8 sm:mb-16">
                 <h1 className="text-2xl font-black text-primary">Products</h1>
-                <Cta element="link" to='/partners/add' className="hidden sm:flex gap-2 items-center rounded-lg px-3 py-2">
-                    <Svg src={icons.addIcon} width={'.9em'} />
+                <Cta element="link" to='/partners/add' className=" gap-2 items-center rounded-lg px-3 py-2">
+                    {/* <Svg src={icons.addIcon} width={'.9em'} /> */}
                     Add Product
                 </Cta>
             </div>
@@ -89,6 +89,7 @@ export default function PartnerProducts() {
       // const defaultImg =  ;
       const imgSrc = product.main_image_url && product.main_image_url !== "" ? product.main_image_url : noImage;
       return (
+        
         <div
           key={product._id}
           className="flex flex-col bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden h-full min-h-[340px]"
@@ -120,7 +121,12 @@ export default function PartnerProducts() {
             </div>
             <div className="mt-auto flex items-center justify-between pt-2">
               <span className="text-xs text-gray-400">{product.category}</span>
-                        {product.sku && <span className="text-xs text-gray-400">SKU: {product.sku}</span>}
+                        <div className="flex items-center gap-2">
+                          {product.sku && <span className="text-xs text-gray-400">SKU: {product.sku}</span>}
+                          <Cta element="link" to={`/partners/product/update/${product._id}`} className="px-3 py-1 rounded-md text-xs font-semibold border-secondary" variant="outline">
+                            Edit
+                          </Cta>
+                        </div>
                       </div>
                     </div>
                   </div>

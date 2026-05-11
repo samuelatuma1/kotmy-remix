@@ -1,11 +1,23 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { Business, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
+import { Business, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdatePartnerProductDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 
 export class PartnerServer {
+  private appendIfPresent(formData: FormData, key: string, value?: string | number | boolean | null) {
+    if (value !== undefined && value !== null && value !== "") {
+      formData.append(key, String(value));
+    }
+  }
+
+  private appendMany(formData: FormData, key: string, values?: string[]) {
+    if (values && values.length > 0) {
+      values.forEach(value => formData.append(key, value));
+    }
+  }
+
   async requestPartnership(dto: ICreatePartnerDTO): Promise<TFetcherResponse<string>> {
     console.log(dto)
     const { data, error } = await ApiCall.call<string, ICreatePartnerDTO>({
@@ -45,17 +57,58 @@ export class PartnerServer {
     formData.append("category", dto.category ?? "");
     formData.append("currency", dto.currency ?? "NGN");
     formData.append("status", dto.status ?? "available");
-    if (dto.business_id) formData.append("business_id", dto.business_id);
-    if (dto.sku) formData.append("sku", dto.sku);
-    if (dto.tags && dto.tags.length > 0) {
-      dto.tags.forEach(tag => formData.append("tags", tag));
-    }
-    if (dto.created_by) formData.append("created_by", dto.created_by);
+    this.appendIfPresent(formData, "business_id", dto.business_id);
+    this.appendIfPresent(formData, "sku", dto.sku);
+    this.appendMany(formData, "tags", dto.tags);
+    this.appendMany(formData, "locations", dto.locations);
+    this.appendIfPresent(formData, "created_by", dto.created_by);
     if (dto.image) formData.append("image", dto.image);
-
     const { data, error } = await ApiCall.call<PartnerProductResponse, FormData>({
       url: ApiEndPoints.createPartnerProduct,
       method: "POST",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      data: formData,
+    }, cookie);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getPartnerProductById(productId: string, cookies: string): Promise<TFetcherResponse<PartnerProductResponse>> {
+    const { data, error } = await ApiCall.call<PartnerProductResponse, unknown>({
+      url: ApiEndPoints.getPartnerProductById(productId),
+      method: "GET",
+    }, cookies);
+    console.log(data)
+    if (error) return { error };
+    return { data };
+  }
+
+  async updatePartnerProduct(
+    productId: string,
+    dto: IUpdatePartnerProductDTO,
+    cookie: string
+  ): Promise<TFetcherResponse<PartnerProductResponse>> {
+    const formData = new FormData();
+    this.appendIfPresent(formData, "name", dto.name);
+    this.appendIfPresent(formData, "description", dto.description);
+    this.appendIfPresent(formData, "price_min", dto.price_min);
+    this.appendIfPresent(formData, "price_max", dto.price_max);
+    this.appendIfPresent(formData, "category", dto.category);
+    this.appendIfPresent(formData, "currency", dto.currency);
+    this.appendIfPresent(formData, "status", dto.status);
+    this.appendIfPresent(formData, "business_id", dto.business_id);
+    this.appendIfPresent(formData, "sku", dto.sku);
+    this.appendMany(formData, "tags", dto.tags);
+    this.appendIfPresent(formData, "created_by", dto.created_by);
+    this.appendMany(formData, "locations", dto.locations);
+    if (dto.image) formData.append("image", dto.image);
+
+    const { data, error } = await ApiCall.call<PartnerProductResponse, FormData>({
+      url: ApiEndPoints.updatePartnerProduct(productId),
+      method: "PATCH",
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -169,6 +169,14 @@ export class ApiEndPoints {
         return `/v2/api/wallet/create_withdrawal_pin`
     }
 
+    static getPartnerProductById(productId: string) {
+        return `/v2/api/partner/products/${productId}`;
+    }
+
+    static updatePartnerProduct(productId: string) {
+        return `/v2/api/partner/products/${productId}`;
+    }
+
     static get requestWithdrawalTokenForPinCreation(){
         return `/v2/api/wallet/request_create_withdrawal_token`
     }
