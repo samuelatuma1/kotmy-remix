@@ -71,7 +71,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/routes/partners.product.update.$productId.tsx"
   );
-  import.meta.hot.lastModified = "1778349273539.1091";
+  import.meta.hot.lastModified = "1778388073960.2344";
 }
 function getImageSrc(product) {
   return product.main_image_url || product.image_url || no_image_default;
@@ -303,4 +303,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   UpdatePartnerProduct as default
 };
-//# sourceMappingURL=/build/routes/partners.product.update.$productId-ERIFLDSF.js.map
+//# sourceMappingURL=/build/routes/partners.product.update.$productId-OYUJC5BK.js.map
