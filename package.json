@@ -4,7 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "npx remix build",
+    "//build": "npx remix build",
+    "build": "cross-env NODE_ENV=production remix build",
     "dev": "remix dev --manual",
     "start": "npx remix-serve ./build/index.js",
     "typecheck": "tsc"
