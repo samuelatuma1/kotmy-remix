@@ -10,7 +10,7 @@ import {
     birthdayPresent, hero1, hero2,
     hero3, hero4, hero5, underline
 } from '~/assets/images'
-
+ 
 
 export default function LandingPage() {
     return (
