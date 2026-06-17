@@ -1,6 +1,7 @@
 // filepath: app/services/partner/types/partner.interface.ts
 
 import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
+import { ILoginResponseDTO, UserProfile } from "~/services/auth/types/auth.dtos";
 
 export interface AddressDTO {
   street: string;
@@ -98,6 +99,8 @@ export interface Business {
   status_history: BusinessStatusHistory[];
   contact_person: ContactPersonDTO;
   business_locations: AddressDTO[];
+  owner_id?: string
+  owner?: ILoginResponseDTO 
 }
 
 export type PartnerProductStatus = "available" | "out_of_stock" | "suspended";
