@@ -36,9 +36,33 @@ export interface ICreatePartnerDTO {
   business_locations: AddressDTO[];
 }
 
-// ...existing code...
+export type BusinessStatus =
+  | "Pending"
+  | "PendingVerification"
+  | "Trial"
+  | "Approved"
+  | "Suspended"
+  | "PendingSettlementDisbursement"
+  | "Rejected";
 
-export type BusinessStatus = "Pending" | "Approved" | "Rejected";
+export interface IUpdateBusinessStatus {
+  business_id: string;
+  status?: BusinessStatus | null;
+  updated_by?: string;
+  reason?: string | null;
+  updated_on?: string;
+  referral_percentage?: number | null;
+}
+
+export interface IBusinessOwnerModel {
+  business_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  alternate_phone: string;
+  password: string;
+}
 
 export interface BusinessQuery {
   legal_business_name?: string;
@@ -72,7 +96,7 @@ export interface BusinessStatusHistory {
   status: BusinessStatus;
   updated_by: string;
   updated_on: string;
-  reason: string;
+  reason?: string | null;
 }
 
 export interface Business {

@@ -1,6 +1,7 @@
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useNavigation, Form } from "@remix-run/react";
 import { useState } from "react";
+import Cta from "~/components/reusables/Cta";
 import Pagination from "~/components/reusables/Pagination";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { partnerServer } from "~/services/partner/partner.server";
@@ -77,8 +78,11 @@ export default function PartnersIndex() {
                 <div><span className="font-semibold">Contact:</span> {partner.contact_person?.name} ({partner.contact_person?.email})</div>
               </div>
               <div className="flex gap-2 mt-3">
-                <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">Approve</button>
-                <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">Reject</button>
+                <Cta element="link" to={`/admin/partners/details/${partner._id}`} variant="outline" className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">
+                  Details 
+                </Cta>
+                {/* <button >Approve To</button> */}
+                {/* <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">Reject</button> */}
               </div>
             </div>
           ))
@@ -120,8 +124,11 @@ export default function PartnersIndex() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold mr-2">Approve</button>
-                    <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">Reject</button>
+                    <Cta element="link" to={`/admin/partners/details/${partner._id}`} variant="outline" className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">
+                  Details 
+                </Cta>
+                    {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold mr-2">Approve</button>
+                    <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">Reject</button> */}
                   </td>
                 </tr>
               ))
@@ -203,8 +210,11 @@ export  function _PartnersIndex() {
                   </td>
                   <td className="px-4 py-3">
                     {/* Approve/Reject actions can go here */}
-                    <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold mr-2">Approve</button>
-                    <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">Reject</button>
+                    <Cta element="link" to={`/admin/partners/details/${partner._id}`} variant="outline" className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold flex-1">
+                  Details 
+                </Cta>
+                    {/* <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold mr-2">Approve</button>
+                    <button className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">Reject</button> */}
                   </td>
                 </tr>
               ))

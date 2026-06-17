@@ -1,7 +1,7 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { Business, BusinessQuery, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdatePartnerProductDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
+import { Business, BusinessQuery, IBusinessOwnerModel, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdateBusinessStatus, IUpdatePartnerProductDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 
@@ -41,6 +41,41 @@ export class PartnerServer {
       url,
       method: "GET",
     }, cookies);
+    if (error) return { error };
+    return { data };
+  }
+
+  async getBusinessDetails(businessId: string, cookies: string): Promise<TFetcherResponse<Business>> {
+    const { data, error } = await ApiCall.call<Business, unknown>({
+      url: ApiEndPoints.getPartnerBusinessDetails(businessId),
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async updateBusinessStatus(dto: IUpdateBusinessStatus, cookies: string): Promise<TFetcherResponse<Business>> {
+    const { data, error } = await ApiCall.call<Business, IUpdateBusinessStatus>({
+      url: ApiEndPoints.updatePartnerBusinessStatus,
+      method: "PATCH",
+      data: {
+        ...dto,
+        updated_on: dto.updated_on ?? new Date().toISOString(),
+      },
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async addBusinessOwner(dto: IBusinessOwnerModel, cookies: string): Promise<TFetcherResponse<Business>> {
+    const { data, error } = await ApiCall.call<Business, IBusinessOwnerModel>({
+      url: ApiEndPoints.addBusinessOwner,
+      method: "PATCH",
+      data: dto,
+    }, cookies);
+
     if (error) return { error };
     return { data };
   }

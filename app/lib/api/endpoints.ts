@@ -251,4 +251,16 @@ export class ApiEndPoints {
     static get getPartnerLocations(){
         return `/v2/api/partner/location`
     }
+
+    static getPartnerBusinessDetails(businessId: string){
+        return `/v2/api/partner/business_details/${businessId}`
+    }
+
+    static get updatePartnerBusinessStatus(){
+        return `/v2/api/partner/status`
+    }
+
+    static get addBusinessOwner(){
+        return `/v2/api/partner/add_business_owner`
+    }
 }
