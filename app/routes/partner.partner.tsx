@@ -86,7 +86,7 @@ function usePartnerOnboardingController(){
   const [section, setSection] = useState(0);
   const [form, setForm] = useState<any>({
     estimated_weekly_volume_currency: "USD",
-    referral_percentage: 0,
+    referral_percentage: 10,
     country_of_incorporation: "Nigeria"
   });
   const actionData = useActionData<{ data?: string; error?: any }>();
@@ -197,6 +197,22 @@ export default function PartnerOnboarding() {
     </div>
 
     <div>
+      <Label required>Partner commision support (%)</Label>
+      <p className="text-xs sm:text-sm  text-gray-500  tracking-wider mb-3 sm:mb-1">We connect you to paying customers. What percentage of each sale are you willing to contribute as a partnership commission?</p>
+
+      <input
+        name="referral_percentage"
+        type="number"
+        min={5}
+        className={inputClass}
+        value={form.referral_percentage || 10}
+        onChange={handleChange}
+        required
+        // placeholder="Enter business email"
+      />
+    </div>
+
+    <div>
       <Label required>Phone number</Label>
       <div className="flex flex-col sm:flex-row gap-2 items-stretch">
         <div className="relative w-full sm:w-32">
@@ -223,12 +239,12 @@ export default function PartnerOnboarding() {
       </div>
     </div>
     <div>
-      <Label required>ROC / CAC Number</Label>
-      <input name="roc_cac_number" required className={inputClass} value={form.roc_cac_number || ""} onChange={handleChange} />
+      <Label>ROC / CAC Number</Label>
+      <input name="roc_cac_number" className={inputClass} value={form.roc_cac_number || ""} onChange={handleChange} />
     </div>
     <div>
-      <Label required>Tax ID (TIN)</Label>
-      <input name="tax_id" required className={inputClass} value={form.tax_id || ""} onChange={handleChange} />
+      <Label>Tax ID (TIN)</Label>
+      <input name="tax_id" className={inputClass} value={form.tax_id || ""} onChange={handleChange} />
     </div>
 
 

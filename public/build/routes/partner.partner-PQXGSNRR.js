@@ -53,7 +53,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/routes/partner.partner.tsx"
   );
-  import.meta.hot.lastModified = "1777718800839.322";
+  import.meta.hot.lastModified = "1781727411993.7827";
 }
 function Stepper({
   currentStep
@@ -110,7 +110,7 @@ function usePartnerOnboardingController() {
   const [section, setSection] = (0, import_react2.useState)(0);
   const [form, setForm] = (0, import_react2.useState)({
     estimated_weekly_volume_currency: "USD",
-    referral_percentage: 0,
+    referral_percentage: 10,
     country_of_incorporation: "Nigeria"
   });
   const actionData = useActionData();
@@ -152,7 +152,7 @@ function usePartnerOnboardingController() {
     navigate
   };
 }
-_s(usePartnerOnboardingController, "Kl2XT+BY30nSHeOmL0mUYR32qoA=", false, function() {
+_s(usePartnerOnboardingController, "HAMcxyxpdlrjs+L2QbCJfqxr1J8=", false, function() {
   return [useNavigation, useActionData, useNavigate];
 });
 function PartnerOnboarding() {
@@ -381,9 +381,45 @@ function PartnerOnboarding() {
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Phone number" }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Partner commision support (%)" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
             lineNumber: 221,
+            columnNumber: 7
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("p", { className: "text-xs sm:text-sm  text-gray-500  tracking-wider mb-3 sm:mb-1", children: "We connect you to paying customers. What percentage of each sale are you willing to contribute as a partnership commission?" }, void 0, false, {
+            fileName: "app/routes/partner.partner.tsx",
+            lineNumber: 222,
+            columnNumber: 7
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(
+            "input",
+            {
+              name: "referral_percentage",
+              type: "number",
+              min: 5,
+              className: inputClass,
+              value: form.referral_percentage || 10,
+              onChange: handleChange,
+              required: true
+            },
+            void 0,
+            false,
+            {
+              fileName: "app/routes/partner.partner.tsx",
+              lineNumber: 224,
+              columnNumber: 7
+            },
+            this
+          )
+        ] }, void 0, true, {
+          fileName: "app/routes/partner.partner.tsx",
+          lineNumber: 220,
+          columnNumber: 5
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Phone number" }, void 0, false, {
+            fileName: "app/routes/partner.partner.tsx",
+            lineNumber: 230,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-2 items-stretch", children: [
@@ -392,139 +428,90 @@ function PartnerOnboarding() {
                 minWidth: "5.5rem"
               }, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "+234", children: "\u{1F1F3}\u{1F1EC} +234" }, void 0, false, {
                 fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 227,
+                lineNumber: 236,
                 columnNumber: 13
               }, this) }, void 0, false, {
                 fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 224,
+                lineNumber: 233,
                 columnNumber: 11
               }, this),
               /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg", children: "\u25BC" }, void 0, false, {
                 fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 229,
+                lineNumber: 238,
                 columnNumber: 11
               }, this)
             ] }, void 0, true, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 223,
+              lineNumber: 232,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "phone_number", required: true, className: inputClass + " flex-1", placeholder: "810 234 6879", value: form.phone_number || "", onChange: handleChange, type: "tel", autoComplete: "tel" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 231,
+              lineNumber: 240,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 222,
+            lineNumber: 231,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 220,
+          lineNumber: 229,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "ROC / CAC Number" }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { children: "ROC / CAC Number" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 235,
+            lineNumber: 244,
             columnNumber: 7
           }, this),
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "roc_cac_number", required: true, className: inputClass, value: form.roc_cac_number || "", onChange: handleChange }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "roc_cac_number", className: inputClass, value: form.roc_cac_number || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 236,
+            lineNumber: 245,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 234,
+          lineNumber: 243,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Tax ID (TIN)" }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { children: "Tax ID (TIN)" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 239,
+            lineNumber: 248,
             columnNumber: 7
           }, this),
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "tax_id", required: true, className: inputClass, value: form.tax_id || "", onChange: handleChange }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "tax_id", className: inputClass, value: form.tax_id || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 240,
+            lineNumber: 249,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 238,
+          lineNumber: 247,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Estimated Weekly Volume Currency" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 247,
+            lineNumber: 256,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { name: "estimated_weekly_volume_currency", className: inputClass, value: form.estimated_weekly_volume_currency || "", onChange: handleChange, required: true, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Select currency" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 249,
+              lineNumber: 258,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "NGN", children: "NGN" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 250,
+              lineNumber: 259,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "USD", children: "USD" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 251,
-              columnNumber: 9
-            }, this)
-          ] }, void 0, true, {
-            fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 248,
-            columnNumber: 7
-          }, this)
-        ] }, void 0, true, {
-          fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 246,
-          columnNumber: 5
-        }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Estimated weekly volume" }, void 0, false, {
-            fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 256,
-            columnNumber: 7
-          }, this),
-          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-2 sm:gap-4", children: [
-            /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "relative flex-1", children: [
-              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }, void 0, false, {
-                fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 259,
-                columnNumber: 11
-              }, this),
-              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "estimated_weekly_volume_min", type: "number", placeholder: "Min", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_min || "", onChange: handleChange }, void 0, false, {
-                fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 260,
-                columnNumber: 11
-              }, this)
-            ] }, void 0, true, {
-              fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 258,
-              columnNumber: 9
-            }, this),
-            /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "relative flex-1", children: [
-              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }, void 0, false, {
-                fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 263,
-                columnNumber: 11
-              }, this),
-              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "estimated_weekly_volume_max", type: "number", placeholder: "Max", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_max || "", onChange: handleChange }, void 0, false, {
-                fileName: "app/routes/partner.partner.tsx",
-                lineNumber: 264,
-                columnNumber: 11
-              }, this)
-            ] }, void 0, true, {
-              fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 262,
+              lineNumber: 260,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
@@ -538,133 +525,182 @@ function PartnerOnboarding() {
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Estimated weekly volume" }, void 0, false, {
+            fileName: "app/routes/partner.partner.tsx",
+            lineNumber: 265,
+            columnNumber: 7
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-2 sm:gap-4", children: [
+            /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "relative flex-1", children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }, void 0, false, {
+                fileName: "app/routes/partner.partner.tsx",
+                lineNumber: 268,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "estimated_weekly_volume_min", type: "number", placeholder: "Min", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_min || "", onChange: handleChange }, void 0, false, {
+                fileName: "app/routes/partner.partner.tsx",
+                lineNumber: 269,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "app/routes/partner.partner.tsx",
+              lineNumber: 267,
+              columnNumber: 9
+            }, this),
+            /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "relative flex-1", children: [
+              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }, void 0, false, {
+                fileName: "app/routes/partner.partner.tsx",
+                lineNumber: 272,
+                columnNumber: 11
+              }, this),
+              /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "estimated_weekly_volume_max", type: "number", placeholder: "Max", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_max || "", onChange: handleChange }, void 0, false, {
+                fileName: "app/routes/partner.partner.tsx",
+                lineNumber: 273,
+                columnNumber: 11
+              }, this)
+            ] }, void 0, true, {
+              fileName: "app/routes/partner.partner.tsx",
+              lineNumber: 271,
+              columnNumber: 9
+            }, this)
+          ] }, void 0, true, {
+            fileName: "app/routes/partner.partner.tsx",
+            lineNumber: 266,
+            columnNumber: 7
+          }, this)
+        ] }, void 0, true, {
+          fileName: "app/routes/partner.partner.tsx",
+          lineNumber: 264,
+          columnNumber: 5
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Business description" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 269,
+            lineNumber: 278,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "relative", children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("textarea", { name: "business_description", required: true, className: `${inputClass} h-32 resize-none`, value: form.business_description || "", onChange: handleChange }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 271,
+              lineNumber: 280,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("span", { className: "absolute bottom-3 right-3 text-xs text-gray-400", children: "0/5000" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 272,
+              lineNumber: 281,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 270,
+            lineNumber: 279,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 268,
+          lineNumber: 277,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { children: "Website (Optional)" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 276,
+            lineNumber: 285,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "website", className: inputClass, placeholder: "https://www.acmetrading.com", value: form.website || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 277,
+            lineNumber: 286,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 275,
+          lineNumber: 284,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Industry" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 282,
+            lineNumber: 291,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { name: "industry", className: inputClass, value: form.industry || "", onChange: handleChange, required: true, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Select industry" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 284,
+              lineNumber: 293,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Services", children: "Services" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 285,
+              lineNumber: 294,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Manufacturing", children: "Manufacturing" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 286,
+              lineNumber: 295,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Hospitality", children: "Hospitality" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 287,
+              lineNumber: 296,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Financial Industry", children: "Financial Industry" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 288,
+              lineNumber: 297,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Technology", children: "Technology" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 289,
+              lineNumber: 298,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Education", children: "Education" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 290,
+              lineNumber: 299,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Healthcare", children: "Healthcare" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 291,
+              lineNumber: 300,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Retail", children: "Retail" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 292,
+              lineNumber: 301,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Agriculture", children: "Agriculture" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 293,
+              lineNumber: 302,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Construction", children: "Construction" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 294,
+              lineNumber: 303,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Transportation", children: "Transportation" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 295,
+              lineNumber: 304,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Other", children: "Other" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 296,
+              lineNumber: 305,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 283,
+            lineNumber: 292,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 281,
+          lineNumber: 290,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "button", className: "w-full bg-[#4B4870] hover:bg-[#3d3a5c] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg transition-all mt-4 text-base sm:text-lg", onClick: () => setSection(1), children: "Next" }, void 0, false, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 301,
+          lineNumber: 310,
           columnNumber: 5
         }, this)
       ] }, void 0, true, {
@@ -676,221 +712,221 @@ function PartnerOnboarding() {
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Country of territory" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 309,
+            lineNumber: 318,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { name: "location_country", required: true, className: inputClass, value: form.location_country || "", onChange: handleChange, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Select your country" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 311,
+              lineNumber: 320,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Nigeria", children: "Nigeria" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 312,
+              lineNumber: 321,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 310,
+            lineNumber: 319,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 308,
+          lineNumber: 317,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Street Address" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 316,
+            lineNumber: 325,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "location_street", required: true, placeholder: "123 Main Street", className: inputClass, value: form.location_street || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 317,
+            lineNumber: 326,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 315,
+          lineNumber: 324,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "State" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 320,
+            lineNumber: 329,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { name: "location_state", required: true, className: inputClass, value: form.location_state || "", onChange: handleChange, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Select state" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 322,
+              lineNumber: 331,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Lagos", children: "Lagos" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 323,
+              lineNumber: 332,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 321,
+            lineNumber: 330,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 319,
+          lineNumber: 328,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "City" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 327,
+            lineNumber: 336,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "location_city", required: true, className: inputClass, value: form.location_city || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 328,
+            lineNumber: 337,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 326,
+          lineNumber: 335,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Postal Code" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 331,
+            lineNumber: 340,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "location_postal", className: inputClass, value: form.location_postal || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 332,
+            lineNumber: 341,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 330,
+          lineNumber: 339,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-3 pt-4 mt-5", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(0), children: "Back" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 335,
+            lineNumber: 344,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "button", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", onClick: () => setSection(2), children: "Next" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 336,
+            lineNumber: 345,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 334,
+          lineNumber: 343,
           columnNumber: 5
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/partner.partner.tsx",
-        lineNumber: 307,
+        lineNumber: 316,
         columnNumber: 3
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: section === 2 ? "" : "hidden", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Country of territory" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 346,
+            lineNumber: 355,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("select", { name: "contact_country", required: true, className: inputClass, value: form.contact_country || "", onChange: handleChange, children: [
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "", children: "Select your country" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 348,
+              lineNumber: 357,
               columnNumber: 9
             }, this),
             /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("option", { value: "Nigeria", children: "Nigeria" }, void 0, false, {
               fileName: "app/routes/partner.partner.tsx",
-              lineNumber: 349,
+              lineNumber: 358,
               columnNumber: 9
             }, this)
           ] }, void 0, true, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 347,
+            lineNumber: 356,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 345,
+          lineNumber: 354,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Contact Name" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 353,
+            lineNumber: 362,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "contact_name", required: true, placeholder: "John Doe", className: inputClass, value: form.contact_name || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 354,
+            lineNumber: 363,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 352,
+          lineNumber: 361,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Contact Email" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 357,
+            lineNumber: 366,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "contact_email", required: true, className: inputClass, value: form.contact_email || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 358,
+            lineNumber: 367,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 356,
+          lineNumber: 365,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(Label, { required: true, children: "Contact Phone" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 361,
+            lineNumber: 370,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("input", { name: "contact_phone", className: inputClass, value: form.contact_phone || "", onChange: handleChange }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 362,
+            lineNumber: 371,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 360,
+          lineNumber: 369,
           columnNumber: 5
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("div", { className: "flex flex-col sm:flex-row gap-3 pt-4", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(1), children: "Back" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 365,
+            lineNumber: 374,
             columnNumber: 7
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)("button", { type: "submit", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", children: navigation.state === "submitting" ? "Submitting..." : "Submit" }, void 0, false, {
             fileName: "app/routes/partner.partner.tsx",
-            lineNumber: 366,
+            lineNumber: 375,
             columnNumber: 7
           }, this)
         ] }, void 0, true, {
           fileName: "app/routes/partner.partner.tsx",
-          lineNumber: 364,
+          lineNumber: 373,
           columnNumber: 5
         }, this)
       ] }, void 0, true, {
         fileName: "app/routes/partner.partner.tsx",
-        lineNumber: 344,
+        lineNumber: 353,
         columnNumber: 3
       }, this)
     ] }, void 0, true, {
@@ -927,4 +963,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   PartnerOnboarding as default
 };
-//# sourceMappingURL=/build/routes/partner.partner-YGY6PUZM.js.map
+//# sourceMappingURL=/build/routes/partner.partner-PQXGSNRR.js.map

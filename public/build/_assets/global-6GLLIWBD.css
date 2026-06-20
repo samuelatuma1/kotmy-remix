@@ -3438,6 +3438,9 @@ video {
     margin-top: 3rem;
     margin-bottom: 3rem;
   }
+  .sm\:mb-1 {
+    margin-bottom: .25rem;
+  }
   .sm\:mb-10 {
     margin-bottom: 2.5rem;
   }
@@ -3922,4 +3925,4 @@ video {
  * Satoshi Black Italic
  *
 */
-/*# sourceMappingURL=/build/_assets/global-6MTZOYLI.css.map */
+/*# sourceMappingURL=/build/_assets/global-JUKNX7VV.css.map */
