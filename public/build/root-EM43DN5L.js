@@ -86,7 +86,7 @@ var cssBundleHref = void 0;
 var import_node = __toESM(require_node(), 1);
 
 // app/global.css
-var global_default = "/build/_assets/global-6GLLIWBD.css";
+var global_default = "/build/_assets/global-LOYPA4MW.css";
 
 // app/autoplaycarousel.css
 var autoplaycarousel_default = "/build/_assets/autoplaycarousel-WQPXPBOV.css";
@@ -1321,4 +1321,4 @@ export {
   App as default,
   links
 };
-//# sourceMappingURL=/build/root-PJFK2PAI.js.map
+//# sourceMappingURL=/build/root-EM43DN5L.js.map

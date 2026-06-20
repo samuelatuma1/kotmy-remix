@@ -149,7 +149,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/public/MobileNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1777718411714.518";
+  import.meta.hot.lastModified = "1781936395366.263";
 }
 function MobileNavigation({
   show,
@@ -269,13 +269,31 @@ function MobileNavigation({
             lineNumber: 71,
             columnNumber: 21
           }, this),
-          /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(NavLink, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }, void 0, false, {
+          /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(NavLink, { onClick: onClose, to: "/marketplace", className: ({
+            isActive
+          }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+            pathname.includes("/marketplace") ? /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, false, {
+              fileName: "app/components/public/MobileNavigation.tsx",
+              lineNumber: 79,
+              columnNumber: 62
+            }, this) : null,
+            " Shop"
+          ] }, void 0, true, {
             fileName: "app/components/public/MobileNavigation.tsx",
             lineNumber: 76,
             columnNumber: 25
           }, this) }, void 0, false, {
             fileName: "app/components/public/MobileNavigation.tsx",
             lineNumber: 76,
+            columnNumber: 21
+          }, this),
+          /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(NavLink, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }, void 0, false, {
+            fileName: "app/components/public/MobileNavigation.tsx",
+            lineNumber: 81,
+            columnNumber: 25
+          }, this) }, void 0, false, {
+            fileName: "app/components/public/MobileNavigation.tsx",
+            lineNumber: 81,
             columnNumber: 21
           }, this)
         ] }, void 0, true, {
@@ -285,7 +303,7 @@ function MobileNavigation({
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" }, void 0, false, {
           fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 78,
+          lineNumber: 84,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
@@ -302,59 +320,59 @@ function MobileNavigation({
       /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "mb-12", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }, void 0, false, {
           fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 83,
+          lineNumber: 89,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("span", { className: "flex gap-4", children: [
           /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }, void 0, false, {
             fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 85,
+            lineNumber: 91,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }, void 0, false, {
             fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 86,
+            lineNumber: 92,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }, void 0, false, {
             fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 87,
+            lineNumber: 93,
             columnNumber: 21
           }, this),
           /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" }, void 0, false, {
             fileName: "app/components/public/MobileNavigation.tsx",
-            lineNumber: 88,
+            lineNumber: 94,
             columnNumber: 21
           }, this)
         ] }, void 0, true, {
           fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 84,
+          lineNumber: 90,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
         fileName: "app/components/public/MobileNavigation.tsx",
-        lineNumber: 82,
+        lineNumber: 88,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
         /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }, void 0, false, {
           fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 92,
+          lineNumber: 98,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ (0, import_jsx_dev_runtime2.jsxDEV)("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" }, void 0, false, {
           fileName: "app/components/public/MobileNavigation.tsx",
-          lineNumber: 93,
+          lineNumber: 99,
           columnNumber: 17
         }, this)
       ] }, void 0, true, {
         fileName: "app/components/public/MobileNavigation.tsx",
-        lineNumber: 91,
+        lineNumber: 97,
         columnNumber: 13
       }, this)
     ] }, void 0, true, {
       fileName: "app/components/public/MobileNavigation.tsx",
-      lineNumber: 81,
+      lineNumber: 87,
       columnNumber: 9
     }, this)
   ] }, void 0, true, {
@@ -392,7 +410,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/public/Navigation.tsx"
   );
-  import.meta.hot.lastModified = "1777718427665.1033";
+  import.meta.hot.lastModified = "1781936385482.0159";
 }
 function Navigation() {
   _s2();
@@ -492,13 +510,31 @@ function Navigation() {
           lineNumber: 64,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavLink, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }, void 0, false, {
+        /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavLink, { to: "/marketplace", className: ({
+          isActive
+        }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/marketplace") ? /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: icons.activeDotIcon, width: ".5em" }, void 0, false, {
+            fileName: "app/components/public/Navigation.tsx",
+            lineNumber: 72,
+            columnNumber: 82
+          }, this) : null,
+          " Shop"
+        ] }, void 0, true, {
           fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 70,
+          lineNumber: 69,
           columnNumber: 25
         }, this) }, void 0, false, {
           fileName: "app/components/public/Navigation.tsx",
-          lineNumber: 70,
+          lineNumber: 69,
+          columnNumber: 21
+        }, this),
+        /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)("li", { children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(NavLink, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }, void 0, false, {
+          fileName: "app/components/public/Navigation.tsx",
+          lineNumber: 75,
+          columnNumber: 25
+        }, this) }, void 0, false, {
+          fileName: "app/components/public/Navigation.tsx",
+          lineNumber: 75,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
@@ -508,7 +544,7 @@ function Navigation() {
       }, this),
       /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Button, { element: "a", href: "/signup", children: "Join Now" }, void 0, false, {
         fileName: "app/components/public/Navigation.tsx",
-        lineNumber: 72,
+        lineNumber: 78,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
@@ -520,18 +556,18 @@ function Navigation() {
       setShowNav(true);
     }, title: "hamburger", className: "sm:hidden flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary", children: /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 }, void 0, false, {
       fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 77,
+      lineNumber: 83,
       columnNumber: 17
     }, this) }, void 0, false, {
       fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 74,
+      lineNumber: 80,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ (0, import_jsx_dev_runtime3.jsxDEV)(MobileNavigation, { onClose: () => {
       setShowNav(false);
     }, show: showNav }, void 0, false, {
       fileName: "app/components/public/Navigation.tsx",
-      lineNumber: 79,
+      lineNumber: 85,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
@@ -610,4 +646,4 @@ export {
   Index as default,
   meta
 };
-//# sourceMappingURL=/build/routes/_public-ICFMEOTN.js.map
+//# sourceMappingURL=/build/routes/_public-DNL6HP74.js.map

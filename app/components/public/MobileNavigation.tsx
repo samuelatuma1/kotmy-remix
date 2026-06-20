@@ -39,7 +39,11 @@ export default function MobileNavigation({ show, onClose }: { show: boolean, onC
                     <li><NavLink onClick={onClose} to="/results" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/results') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Results
                     </NavLink></li>
+                    <li><NavLink onClick={onClose} to="/marketplace" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
+                        {pathname.includes('/marketplace') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Shop
+                    </NavLink></li>
                     <li><NavLink onClick={onClose} to="/login" className=''>{user ? 'My Profile' : 'Sign In'}</NavLink></li>
+                    
                 </ul>
                 <Button element='a' onClick={onClose} href={'/signup'} className='block w-full sm:w-auto'>Join Now</Button>
             </nav>

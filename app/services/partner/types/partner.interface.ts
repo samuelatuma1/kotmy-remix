@@ -167,6 +167,12 @@ export interface PartnerProduct {
   image_urls: string[];
   main_image_url: string;
   locations: string[];
+  accepts_prepayment?: boolean;
+  meta_data?: {
+    quantity_available?: number;
+    other_details?: Record<string, unknown>;
+  };
+  product_locations?: PartnerLocation[];
 }
 
 export interface PartnerProductResponse extends PartnerProduct {
@@ -183,6 +189,7 @@ export interface IQueryPartnerProduct extends IBasePaginationQuery {
     tags?: string[];
     business_id?: string;
     wildcard?: string;
+    location_wildcard?: string;
 }
 
 export interface IQueryPartnerLocations extends IBasePaginationQuery {

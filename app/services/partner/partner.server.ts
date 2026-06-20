@@ -173,6 +173,25 @@ export class PartnerServer {
     return { data };
   }
 
+  async getMarketplaceProducts(query: IQueryPartnerProduct, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+    const params = new URLSearchParams(
+      Object.entries(query).reduce((acc, [k, v]) => {
+        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
+        return acc;
+      }, {} as Record<string, string>)
+    ).toString();
+
+    const url = `${ApiEndPoints.getMarketplaceProducts}?${params}`;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerProduct>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
   async getPartnerLocations(query: IQueryPartnerLocations, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerLocation>>> {
     const params = new URLSearchParams(
       Object.entries(query).reduce((acc, [k, v]) => {

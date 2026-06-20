@@ -332,7 +332,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/partner/PartnerMobileNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1778320119398.4404";
+  import.meta.hot.lastModified = "1781934605398.0552";
 }
 var primaryNavs = [{
   label: "Manage Products",
@@ -634,7 +634,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/components/partner/PartnerNavigation.tsx"
   );
-  import.meta.hot.lastModified = "1778320113398.3594";
+  import.meta.hot.lastModified = "1781934601251.5562";
 }
 var navs = [{
   label: "Manage Products",
@@ -970,4 +970,4 @@ export {
   PartnerLayout as default,
   meta
 };
-//# sourceMappingURL=/build/routes/partners-UEOWLMYJ.js.map
+//# sourceMappingURL=/build/routes/partners-5NSDNU6G.js.map

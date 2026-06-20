@@ -244,6 +244,10 @@ export class ApiEndPoints {
         return `/v2/api/partner/products`
     }
 
+    static get getMarketplaceProducts(){
+        return `/v2/api/market_place/products`
+    }
+
     static get getPartnerProducts(){
         return `/v2/api/partner/products`
     }

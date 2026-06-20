@@ -42,7 +42,7 @@ if (import.meta) {
     //@ts-expect-error
     "app/routes/_public.winners.tsx"
   );
-  import.meta.hot.lastModified = "1761624847550.4417";
+  import.meta.hot.lastModified = "1781936115702.3367";
 }
 var WinnerCard = ({
   image_url,
@@ -204,4 +204,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   Winners as default
 };
-//# sourceMappingURL=/build/routes/_public.winners-VIA56XMH.js.map
+//# sourceMappingURL=/build/routes/_public.winners-K7R73HTY.js.map

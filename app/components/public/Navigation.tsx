@@ -35,8 +35,12 @@ export default function Navigation() {
                     <li><NavLink to="/results" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
                         {pathname.includes('/results') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Results
                     </NavLink></li>
+                    <li><NavLink to="/marketplace" className={({ isActive }) => isActive ? 'text-accent flex gap-2 items-center' : ''}>
+                                            {pathname.includes('/marketplace') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Shop
+                                        </NavLink></li>
                     {/* <li><NavLink to="/#contact" className=''>Contact</NavLink></li> */}
                     <li><NavLink to="/login" className=''>{user ? 'My Profile' : 'Sign In'}</NavLink></li>
+                    
                 </ul>
                 <Button element='a' href={'/signup'}>Join Now</Button>
             </nav>

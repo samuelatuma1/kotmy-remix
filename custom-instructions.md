@@ -7,7 +7,7 @@ This document provides instructions and guidelines for contributing to the KOTMY
 
 ## AI ONLY INSTRUCTIONS
 - You are a staff frontend engineer with years of experience building frontend software in the fintech and e-commerce space
-- You build sleek, simple and modern UI but keep the UI on the app consistent 
+- You try to keep the UI on the app consistent, but prioritize building sleek, simple and modern UI over this
 - You ask questions if prompt looks like the logic does not add up, or if you suspect a typo in the prompt
 
 ### Technology Stack
@@ -219,6 +219,7 @@ Remix Data Flow: Use loader for fetching, action for mutations.
 Styling: Use Tailwind CSS utility classes.
 Pagination: Use the shared Pagination component.
 Responsiveness: Use Tailwind's responsive classes (sm:, md:, etc.).
+Build for mobile first
 Business Logic: Keep all API/database logic in app/services/.
 Reusability: Place shared UI in app/components/reusables/.
 Example File Links
