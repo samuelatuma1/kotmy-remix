@@ -197,8 +197,87 @@ function getProductLocationId(product: PartnerProduct): string | null {
   const primaryLocation = product.product_locations?.find(location => location.is_primary);
   return primaryLocation?.str_id ?? product.product_locations?.[0]?.str_id ?? null;
 }
-
 function ProductCard({
+  product,
+  onAddToCart,
+  isSubmitting,
+}: {
+  product: PartnerProduct;
+  onAddToCart: (product: PartnerProduct) => void;
+  isSubmitting: boolean;
+}) {
+  const imageSrc = product.main_image_url || product.image_urls?.[0] || noImage;
+  const hasRange = product.price_max > product.price_min;
+  const priceLabel = product.price_min === 0 && product.price_max === 0
+    ? "Free"
+    : hasRange
+      ? `${formatPrice(product.currency, product.price_min)} - ${formatPrice(product.currency, product.price_max)}`
+      : formatPrice(product.currency, product.price_min);
+  const locationCount = product.product_locations?.length ?? 0;
+  const buttonLabel = isSubmitting ? "Adding..." : "Add to cart";
+
+  return (
+    <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        <div className="absolute left-4 top-4 rounded-full bg-slate-950/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur">
+          {product.status.replace(/_/g, " ")}
+        </div>
+      </div>
+
+      {/* make body take remaining space so footer button stays inside card */}
+      <div className="flex-1 flex flex-col gap-4 p-5 min-h-0">
+        <div className="space-y-2">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-black text-slate-950 line-clamp-1">{product.name}</h3>
+              <p className="text-sm font-medium leading-6 text-slate-500 line-clamp-2">{product.description}</p>
+            </div>
+            <span className="rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent">
+              {product.category || "Uncategorized"}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-base font-black text-slate-950">{priceLabel}</span>
+            <span className="text-xs font-medium text-slate-400">
+              {locationCount > 0 ? `${locationCount} location${locationCount === 1 ? "" : "s"}` : "Online only"}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {(product.tags ?? []).slice(0, 4).map(tag => (
+            <span key={`${product._id}-${tag}`} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+              {tag.trim()}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto flex items-center justify-between gap-3 border-slate-100 pt-4">
+          <span className="text-xs font-medium text-slate-400">
+            {product.accepts_prepayment ? "Prepayment supported" : "Pay on confirmation"}
+          </span>
+          <button
+            type="button"
+            onClick={() => onAddToCart(product)}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-900 bg-slate-950 px-4 py-2 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-wait disabled:opacity-70"
+            disabled={isSubmitting}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {buttonLabel}
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+function ProductCardx({
   product,
   onAddToCart,
   isSubmitting,
