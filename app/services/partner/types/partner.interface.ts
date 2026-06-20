@@ -259,3 +259,41 @@ export interface PartnerLocation {
   directions_hint: string;
   opening_hours: string;
 }
+
+export interface Cart {
+  _id: string;
+  str_id: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  user_id?: string;
+  device_fingerprint?: string | null;
+  cart_items: CartItem[];
+  minimum_total_amount: number;
+  maximum_total_amount: number;
+  currency: string;
+  status: string;
+  order_id?: string | null;
+}
+
+export interface CartItem {
+  product_id: string;
+  product_location_id: string | null;
+  quantity: number;
+  product: PartnerProduct;
+}
+
+export interface ICartItemUpsertDTO {
+  product_id: string;
+  quantity: number;
+  product_location_id?: string | null;
+}
+
+export interface IUpsertCartItemsDTO {
+  cart_items: ICartItemUpsertDTO[];
+}
+
+export interface ICartItemCountSummary {
+  itemCount: number;
+  distinctItemCount: number;
+}

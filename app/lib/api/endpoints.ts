@@ -248,6 +248,10 @@ export class ApiEndPoints {
         return `/v2/api/market_place/products`
     }
 
+    static get getPartnerCartItems(){
+        return `/v2/api/partner/cart/items`
+    }
+
     static get getPartnerProducts(){
         return `/v2/api/partner/products`
     }

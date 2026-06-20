@@ -1,7 +1,7 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { Business, BusinessQuery, IBusinessOwnerModel, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdateBusinessStatus, IUpdatePartnerProductDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
+import { Business, BusinessQuery, Cart, IBusinessOwnerModel, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdateBusinessStatus, IUpdatePartnerProductDTO, IUpsertCartItemsDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 
@@ -154,7 +154,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerProducts(query: IQueryPartnerProduct, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+  async getPartnerProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
     const params = new URLSearchParams(
       Object.entries(query).reduce((acc, [k, v]) => {
         if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
@@ -173,7 +173,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getMarketplaceProducts(query: IQueryPartnerProduct, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+  async getMarketplaceProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
     const params = new URLSearchParams(
       Object.entries(query).reduce((acc, [k, v]) => {
         if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
@@ -186,6 +186,33 @@ export class PartnerServer {
     const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerProduct>, unknown>({
       url,
       method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getCart(cookies?: string): Promise<TFetcherResponse<Cart | null>> {
+    const { data, error } = await ApiCall.call<Cart, unknown>({
+      url: ApiEndPoints.getPartnerCartItems,
+      method: "GET",
+    }, cookies);
+
+    if (error) {
+      if (typeof error.detail === "string" && error.detail === "No active cart found") {
+        return { data: null };
+      }
+      return { error };
+    }
+
+    return { data };
+  }
+
+  async upsertCartItems(dto: IUpsertCartItemsDTO, cookies?: string): Promise<TFetcherResponse<Cart>> {
+    const { data, error } = await ApiCall.call<Cart, IUpsertCartItemsDTO>({
+      url: ApiEndPoints.getPartnerCartItems,
+      method: "POST",
+      data: dto,
     }, cookies);
 
     if (error) return { error };
