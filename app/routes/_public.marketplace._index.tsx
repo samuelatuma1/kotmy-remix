@@ -512,7 +512,7 @@ export default function MarketplaceHome() {
           <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm">
             <h3 className="text-xl font-black text-slate-950">No matching products</h3>
             <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500">
-              Try a broader keyword or location wildcard to expand the catalog results.
+              Try a broader keyword or location to expand the catalog results.
             </p>
           </div>
         )}
