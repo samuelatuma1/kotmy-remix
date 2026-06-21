@@ -1,12 +1,13 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
-import { IContestWStageWContestant } from "../contest/types/contest.interface";
-import { contestRepo, ContestRepository } from "../contest/contest.server";
 import { IEditContestantDTO } from "../contestant/types/contestant.interface";
 import { contestantRepo, ContestantRepository } from "../contestant/contestant.server";
+import { IGivaahCreditQuery, UserCreditResponse } from "./types/user_.interface";
+import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 
 
 export interface IUserServer {
+    getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string): Promise<TFetcherResponse<UserCreditResponse>>;
 
 }
 export class UserServer implements IUserServer {
@@ -15,9 +16,35 @@ export class UserServer implements IUserServer {
         this.contestantServer = _contestServer
     }
 
+    private buildQueryString(query?: IGivaahCreditQuery) {
+        if (!query) return "";
+
+        return new URLSearchParams(
+            Object.entries(query).reduce((acc, [key, value]) => {
+                if (value !== undefined && value !== null && value !== "") {
+                    acc[key] = String(value);
+                }
+                return acc;
+            }, {} as Record<string, string>)
+        ).toString();
+    }
+
     async getPendingUploads(cookies: string){
         return await this.contestantServer.getPendingUploads(cookies)
         
+    }
+
+    async getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string): Promise<TFetcherResponse<UserCreditResponse>> {
+        const queryString = this.buildQueryString(query);
+        const url = queryString ? `${ApiEndPoints.getGivaahCredits}?${queryString}` : ApiEndPoints.getGivaahCredits;
+
+        const { data, error, authRequired } = await ApiCall.call<UserCreditResponse, unknown>({
+            url,
+            method: "GET",
+        }, cookies);
+
+        if (data) return { data };
+        return { error, authRequired };
     }
 
     async getContestantDetails(contestantId: string, cookies: string){

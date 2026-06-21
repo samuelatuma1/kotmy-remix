@@ -127,6 +127,10 @@ export class ApiEndPoints {
         return `v2/api/contestant/contest/details/?contestant_code=${contestant_code}&stage_id=${stage_id}`
     }
 
+    static get getGivaahCredits() {
+        return "/v2/api/contestant/get_credits";
+    }
+
     static get signup(){
         return `/v2/api/users/signup`
     }

@@ -10,6 +10,7 @@ import { useFetcher, useNavigate, useLocation } from "@remix-run/react"
 import { useEffect, useState } from "react"
 import { useUserManager } from "~/lib/store/store_managers/tokenManager"
 import Button from "~/components/reusables/Button"
+import SocialLink from "./SocialLink"
 
 export default function ScoreboardTable({ contestants, socialMediaType, show_bonus }: { contestants: IContestant[], socialMediaType: Social, show_bonus: boolean }) {
     const fetcher = useFetcher()
@@ -124,6 +125,7 @@ export default function ScoreboardTable({ contestants, socialMediaType, show_bon
                                 />
                             )}
                             <TallyVoteDialog contestant={contestant} />
+                            <SocialLink type='givaah' url='.' />
                             
                         </td>
                         {show_bonus && (

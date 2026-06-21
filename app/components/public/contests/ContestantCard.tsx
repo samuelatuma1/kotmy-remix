@@ -127,7 +127,7 @@ export default function ContestantCard({ contestant, socialMedia }: { contestant
                     <TallyVoteDialog contestant={contestant}>
                         <SocialLink type='tally' className='w-full' />
                     </TallyVoteDialog>
-                    {/* <SocialLink type='givaah' url='.' /> */}
+                    <SocialLink type='givaah' url='.' />
                 </div>
             </div>
         </article>

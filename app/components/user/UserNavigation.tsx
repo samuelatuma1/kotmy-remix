@@ -18,9 +18,11 @@ const navsWSubs = [
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
             { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
             { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
-            { label: 'Your Profile', url: '/user/profile' },
+            { label: 'My Profile', url: '/user/profile' },
+            
             { label: 'Affiliate Leaderboard', url: '/user/affiliate' },
-            { label: 'Wallet', url: '/user/wallet' }
+            { label: 'Wallet', url: '/user/wallet' },
+            { label: 'My Givaah Credits', url: '/user/givaah-credits' },
         ]
     },
 ]
