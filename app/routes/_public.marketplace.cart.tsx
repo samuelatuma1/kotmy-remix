@@ -243,7 +243,7 @@ export default function MarketplaceCart() {
             <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
               <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Total</div>
               <div className="mt-2 text-2xl font-black text-slate-950">
-                {minimumTotal || maximumTotal ? `${formatMoney(currency, minimumTotal)}${maximumTotal !== minimumTotal ? ` - ${formatMoney(currency, maximumTotal)}` : ""}` : `${currency} 0`}
+                {minimumTotal || maximumTotal ? `${formatMoney(currency, minimumTotal)}${maximumTotal !== minimumTotal ? `   - ${formatMoney(currency, maximumTotal)}` : ""}` : `${currency} 0`}
               </div>
             </div>
           </div>
