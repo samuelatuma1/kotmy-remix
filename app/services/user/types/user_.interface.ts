@@ -38,3 +38,10 @@ export interface UserCreditResponse {
   order_code: string | null;
   credits: Credit[];
 }
+
+export interface UseGivaahCreditsRequest {
+  contestant_id: string;
+  givaah_credits_to_use: number;
+  phone?: string;
+  order_code?: string;
+}
