@@ -360,7 +360,7 @@ export interface OrderItem {
   product_price_max: number;
   min_amount_total: number;
   max_amount_total: number;
-  status: string;
+  status: OrderProductStatus;
   currency: string;
   location_contact_phone: string | null;
   location_name: string | null;
@@ -380,6 +380,26 @@ export interface OrderPaymentDetails {
   amount: number;
   reference: string;
   payment_link: string | null;
+}
+
+export enum OrderStatus {
+  PendingPrePayment = "PendingPrePayment",
+  Pending = "Pending",
+  Processing = "Processing",
+  PaidPendingFulfillment = "PaidPendingFulfillment",
+  PartiallyFulfilled = "PartiallyFulfilled",
+  FullyFulfilled = "FullyFulfilled",
+  Completed = "Completed",
+  Cancelled = "Cancelled",
+}
+
+export enum OrderProductStatus {
+  Pending = "Pending",
+  Active = "Active",
+  Cancelled = "Cancelled",
+  Fulfilled = "Fulfilled",
+  Returned = "Returned",
+  FulfillmentConfirmedByCustomer = "FulfillmentConfirmedByCustomer",
 }
 
 export interface OrderResponse {
@@ -413,8 +433,13 @@ export interface OrderResponse {
   order_code: string;
   min_total_amount: number;
   max_total_amount: number;
-  status: string;
+  status: OrderStatus;
   currency: string;
   payment_details: OrderPaymentDetails;
   is_prepaid: boolean;
+}
+
+export interface CustomerOrdersQuery{
+  order_status?: OrderStatus
+  order_product_status?: OrderProductStatus
 }
