@@ -318,27 +318,27 @@ export interface DeliveryLocation{
   country: string
 }
 export interface CreateDeliveryDetails {
-  name?: string
-  email?: string
-  phone_number: string
-  location?: DeliveryLocation 
+  name?: string;
+  email?: string;
+  phone_number: string;
+  location?: DeliveryLocation;
 }
 
 export interface DeliveryDetails {
-  _id: string,
-  str_id: string,
-  device_fingerprint?: string
-  is_deleted: boolean
-  name?: string
-  email?: string
-  phone_number: string
-  location?: DeliveryLocation 
+  _id: string;
+  str_id: string;
+  device_fingerprint?: string;
+  is_deleted: boolean;
+  name?: string;
+  email?: string;
+  phone_number: string;
+  location?: DeliveryLocation;
 }
 
 
-export interface ICartDeliveryAndPaymentOptions extends IPaginatedResponse<any> {
-  cart: Cart;
-  saved_delivery_details: DeliveryDetails[]; // Adjust type if delivery details structure is known
+export interface ICartDeliveryAndPaymentOptions {
+  cart: Cart | null;
+  saved_delivery_details: DeliveryDetails[];
   payment_options: PaymentOption[];
 }
 
@@ -439,7 +439,7 @@ export interface OrderResponse {
   is_prepaid: boolean;
 }
 
-export interface CustomerOrdersQuery{
-  order_status?: OrderStatus
-  order_product_status?: OrderProductStatus
+export interface CustomerOrdersQuery extends IBasePaginationQuery {
+  order_status?: OrderStatus;
+  order_product_status?: OrderProductStatus;
 }

@@ -252,6 +252,22 @@ export class ApiEndPoints {
         return `/v2/api/partner/cart/items`
     }
 
+    static get getPartnerCartDelivery(){
+        return `/v2/api/partner/cart-delivery`
+    }
+
+    static get createPartnerDeliveryDetails(){
+        return `/v2/api/partner/delivery-details`
+    }
+
+    static get placePartnerOrders(){
+        return `/v2/api/partner/orders`
+    }
+
+    static get getPartnerOrders(){
+        return `/v2/api/partner/orders`
+    }
+
     static get getPartnerProducts(){
         return `/v2/api/partner/products`
     }

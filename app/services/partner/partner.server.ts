@@ -1,11 +1,43 @@
 // filepath: app/services/partner/partner.server.ts
 import { ApiCall } from "~/lib/api/fetcher";
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { Business, BusinessQuery, Cart, IBusinessOwnerModel, ICreatePartnerDTO, ICreatePartnerProductDTO, IQueryPartnerLocations, IQueryPartnerProduct, IUpdateBusinessStatus, IUpdatePartnerProductDTO, IUpsertCartItemsDTO, PartnerLocation, PartnerProduct, PartnerProductResponse } from "./types/partner.interface";
+import {
+  Business,
+  BusinessQuery,
+  Cart,
+  CreateDeliveryDetails,
+  CustomerOrdersQuery,
+  DeliveryDetails,
+  IBusinessOwnerModel,
+  ICartDeliveryAndPaymentOptions,
+  ICreatePartnerDTO,
+  ICreatePartnerProductDTO,
+  IQueryPartnerLocations,
+  IQueryPartnerProduct,
+  IUpdateBusinessStatus,
+  IUpdatePartnerProductDTO,
+  IUpsertCartItemsDTO,
+  OrderResponse,
+  PartnerLocation,
+  PartnerProduct,
+  PartnerProductResponse,
+  PlaceOrderDTO,
+} from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 
 export class PartnerServer {
+  private buildQueryString(query: object) {
+    return new URLSearchParams(
+      Object.entries(query as Record<string, unknown>).reduce((acc, [key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          acc[key] = String(value);
+        }
+        return acc;
+      }, {} as Record<string, string>)
+    ).toString();
+  }
+
   private appendIfPresent(formData: FormData, key: string, value?: string | number | boolean | null) {
     if (value !== undefined && value !== null && value !== "") {
       formData.append(key, String(value));
@@ -30,12 +62,7 @@ export class PartnerServer {
   }
 
   async searchPartners(query: BusinessQuery, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<Business>>> {
-    const params = new URLSearchParams(
-      Object.entries(query).reduce((acc, [k, v]) => {
-        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
-        return acc;
-      }, {} as Record<string, string>)
-    ).toString();
+    const params = this.buildQueryString(query);
     const url = `${ApiEndPoints.partnerSearch}?${params}`;
     const { data, error } = await ApiCall.call<IPaginatedResponse<Business>, unknown>({
       url,
@@ -155,12 +182,7 @@ export class PartnerServer {
   }
 
   async getPartnerProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
-    const params = new URLSearchParams(
-      Object.entries(query).reduce((acc, [k, v]) => {
-        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
-        return acc;
-      }, {} as Record<string, string>)
-    ).toString();
+    const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getPartnerProducts}?${params}`;
 
@@ -174,12 +196,7 @@ export class PartnerServer {
   }
 
   async getMarketplaceProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
-    const params = new URLSearchParams(
-      Object.entries(query).reduce((acc, [k, v]) => {
-        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
-        return acc;
-      }, {} as Record<string, string>)
-    ).toString();
+    const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getMarketplaceProducts}?${params}`;
 
@@ -220,16 +237,56 @@ export class PartnerServer {
   }
 
   async getPartnerLocations(query: IQueryPartnerLocations, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerLocation>>> {
-    const params = new URLSearchParams(
-      Object.entries(query).reduce((acc, [k, v]) => {
-        if (v !== undefined && v !== null && v !== "") acc[k] = String(v);
-        return acc;
-      }, {} as Record<string, string>)
-    ).toString();
+    const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getPartnerLocations}?${params}`;
 
      const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerLocation>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getCartDeliveryAndPaymentOptions(cookies?: string): Promise<TFetcherResponse<ICartDeliveryAndPaymentOptions>> {
+    const { data, error } = await ApiCall.call<ICartDeliveryAndPaymentOptions, unknown>({
+      url: ApiEndPoints.getPartnerCartDelivery,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async createDeliveryDetails(dto: CreateDeliveryDetails, cookies?: string): Promise<TFetcherResponse<DeliveryDetails>> {
+    const { data, error } = await ApiCall.call<DeliveryDetails, CreateDeliveryDetails>({
+      url: ApiEndPoints.createPartnerDeliveryDetails,
+      method: "POST",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async placeOrder(dto: PlaceOrderDTO, cookies?: string): Promise<TFetcherResponse<OrderResponse[]>> {
+    const { data, error } = await ApiCall.call<OrderResponse[], PlaceOrderDTO>({
+      url: ApiEndPoints.placePartnerOrders,
+      method: "POST",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getCustomerOrders(query: CustomerOrdersQuery, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.getPartnerOrders}?${params}` : ApiEndPoints.getPartnerOrders;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<OrderResponse>, unknown>({
       url,
       method: "GET",
     }, cookies);

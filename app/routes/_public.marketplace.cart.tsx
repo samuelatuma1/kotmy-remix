@@ -299,16 +299,15 @@ export default function MarketplaceCart() {
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Checkout</div>
             <p className="mt-2 text-sm leading-6 text-slate-600">
-              Checkout is intentionally stubbed for now and will be wired up later.
+              Continue to delivery details, payment selection, and order placement.
             </p>
           </div>
-          <button
-            type="button"
-            disabled
-            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-5 py-3 text-sm font-bold text-slate-400"
+          <Link
+            to="/marketplace/checkout"
+            className="inline-flex items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
           >
-            Checkout coming soon
-          </button>
+            Checkout
+          </Link>
         </div>
       </section>
     </main>
