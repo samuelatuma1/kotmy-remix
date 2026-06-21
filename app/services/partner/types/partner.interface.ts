@@ -2,6 +2,7 @@
 
 import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
 import { ILoginResponseDTO, UserProfile } from "~/services/auth/types/auth.dtos";
+import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 
 export interface AddressDTO {
   street: string;
@@ -296,4 +297,124 @@ export interface IUpsertCartItemsDTO {
 export interface ICartItemCountSummary {
   itemCount: number;
   distinctItemCount: number;
+}
+
+export enum PaymentOptionKey{
+  pay_inperson = "pay_inperson",
+  prepay = "prepay"
+}
+
+export interface PaymentOption {
+  name: string;
+  description: string;
+  key: PaymentOptionKey;
+  is_available: boolean;
+}
+
+export interface DeliveryLocation{
+  street: string
+  city: string
+  state: string
+  country: string
+}
+export interface CreateDeliveryDetails {
+  name?: string
+  email?: string
+  phone_number: string
+  location?: DeliveryLocation 
+}
+
+export interface DeliveryDetails {
+  _id: string,
+  str_id: string,
+  device_fingerprint?: string
+  is_deleted: boolean
+  name?: string
+  email?: string
+  phone_number: string
+  location?: DeliveryLocation 
+}
+
+
+export interface ICartDeliveryAndPaymentOptions extends IPaginatedResponse<any> {
+  cart: Cart;
+  saved_delivery_details: DeliveryDetails[]; // Adjust type if delivery details structure is known
+  payment_options: PaymentOption[];
+}
+
+export interface PlaceOrderDTO {
+  delivery_details_id: string;
+  payment_option: PaymentOptionKey;
+  prepay_redirect_url?: string;
+}
+
+export interface OrderItem {
+  product_id: string;
+  product_name: string;
+  product_location_id: string | null;
+  business_id: string;
+  quantity: number;
+  discount_code: string | null;
+  discount_amount: number;
+  product_price_min: number;
+  product_price_max: number;
+  min_amount_total: number;
+  max_amount_total: number;
+  status: string;
+  currency: string;
+  location_contact_phone: string | null;
+  location_name: string | null;
+  location_street: string | null;
+  location_city: string | null;
+  location_state: string | null;
+  location_country: string | null;
+  order_item_id: string;
+  fulfilled_at: string | null;
+  fulfilled_by: string | null;
+  fulfilled_by_email: string | null;
+}
+
+export interface OrderPaymentDetails {
+  payment_option: PaymentOptionKey;
+  status: string;
+  amount: number;
+  reference: string;
+  payment_link: string | null;
+}
+
+export interface OrderResponse {
+  _id: string;
+  str_id: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  user_id: string;
+  device_fingerprint: string | null;
+  order_type: string;
+  cart_id: string;
+  business_id: string;
+  business_name: string;
+  business_email: string;
+  business_phone_number: string;
+  business_contact_person_name: string;
+  business_contact_person_email: string;
+  business_contact_person_phone: string;
+  delivery_details_id: string;
+  delivery_phone_number: string;
+  delivery_name: string;
+  delivery_email: string;
+  delivery_street: string;
+  delivery_city: string;
+  delivery_state: string;
+  delivery_country: string;
+  location_contact_phones: string[];
+  orders: OrderItem[];
+  order_group_id: string;
+  order_code: string;
+  min_total_amount: number;
+  max_total_amount: number;
+  status: string;
+  currency: string;
+  payment_details: OrderPaymentDetails;
+  is_prepaid: boolean;
 }
