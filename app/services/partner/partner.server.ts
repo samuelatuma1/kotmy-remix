@@ -6,6 +6,7 @@ import {
   BusinessQuery,
   Cart,
   CreateDeliveryDetails,
+  BusinessSearchOrderDTO,
   CustomerOrdersQuery,
   DeliveryDetails,
   IBusinessOwnerModel,
@@ -284,8 +285,21 @@ export class PartnerServer {
 
   async getCustomerOrders(query: CustomerOrdersQuery, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
     const params = this.buildQueryString(query);
-    const url = params ? `${ApiEndPoints.getPartnerOrders}?${params}` : ApiEndPoints.getPartnerOrders;
+    const url = params ? `${ApiEndPoints.getCustomerOrders}?${params}` : ApiEndPoints.getCustomerOrders;
 
+    const { data, error } = await ApiCall.call<IPaginatedResponse<OrderResponse>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getPartnerOrders(query: BusinessSearchOrderDTO, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.getPartnerOrders}?${params}` : ApiEndPoints.getPartnerOrders;
+    
     const { data, error } = await ApiCall.call<IPaginatedResponse<OrderResponse>, unknown>({
       url,
       method: "GET",

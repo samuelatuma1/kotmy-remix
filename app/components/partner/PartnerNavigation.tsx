@@ -15,7 +15,9 @@ const navsWSubs = [
     {
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
             { label: 'Manage Products', icon: icons.adminTournamentIcon, url:  '/partners/add'},
-            { label: 'Manage Locations', icon: icons.adminTournamentIcon, url:  '/partners/location'}
+            { label: 'Manage Locations', icon: icons.adminTournamentIcon, url:  '/partners/location'},
+            { label: 'Manage Orders', icon: icons.adminTournamentIcon, url:  '/partners/orders'}
+
         ]
     },
 ]

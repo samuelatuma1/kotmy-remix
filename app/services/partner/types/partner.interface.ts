@@ -443,3 +443,10 @@ export interface CustomerOrdersQuery extends IBasePaginationQuery {
   order_status?: OrderStatus;
   order_product_status?: OrderProductStatus;
 }
+
+export interface BusinessSearchOrderDTO extends IBasePaginationQuery {
+  order_status?: OrderStatus;
+  order_product_status?: OrderProductStatus;
+  order_code?: string;
+  delivery_phone_number?: string;
+}

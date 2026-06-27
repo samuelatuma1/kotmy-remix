@@ -268,9 +268,15 @@ export class ApiEndPoints {
         return `/v2/api/partner/orders`
     }
 
-    static get getPartnerOrders(){
+    static get getCustomerOrders(){
         return `/v2/api/partner/orders`
     }
+
+    static get getPartnerOrders(){
+        return `/v2/api/partner/business/orders`
+    }
+
+    
 
     static get getPartnerProducts(){
         return `/v2/api/partner/products`
