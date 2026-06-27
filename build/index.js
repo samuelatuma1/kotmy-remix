@@ -137,7 +137,7 @@ import {
 } from "@remix-run/react";
 
 // app/global.css
-var global_default = "/build/_assets/global-W4QEEYR6.css";
+var global_default = "/build/_assets/global-ZOHYJUGU.css";
 
 // app/autoplaycarousel.css
 var autoplaycarousel_default = "/build/_assets/autoplaycarousel-WQPXPBOV.css";
@@ -429,22 +429,22 @@ var toastTimeouts = /* @__PURE__ */ new Map(), addToRemoveQueue = (toastId) => {
     });
   }, TOAST_REMOVE_DELAY);
   toastTimeouts.set(toastId, timeout);
-}, reducer = (state, action31) => {
-  switch (action31.type) {
+}, reducer = (state, action32) => {
+  switch (action32.type) {
     case "ADD_TOAST":
       return {
         ...state,
-        toasts: [action31.toast, ...state.toasts].slice(0, TOAST_LIMIT)
+        toasts: [action32.toast, ...state.toasts].slice(0, TOAST_LIMIT)
       };
     case "UPDATE_TOAST":
       return {
         ...state,
         toasts: state.toasts.map(
-          (t) => t.id === action31.toast.id ? { ...t, ...action31.toast } : t
+          (t) => t.id === action32.toast.id ? { ...t, ...action32.toast } : t
         )
       };
     case "DISMISS_TOAST": {
-      let { toastId } = action31;
+      let { toastId } = action32;
       return toastId ? addToRemoveQueue(toastId) : state.toasts.forEach((toast5) => {
         addToRemoveQueue(toast5.id);
       }), {
@@ -458,17 +458,17 @@ var toastTimeouts = /* @__PURE__ */ new Map(), addToRemoveQueue = (toastId) => {
       };
     }
     case "REMOVE_TOAST":
-      return action31.toastId === void 0 ? {
+      return action32.toastId === void 0 ? {
         ...state,
         toasts: []
       } : {
         ...state,
-        toasts: state.toasts.filter((t) => t.id !== action31.toastId)
+        toasts: state.toasts.filter((t) => t.id !== action32.toastId)
       };
   }
 }, listeners = [], memoryState = { toasts: [] };
-function dispatch(action31) {
-  memoryState = reducer(memoryState, action31), listeners.forEach((listener) => {
+function dispatch(action32) {
+  memoryState = reducer(memoryState, action32), listeners.forEach((listener) => {
     listener(memoryState);
   });
 }
@@ -510,7 +510,7 @@ import { jsxDEV as jsxDEV5 } from "react/jsx-dev-runtime";
 function Toaster() {
   let { toasts } = useToast();
   return /* @__PURE__ */ jsxDEV5(ToastProvider, { children: [
-    toasts.map(function({ id, title, description, action: action31, ...props }) {
+    toasts.map(function({ id, title, description, action: action32, ...props }) {
       return /* @__PURE__ */ jsxDEV5(Toast, { ...props, children: [
         /* @__PURE__ */ jsxDEV5("div", { className: "grid gap-1", children: [
           title && /* @__PURE__ */ jsxDEV5(ToastTitle, { children: title }, void 0, !1, {
@@ -528,7 +528,7 @@ function Toaster() {
           lineNumber: 19,
           columnNumber: 13
         }, this),
-        action31,
+        action32,
         /* @__PURE__ */ jsxDEV5(ToastClose, {}, void 0, !1, {
           fileName: "app/components/reusables/toaster.tsx",
           lineNumber: 26,
@@ -1149,6 +1149,15 @@ var ApiEndPoints = class {
   }
   static get getPartnerOrders() {
     return "/v2/api/partner/business/orders";
+  }
+  static getPartnerOrderById(orderId) {
+    return `/v2/api/partner/business/order/${orderId}`;
+  }
+  static get fulfillPartnerOrder() {
+    return "/v2/api/partner/orders/fulfill";
+  }
+  static get cancelPartnerOrder() {
+    return "/v2/api/partner/orders/cancel";
   }
   static get getPartnerProducts() {
     return "/v2/api/partner/products";
@@ -9083,6 +9092,29 @@ var PartnerServer = class {
     }, cookies);
     return error ? { error } : { data };
   }
+  async getOrderById(orderId, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.getPartnerOrderById(orderId),
+      method: "GET"
+    }, cookies);
+    return error ? { error } : { data };
+  }
+  async fulfillOrder(dto, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.fulfillPartnerOrder,
+      method: "PATCH",
+      data: dto
+    }, cookies);
+    return error ? { error } : { data };
+  }
+  async cancelOrder(dto, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.cancelPartnerOrder,
+      method: "PATCH",
+      data: dto
+    }, cookies);
+    return error ? { error } : { data };
+  }
 }, partnerServer = new PartnerServer();
 
 // app/routes/partners.product.update.$productId.tsx
@@ -10276,12 +10308,12 @@ function CategoryInputs({ categories }) {
 // app/components/admin/tournament/StageInputs.tsx
 import { useReducer } from "react";
 import { jsxDEV as jsxDEV61 } from "react/jsx-dev-runtime";
-function reducer2(stages, action31) {
-  return action31.type === "add" ? [...stages, {
+function reducer2(stages, action32) {
+  return action32.type === "add" ? [...stages, {
     stage: (stages.at(-1)?.stage ?? 0) + 1,
     weight: 0,
     rates: { social_media: { type: "facebook", amount: 0 }, tally: 0, judge: 0, givaah: 0 }
-  }] : action31.type === "remove" ? stages.filter((stage) => stage.stage !== action31.stageNumber || stage._id !== action31.value) : action31.type === "edit_sm_type" ? stages.map((stage) => stage.stage === action31.stageNumber ? { ...stage, rates: { ...stage.rates, social_media: { ...stage.rates.social_media, type: action31.value } } } : stage) : action31.type === "edit_stage_number" && !stages.some((stage) => stage.stage === action31.value) ? stages.map((stage) => stage.stage === action31.stageNumber ? { ...stage, stage: action31.value } : stage) : action31.type === "edit_stage_weight" ? stages.map((stage) => stage.stage === action31.stageNumber ? { ...stage, weight: action31.value } : stage) : stages;
+  }] : action32.type === "remove" ? stages.filter((stage) => stage.stage !== action32.stageNumber || stage._id !== action32.value) : action32.type === "edit_sm_type" ? stages.map((stage) => stage.stage === action32.stageNumber ? { ...stage, rates: { ...stage.rates, social_media: { ...stage.rates.social_media, type: action32.value } } } : stage) : action32.type === "edit_stage_number" && !stages.some((stage) => stage.stage === action32.value) ? stages.map((stage) => stage.stage === action32.stageNumber ? { ...stage, stage: action32.value } : stage) : action32.type === "edit_stage_weight" ? stages.map((stage) => stage.stage === action32.stageNumber ? { ...stage, weight: action32.value } : stage) : stages;
 }
 function StageInputs({ stages }) {
   let [stagesState, dispatch2] = useReducer(reducer2, stages ?? []);
@@ -14038,109 +14070,18 @@ function Tournament() {
   }, this);
 }
 
-// app/routes/partners.orders.$orderItemId.tsx
-var partners_orders_orderItemId_exports = {};
-__export(partners_orders_orderItemId_exports, {
-  default: () => PartnerOrderItemPage,
-  loader: () => loader19
-});
-import { json as json20 } from "@remix-run/node";
-import { Link as Link14, useLoaderData as useLoaderData17 } from "@remix-run/react";
-import { jsxDEV as jsxDEV79 } from "react/jsx-dev-runtime";
-async function loader19({ params }) {
-  return json20({
-    orderItemId: params.orderItemId ?? ""
-  });
-}
-function PartnerOrderItemPage() {
-  let { orderItemId } = useLoaderData17();
-  return /* @__PURE__ */ jsxDEV79("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxDEV79("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: /* @__PURE__ */ jsxDEV79("div", { className: "max-w-3xl space-y-4", children: [
-      /* @__PURE__ */ jsxDEV79("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Order item" }, void 0, !1, {
-        fileName: "app/routes/partners.orders.$orderItemId.tsx",
-        lineNumber: 21,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV79("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Order item details" }, void 0, !1, {
-        fileName: "app/routes/partners.orders.$orderItemId.tsx",
-        lineNumber: 24,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV79("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "This route is ready for order-item level actions such as payment confirmation or fulfillment updates." }, void 0, !1, {
-        fileName: "app/routes/partners.orders.$orderItemId.tsx",
-        lineNumber: 27,
-        columnNumber: 11
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/partners.orders.$orderItemId.tsx",
-      lineNumber: 20,
-      columnNumber: 9
-    }, this) }, void 0, !1, {
-      fileName: "app/routes/partners.orders.$orderItemId.tsx",
-      lineNumber: 19,
-      columnNumber: 7
-    }, this),
-    /* @__PURE__ */ jsxDEV79("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-      /* @__PURE__ */ jsxDEV79("div", { className: "rounded-2xl bg-slate-50 p-5", children: [
-        /* @__PURE__ */ jsxDEV79("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order item ID" }, void 0, !1, {
-          fileName: "app/routes/partners.orders.$orderItemId.tsx",
-          lineNumber: 35,
-          columnNumber: 11
-        }, this),
-        /* @__PURE__ */ jsxDEV79("div", { className: "mt-2 break-all text-lg font-black text-slate-950", children: orderItemId || "Missing order item id" }, void 0, !1, {
-          fileName: "app/routes/partners.orders.$orderItemId.tsx",
-          lineNumber: 36,
-          columnNumber: 11
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/routes/partners.orders.$orderItemId.tsx",
-        lineNumber: 34,
-        columnNumber: 9
-      }, this),
-      /* @__PURE__ */ jsxDEV79("div", { className: "mt-5 flex flex-wrap gap-3", children: /* @__PURE__ */ jsxDEV79(
-        Link14,
-        {
-          to: "/partner/orders",
-          className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
-          children: "Back to orders"
-        },
-        void 0,
-        !1,
-        {
-          fileName: "app/routes/partners.orders.$orderItemId.tsx",
-          lineNumber: 40,
-          columnNumber: 11
-        },
-        this
-      ) }, void 0, !1, {
-        fileName: "app/routes/partners.orders.$orderItemId.tsx",
-        lineNumber: 39,
-        columnNumber: 9
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/partners.orders.$orderItemId.tsx",
-      lineNumber: 33,
-      columnNumber: 7
-    }, this)
-  ] }, void 0, !0, {
-    fileName: "app/routes/partners.orders.$orderItemId.tsx",
-    lineNumber: 18,
-    columnNumber: 5
-  }, this);
-}
-
 // app/routes/_public.marketplace._index.tsx
 var public_marketplace_index_exports = {};
 __export(public_marketplace_index_exports, {
   action: () => action13,
   default: () => MarketplaceHome,
-  loader: () => loader20
+  loader: () => loader19
 });
-import { json as json21 } from "@remix-run/node";
-import { Form as Form15, Link as Link15, useFetcher as useFetcher12, useLoaderData as useLoaderData18, useNavigation as useNavigation6 } from "@remix-run/react";
+import { json as json20 } from "@remix-run/node";
+import { Form as Form15, Link as Link14, useFetcher as useFetcher12, useLoaderData as useLoaderData17, useNavigation as useNavigation6 } from "@remix-run/react";
 import { ShoppingCart } from "lucide-react";
 import { useEffect as useEffect20, useMemo as useMemo3, useState as useState29 } from "react";
-import { jsxDEV as jsxDEV80 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV79 } from "react/jsx-dev-runtime";
 function buildMarketplaceQuery(searchParams) {
   let query = {};
   for (let [key, value] of searchParams.entries())
@@ -14217,23 +14158,23 @@ function buildCartPayload(formData) {
     cart_items: [parseCartItemPayload(formData)]
   };
 }
-async function loader20({ request }) {
+async function loader19({ request }) {
   let url = new URL(request.url), cookieHeader = request.headers.get("Cookie") ?? void 0;
   if (url.searchParams.get("intent") === "cart") {
     let cartRes = await partnerServer.getCart(cookieHeader);
-    return cartRes.error ? json21({
+    return cartRes.error ? json20({
       cart: null,
       cartError: typeof cartRes.error.detail == "string" ? cartRes.error.detail : "Unable to load cart"
-    }) : json21({
+    }) : json20({
       cart: cartRes.data ?? null
     });
   }
   let query = buildMarketplaceQuery(url.searchParams), productsRes = await partnerServer.getMarketplaceProducts(query);
-  return productsRes.error ? json21({
+  return productsRes.error ? json20({
     products: emptyPaginatedProducts(query.page_size ?? 20),
     query,
     productError: typeof productsRes.error.detail == "string" ? productsRes.error.detail : "Unable to load products"
-  }) : json21({
+  }) : json20({
     products: productsRes.data,
     query
   });
@@ -14241,14 +14182,14 @@ async function loader20({ request }) {
 async function action13({ request }) {
   let formData = await request.formData();
   if (String(formData.get("intent") ?? "add-to-cart") !== "add-to-cart")
-    return json21({ error: "Unsupported cart action" }, { status: 400 });
+    return json20({ error: "Unsupported cart action" }, { status: 400 });
   let cookieHeader = request.headers.get("Cookie") ?? void 0, payload = buildCartPayload(formData), cartRes = await partnerServer.upsertCartItems(payload, cookieHeader);
-  return cartRes.error ? json21(
+  return cartRes.error ? json20(
     {
       error: typeof cartRes.error.detail == "string" ? cartRes.error.detail : "Unable to update cart"
     },
     { status: 400 }
-  ) : json21({
+  ) : json20({
     cart: cartRes.data
   });
 }
@@ -14264,9 +14205,9 @@ function ProductCard({
   isSubmitting
 }) {
   let imageSrc = product.main_image_url || product.image_urls?.[0] || no_image_default, hasRange = product.price_max > product.price_min, priceLabel = product.price_min === 0 && product.price_max === 0 ? "Free" : hasRange ? `${formatPrice(product.currency, product.price_min)} - ${formatPrice(product.currency, product.price_max)}` : formatPrice(product.currency, product.price_min), locationCount = product.product_locations?.length ?? 0, buttonLabel = isSubmitting ? "Adding..." : "Add to cart";
-  return /* @__PURE__ */ jsxDEV80("article", { className: "flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
-    /* @__PURE__ */ jsxDEV80("div", { className: "relative aspect-[4/3] overflow-hidden bg-slate-100", children: [
-      /* @__PURE__ */ jsxDEV80(
+  return /* @__PURE__ */ jsxDEV79("article", { className: "flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
+    /* @__PURE__ */ jsxDEV79("div", { className: "relative aspect-[4/3] overflow-hidden bg-slate-100", children: [
+      /* @__PURE__ */ jsxDEV79(
         "img",
         {
           src: imageSrc,
@@ -14283,7 +14224,7 @@ function ProductCard({
         },
         this
       ),
-      /* @__PURE__ */ jsxDEV80("div", { className: "absolute left-4 top-4 rounded-full bg-slate-950/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur", children: product.status.replace(/_/g, " ") }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "absolute left-4 top-4 rounded-full bg-slate-950/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur", children: product.status.replace(/_/g, " ") }, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 228,
         columnNumber: 9
@@ -14293,16 +14234,16 @@ function ProductCard({
       lineNumber: 221,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV80("div", { className: "flex-1 flex flex-col gap-4 p-5 min-h-0", children: [
-      /* @__PURE__ */ jsxDEV80("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxDEV80("div", { className: "flex items-start justify-between gap-4", children: [
-          /* @__PURE__ */ jsxDEV80("div", { children: [
-            /* @__PURE__ */ jsxDEV80("h3", { className: "text-lg font-black text-slate-950 line-clamp-1", children: product.name }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV79("div", { className: "flex-1 flex flex-col gap-4 p-5 min-h-0", children: [
+      /* @__PURE__ */ jsxDEV79("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxDEV79("div", { className: "flex items-start justify-between gap-4", children: [
+          /* @__PURE__ */ jsxDEV79("div", { children: [
+            /* @__PURE__ */ jsxDEV79("h3", { className: "text-lg font-black text-slate-950 line-clamp-1", children: product.name }, void 0, !1, {
               fileName: "app/routes/_public.marketplace._index.tsx",
               lineNumber: 238,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV80("p", { className: "text-sm font-medium leading-6 text-slate-500 line-clamp-2", children: product.description }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV79("p", { className: "text-sm font-medium leading-6 text-slate-500 line-clamp-2", children: product.description }, void 0, !1, {
               fileName: "app/routes/_public.marketplace._index.tsx",
               lineNumber: 239,
               columnNumber: 15
@@ -14312,7 +14253,7 @@ function ProductCard({
             lineNumber: 237,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV79("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 241,
             columnNumber: 13
@@ -14322,13 +14263,13 @@ function ProductCard({
           lineNumber: 236,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV80("div", { className: "flex items-center justify-between gap-3", children: [
-          /* @__PURE__ */ jsxDEV80("span", { className: "text-base font-black text-slate-950", children: priceLabel }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV79("div", { className: "flex items-center justify-between gap-3", children: [
+          /* @__PURE__ */ jsxDEV79("span", { className: "text-base font-black text-slate-950", children: priceLabel }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 247,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-medium text-slate-400", children: locationCount > 0 ? `${locationCount} location${locationCount === 1 ? "" : "s"}` : "Online only" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV79("span", { className: "text-xs font-medium text-slate-400", children: locationCount > 0 ? `${locationCount} location${locationCount === 1 ? "" : "s"}` : "Online only" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 248,
             columnNumber: 13
@@ -14343,7 +14284,7 @@ function ProductCard({
         lineNumber: 235,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsxDEV79("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 256,
         columnNumber: 13
@@ -14352,13 +14293,13 @@ function ProductCard({
         lineNumber: 254,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "mt-auto flex items-center justify-between gap-3 border-slate-100 pt-4", children: [
-        /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-medium text-slate-400", children: product.accepts_prepayment ? "Prepayment supported" : "Pay on confirmation" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "mt-auto flex items-center justify-between gap-3 border-slate-100 pt-4", children: [
+        /* @__PURE__ */ jsxDEV79("span", { className: "text-xs font-medium text-slate-400", children: product.accepts_prepayment ? "Prepayment supported" : "Pay on confirmation" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 263,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV80(
+        /* @__PURE__ */ jsxDEV79(
           "button",
           {
             type: "button",
@@ -14366,7 +14307,7 @@ function ProductCard({
             className: "inline-flex items-center gap-2 rounded-full border border-slate-900 bg-slate-950 px-4 py-2 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-wait disabled:opacity-70",
             disabled: isSubmitting,
             children: [
-              /* @__PURE__ */ jsxDEV80(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV79(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
                 fileName: "app/routes/_public.marketplace._index.tsx",
                 lineNumber: 272,
                 columnNumber: 13
@@ -14400,35 +14341,35 @@ function ProductCard({
   }, this);
 }
 function MarketplaceSkeleton() {
-  return /* @__PURE__ */ jsxDEV80("div", { className: "grid gap-5 md:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxDEV80("div", { className: "animate-pulse overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)]", children: [
-    /* @__PURE__ */ jsxDEV80("div", { className: "aspect-[4/3] bg-slate-200" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV79("div", { className: "grid gap-5 md:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxDEV79("div", { className: "animate-pulse overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(15,23,42,0.04)]", children: [
+    /* @__PURE__ */ jsxDEV79("div", { className: "aspect-[4/3] bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace._index.tsx",
       lineNumber: 365,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV80("div", { className: "space-y-4 p-5", children: [
-      /* @__PURE__ */ jsxDEV80("div", { className: "h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV79("div", { className: "space-y-4 p-5", children: [
+      /* @__PURE__ */ jsxDEV79("div", { className: "h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 367,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 368,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "h-4 w-4/5 rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "h-4 w-4/5 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 369,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "flex items-center justify-between", children: [
-        /* @__PURE__ */ jsxDEV80("div", { className: "h-5 w-24 rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxDEV79("div", { className: "h-5 w-24 rounded-full bg-slate-200" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 371,
           columnNumber: 15
         }, this),
-        /* @__PURE__ */ jsxDEV80("div", { className: "h-9 w-32 rounded-full bg-slate-200" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV79("div", { className: "h-9 w-32 rounded-full bg-slate-200" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 372,
           columnNumber: 15
@@ -14454,7 +14395,7 @@ function MarketplaceSkeleton() {
   }, this);
 }
 function MarketplaceHome() {
-  let { products, query, productError } = useLoaderData18(), navigation = useNavigation6(), cartSummaryFetcher = useFetcher12(), cartMutationFetcher = useFetcher12(), [cartState, setCartState] = useState29(null), [cartHydrated, setCartHydrated] = useState29(!1);
+  let { products, query, productError } = useLoaderData17(), navigation = useNavigation6(), cartSummaryFetcher = useFetcher12(), cartMutationFetcher = useFetcher12(), [cartState, setCartState] = useState29(null), [cartHydrated, setCartHydrated] = useState29(!1);
   useEffect20(() => {
     cartSummaryFetcher.load("/marketplace?intent=cart");
   }, []), useEffect20(() => {
@@ -14468,26 +14409,26 @@ function MarketplaceHome() {
     let locationId = getProductLocationId(product);
     locationId && formData.set("product_location_id", locationId), cartMutationFetcher.submit(formData, { method: "post", action: "/marketplace" });
   };
-  return /* @__PURE__ */ jsxDEV80("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxDEV80("section", { className: "relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxDEV80("div", { className: "absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,23,42,0.04),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(79,70,229,0.06),transparent_28%)]" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV79("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxDEV79("section", { className: "relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxDEV79("div", { className: "absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,23,42,0.04),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(79,70,229,0.06),transparent_28%)]" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 440,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-start", children: /* @__PURE__ */ jsxDEV80("div", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxDEV80("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Marketplace" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("div", { className: "relative grid gap-6 lg:grid-cols-[1.35fr_0.65fr] lg:items-start", children: /* @__PURE__ */ jsxDEV79("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxDEV79("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Marketplace" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 443,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV80("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxDEV80("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Discover products with a clean, calm shopping experience." }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV79("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsxDEV79("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Discover products with a clean, calm shopping experience." }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 447,
             columnNumber: 15
           }, this),
-          /* @__PURE__ */ jsxDEV80("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Search by keyword and location, then add items to a cart that stays friendly for guests and signed-in users alike." }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV79("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Search by keyword and location, then add items to a cart that stays friendly for guests and signed-in users alike." }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 450,
             columnNumber: 15
@@ -14497,20 +14438,20 @@ function MarketplaceHome() {
           lineNumber: 446,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-wrap items-center gap-3", children: [
-          /* @__PURE__ */ jsxDEV80(
-            Link15,
+        /* @__PURE__ */ jsxDEV79("div", { className: "flex flex-wrap items-center gap-3", children: [
+          /* @__PURE__ */ jsxDEV79(
+            Link14,
             {
               to: "/marketplace/cart",
               className: "inline-flex items-center gap-3 rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
               children: [
-                /* @__PURE__ */ jsxDEV80(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
+                /* @__PURE__ */ jsxDEV79(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
                   fileName: "app/routes/_public.marketplace._index.tsx",
                   lineNumber: 460,
                   columnNumber: 17
                 }, this),
                 "View Cart",
-                /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-white/15 px-2.5 py-1 text-xs font-black", children: cartHydrated ? cartItemCount : "\u2026" }, void 0, !1, {
+                /* @__PURE__ */ jsxDEV79("span", { className: "rounded-full bg-white/15 px-2.5 py-1 text-xs font-black", children: cartHydrated ? cartItemCount : "\u2026" }, void 0, !1, {
                   fileName: "app/routes/_public.marketplace._index.tsx",
                   lineNumber: 462,
                   columnNumber: 17
@@ -14526,8 +14467,8 @@ function MarketplaceHome() {
             },
             this
           ),
-          /* @__PURE__ */ jsxDEV80(
-            Link15,
+          /* @__PURE__ */ jsxDEV79(
+            Link14,
             {
               to: "/marketplace",
               className: "inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
@@ -14547,7 +14488,7 @@ function MarketplaceHome() {
           lineNumber: 455,
           columnNumber: 13
         }, this),
-        productError || mutationError || cartError ? /* @__PURE__ */ jsxDEV80("div", { className: "rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: productError || mutationError || cartError }, void 0, !1, {
+        productError || mutationError || cartError ? /* @__PURE__ */ jsxDEV79("div", { className: "rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: productError || mutationError || cartError }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 475,
           columnNumber: 15
@@ -14561,24 +14502,24 @@ function MarketplaceHome() {
         lineNumber: 441,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV80(
-        Link15,
+      /* @__PURE__ */ jsxDEV79(
+        Link14,
         {
           to: "/marketplace/cart",
           "aria-label": "View cart",
           className: "absolute right-5 top-5 hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 sm:inline-flex",
           children: [
-            /* @__PURE__ */ jsxDEV80(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV79(ShoppingCart, { className: "h-4 w-4" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace._index.tsx",
               lineNumber: 517,
               columnNumber: 11
             }, this),
-            /* @__PURE__ */ jsxDEV80("span", { children: "Cart" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV79("span", { children: "Cart" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace._index.tsx",
               lineNumber: 518,
               columnNumber: 11
             }, this),
-            /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-slate-950 px-2.5 py-1 text-xs font-black text-white", children: cartHydrated ? cartItemCount : "\u2026" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV79("span", { className: "rounded-full bg-slate-950 px-2.5 py-1 text-xs font-black text-white", children: cartHydrated ? cartItemCount : "\u2026" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace._index.tsx",
               lineNumber: 519,
               columnNumber: 11
@@ -14599,14 +14540,14 @@ function MarketplaceHome() {
       lineNumber: 439,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV80("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxDEV80(Form15, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
-      /* @__PURE__ */ jsxDEV80("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Search products" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV79("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxDEV79(Form15, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+      /* @__PURE__ */ jsxDEV79("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsxDEV79("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Search products" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 528,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV80(
+        /* @__PURE__ */ jsxDEV79(
           "input",
           {
             type: "text",
@@ -14629,13 +14570,13 @@ function MarketplaceHome() {
         lineNumber: 527,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV80("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Location" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV79("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsxDEV79("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Location" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 538,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV80(
+        /* @__PURE__ */ jsxDEV79(
           "input",
           {
             type: "text",
@@ -14658,8 +14599,8 @@ function MarketplaceHome() {
         lineNumber: 537,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV80("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsxDEV80(
+      /* @__PURE__ */ jsxDEV79("div", { className: "flex gap-3", children: [
+        /* @__PURE__ */ jsxDEV79(
           "button",
           {
             type: "submit",
@@ -14675,8 +14616,8 @@ function MarketplaceHome() {
           },
           this
         ),
-        /* @__PURE__ */ jsxDEV80(
-          Link15,
+        /* @__PURE__ */ jsxDEV79(
+          Link14,
           {
             to: "/marketplace",
             className: "inline-flex h-12 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
@@ -14705,15 +14646,15 @@ function MarketplaceHome() {
       lineNumber: 525,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV80("section", { className: "mt-8", children: [
-      /* @__PURE__ */ jsxDEV80("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
-        /* @__PURE__ */ jsxDEV80("div", { children: [
-          /* @__PURE__ */ jsxDEV80("h2", { className: "text-2xl font-black text-slate-950", children: "Catalog" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV79("section", { className: "mt-8", children: [
+      /* @__PURE__ */ jsxDEV79("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
+        /* @__PURE__ */ jsxDEV79("div", { children: [
+          /* @__PURE__ */ jsxDEV79("h2", { className: "text-2xl font-black text-slate-950", children: "Catalog" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 567,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV80("p", { className: "text-sm text-slate-500", children: totalItems > 0 ? `${totalItems} product${totalItems === 1 ? "" : "s"} found` : "No products found for this search" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV79("p", { className: "text-sm text-slate-500", children: totalItems > 0 ? `${totalItems} product${totalItems === 1 ? "" : "s"} found` : "No products found for this search" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace._index.tsx",
             lineNumber: 568,
             columnNumber: 13
@@ -14723,7 +14664,7 @@ function MarketplaceHome() {
           lineNumber: 566,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV80("div", { className: "rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+        /* @__PURE__ */ jsxDEV79("div", { className: "rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
           "Page ",
           products?.current_page ?? 1
         ] }, void 0, !0, {
@@ -14736,11 +14677,11 @@ function MarketplaceHome() {
         lineNumber: 565,
         columnNumber: 9
       }, this),
-      showSkeleton ? /* @__PURE__ */ jsxDEV80(MarketplaceSkeleton, {}, void 0, !1, {
+      showSkeleton ? /* @__PURE__ */ jsxDEV79(MarketplaceSkeleton, {}, void 0, !1, {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 578,
         columnNumber: 11
-      }, this) : products?.items?.length ? /* @__PURE__ */ jsxDEV80("div", { className: "grid gap-5 md:grid-cols-2 xl:grid-cols-3", children: products.items.map((product) => /* @__PURE__ */ jsxDEV80(
+      }, this) : products?.items?.length ? /* @__PURE__ */ jsxDEV79("div", { className: "grid gap-5 md:grid-cols-2 xl:grid-cols-3", children: products.items.map((product) => /* @__PURE__ */ jsxDEV79(
         ProductCard,
         {
           product,
@@ -14759,13 +14700,13 @@ function MarketplaceHome() {
         fileName: "app/routes/_public.marketplace._index.tsx",
         lineNumber: 580,
         columnNumber: 11
-      }, this) : /* @__PURE__ */ jsxDEV80("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsxDEV80("h3", { className: "text-xl font-black text-slate-950", children: "No matching products" }, void 0, !1, {
+      }, this) : /* @__PURE__ */ jsxDEV79("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsxDEV79("h3", { className: "text-xl font-black text-slate-950", children: "No matching products" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 592,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV80("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Try a broader keyword or location to expand the catalog results." }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV79("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Try a broader keyword or location to expand the catalog results." }, void 0, !1, {
           fileName: "app/routes/_public.marketplace._index.tsx",
           lineNumber: 593,
           columnNumber: 13
@@ -14780,7 +14721,7 @@ function MarketplaceHome() {
       lineNumber: 564,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV80("section", { className: "mt-8", children: /* @__PURE__ */ jsxDEV80(
+    /* @__PURE__ */ jsxDEV79("section", { className: "mt-8", children: /* @__PURE__ */ jsxDEV79(
       Pagination,
       {
         lastKey: products?.last_key_id,
@@ -14811,12 +14752,12 @@ function MarketplaceHome() {
 var public_marketplace_orders_exports = {};
 __export(public_marketplace_orders_exports, {
   default: () => MarketplaceOrders,
-  loader: () => loader21
+  loader: () => loader20
 });
-import { json as json22 } from "@remix-run/node";
-import { Form as Form16, Link as Link16, useLoaderData as useLoaderData19, useNavigation as useNavigation7 } from "@remix-run/react";
+import { json as json21 } from "@remix-run/node";
+import { Form as Form16, Link as Link15, useLoaderData as useLoaderData18, useNavigation as useNavigation7 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft2, PackageSearch, ShoppingBag } from "lucide-react";
-import { jsxDEV as jsxDEV81 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV80 } from "react/jsx-dev-runtime";
 var orderStatusOptions = [
   { label: "All statuses", value: "" },
   { label: "Pending pre-payment", value: "PendingPrePayment" },
@@ -14885,23 +14826,23 @@ function formatDate2(value) {
   }).format(new Date(value));
 }
 function OrdersSkeleton() {
-  return /* @__PURE__ */ jsxDEV81("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxDEV81("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsxDEV81("div", { className: "h-4 w-28 rounded-full bg-slate-200" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV80("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxDEV80("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsxDEV80("div", { className: "h-4 w-28 rounded-full bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.orders.tsx",
       lineNumber: 109,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV81("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.orders.tsx",
       lineNumber: 110,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV81("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.orders.tsx",
       lineNumber: 111,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV81("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.orders.tsx",
       lineNumber: 112,
       columnNumber: 11
@@ -14920,14 +14861,14 @@ function OrderItemRow({
   item
 }) {
   let hasRange = item.min_amount_total !== item.max_amount_total;
-  return /* @__PURE__ */ jsxDEV81("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxDEV81("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
-    /* @__PURE__ */ jsxDEV81("div", { children: [
-      /* @__PURE__ */ jsxDEV81("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV80("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+    /* @__PURE__ */ jsxDEV80("div", { children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.orders.tsx",
         lineNumber: 130,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV81("div", { className: "mt-1 text-xs text-slate-500", children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "mt-1 text-xs text-slate-500", children: [
         "Qty ",
         item.quantity,
         " \xB7 ",
@@ -14942,7 +14883,7 @@ function OrderItemRow({
       lineNumber: 129,
       columnNumber: 9
     }, this),
-    /* @__PURE__ */ jsxDEV81("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: item.status.replace(/_/g, " ") }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: item.status.replace(/_/g, " ") }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.orders.tsx",
       lineNumber: 135,
       columnNumber: 9
@@ -14959,21 +14900,21 @@ function OrderItemRow({
 }
 function OrderCard({ order }) {
   let paymentLink = order.payment_details?.payment_link, isPrepaid = order.payment_details?.payment_option === "prepay";
-  return /* @__PURE__ */ jsxDEV81("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
-    /* @__PURE__ */ jsxDEV81("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-      /* @__PURE__ */ jsxDEV81("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxDEV81("div", { className: "flex flex-wrap items-center gap-2", children: [
-          /* @__PURE__ */ jsxDEV81("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV80("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
+    /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-wrap items-center gap-2", children: [
+          /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 152,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: order.status.replace(/_/g, " ") }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: order.status.replace(/_/g, " ") }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 155,
             columnNumber: 13
           }, this),
-          isPrepaid ? /* @__PURE__ */ jsxDEV81("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }, void 0, !1, {
+          isPrepaid ? /* @__PURE__ */ jsxDEV80("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 159,
             columnNumber: 15
@@ -14983,13 +14924,13 @@ function OrderCard({ order }) {
           lineNumber: 151,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { children: [
-          /* @__PURE__ */ jsxDEV81("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { children: [
+          /* @__PURE__ */ jsxDEV80("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 166,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
+          /* @__PURE__ */ jsxDEV80("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
             order.business_contact_person_name,
             " \xB7 ",
             order.delivery_phone_number
@@ -15008,14 +14949,14 @@ function OrderCard({ order }) {
         lineNumber: 150,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV81("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
-        /* @__PURE__ */ jsxDEV81("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV80("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
+        /* @__PURE__ */ jsxDEV80("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 175,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate2(order.created_at) }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate2(order.created_at) }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 176,
             columnNumber: 13
@@ -15025,13 +14966,13 @@ function OrderCard({ order }) {
           lineNumber: 174,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 179,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney2(order.currency, order.min_total_amount) : `${formatMoney2(order.currency, order.min_total_amount)} - ${formatMoney2(order.currency, order.max_total_amount)}` }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney2(order.currency, order.min_total_amount) : `${formatMoney2(order.currency, order.min_total_amount)} - ${formatMoney2(order.currency, order.max_total_amount)}` }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 180,
             columnNumber: 13
@@ -15051,14 +14992,14 @@ function OrderCard({ order }) {
       lineNumber: 149,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV81("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
-      /* @__PURE__ */ jsxDEV81("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 191,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsxDEV81(OrderItemRow, { item }, item.order_item_id, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsxDEV80(OrderItemRow, { item }, item.order_item_id, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 194,
           columnNumber: 15
@@ -15072,24 +15013,24 @@ function OrderCard({ order }) {
         lineNumber: 190,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV81("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV80("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 200,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
-          /* @__PURE__ */ jsxDEV81("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
+          /* @__PURE__ */ jsxDEV80("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 202,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { children: order.delivery_street }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { children: order.delivery_street }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 203,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { children: [
+          /* @__PURE__ */ jsxDEV80("div", { children: [
             order.delivery_city,
             ", ",
             order.delivery_state,
@@ -15100,9 +15041,9 @@ function OrderCard({ order }) {
             lineNumber: 204,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { className: "mt-3", children: [
+          /* @__PURE__ */ jsxDEV80("div", { className: "mt-3", children: [
             "Payment option: ",
-            /* @__PURE__ */ jsxDEV81("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 208,
               columnNumber: 31
@@ -15112,9 +15053,9 @@ function OrderCard({ order }) {
             lineNumber: 207,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { children: [
+          /* @__PURE__ */ jsxDEV80("div", { children: [
             "Payment status: ",
-            /* @__PURE__ */ jsxDEV81("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 211,
               columnNumber: 31
@@ -15124,9 +15065,9 @@ function OrderCard({ order }) {
             lineNumber: 210,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { children: [
+          /* @__PURE__ */ jsxDEV80("div", { children: [
             "Reference: ",
-            /* @__PURE__ */ jsxDEV81("span", { className: "font-semibold text-slate-900", children: order.payment_details?.reference }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("span", { className: "font-semibold text-slate-900", children: order.payment_details?.reference }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 214,
               columnNumber: 26
@@ -15136,7 +15077,7 @@ function OrderCard({ order }) {
             lineNumber: 213,
             columnNumber: 13
           }, this),
-          paymentLink ? /* @__PURE__ */ jsxDEV81(
+          paymentLink ? /* @__PURE__ */ jsxDEV80(
             "a",
             {
               href: paymentLink,
@@ -15175,30 +15116,30 @@ function OrderCard({ order }) {
     columnNumber: 5
   }, this);
 }
-async function loader21({ request }) {
+async function loader20({ request }) {
   let url = new URL(request.url), cookieHeader = request.headers.get("Cookie") ?? void 0, query = buildCustomerOrdersQuery(url.searchParams), ordersRes = await partnerServer.getCustomerOrders(query, cookieHeader);
-  return ordersRes.error ? json22({
+  return ordersRes.error ? json21({
     orders: emptyPaginatedOrders(query.page_size ?? 10),
     query,
     error: typeof ordersRes.error.detail == "string" ? ordersRes.error.detail : "Unable to load orders"
-  }) : json22({
+  }) : json21({
     orders: ordersRes.data ?? emptyPaginatedOrders(query.page_size ?? 10),
     query
   });
 }
 function MarketplaceOrders() {
-  let { orders, query, error } = useLoaderData19(), isLoading = useNavigation7().state === "loading", hasOrders = orders.items.length > 0;
-  return /* @__PURE__ */ jsxDEV81("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxDEV81("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxDEV81("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-        /* @__PURE__ */ jsxDEV81("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxDEV81(
-            Link16,
+  let { orders, query, error } = useLoaderData18(), isLoading = useNavigation7().state === "loading", hasOrders = orders.items.length > 0;
+  return /* @__PURE__ */ jsxDEV80("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxDEV80("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxDEV80("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsxDEV80(
+            Link15,
             {
               to: "/marketplace",
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
-                /* @__PURE__ */ jsxDEV81(ArrowLeft2, { className: "h-4 w-4" }, void 0, !1, {
+                /* @__PURE__ */ jsxDEV80(ArrowLeft2, { className: "h-4 w-4" }, void 0, !1, {
                   fileName: "app/routes/_public.marketplace.orders.tsx",
                   lineNumber: 268,
                   columnNumber: 15
@@ -15215,18 +15156,18 @@ function MarketplaceOrders() {
             },
             this
           ),
-          /* @__PURE__ */ jsxDEV81("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsxDEV81("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxDEV80("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 272,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV81("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Track and search your marketplace orders." }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Track and search your marketplace orders." }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 275,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV81("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Use the filters below to narrow results by order status or item status." }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Use the filters below to narrow results by order status or item status." }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 278,
               columnNumber: 15
@@ -15241,14 +15182,14 @@ function MarketplaceOrders() {
           lineNumber: 263,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-          /* @__PURE__ */ jsxDEV81("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+          /* @__PURE__ */ jsxDEV80("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 286,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV81("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 287,
               columnNumber: 15
@@ -15258,13 +15199,13 @@ function MarketplaceOrders() {
             lineNumber: 285,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 290,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV81("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 291,
               columnNumber: 15
@@ -15274,13 +15215,13 @@ function MarketplaceOrders() {
             lineNumber: 289,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV81("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV80("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 294,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV81("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV80("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 295,
               columnNumber: 15
@@ -15300,7 +15241,7 @@ function MarketplaceOrders() {
         lineNumber: 262,
         columnNumber: 9
       }, this),
-      error ? /* @__PURE__ */ jsxDEV81("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }, void 0, !1, {
+      error ? /* @__PURE__ */ jsxDEV80("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.orders.tsx",
         lineNumber: 301,
         columnNumber: 11
@@ -15310,20 +15251,20 @@ function MarketplaceOrders() {
       lineNumber: 261,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV81("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxDEV81(Form16, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
-      /* @__PURE__ */ jsxDEV81("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsxDEV81("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxDEV80(Form16, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+      /* @__PURE__ */ jsxDEV80("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 310,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV81(
+        /* @__PURE__ */ jsxDEV80(
           "select",
           {
             name: "order_status",
             defaultValue: query.order_status ?? "",
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderStatusOptions.map((option) => /* @__PURE__ */ jsxDEV81("option", { value: option.value, children: option.label }, option.label, !1, {
+            children: orderStatusOptions.map((option) => /* @__PURE__ */ jsxDEV80("option", { value: option.value, children: option.label }, option.label, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 317,
               columnNumber: 17
@@ -15343,19 +15284,19 @@ function MarketplaceOrders() {
         lineNumber: 309,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV81("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsxDEV81("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV80("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsxDEV80("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 325,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV81(
+        /* @__PURE__ */ jsxDEV80(
           "select",
           {
             name: "order_product_status",
             defaultValue: query.order_product_status ?? "",
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderProductStatusOptions.map((option) => /* @__PURE__ */ jsxDEV81("option", { value: option.value, children: option.label }, option.label, !1, {
+            children: orderProductStatusOptions.map((option) => /* @__PURE__ */ jsxDEV80("option", { value: option.value, children: option.label }, option.label, !1, {
               fileName: "app/routes/_public.marketplace.orders.tsx",
               lineNumber: 332,
               columnNumber: 17
@@ -15375,8 +15316,8 @@ function MarketplaceOrders() {
         lineNumber: 324,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV81("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsxDEV81(
+      /* @__PURE__ */ jsxDEV80("div", { className: "flex gap-3", children: [
+        /* @__PURE__ */ jsxDEV80(
           "button",
           {
             type: "submit",
@@ -15392,8 +15333,8 @@ function MarketplaceOrders() {
           },
           this
         ),
-        /* @__PURE__ */ jsxDEV81(
-          Link16,
+        /* @__PURE__ */ jsxDEV80(
+          Link15,
           {
             to: "/marketplace/orders",
             className: "inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
@@ -15422,15 +15363,15 @@ function MarketplaceOrders() {
       lineNumber: 307,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV81("section", { className: "mt-8", children: [
-      /* @__PURE__ */ jsxDEV81("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
-        /* @__PURE__ */ jsxDEV81("div", { children: [
-          /* @__PURE__ */ jsxDEV81("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV80("section", { className: "mt-8", children: [
+      /* @__PURE__ */ jsxDEV80("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
+        /* @__PURE__ */ jsxDEV80("div", { children: [
+          /* @__PURE__ */ jsxDEV80("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 359,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV81("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV80("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 360,
             columnNumber: 13
@@ -15440,8 +15381,8 @@ function MarketplaceOrders() {
           lineNumber: 358,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV81("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
-          /* @__PURE__ */ jsxDEV81(PackageSearch, { className: "h-4 w-4" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+          /* @__PURE__ */ jsxDEV80(PackageSearch, { className: "h-4 w-4" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.orders.tsx",
             lineNumber: 365,
             columnNumber: 13
@@ -15458,11 +15399,11 @@ function MarketplaceOrders() {
         lineNumber: 357,
         columnNumber: 9
       }, this),
-      isLoading ? /* @__PURE__ */ jsxDEV81(OrdersSkeleton, {}, void 0, !1, {
+      isLoading ? /* @__PURE__ */ jsxDEV80(OrdersSkeleton, {}, void 0, !1, {
         fileName: "app/routes/_public.marketplace.orders.tsx",
         lineNumber: 371,
         columnNumber: 11
-      }, this) : hasOrders ? /* @__PURE__ */ jsxDEV81("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsxDEV81(OrderCard, { order }, order._id, !1, {
+      }, this) : hasOrders ? /* @__PURE__ */ jsxDEV80("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsxDEV80(OrderCard, { order }, order._id, !1, {
         fileName: "app/routes/_public.marketplace.orders.tsx",
         lineNumber: 375,
         columnNumber: 15
@@ -15470,24 +15411,24 @@ function MarketplaceOrders() {
         fileName: "app/routes/_public.marketplace.orders.tsx",
         lineNumber: 373,
         columnNumber: 11
-      }, this) : /* @__PURE__ */ jsxDEV81("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsxDEV81(ShoppingBag, { className: "mx-auto h-10 w-10 text-slate-300" }, void 0, !1, {
+      }, this) : /* @__PURE__ */ jsxDEV80("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsxDEV80(ShoppingBag, { className: "mx-auto h-10 w-10 text-slate-300" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 380,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV81("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders yet" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders yet" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 381,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV81("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Once you place an order, it will appear here for tracking and payment follow-up." }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV80("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Once you place an order, it will appear here for tracking and payment follow-up." }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.orders.tsx",
           lineNumber: 382,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV81(
-          Link16,
+        /* @__PURE__ */ jsxDEV80(
+          Link15,
           {
             to: "/marketplace",
             className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
@@ -15512,7 +15453,7 @@ function MarketplaceOrders() {
       lineNumber: 356,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV81("section", { className: "mt-8", children: /* @__PURE__ */ jsxDEV81(
+    /* @__PURE__ */ jsxDEV80("section", { className: "mt-8", children: /* @__PURE__ */ jsxDEV80(
       Pagination,
       {
         lastKey: orders.last_key_id,
@@ -15543,12 +15484,12 @@ function MarketplaceOrders() {
 var public_results_contestId_exports = {};
 __export(public_results_contestId_exports, {
   default: () => ContestResult,
-  loader: () => loader22
+  loader: () => loader21
 });
 import { redirect as redirect18 } from "@remix-run/node";
-import { useLoaderData as useLoaderData20 } from "@remix-run/react";
-import { jsxDEV as jsxDEV82 } from "react/jsx-dev-runtime";
-async function loader22({ params }) {
+import { useLoaderData as useLoaderData19 } from "@remix-run/react";
+import { jsxDEV as jsxDEV81 } from "react/jsx-dev-runtime";
+async function loader21({ params }) {
   let { contestId } = params;
   if (!contestId)
     return redirect18("/results");
@@ -15556,14 +15497,14 @@ async function loader22({ params }) {
   return error && redirect18("/results"), { contest };
 }
 function ContestResult() {
-  let { contest } = useLoaderData20();
+  let { contest } = useLoaderData19();
   if (!contest)
     throw redirect18("/results");
   console.log(contest);
   let color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray", headings = [], table_results = [];
-  return contest?.final_result_scores && (headings = contest.final_result_headings, table_results = contest.final_result_scores.map((res) => res.table_data)), /* @__PURE__ */ jsxDEV82("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxDEV82("header", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxDEV82("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl uppercase mb-10", children: [
+  return contest?.final_result_scores && (headings = contest.final_result_headings, table_results = contest.final_result_scores.map((res) => res.table_data)), /* @__PURE__ */ jsxDEV81("main", { className: "grow", children: [
+    /* @__PURE__ */ jsxDEV81("header", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxDEV81("h1", { className: "text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl uppercase mb-10", children: [
         contest.name,
         " Result Table"
       ] }, void 0, !0, {
@@ -15571,14 +15512,14 @@ function ContestResult() {
         lineNumber: 37,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV82("div", { className: "grid gap-6 max-w-2xl", children: [
-        /* @__PURE__ */ jsxDEV82("div", { className: "", children: [
-          /* @__PURE__ */ jsxDEV82("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV81("div", { className: "grid gap-6 max-w-2xl", children: [
+        /* @__PURE__ */ jsxDEV81("div", { className: "", children: [
+          /* @__PURE__ */ jsxDEV81("span", { className: "block font-satoshi-bold mb-1", children: "Status" }, void 0, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 42,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV82(StatusTag, { status: contest.status, color }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV81(StatusTag, { status: contest.status, color }, void 0, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 43,
             columnNumber: 25
@@ -15588,14 +15529,14 @@ function ContestResult() {
           lineNumber: 41,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV82("div", { className: "grid grid-cols-2 gap-14", children: [
-          /* @__PURE__ */ jsxDEV82("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV82("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV81("div", { className: "grid grid-cols-2 gap-14", children: [
+          /* @__PURE__ */ jsxDEV81("div", { className: "", children: [
+            /* @__PURE__ */ jsxDEV81("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 47,
               columnNumber: 29
             }, this),
-            /* @__PURE__ */ jsxDEV82("span", { className: "block", children: contest.categories.join(", ") }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV81("span", { className: "block", children: contest.categories.join(", ") }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 48,
               columnNumber: 29
@@ -15605,13 +15546,13 @@ function ContestResult() {
             lineNumber: 46,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV82("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV82("span", { className: "block font-satoshi-bold mb-1", children: "Stages" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV81("div", { className: "", children: [
+            /* @__PURE__ */ jsxDEV81("span", { className: "block font-satoshi-bold mb-1", children: "Stages" }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 51,
               columnNumber: 29
             }, this),
-            /* @__PURE__ */ jsxDEV82("span", { className: "block", children: contest.no_of_stages ?? 0 }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV81("span", { className: "block", children: contest.no_of_stages ?? 0 }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 52,
               columnNumber: 29
@@ -15626,14 +15567,14 @@ function ContestResult() {
           lineNumber: 45,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV82("div", { className: "grid grid-cols-2 gap-14", children: [
-          /* @__PURE__ */ jsxDEV82("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV82("span", { className: "block font-satoshi-bold mb-1", children: "Duration" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV81("div", { className: "grid grid-cols-2 gap-14", children: [
+          /* @__PURE__ */ jsxDEV81("div", { className: "", children: [
+            /* @__PURE__ */ jsxDEV81("span", { className: "block font-satoshi-bold mb-1", children: "Duration" }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 57,
               columnNumber: 29
             }, this),
-            /* @__PURE__ */ jsxDEV82("span", { className: "block", children: "From May 23 to June 20" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV81("span", { className: "block", children: "From May 23 to June 20" }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 58,
               columnNumber: 29
@@ -15643,13 +15584,13 @@ function ContestResult() {
             lineNumber: 56,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV82("div", { className: "", children: [
-            /* @__PURE__ */ jsxDEV82("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV81("div", { className: "", children: [
+            /* @__PURE__ */ jsxDEV81("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 61,
               columnNumber: 29
             }, this),
-            /* @__PURE__ */ jsxDEV82("span", { className: "block", children: contest.prizes }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV81("span", { className: "block", children: contest.prizes }, void 0, !1, {
               fileName: "app/routes/_public.results.$contestId.tsx",
               lineNumber: 62,
               columnNumber: 29
@@ -15674,10 +15615,10 @@ function ContestResult() {
       lineNumber: 36,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV82("section", { className: "bg-white my-16", children: /* @__PURE__ */ jsxDEV82("div", { className: "wrapper py-6", children: [
-      /* @__PURE__ */ jsxDEV82("div", { className: "flex flex-col md:flex-row-reverse gap-6 md:gap-8 justify-between md:items-center py-6", children: [
-        /* @__PURE__ */ jsxDEV82("fieldset", { className: "flex gap-4 flex-wrap sm:justify-end", children: [
-          /* @__PURE__ */ jsxDEV82(Select2, { name: "stage", id: "stage", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV82("option", { value: "1", children: [
+    /* @__PURE__ */ jsxDEV81("section", { className: "bg-white my-16", children: /* @__PURE__ */ jsxDEV81("div", { className: "wrapper py-6", children: [
+      /* @__PURE__ */ jsxDEV81("div", { className: "flex flex-col md:flex-row-reverse gap-6 md:gap-8 justify-between md:items-center py-6", children: [
+        /* @__PURE__ */ jsxDEV81("fieldset", { className: "flex gap-4 flex-wrap sm:justify-end", children: [
+          /* @__PURE__ */ jsxDEV81(Select2, { name: "stage", id: "stage", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV81("option", { value: "1", children: [
             contest.name.toUpperCase(),
             " - ",
             "FINAL RESULT TABLE"
@@ -15690,7 +15631,7 @@ function ContestResult() {
             lineNumber: 71,
             columnNumber: 29
           }, this),
-          /* @__PURE__ */ jsxDEV82(Select2, { name: "category", id: "category", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV82("option", { value: "", children: "Sort by category" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV81(Select2, { name: "category", id: "category", containerClass: "bg-secondary", children: /* @__PURE__ */ jsxDEV81("option", { value: "", children: "Sort by category" }, void 0, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 75,
             columnNumber: 33
@@ -15704,7 +15645,7 @@ function ContestResult() {
           lineNumber: 70,
           columnNumber: 25
         }, this),
-        /* @__PURE__ */ jsxDEV82("span", { className: "whitespace-nowrap font-satoshi-bold", children: "SMV: SOCIAL MEDIA VOTES" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV81("span", { className: "whitespace-nowrap font-satoshi-bold", children: "SMV: SOCIAL MEDIA VOTES" }, void 0, !1, {
           fileName: "app/routes/_public.results.$contestId.tsx",
           lineNumber: 78,
           columnNumber: 25
@@ -15714,14 +15655,14 @@ function ContestResult() {
         lineNumber: 69,
         columnNumber: 21
       }, this),
-      /* @__PURE__ */ jsxDEV82("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV82("table", { className: "w-full table-auto border border-secondary", children: [
-        /* @__PURE__ */ jsxDEV82("thead", { children: /* @__PURE__ */ jsxDEV82("tr", { children: [
-          /* @__PURE__ */ jsxDEV82("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: "S/N" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV81("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsxDEV81("table", { className: "w-full table-auto border border-secondary", children: [
+        /* @__PURE__ */ jsxDEV81("thead", { children: /* @__PURE__ */ jsxDEV81("tr", { children: [
+          /* @__PURE__ */ jsxDEV81("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: "S/N" }, void 0, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 84,
             columnNumber: 37
           }, this),
-          headings.map((heading) => /* @__PURE__ */ jsxDEV82("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: heading }, heading, !1, {
+          headings.map((heading) => /* @__PURE__ */ jsxDEV81("th", { className: "text-left uppercase font-satoshi-black border border-secondary px-6 py-4", children: heading }, heading, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 86,
             columnNumber: 41
@@ -15735,13 +15676,13 @@ function ContestResult() {
           lineNumber: 82,
           columnNumber: 29
         }, this),
-        /* @__PURE__ */ jsxDEV82("tbody", { children: table_results.map((contestant, index) => /* @__PURE__ */ jsxDEV82("tr", { children: [
-          /* @__PURE__ */ jsxDEV82("td", { className: "border border-secondary px-6 py-4", children: index + 1 }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV81("tbody", { children: table_results.map((contestant, index) => /* @__PURE__ */ jsxDEV81("tr", { children: [
+          /* @__PURE__ */ jsxDEV81("td", { className: "border border-secondary px-6 py-4", children: index + 1 }, void 0, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 95,
             columnNumber: 41
           }, this),
-          headings.map((heading) => /* @__PURE__ */ jsxDEV82("td", { className: "border border-secondary px-6 py-4", children: contestant[heading] }, heading, !1, {
+          headings.map((heading) => /* @__PURE__ */ jsxDEV81("td", { className: "border border-secondary px-6 py-4", children: contestant[heading] }, heading, !1, {
             fileName: "app/routes/_public.results.$contestId.tsx",
             lineNumber: 97,
             columnNumber: 45
@@ -15764,7 +15705,7 @@ function ContestResult() {
         lineNumber: 80,
         columnNumber: 21
       }, this),
-      /* @__PURE__ */ jsxDEV82(Pagination, { className: "p-6" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV81(Pagination, { className: "p-6" }, void 0, !1, {
         fileName: "app/routes/_public.results.$contestId.tsx",
         lineNumber: 104,
         columnNumber: 21
@@ -15790,11 +15731,11 @@ var admin_partners_details_id_exports = {};
 __export(admin_partners_details_id_exports, {
   action: () => action14,
   default: () => PartnerDetailsPage,
-  loader: () => loader23
+  loader: () => loader22
 });
-import { json as json24, redirect as redirect19 } from "@remix-run/node";
-import { Form as Form17, useLoaderData as useLoaderData21, useNavigation as useNavigation8, useNavigate as useNavigate13 } from "@remix-run/react";
-import { jsxDEV as jsxDEV83 } from "react/jsx-dev-runtime";
+import { json as json23, redirect as redirect19 } from "@remix-run/node";
+import { Form as Form17, useLoaderData as useLoaderData20, useNavigation as useNavigation8, useNavigate as useNavigate13 } from "@remix-run/react";
+import { jsxDEV as jsxDEV82 } from "react/jsx-dev-runtime";
 var statusColors = {
   Approved: "text-green-600 bg-green-50 border-green-200",
   Pending: "text-yellow-600 bg-yellow-50 border-yellow-200",
@@ -15821,7 +15762,7 @@ function parseReferralPercentage(value) {
   let parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
-async function loader23({ params, request }) {
+async function loader22({ params, request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
     return redirect19("/login");
@@ -15840,7 +15781,7 @@ async function loader23({ params, request }) {
     });
     return redirect19("/admin/partners", { headers });
   }
-  return json24({ business: response.data });
+  return json23({ business: response.data });
 }
 async function action14({ params, request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
@@ -15903,13 +15844,13 @@ async function action14({ params, request }) {
   }
 }
 function DetailCard({ label, value }) {
-  return /* @__PURE__ */ jsxDEV83("div", { className: "rounded-2xl border border-gray-100 bg-white shadow-sm p-4", children: [
-    /* @__PURE__ */ jsxDEV83("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: label }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV82("div", { className: "rounded-2xl border border-gray-100 bg-white shadow-sm p-4", children: [
+    /* @__PURE__ */ jsxDEV82("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: label }, void 0, !1, {
       fileName: "app/routes/admin.partners.details.$id.tsx",
       lineNumber: 133,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV83("div", { className: "mt-2 text-sm font-semibold text-gray-900", children: value ?? "\u2014" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV82("div", { className: "mt-2 text-sm font-semibold text-gray-900", children: value ?? "\u2014" }, void 0, !1, {
       fileName: "app/routes/admin.partners.details.$id.tsx",
       lineNumber: 134,
       columnNumber: 7
@@ -15921,21 +15862,21 @@ function DetailCard({ label, value }) {
   }, this);
 }
 function PartnerDetailsPage() {
-  let { business } = useLoaderData21(), navigation = useNavigation8(), navigate = useNavigate13(), isSubmitting = navigation.state === "submitting";
-  return /* @__PURE__ */ jsxDEV83("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV83("div", { className: "flex items-center gap-3 mb-6", children: [
-      /* @__PURE__ */ jsxDEV83(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
+  let { business } = useLoaderData20(), navigation = useNavigation8(), navigate = useNavigate13(), isSubmitting = navigation.state === "submitting";
+  return /* @__PURE__ */ jsxDEV82("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxDEV82("div", { className: "flex items-center gap-3 mb-6", children: [
+      /* @__PURE__ */ jsxDEV82(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
         fileName: "app/routes/admin.partners.details.$id.tsx",
         lineNumber: 148,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV83("div", { children: [
-        /* @__PURE__ */ jsxDEV83("h1", { className: "text-2xl font-black text-primary", children: business.legal_business_name }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV82("div", { children: [
+        /* @__PURE__ */ jsxDEV82("h1", { className: "text-2xl font-black text-primary", children: business.legal_business_name }, void 0, !1, {
           fileName: "app/routes/admin.partners.details.$id.tsx",
           lineNumber: 150,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("p", { className: "text-sm text-gray-500 mt-1", children: "Business details and admin controls" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("p", { className: "text-sm text-gray-500 mt-1", children: "Business details and admin controls" }, void 0, !1, {
           fileName: "app/routes/admin.partners.details.$id.tsx",
           lineNumber: 151,
           columnNumber: 11
@@ -15950,16 +15891,16 @@ function PartnerDetailsPage() {
       lineNumber: 147,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV83("section", { className: "grid gap-4 lg:grid-cols-[1.4fr_0.9fr]", children: [
-      /* @__PURE__ */ jsxDEV83("div", { className: "grid gap-4", children: [
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("div", { className: "flex flex-wrap items-start justify-between gap-4", children: /* @__PURE__ */ jsxDEV83("div", { children: [
-            /* @__PURE__ */ jsxDEV83("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Business status" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV82("section", { className: "grid gap-4 lg:grid-cols-[1.4fr_0.9fr]", children: [
+      /* @__PURE__ */ jsxDEV82("div", { className: "grid gap-4", children: [
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("div", { className: "flex flex-wrap items-start justify-between gap-4", children: /* @__PURE__ */ jsxDEV82("div", { children: [
+            /* @__PURE__ */ jsxDEV82("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Business status" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 160,
               columnNumber: 17
             }, this),
-            /* @__PURE__ */ jsxDEV83("span", { className: `mt-2 inline-flex px-3 py-1.5 rounded-full border text-xs font-semibold ${statusColors[business.status] || "text-gray-600 bg-gray-100 border-gray-200"}`, children: prettyStatus(business.status) }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("span", { className: `mt-2 inline-flex px-3 py-1.5 rounded-full border text-xs font-semibold ${statusColors[business.status] || "text-gray-600 bg-gray-100 border-gray-200"}`, children: prettyStatus(business.status) }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 161,
               columnNumber: 17
@@ -15973,33 +15914,33 @@ function PartnerDetailsPage() {
             lineNumber: 158,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6", children: [
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Business Email", value: business.business_email }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82("div", { className: "grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6", children: [
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Business Email", value: business.business_email }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 188,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Phone", value: business.phone_number }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Phone", value: business.phone_number }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 189,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Industry", value: business.industry }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Industry", value: business.industry }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 190,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Country", value: business.country_of_incorporation }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Country", value: business.country_of_incorporation }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 191,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Referral %", value: business.referral_percentage }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Referral %", value: business.referral_percentage }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 192,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Owner ID", value: business.owner_id || "Not set" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Owner ID", value: business.owner_id || "Not set" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 193,
               columnNumber: 15
@@ -16014,40 +15955,40 @@ function PartnerDetailsPage() {
           lineNumber: 157,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Business information" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Business information" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 198,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83("div", { className: "grid sm:grid-cols-2 gap-4 mt-4 text-sm", children: [
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Legal Name", value: business.legal_business_name }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82("div", { className: "grid sm:grid-cols-2 gap-4 mt-4 text-sm", children: [
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Legal Name", value: business.legal_business_name }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 200,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "ROC / CAC Number", value: business.roc_cac_number }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "ROC / CAC Number", value: business.roc_cac_number }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 201,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Tax ID", value: business.tax_id }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Tax ID", value: business.tax_id }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 202,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Website", value: business.website }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Website", value: business.website }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 203,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("div", { className: "sm:col-span-2 rounded-2xl border border-gray-100 bg-gray-50 p-4", children: [
-              /* @__PURE__ */ jsxDEV83("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Description" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("div", { className: "sm:col-span-2 rounded-2xl border border-gray-100 bg-gray-50 p-4", children: [
+              /* @__PURE__ */ jsxDEV82("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Description" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 205,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83("p", { className: "mt-2 text-sm leading-6 text-gray-700 whitespace-pre-wrap", children: business.business_description || "\u2014" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82("p", { className: "mt-2 text-sm leading-6 text-gray-700 whitespace-pre-wrap", children: business.business_description || "\u2014" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 206,
                 columnNumber: 17
@@ -16057,17 +15998,17 @@ function PartnerDetailsPage() {
               lineNumber: 204,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("div", { className: "sm:col-span-2 rounded-2xl border border-gray-100 bg-gray-50 p-4", children: [
-              /* @__PURE__ */ jsxDEV83("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Notes" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("div", { className: "sm:col-span-2 rounded-2xl border border-gray-100 bg-gray-50 p-4", children: [
+              /* @__PURE__ */ jsxDEV82("div", { className: "text-xs font-semibold uppercase tracking-wide text-gray-400", children: "Notes" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 209,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83("div", { className: "mt-2 flex flex-wrap gap-2", children: business.notes?.length ? business.notes.map((note, index) => /* @__PURE__ */ jsxDEV83("span", { className: "px-3 py-1 rounded-full bg-white border border-gray-200 text-xs font-medium text-gray-700", children: note }, `${note}-${index}`, !1, {
+              /* @__PURE__ */ jsxDEV82("div", { className: "mt-2 flex flex-wrap gap-2", children: business.notes?.length ? business.notes.map((note, index) => /* @__PURE__ */ jsxDEV82("span", { className: "px-3 py-1 rounded-full bg-white border border-gray-200 text-xs font-medium text-gray-700", children: note }, `${note}-${index}`, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 212,
                 columnNumber: 21
-              }, this)) : /* @__PURE__ */ jsxDEV83("span", { className: "text-sm text-gray-500", children: "No notes available" }, void 0, !1, {
+              }, this)) : /* @__PURE__ */ jsxDEV82("span", { className: "text-sm text-gray-500", children: "No notes available" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 215,
                 columnNumber: 24
@@ -16091,29 +16032,29 @@ function PartnerDetailsPage() {
           lineNumber: 197,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Contact person" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Contact person" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 222,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83("div", { className: "grid sm:grid-cols-2 gap-3 mt-4", children: [
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Name", value: business.contact_person?.name }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82("div", { className: "grid sm:grid-cols-2 gap-3 mt-4", children: [
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Name", value: business.contact_person?.name }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 224,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Email", value: business.contact_person?.email }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Email", value: business.contact_person?.email }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 225,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Phone", value: business.contact_person?.phone }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Phone", value: business.contact_person?.phone }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 226,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(DetailCard, { label: "Country", value: business.contact_person?.country }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(DetailCard, { label: "Country", value: business.contact_person?.country }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 227,
               columnNumber: 15
@@ -16128,19 +16069,19 @@ function PartnerDetailsPage() {
           lineNumber: 221,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Business locations" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Business locations" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 232,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83("div", { className: "grid gap-3 mt-4", children: business.business_locations?.length ? business.business_locations.map((location, index) => /* @__PURE__ */ jsxDEV83("div", { className: "rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm", children: [
-            /* @__PURE__ */ jsxDEV83("div", { className: "font-semibold text-gray-900", children: location.street }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82("div", { className: "grid gap-3 mt-4", children: business.business_locations?.length ? business.business_locations.map((location, index) => /* @__PURE__ */ jsxDEV82("div", { className: "rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm", children: [
+            /* @__PURE__ */ jsxDEV82("div", { className: "font-semibold text-gray-900", children: location.street }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 236,
               columnNumber: 19
             }, this),
-            /* @__PURE__ */ jsxDEV83("div", { className: "text-gray-600 mt-1", children: [
+            /* @__PURE__ */ jsxDEV82("div", { className: "text-gray-600 mt-1", children: [
               location.city,
               ", ",
               location.state,
@@ -16155,7 +16096,7 @@ function PartnerDetailsPage() {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 235,
             columnNumber: 17
-          }, this)) : /* @__PURE__ */ jsxDEV83("div", { className: "text-sm text-gray-500", children: "No business locations available" }, void 0, !1, {
+          }, this)) : /* @__PURE__ */ jsxDEV82("div", { className: "text-sm text-gray-500", children: "No business locations available" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 241,
             columnNumber: 20
@@ -16169,20 +16110,20 @@ function PartnerDetailsPage() {
           lineNumber: 231,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Status history" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Status history" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 246,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83("div", { className: "mt-4 grid gap-3", children: business.status_history?.length ? business.status_history.map((entry2, index) => /* @__PURE__ */ jsxDEV83("div", { className: "rounded-2xl border border-gray-100 p-4", children: [
-            /* @__PURE__ */ jsxDEV83("div", { className: "flex flex-wrap items-center justify-between gap-2", children: [
-              /* @__PURE__ */ jsxDEV83("span", { className: `inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold ${statusColors[entry2.status] || "text-gray-600 bg-gray-100 border-gray-200"}`, children: prettyStatus(entry2.status) }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82("div", { className: "mt-4 grid gap-3", children: business.status_history?.length ? business.status_history.map((entry2, index) => /* @__PURE__ */ jsxDEV82("div", { className: "rounded-2xl border border-gray-100 p-4", children: [
+            /* @__PURE__ */ jsxDEV82("div", { className: "flex flex-wrap items-center justify-between gap-2", children: [
+              /* @__PURE__ */ jsxDEV82("span", { className: `inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold ${statusColors[entry2.status] || "text-gray-600 bg-gray-100 border-gray-200"}`, children: prettyStatus(entry2.status) }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 251,
                 columnNumber: 21
               }, this),
-              /* @__PURE__ */ jsxDEV83("span", { className: "text-xs text-gray-400", children: new Date(entry2.updated_on).toLocaleString() }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82("span", { className: "text-xs text-gray-400", children: new Date(entry2.updated_on).toLocaleString() }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 254,
                 columnNumber: 21
@@ -16192,9 +16133,9 @@ function PartnerDetailsPage() {
               lineNumber: 250,
               columnNumber: 19
             }, this),
-            /* @__PURE__ */ jsxDEV83("div", { className: "mt-2 text-sm text-gray-700", children: [
-              /* @__PURE__ */ jsxDEV83("div", { children: [
-                /* @__PURE__ */ jsxDEV83("span", { className: "font-semibold", children: "Updated by:" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("div", { className: "mt-2 text-sm text-gray-700", children: [
+              /* @__PURE__ */ jsxDEV82("div", { children: [
+                /* @__PURE__ */ jsxDEV82("span", { className: "font-semibold", children: "Updated by:" }, void 0, !1, {
                   fileName: "app/routes/admin.partners.details.$id.tsx",
                   lineNumber: 257,
                   columnNumber: 26
@@ -16206,8 +16147,8 @@ function PartnerDetailsPage() {
                 lineNumber: 257,
                 columnNumber: 21
               }, this),
-              /* @__PURE__ */ jsxDEV83("div", { children: [
-                /* @__PURE__ */ jsxDEV83("span", { className: "font-semibold", children: "Reason:" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82("div", { children: [
+                /* @__PURE__ */ jsxDEV82("span", { className: "font-semibold", children: "Reason:" }, void 0, !1, {
                   fileName: "app/routes/admin.partners.details.$id.tsx",
                   lineNumber: 258,
                   columnNumber: 26
@@ -16228,7 +16169,7 @@ function PartnerDetailsPage() {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 249,
             columnNumber: 17
-          }, this)) : /* @__PURE__ */ jsxDEV83("div", { className: "text-sm text-gray-500", children: "No status history available" }, void 0, !1, {
+          }, this)) : /* @__PURE__ */ jsxDEV82("div", { className: "text-sm text-gray-500", children: "No status history available" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 261,
             columnNumber: 20
@@ -16247,30 +16188,30 @@ function PartnerDetailsPage() {
         lineNumber: 156,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV83("aside", { className: "grid gap-4", children: [
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Update status" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV82("aside", { className: "grid gap-4", children: [
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Update status" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 268,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83(Form17, { method: "post", className: "grid gap-4 mt-4", children: [
-            /* @__PURE__ */ jsxDEV83("input", { type: "hidden", name: "intent", value: "update_status" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82(Form17, { method: "post", className: "grid gap-4 mt-4", children: [
+            /* @__PURE__ */ jsxDEV82("input", { type: "hidden", name: "intent", value: "update_status" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 270,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("input", { type: "hidden", name: "business_id", value: business._id }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("input", { type: "hidden", name: "business_id", value: business._id }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 271,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("input", { type: "hidden", name: "updated_by", value: "" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("input", { type: "hidden", name: "updated_by", value: "" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 272,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(Select2, { label: "Status", name: "status", defaultValue: business.status, required: !0, children: statusOptions.map((status) => /* @__PURE__ */ jsxDEV83("option", { value: status, children: prettyStatus(status) }, status, !1, {
+            /* @__PURE__ */ jsxDEV82(Select2, { label: "Status", name: "status", defaultValue: business.status, required: !0, children: statusOptions.map((status) => /* @__PURE__ */ jsxDEV82("option", { value: status, children: prettyStatus(status) }, status, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 275,
               columnNumber: 19
@@ -16279,17 +16220,17 @@ function PartnerDetailsPage() {
               lineNumber: 273,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Referral Percentage", name: "referral_percentage", type: "number", min: 0, max: 100, step: "0.01", placeholder: "Optional" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Referral Percentage", name: "referral_percentage", type: "number", min: 0, max: 100, step: "0.01", placeholder: "Optional" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 278,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(FormControl, { as: "textarea", labelText: "Reason", name: "reason", placeholder: "Optional reason for change" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(FormControl, { as: "textarea", labelText: "Reason", name: "reason", placeholder: "Optional reason for change" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 279,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-4 py-2 rounded-lg font-semibold", children: isSubmitting ? "Updating..." : "Update status" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-4 py-2 rounded-lg font-semibold", children: isSubmitting ? "Updating..." : "Update status" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 280,
               columnNumber: 15
@@ -16304,50 +16245,50 @@ function PartnerDetailsPage() {
           lineNumber: 267,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV83("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
-          /* @__PURE__ */ jsxDEV83("h2", { className: "text-lg font-bold text-primary", children: "Add business owner" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV82("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
+          /* @__PURE__ */ jsxDEV82("h2", { className: "text-lg font-bold text-primary", children: "Add business owner" }, void 0, !1, {
             fileName: "app/routes/admin.partners.details.$id.tsx",
             lineNumber: 287,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV83(Form17, { method: "post", className: "grid gap-4 mt-4", children: [
-            /* @__PURE__ */ jsxDEV83("input", { type: "hidden", name: "intent", value: "add_owner" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV82(Form17, { method: "post", className: "grid gap-4 mt-4", children: [
+            /* @__PURE__ */ jsxDEV82("input", { type: "hidden", name: "intent", value: "add_owner" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 289,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("input", { type: "hidden", name: "business_id", value: business._id }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("input", { type: "hidden", name: "business_id", value: business._id }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 290,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83("div", { className: "grid sm:grid-cols-2 gap-4", children: [
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "First Name", name: "first_name", required: !0, placeholder: "First name" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82("div", { className: "grid sm:grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "First Name", name: "first_name", required: !0, placeholder: "First name" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 292,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Last Name", name: "last_name", required: !0, placeholder: "Last name" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Last Name", name: "last_name", required: !0, placeholder: "Last name" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 293,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Email", name: "email", type: "email", required: !0, placeholder: "Owner email" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Email", name: "email", type: "email", required: !0, placeholder: "Owner email" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 294,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Phone", name: "phone", type: "tel", required: !0, placeholder: "Phone number" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Phone", name: "phone", type: "tel", required: !0, placeholder: "Phone number" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 295,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Alternate Phone", name: "alternate_phone", type: "tel", required: !0, placeholder: "Alternate phone" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Alternate Phone", name: "alternate_phone", type: "tel", required: !0, placeholder: "Alternate phone" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 296,
                 columnNumber: 17
               }, this),
-              /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Password", name: "password", type: "password", required: !0, placeholder: "Temporary password" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV82(FormControl, { as: "input", labelText: "Password", name: "password", type: "password", required: !0, placeholder: "Temporary password" }, void 0, !1, {
                 fileName: "app/routes/admin.partners.details.$id.tsx",
                 lineNumber: 297,
                 columnNumber: 17
@@ -16357,7 +16298,7 @@ function PartnerDetailsPage() {
               lineNumber: 291,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV83(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-4 py-2 rounded-lg font-semibold", children: isSubmitting ? "Saving..." : "Add owner" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV82(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-4 py-2 rounded-lg font-semibold", children: isSubmitting ? "Saving..." : "Add owner" }, void 0, !1, {
               fileName: "app/routes/admin.partners.details.$id.tsx",
               lineNumber: 299,
               columnNumber: 15
@@ -16394,38 +16335,38 @@ var admin_tournaments_ID_edit_exports = {};
 __export(admin_tournaments_ID_edit_exports, {
   action: () => action15,
   default: () => EditTournament,
-  loader: () => loader24
+  loader: () => loader23
 });
-import { json as json25, redirect as redirect20 } from "@remix-run/node";
-import { useLoaderData as useLoaderData22, useNavigate as useNavigate14 } from "@remix-run/react";
+import { json as json24, redirect as redirect20 } from "@remix-run/node";
+import { useLoaderData as useLoaderData21, useNavigate as useNavigate14 } from "@remix-run/react";
 
 // app/components/admin/tournament/EditTournamentForm.tsx
 import { Form as Form18 } from "@remix-run/react";
 import { useState as useState30 } from "react";
-import { jsxDEV as jsxDEV84 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV83 } from "react/jsx-dev-runtime";
 function EditTournamentForm({ tournament }) {
   let [fileList, setFileList] = useState30(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
-  return /* @__PURE__ */ jsxDEV84(Form18, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsxDEV84("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV83(Form18, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsxDEV83("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }, void 0, !1, {
       fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
       lineNumber: 16,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV84("div", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV84("div", { className: "flex items-center gap-x-5", children: [
-        filePreview ? /* @__PURE__ */ jsxDEV84("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV83("div", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsxDEV83("div", { className: "flex items-center gap-x-5", children: [
+        filePreview ? /* @__PURE__ */ jsxDEV83("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }, void 0, !1, {
           fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
           lineNumber: 20,
           columnNumber: 27
-        }, this) : /* @__PURE__ */ jsxDEV84("img", { className: "w-20 h-20 rounded-lg object-cover", src: tournament.image || no_image_default, alt: "Tournament banner" }, void 0, !1, {
+        }, this) : /* @__PURE__ */ jsxDEV83("img", { className: "w-20 h-20 rounded-lg object-cover", src: tournament.image || no_image_default, alt: "Tournament banner" }, void 0, !1, {
           fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
           lineNumber: 21,
           columnNumber: 27
         }, this),
-        /* @__PURE__ */ jsxDEV84("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
-          /* @__PURE__ */ jsxDEV84("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
+        /* @__PURE__ */ jsxDEV83("div", { className: "flex flex-col items-start gap-2 max-xs:text-xs", children: [
+          /* @__PURE__ */ jsxDEV83("label", { htmlFor: "image", className: "border-2 border-secondary text-primary cursor-pointer font-semibold py-2 px-4 rounded-lg", children: [
             "Change Photo",
-            /* @__PURE__ */ jsxDEV84("input", { id: "image", name: "image", type: "file", onChange: (e) => {
+            /* @__PURE__ */ jsxDEV83("input", { id: "image", name: "image", type: "file", onChange: (e) => {
               setFileList(e.currentTarget.files);
             }, className: "hidden" }, void 0, !1, {
               fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
@@ -16437,13 +16378,13 @@ function EditTournamentForm({ tournament }) {
             lineNumber: 24,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV84("span", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ jsxDEV84("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV83("span", { className: "flex items-center gap-3", children: [
+            /* @__PURE__ */ jsxDEV83("span", { children: fileName || "PNG, JPG (max. 1440x900px)" }, void 0, !1, {
               fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
               lineNumber: 29,
               columnNumber: 29
             }, this),
-            fileName ? /* @__PURE__ */ jsxDEV84(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }, void 0, !1, {
+            fileName ? /* @__PURE__ */ jsxDEV83(Svg, { src: icons.closeIcon, onClick: clearFilePreview, className: "text-red-600 cursor-pointer" }, void 0, !1, {
               fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
               lineNumber: 31,
               columnNumber: 35
@@ -16463,17 +16404,17 @@ function EditTournamentForm({ tournament }) {
         lineNumber: 18,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV84(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", defaultValue: tournament.name, required: !0 }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", defaultValue: tournament.name, required: !0 }, void 0, !1, {
         fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
         lineNumber: 37,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV84(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: tournament.id, required: !0 }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV83(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", defaultValue: tournament.id, required: !0 }, void 0, !1, {
         fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
         lineNumber: 38,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV84(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", defaultValue: tournament.description, required: !0 }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV83(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", defaultValue: tournament.description, required: !0 }, void 0, !1, {
         fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
         lineNumber: 39,
         columnNumber: 17
@@ -16483,13 +16424,13 @@ function EditTournamentForm({ tournament }) {
       lineNumber: 17,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV84("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsxDEV84(Cta_default, { element: "button", onClick: clearFilePreview, type: "reset", className: "px-8 py-2 rounded-lg font-medium border-secondary active:border-accent sm:hover:border-accent", variant: "outline", children: "Reset" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV83("div", { className: "flex max-sm:flex-col justify-end gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsxDEV83(Cta_default, { element: "button", onClick: clearFilePreview, type: "reset", className: "px-8 py-2 rounded-lg font-medium border-secondary active:border-accent sm:hover:border-accent", variant: "outline", children: "Reset" }, void 0, !1, {
         fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
         lineNumber: 42,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV84(Cta_default, { element: "button", type: "submit", name: "tournamentId", value: tournament._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Tournament" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV83(Cta_default, { element: "button", type: "submit", name: "tournamentId", value: tournament._id, className: "px-8 py-2 rounded-lg font-medium", children: "Edit Tournament" }, void 0, !1, {
         fileName: "app/components/admin/tournament/EditTournamentForm.tsx",
         lineNumber: 43,
         columnNumber: 17
@@ -16507,14 +16448,14 @@ function EditTournamentForm({ tournament }) {
 }
 
 // app/routes/admin.tournaments.$ID.edit.tsx
-import { jsxDEV as jsxDEV85 } from "react/jsx-dev-runtime";
-async function loader24({ params, request }) {
+import { jsxDEV as jsxDEV84 } from "react/jsx-dev-runtime";
+async function loader23({ params, request }) {
   let { data: tournament, error } = await tournamentRepo.getTournamentById(params.ID);
   if (!tournament) {
     let { headers } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
     return redirect20("/admin/tournaments", { headers });
   }
-  return json25({ tournament });
+  return json24({ tournament });
 }
 async function action15({ request }) {
   let formData = await request.formData(), payload = prepareTournamentDto(formData);
@@ -16528,21 +16469,21 @@ async function action15({ request }) {
     return redirect20("/admin/tournaments", { headers: headers2 });
   } else if (error) {
     let { headers: headers2 } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` });
-    return json25(error, { headers: headers2 });
+    return json24(error, { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `error::Sorry, this tournament no longer exists::${Date.now()}` });
   return redirect20("/admin/tournaments", { headers });
 }
 function EditTournament() {
-  let { tournament } = useLoaderData22(), navigate = useNavigate14();
-  return /* @__PURE__ */ jsxDEV85("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV85("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsxDEV85(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
+  let { tournament } = useLoaderData21(), navigate = useNavigate14();
+  return /* @__PURE__ */ jsxDEV84("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxDEV84("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsxDEV84(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
         fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
         lineNumber: 45,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV85("span", { className: "font-black text-primary", children: "Edit Tournament" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV84("span", { className: "font-black text-primary", children: "Edit Tournament" }, void 0, !1, {
         fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
         lineNumber: 46,
         columnNumber: 17
@@ -16552,7 +16493,7 @@ function EditTournament() {
       lineNumber: 44,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV85(EditTournamentForm, { tournament }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV84(EditTournamentForm, { tournament }, void 0, !1, {
       fileName: "app/routes/admin.tournaments.$ID.edit.tsx",
       lineNumber: 48,
       columnNumber: 13
@@ -16569,12 +16510,12 @@ var public_marketplace_cart_exports = {};
 __export(public_marketplace_cart_exports, {
   action: () => action16,
   default: () => MarketplaceCart,
-  loader: () => loader25
+  loader: () => loader24
 });
-import { json as json26 } from "@remix-run/node";
-import { Link as Link17, useFetcher as useFetcher13, useLoaderData as useLoaderData23, useNavigation as useNavigation9 } from "@remix-run/react";
+import { json as json25 } from "@remix-run/node";
+import { Link as Link16, useFetcher as useFetcher13, useLoaderData as useLoaderData22, useNavigation as useNavigation9 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft3, Minus, Plus as Plus2, ShoppingCart as ShoppingCart2, Trash2 } from "lucide-react";
-import { jsxDEV as jsxDEV86 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV85 } from "react/jsx-dev-runtime";
 function formatMoney3(currency, value) {
   return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
@@ -16591,23 +16532,23 @@ function buildCartPayload2(formData) {
     cart_items: [parseCartItemPayload2(formData)]
   };
 }
-async function loader25({ request }) {
+async function loader24({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? void 0, cartRes = await partnerServer.getCart(cookieHeader);
-  return cartRes.error ? json26({
+  return cartRes.error ? json25({
     cart: null,
     cartError: typeof cartRes.error.detail == "string" ? cartRes.error.detail : "Unable to load cart"
-  }) : json26({
+  }) : json25({
     cart: cartRes.data ?? null
   });
 }
 async function action16({ request }) {
   let formData = await request.formData(), cookieHeader = request.headers.get("Cookie") ?? void 0, payload = buildCartPayload2(formData), cartRes = await partnerServer.upsertCartItems(payload, cookieHeader);
-  return cartRes.error ? json26(
+  return cartRes.error ? json25(
     {
       error: typeof cartRes.error.detail == "string" ? cartRes.error.detail : "Unable to update cart"
     },
     { status: 400 }
-  ) : json26({
+  ) : json25({
     cart: cartRes.data
   });
 }
@@ -16618,8 +16559,8 @@ function CartLineItem({
     let formData = new FormData();
     formData.set("product_id", item.product_id), formData.set("quantity", String(Math.max(0, quantity))), item.product_location_id && formData.set("product_location_id", item.product_location_id), fetcher.submit(formData, { method: "post", action: "/marketplace/cart" });
   };
-  return /* @__PURE__ */ jsxDEV86("article", { className: "grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr_auto] sm:p-5", children: [
-    /* @__PURE__ */ jsxDEV86("div", { className: "overflow-hidden rounded-2xl bg-slate-100", children: /* @__PURE__ */ jsxDEV86("img", { src: imageSrc, alt: product.name, className: "aspect-square h-full w-full object-cover", loading: "lazy" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV85("article", { className: "grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr_auto] sm:p-5", children: [
+    /* @__PURE__ */ jsxDEV85("div", { className: "overflow-hidden rounded-2xl bg-slate-100", children: /* @__PURE__ */ jsxDEV85("img", { src: imageSrc, alt: product.name, className: "aspect-square h-full w-full object-cover", loading: "lazy" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.cart.tsx",
       lineNumber: 103,
       columnNumber: 9
@@ -16628,15 +16569,15 @@ function CartLineItem({
       lineNumber: 102,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV86("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
-        /* @__PURE__ */ jsxDEV86("div", { children: [
-          /* @__PURE__ */ jsxDEV86("h3", { className: "text-lg font-black text-slate-950", children: product.name }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV85("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+        /* @__PURE__ */ jsxDEV85("div", { children: [
+          /* @__PURE__ */ jsxDEV85("h3", { className: "text-lg font-black text-slate-950", children: product.name }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.cart.tsx",
             lineNumber: 109,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV86("p", { className: "mt-1 text-sm leading-6 text-slate-500 line-clamp-2", children: product.description }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV85("p", { className: "mt-1 text-sm leading-6 text-slate-500 line-clamp-2", children: product.description }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.cart.tsx",
             lineNumber: 110,
             columnNumber: 13
@@ -16646,7 +16587,7 @@ function CartLineItem({
           lineNumber: 108,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 112,
           columnNumber: 11
@@ -16656,18 +16597,18 @@ function CartLineItem({
         lineNumber: 107,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
-        /* @__PURE__ */ jsxDEV86("span", { className: "font-bold text-slate-900", children: product.price_min === 0 && product.price_max === 0 ? "Free" : product.price_min === product.price_max ? formatMoney3(product.currency, product.price_min) : `${formatMoney3(product.currency, product.price_min)} - ${formatMoney3(product.currency, product.price_max)}` }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
+        /* @__PURE__ */ jsxDEV85("span", { className: "font-bold text-slate-900", children: product.price_min === 0 && product.price_max === 0 ? "Free" : product.price_min === product.price_max ? formatMoney3(product.currency, product.price_min) : `${formatMoney3(product.currency, product.price_min)} - ${formatMoney3(product.currency, product.price_max)}` }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 118,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86("span", { className: "text-slate-400", children: "\u2022" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("span", { className: "text-slate-400", children: "\u2022" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 125,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86("span", { className: "text-slate-500", children: locationLabel }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("span", { className: "text-slate-500", children: locationLabel }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 126,
           columnNumber: 11
@@ -16677,7 +16618,7 @@ function CartLineItem({
         lineNumber: 117,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsxDEV86("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`, !1, {
+      /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsxDEV85("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 131,
         columnNumber: 13
@@ -16691,9 +16632,9 @@ function CartLineItem({
       lineNumber: 106,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-col items-stretch justify-between gap-3 sm:items-end", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 p-1", children: [
-        /* @__PURE__ */ jsxDEV86(
+    /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-col items-stretch justify-between gap-3 sm:items-end", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 p-1", children: [
+        /* @__PURE__ */ jsxDEV85(
           "button",
           {
             type: "button",
@@ -16701,7 +16642,7 @@ function CartLineItem({
             disabled: isSubmitting || item.quantity <= 0,
             className: "grid h-9 w-9 place-items-center rounded-full border border-transparent text-slate-600 transition hover:border-slate-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50",
             "aria-label": `Decrease quantity for ${product.name}`,
-            children: /* @__PURE__ */ jsxDEV86(Minus, { className: "h-4 w-4" }, void 0, !1, {
+            children: /* @__PURE__ */ jsxDEV85(Minus, { className: "h-4 w-4" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 147,
               columnNumber: 13
@@ -16716,12 +16657,12 @@ function CartLineItem({
           },
           this
         ),
-        /* @__PURE__ */ jsxDEV86("span", { className: "min-w-10 px-2 text-center text-sm font-black text-slate-950", children: item.quantity }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("span", { className: "min-w-10 px-2 text-center text-sm font-black text-slate-950", children: item.quantity }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 150,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86(
+        /* @__PURE__ */ jsxDEV85(
           "button",
           {
             type: "button",
@@ -16729,7 +16670,7 @@ function CartLineItem({
             disabled: isSubmitting,
             className: "grid h-9 w-9 place-items-center rounded-full border border-transparent text-slate-600 transition hover:border-slate-200 hover:bg-white disabled:cursor-not-allowed disabled:opacity-50",
             "aria-label": `Increase quantity for ${product.name}`,
-            children: /* @__PURE__ */ jsxDEV86(Plus2, { className: "h-4 w-4" }, void 0, !1, {
+            children: /* @__PURE__ */ jsxDEV85(Plus2, { className: "h-4 w-4" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 159,
               columnNumber: 13
@@ -16749,7 +16690,7 @@ function CartLineItem({
         lineNumber: 139,
         columnNumber: 9
       }, this),
-      /* @__PURE__ */ jsxDEV86(
+      /* @__PURE__ */ jsxDEV85(
         "button",
         {
           type: "button",
@@ -16757,7 +16698,7 @@ function CartLineItem({
           disabled: isSubmitting,
           className: "inline-flex items-center justify-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-700 transition hover:-translate-y-0.5 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50",
           children: [
-            /* @__PURE__ */ jsxDEV86(Trash2, { className: "h-4 w-4" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85(Trash2, { className: "h-4 w-4" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 169,
               columnNumber: 11
@@ -16786,24 +16727,24 @@ function CartLineItem({
   }, this);
 }
 function CartSkeleton() {
-  return /* @__PURE__ */ jsxDEV86("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxDEV86("div", { className: "animate-pulse grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr_auto] sm:p-5", children: [
-    /* @__PURE__ */ jsxDEV86("div", { className: "aspect-square rounded-2xl bg-slate-200" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV85("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxDEV85("div", { className: "animate-pulse grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr_auto] sm:p-5", children: [
+    /* @__PURE__ */ jsxDEV85("div", { className: "aspect-square rounded-2xl bg-slate-200" }, void 0, !1, {
       fileName: "app/routes/_public.marketplace.cart.tsx",
       lineNumber: 182,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV86("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV85("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 184,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV86("div", { className: "h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV85("div", { className: "h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 185,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV86("div", { className: "h-4 w-4/5 rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV85("div", { className: "h-4 w-4/5 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 186,
         columnNumber: 13
@@ -16813,13 +16754,13 @@ function CartSkeleton() {
       lineNumber: 183,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV86("div", { className: "space-y-3 sm:items-end", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "h-11 w-32 rounded-full bg-slate-200" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV85("div", { className: "space-y-3 sm:items-end", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "h-11 w-32 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 189,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV86("div", { className: "h-10 w-28 rounded-full bg-slate-200" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV85("div", { className: "h-10 w-28 rounded-full bg-slate-200" }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 190,
         columnNumber: 13
@@ -16840,18 +16781,18 @@ function CartSkeleton() {
   }, this);
 }
 function MarketplaceCart() {
-  let { cart, cartError } = useLoaderData23(), isLoading = useNavigation9().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
-  return /* @__PURE__ */ jsxDEV86("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxDEV86("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-        /* @__PURE__ */ jsxDEV86("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxDEV86(
-            Link17,
+  let { cart, cartError } = useLoaderData22(), isLoading = useNavigation9().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
+  return /* @__PURE__ */ jsxDEV85("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxDEV85("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxDEV85("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsxDEV85(
+            Link16,
             {
               to: "/marketplace",
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
-                /* @__PURE__ */ jsxDEV86(ArrowLeft3, { className: "h-4 w-4" }, void 0, !1, {
+                /* @__PURE__ */ jsxDEV85(ArrowLeft3, { className: "h-4 w-4" }, void 0, !1, {
                   fileName: "app/routes/_public.marketplace.cart.tsx",
                   lineNumber: 218,
                   columnNumber: 15
@@ -16868,18 +16809,18 @@ function MarketplaceCart() {
             },
             this
           ),
-          /* @__PURE__ */ jsxDEV86("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsxDEV86("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Cart" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV85("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsxDEV85("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Cart" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 222,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV86("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Review items and adjust quantities before checkout." }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Review items and adjust quantities before checkout." }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 225,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV86("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "This cart stays guest-friendly and can be updated from the marketplace or directly here." }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "This cart stays guest-friendly and can be updated from the marketplace or directly here." }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 228,
               columnNumber: 15
@@ -16894,14 +16835,14 @@ function MarketplaceCart() {
           lineNumber: 213,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-          /* @__PURE__ */ jsxDEV86("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV86("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Items" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+          /* @__PURE__ */ jsxDEV85("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV85("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Items" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 236,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV86("div", { className: "mt-2 text-3xl font-black text-slate-950", children: itemCount }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85("div", { className: "mt-2 text-3xl font-black text-slate-950", children: itemCount }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 237,
               columnNumber: 15
@@ -16911,13 +16852,13 @@ function MarketplaceCart() {
             lineNumber: 235,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV86("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV86("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Products" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV85("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV85("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Products" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 240,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV86("div", { className: "mt-2 text-3xl font-black text-slate-950", children: distinctItems }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85("div", { className: "mt-2 text-3xl font-black text-slate-950", children: distinctItems }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 241,
               columnNumber: 15
@@ -16927,13 +16868,13 @@ function MarketplaceCart() {
             lineNumber: 239,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV86("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsxDEV86("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV85("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsxDEV85("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 244,
               columnNumber: 15
             }, this),
-            /* @__PURE__ */ jsxDEV86("div", { className: "mt-2 text-2xl font-black text-slate-950", children: minimumTotal || maximumTotal ? `${formatMoney3(currency, minimumTotal)}${maximumTotal !== minimumTotal ? `   - ${formatMoney3(currency, maximumTotal)}` : ""}` : `${currency} 0` }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV85("div", { className: "mt-2 text-2xl font-black text-slate-950", children: minimumTotal || maximumTotal ? `${formatMoney3(currency, minimumTotal)}${maximumTotal !== minimumTotal ? `   - ${formatMoney3(currency, maximumTotal)}` : ""}` : `${currency} 0` }, void 0, !1, {
               fileName: "app/routes/_public.marketplace.cart.tsx",
               lineNumber: 245,
               columnNumber: 15
@@ -16953,7 +16894,7 @@ function MarketplaceCart() {
         lineNumber: 212,
         columnNumber: 9
       }, this),
-      cartError ? /* @__PURE__ */ jsxDEV86("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: cartError }, void 0, !1, {
+      cartError ? /* @__PURE__ */ jsxDEV85("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: cartError }, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 253,
         columnNumber: 11
@@ -16963,15 +16904,15 @@ function MarketplaceCart() {
       lineNumber: 211,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV86("section", { className: "mt-6", children: [
-      /* @__PURE__ */ jsxDEV86("div", { className: "mb-4 flex items-end justify-between gap-3", children: [
-        /* @__PURE__ */ jsxDEV86("div", { children: [
-          /* @__PURE__ */ jsxDEV86("h2", { className: "text-2xl font-black text-slate-950", children: "Your cart" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV85("section", { className: "mt-6", children: [
+      /* @__PURE__ */ jsxDEV85("div", { className: "mb-4 flex items-end justify-between gap-3", children: [
+        /* @__PURE__ */ jsxDEV85("div", { children: [
+          /* @__PURE__ */ jsxDEV85("h2", { className: "text-2xl font-black text-slate-950", children: "Your cart" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.cart.tsx",
             lineNumber: 262,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV86("p", { className: "text-sm text-slate-500", children: cartItems.length > 0 ? `${cartItems.length} line item${cartItems.length === 1 ? "" : "s"}` : "No items in cart yet" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV85("p", { className: "text-sm text-slate-500", children: cartItems.length > 0 ? `${cartItems.length} line item${cartItems.length === 1 ? "" : "s"}` : "No items in cart yet" }, void 0, !1, {
             fileName: "app/routes/_public.marketplace.cart.tsx",
             lineNumber: 263,
             columnNumber: 13
@@ -16981,7 +16922,7 @@ function MarketplaceCart() {
           lineNumber: 261,
           columnNumber: 11
         }, this),
-        /* @__PURE__ */ jsxDEV86(Link17, { to: "/marketplace", className: "text-sm font-bold text-accent", children: "Continue shopping" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85(Link16, { to: "/marketplace", className: "text-sm font-bold text-accent", children: "Continue shopping" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 267,
           columnNumber: 11
@@ -16991,11 +16932,11 @@ function MarketplaceCart() {
         lineNumber: 260,
         columnNumber: 9
       }, this),
-      isLoading ? /* @__PURE__ */ jsxDEV86(CartSkeleton, {}, void 0, !1, {
+      isLoading ? /* @__PURE__ */ jsxDEV85(CartSkeleton, {}, void 0, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 273,
         columnNumber: 11
-      }, this) : cartItems.length > 0 ? /* @__PURE__ */ jsxDEV86("div", { className: "space-y-4", children: cartItems.map((item) => /* @__PURE__ */ jsxDEV86(CartLineItem, { item }, `${item.product_id}-${item.product_location_id ?? "default"}`, !1, {
+      }, this) : cartItems.length > 0 ? /* @__PURE__ */ jsxDEV85("div", { className: "space-y-4", children: cartItems.map((item) => /* @__PURE__ */ jsxDEV85(CartLineItem, { item }, `${item.product_id}-${item.product_location_id ?? "default"}`, !1, {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 277,
         columnNumber: 15
@@ -17003,24 +16944,24 @@ function MarketplaceCart() {
         fileName: "app/routes/_public.marketplace.cart.tsx",
         lineNumber: 275,
         columnNumber: 11
-      }, this) : /* @__PURE__ */ jsxDEV86("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsxDEV86(ShoppingCart2, { className: "mx-auto h-10 w-10 text-slate-300" }, void 0, !1, {
+      }, this) : /* @__PURE__ */ jsxDEV85("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsxDEV85(ShoppingCart2, { className: "mx-auto h-10 w-10 text-slate-300" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 282,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV86("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "Your cart is empty" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "Your cart is empty" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 283,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV86("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Add products from the marketplace and they will appear here." }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Add products from the marketplace and they will appear here." }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 284,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV86(
-          Link17,
+        /* @__PURE__ */ jsxDEV85(
+          Link16,
           {
             to: "/marketplace",
             className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
@@ -17045,14 +16986,14 @@ function MarketplaceCart() {
       lineNumber: 259,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV86("section", { className: "mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxDEV86("div", { className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between", children: [
-      /* @__PURE__ */ jsxDEV86("div", { children: [
-        /* @__PURE__ */ jsxDEV86("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Checkout" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV85("section", { className: "mt-8 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxDEV85("div", { className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between", children: [
+      /* @__PURE__ */ jsxDEV85("div", { children: [
+        /* @__PURE__ */ jsxDEV85("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Checkout" }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 300,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV86("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Continue to delivery details, payment selection, and order placement." }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV85("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Continue to delivery details, payment selection, and order placement." }, void 0, !1, {
           fileName: "app/routes/_public.marketplace.cart.tsx",
           lineNumber: 301,
           columnNumber: 13
@@ -17062,8 +17003,8 @@ function MarketplaceCart() {
         lineNumber: 299,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV86(
-        Link17,
+      /* @__PURE__ */ jsxDEV85(
+        Link16,
         {
           to: "/marketplace/checkout",
           className: "inline-flex items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
@@ -17098,18 +17039,18 @@ function MarketplaceCart() {
 var public_winner_winnerId_exports = {};
 __export(public_winner_winnerId_exports, {
   default: () => WinnerDetailsPage,
-  loader: () => loader26
+  loader: () => loader25
 });
-import { useLoaderData as useLoaderData24 } from "@remix-run/react";
-import { jsxDEV as jsxDEV87 } from "react/jsx-dev-runtime";
-async function loader26({ params }) {
+import { useLoaderData as useLoaderData23 } from "@remix-run/react";
+import { jsxDEV as jsxDEV86 } from "react/jsx-dev-runtime";
+async function loader25({ params }) {
   let winnerId = params.winnerId, { data: winner, error } = await contestRepo.getWinnerById(winnerId);
   return { winner, error };
 }
 function WinnerDetailsPage() {
-  let { winner, error } = useLoaderData24(), description = `We Are Thrilled To Announce The Triumphant Winner Of Our Recent '${winner?.contest_name}'! Let's Take A Moment To Applaud The Outstanding Creativity And Talent That Graced Our Contest.`;
-  return /* @__PURE__ */ jsxDEV87("div", { className: "min-h-screen bg-[#EFEFFF] flex items-center justify-center p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxDEV87("div", { className: "max-w-6xl mx-auto bg-transparent", children: /* @__PURE__ */ jsxDEV87("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16", children: [
-    /* @__PURE__ */ jsxDEV87("div", { className: "w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl order-2 md:order-1", children: /* @__PURE__ */ jsxDEV87(
+  let { winner, error } = useLoaderData23(), description = `We Are Thrilled To Announce The Triumphant Winner Of Our Recent '${winner?.contest_name}'! Let's Take A Moment To Applaud The Outstanding Creativity And Talent That Graced Our Contest.`;
+  return /* @__PURE__ */ jsxDEV86("div", { className: "min-h-screen bg-[#EFEFFF] flex items-center justify-center p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxDEV86("div", { className: "max-w-6xl mx-auto bg-transparent", children: /* @__PURE__ */ jsxDEV86("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16", children: [
+    /* @__PURE__ */ jsxDEV86("div", { className: "w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl order-2 md:order-1", children: /* @__PURE__ */ jsxDEV86(
       "img",
       {
         src: winner?.image_url,
@@ -17129,8 +17070,8 @@ function WinnerDetailsPage() {
       lineNumber: 28,
       columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV87("div", { className: "space-y-4 md:space-y-6 order-1 md:order-2", children: [
-      /* @__PURE__ */ jsxDEV87("h1", { className: "text-3xl sm:text-4xl lg:text-4xl font-extrabold text-[#5B50FB] leading-tight", children: [
+    /* @__PURE__ */ jsxDEV86("div", { className: "space-y-4 md:space-y-6 order-1 md:order-2", children: [
+      /* @__PURE__ */ jsxDEV86("h1", { className: "text-3xl sm:text-4xl lg:text-4xl font-extrabold text-[#5B50FB] leading-tight", children: [
         winner?.contest_name,
         " Winner"
       ] }, void 0, !0, {
@@ -17138,15 +17079,15 @@ function WinnerDetailsPage() {
         lineNumber: 37,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV87("p", { className: "text-base sm:text-lg text-gray-700 leading-relaxed", children: description }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV86("p", { className: "text-base sm:text-lg text-gray-700 leading-relaxed", children: description }, void 0, !1, {
         fileName: "app/routes/_public.winner.$winnerId.tsx",
         lineNumber: 40,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV87("p", { className: "text-lg sm:text-xl font-bold text-gray-900", children: [
+      /* @__PURE__ */ jsxDEV86("p", { className: "text-lg sm:text-xl font-bold text-gray-900", children: [
         "Grand Winner:",
         " ",
-        /* @__PURE__ */ jsxDEV87("span", { className: "text-gray-900", children: winner?.full_name }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV86("span", { className: "text-gray-900", children: winner?.full_name }, void 0, !1, {
           fileName: "app/routes/_public.winner.$winnerId.tsx",
           lineNumber: 45,
           columnNumber: 15
@@ -17159,7 +17100,7 @@ function WinnerDetailsPage() {
         lineNumber: 43,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV87("p", { className: "text-sm italic text-gray-600 pt-2", children: [
+      /* @__PURE__ */ jsxDEV86("p", { className: "text-sm italic text-gray-600 pt-2", children: [
         `Winner's Note: "`,
         winner?.remark,
         '"'
@@ -17193,21 +17134,21 @@ var admin_tournaments_index_exports = {};
 __export(admin_tournaments_index_exports, {
   action: () => action17,
   default: () => Tournaments,
-  loader: () => loader27
+  loader: () => loader26
 });
-import { json as json27, redirect as redirect21 } from "@remix-run/node";
-import { useLoaderData as useLoaderData25 } from "@remix-run/react";
+import { json as json26, redirect as redirect21 } from "@remix-run/node";
+import { useLoaderData as useLoaderData24 } from "@remix-run/react";
 
 // app/components/admin/tournament/TournamentCard.tsx
-import { Link as Link18 } from "@remix-run/react";
+import { Link as Link17 } from "@remix-run/react";
 
 // app/components/admin/tournament/DeleteTournamentDialog.tsx
 import { useFetcher as useFetcher14 } from "@remix-run/react";
-import { jsxDEV as jsxDEV88 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV87 } from "react/jsx-dev-runtime";
 function DeleteTournamentDialog({ tournament, disabled }) {
   let fetcher = useFetcher14();
-  return /* @__PURE__ */ jsxDEV88(Dialog, { children: [
-    /* @__PURE__ */ jsxDEV88(
+  return /* @__PURE__ */ jsxDEV87(Dialog, { children: [
+    /* @__PURE__ */ jsxDEV87(
       DialogTrigger,
       {
         disabled,
@@ -17224,10 +17165,10 @@ function DeleteTournamentDialog({ tournament, disabled }) {
       },
       this
     ),
-    /* @__PURE__ */ jsxDEV88(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
-      /* @__PURE__ */ jsxDEV88(DialogHeader, { children: [
-        /* @__PURE__ */ jsxDEV88(DialogTitle, { className: "p-4 flex gap-3", children: [
-          /* @__PURE__ */ jsxDEV88("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV88(Svg, { src: icons.questionIcon }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV87(DialogContent, { className: "bg-secondary p-0 gap-0", children: [
+      /* @__PURE__ */ jsxDEV87(DialogHeader, { children: [
+        /* @__PURE__ */ jsxDEV87(DialogTitle, { className: "p-4 flex gap-3", children: [
+          /* @__PURE__ */ jsxDEV87("div", { className: "size-11 rounded-full bg-orange-100 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV87(Svg, { src: icons.questionIcon }, void 0, !1, {
             fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
             lineNumber: 19,
             columnNumber: 29
@@ -17236,13 +17177,13 @@ function DeleteTournamentDialog({ tournament, disabled }) {
             lineNumber: 18,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV88("p", { children: [
-            /* @__PURE__ */ jsxDEV88("span", { className: "block", children: "Delete tournament" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV87("p", { children: [
+            /* @__PURE__ */ jsxDEV87("span", { className: "block", children: "Delete tournament" }, void 0, !1, {
               fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
               lineNumber: 22,
               columnNumber: 29
             }, this),
-            /* @__PURE__ */ jsxDEV88("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this tournament" }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV87("span", { className: "font-normal text-base text-admin-pry", children: "Confirm the deletion of this tournament" }, void 0, !1, {
               fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
               lineNumber: 23,
               columnNumber: 29
@@ -17257,8 +17198,8 @@ function DeleteTournamentDialog({ tournament, disabled }) {
           lineNumber: 17,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV88(DialogDescription, { className: "border-y p-4", children: [
-          /* @__PURE__ */ jsxDEV88("span", { className: "text-primary mb-2 block", children: [
+        /* @__PURE__ */ jsxDEV87(DialogDescription, { className: "border-y p-4", children: [
+          /* @__PURE__ */ jsxDEV87("span", { className: "text-primary mb-2 block", children: [
             "Are you sure you want to delete ",
             tournament.name,
             " tournament?"
@@ -17267,7 +17208,7 @@ function DeleteTournamentDialog({ tournament, disabled }) {
             lineNumber: 27,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV88("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this tournament." }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV87("span", { className: "text-admin-pry", children: "This action is irreversible and will permanently delete this tournament." }, void 0, !1, {
             fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
             lineNumber: 28,
             columnNumber: 25
@@ -17282,13 +17223,13 @@ function DeleteTournamentDialog({ tournament, disabled }) {
         lineNumber: 16,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV88(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV88(fetcher.Form, { method: "post", children: [
-        /* @__PURE__ */ jsxDEV88("input", { type: "hidden", name: "tournamentId", value: tournament._id }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV87(DialogFooter, { className: "flex justify-end gap-6 p-4", children: /* @__PURE__ */ jsxDEV87(fetcher.Form, { method: "post", children: [
+        /* @__PURE__ */ jsxDEV87("input", { type: "hidden", name: "tournamentId", value: tournament._id }, void 0, !1, {
           fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
           lineNumber: 33,
           columnNumber: 25
         }, this),
-        /* @__PURE__ */ jsxDEV88(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV87(DialogClose, { type: "submit", name: "intent", value: "delete", className: "bg-red-500 px-10 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }, void 0, !1, {
           fileName: "app/components/admin/tournament/DeleteTournamentDialog.tsx",
           lineNumber: 34,
           columnNumber: 25
@@ -17315,9 +17256,9 @@ function DeleteTournamentDialog({ tournament, disabled }) {
 }
 
 // app/components/reusables/LayeredImages.tsx
-import { jsxDEV as jsxDEV89 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV88 } from "react/jsx-dev-runtime";
 function LayeredImages({ images, length = 5 }) {
-  let remaining = images.length - length, lastLayer = remaining > 0 ? /* @__PURE__ */ jsxDEV89("div", { className: "w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-tertiary text-accent font-semibold text-sm", children: [
+  let remaining = images.length - length, lastLayer = remaining > 0 ? /* @__PURE__ */ jsxDEV88("div", { className: "w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-tertiary text-accent font-semibold text-sm", children: [
     "+",
     remaining
   ] }, void 0, !0, {
@@ -17325,12 +17266,12 @@ function LayeredImages({ images, length = 5 }) {
     lineNumber: 6,
     columnNumber: 11
   }, this) : null;
-  return /* @__PURE__ */ jsxDEV89("div", { children: [
-    images.slice(0, length).map((image, index) => typeof image == "string" ? /* @__PURE__ */ jsxDEV89("img", { src: image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
+  return /* @__PURE__ */ jsxDEV88("div", { children: [
+    images.slice(0, length).map((image, index) => typeof image == "string" ? /* @__PURE__ */ jsxDEV88("img", { src: image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
       fileName: "app/components/reusables/LayeredImages.tsx",
       lineNumber: 12,
       columnNumber: 28
-    }, this) : /* @__PURE__ */ jsxDEV89("img", { src: image?.image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
+    }, this) : /* @__PURE__ */ jsxDEV88("img", { src: image?.image || no_image_default, alt: "people smiling", className: "w-8 aspect-square inline-block -ml-2 first:ml-0 rounded-full object-cover ring-2 ring-white" }, index, !1, {
       fileName: "app/components/reusables/LayeredImages.tsx",
       lineNumber: 14,
       columnNumber: 24
@@ -17344,27 +17285,27 @@ function LayeredImages({ images, length = 5 }) {
 }
 
 // app/components/admin/tournament/TournamentCard.tsx
-import { jsxDEV as jsxDEV90 } from "react/jsx-dev-runtime";
+import { jsxDEV as jsxDEV89 } from "react/jsx-dev-runtime";
 function TournamentCard({ tournament, className }) {
-  let mainComponent = /* @__PURE__ */ jsxDEV90(RoundCta_default, { icon: icons.optionsIcon, className: "border-transparent hover:border-disabled" }, void 0, !1, {
+  let mainComponent = /* @__PURE__ */ jsxDEV89(RoundCta_default, { icon: icons.optionsIcon, className: "border-transparent hover:border-disabled" }, void 0, !1, {
     fileName: "app/components/admin/tournament/TournamentCard.tsx",
     lineNumber: 14,
     columnNumber: 27
   }, this);
-  return /* @__PURE__ */ jsxDEV90("aside", { className: cn("p-6 border border-disabled rounded-xl bg-white shadow overflow-hidden", className), children: [
-    /* @__PURE__ */ jsxDEV90("div", { className: "flex gap-3 items-start justify-between max-xs:flex-wrap", children: [
-      /* @__PURE__ */ jsxDEV90("img", { src: tournament.image || no_image_default, alt: "children smiling", className: "w-24 aspect-square rounded-md object-cover" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV89("aside", { className: cn("p-6 border border-disabled rounded-xl bg-white shadow overflow-hidden", className), children: [
+    /* @__PURE__ */ jsxDEV89("div", { className: "flex gap-3 items-start justify-between max-xs:flex-wrap", children: [
+      /* @__PURE__ */ jsxDEV89("img", { src: tournament.image || no_image_default, alt: "children smiling", className: "w-24 aspect-square rounded-md object-cover" }, void 0, !1, {
         fileName: "app/components/admin/tournament/TournamentCard.tsx",
         lineNumber: 18,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV90("div", { className: "self-center grow max-xs:order-1", children: [
-        /* @__PURE__ */ jsxDEV90("h3", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV89("div", { className: "self-center grow max-xs:order-1", children: [
+        /* @__PURE__ */ jsxDEV89("h3", { className: "text-primary font-satoshi-black uppercase line-clamp-1", children: tournament.name }, void 0, !1, {
           fileName: "app/components/admin/tournament/TournamentCard.tsx",
           lineNumber: 20,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV90("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV89("p", { className: "font-medium text-xs line-clamp-2", children: tournament.description }, void 0, !1, {
           fileName: "app/components/admin/tournament/TournamentCard.tsx",
           lineNumber: 21,
           columnNumber: 21
@@ -17374,14 +17315,14 @@ function TournamentCard({ tournament, className }) {
         lineNumber: 19,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV90(
+      /* @__PURE__ */ jsxDEV89(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border border-disabled text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsxDEV90(
-              Link18,
+            /* @__PURE__ */ jsxDEV89(
+              Link17,
               {
                 to: `/admin/tournaments/${tournament.id}/edit`,
                 className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium",
@@ -17396,7 +17337,7 @@ function TournamentCard({ tournament, className }) {
               },
               this
             ),
-            /* @__PURE__ */ jsxDEV90(DeleteTournamentDialog, { tournament }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV89(DeleteTournamentDialog, { tournament }, void 0, !1, {
               fileName: "app/components/admin/tournament/TournamentCard.tsx",
               lineNumber: 29,
               columnNumber: 21
@@ -17417,12 +17358,12 @@ function TournamentCard({ tournament, className }) {
       lineNumber: 17,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV90("hr", { className: "mt-4 mb-1" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV89("hr", { className: "mt-4 mb-1" }, void 0, !1, {
       fileName: "app/components/admin/tournament/TournamentCard.tsx",
       lineNumber: 32,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV90("span", { className: "text-primary text-sm font-satoshi-bold mb-3", children: [
+    /* @__PURE__ */ jsxDEV89("span", { className: "text-primary text-sm font-satoshi-bold mb-3", children: [
       tournament.contests.length,
       " contests created"
     ] }, void 0, !0, {
@@ -17430,15 +17371,15 @@ function TournamentCard({ tournament, className }) {
       lineNumber: 33,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV90("div", { className: "grid gap-2 xs:flex justify-between items-center", children: [
-      /* @__PURE__ */ jsxDEV90(LayeredImages, { images: tournament.contests }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV89("div", { className: "grid gap-2 xs:flex justify-between items-center", children: [
+      /* @__PURE__ */ jsxDEV89(LayeredImages, { images: tournament.contests }, void 0, !1, {
         fileName: "app/components/admin/tournament/TournamentCard.tsx",
         lineNumber: 35,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV90(Link18, { to: `/admin/tournaments/${tournament.id}`, className: "flex gap-2 items-center font-semibold hover:text-accent", children: [
+      /* @__PURE__ */ jsxDEV89(Link17, { to: `/admin/tournaments/${tournament.id}`, className: "flex gap-2 items-center font-semibold hover:text-accent", children: [
         "View Contests ",
-        /* @__PURE__ */ jsxDEV90(Svg, { src: icons.arrowNextIcon }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV89(Svg, { src: icons.arrowNextIcon }, void 0, !1, {
           fileName: "app/components/admin/tournament/TournamentCard.tsx",
           lineNumber: 36,
           columnNumber: 148
@@ -17461,12 +17402,12 @@ function TournamentCard({ tournament, className }) {
 }
 
 // app/routes/admin.tournaments._index.tsx
-import { jsxDEV as jsxDEV91 } from "react/jsx-dev-runtime";
-async function loader27({}) {
+import { jsxDEV as jsxDEV90 } from "react/jsx-dev-runtime";
+async function loader26({}) {
   let { data: tournaments, error } = await tournamentRepo.getTournaments();
   if (error)
     throw new Error(error.detail);
-  return json27({ tournaments });
+  return json26({ tournaments });
 }
 async function action17({ request }) {
   let formData = await request.formData(), intent = formData.get("intent"), cookieHeader = request.headers.get("Cookie") ?? "";
@@ -17476,24 +17417,24 @@ async function action17({ request }) {
     let tournamentId = formData.get("tournamentId"), { data, error } = await tournamentRepo.deleteTournament(tournamentId, cookieHeader);
     if (error) {
       let { headers: headers2 } = await setToast({ request, toast: `error::Could not delete the tournament::${Date.now()}` });
-      return json27(error, { headers: headers2 });
+      return json26(error, { headers: headers2 });
     }
     let { headers } = await setToast({ request, toast: `success::The tournament has been deleted::${Date.now()}` });
-    return json27(data, { headers });
+    return json26(data, { headers });
   }
-  return json27(null);
+  return json26(null);
 }
 function Tournaments() {
-  let { tournaments } = useLoaderData25(), numberOfContests = tournaments.reduce((total, tournament) => total + tournament.contests.length, 0);
-  return /* @__PURE__ */ jsxDEV91("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxDEV91("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
-      /* @__PURE__ */ jsxDEV91("h1", { className: "text-2xl font-black text-primary", children: "Tournaments" }, void 0, !1, {
+  let { tournaments } = useLoaderData24(), numberOfContests = tournaments.reduce((total, tournament) => total + tournament.contests.length, 0);
+  return /* @__PURE__ */ jsxDEV90("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxDEV90("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
+      /* @__PURE__ */ jsxDEV90("h1", { className: "text-2xl font-black text-primary", children: "Tournaments" }, void 0, !1, {
         fileName: "app/routes/admin.tournaments._index.tsx",
         lineNumber: 51,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV91(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsxDEV91(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV90(Cta_default, { element: "link", to: "add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsxDEV90(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
           fileName: "app/routes/admin.tournaments._index.tsx",
           lineNumber: 53,
           columnNumber: 21
@@ -17509,9 +17450,9 @@ function Tournaments() {
       lineNumber: 50,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV91("aside", { className: "sm:flex justify-evenly max-w-xl mx-auto gap-2 p-3 border rounded-md my-4 bg-[#F6F8FA] text-sm", children: [
-      /* @__PURE__ */ jsxDEV91("div", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV91("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV91(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV90("aside", { className: "sm:flex justify-evenly max-w-xl mx-auto gap-2 p-3 border rounded-md my-4 bg-[#F6F8FA] text-sm", children: [
+      /* @__PURE__ */ jsxDEV90("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsxDEV90("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV90(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }, void 0, !1, {
           fileName: "app/routes/admin.tournaments._index.tsx",
           lineNumber: 59,
           columnNumber: 75
@@ -17520,13 +17461,13 @@ function Tournaments() {
           lineNumber: 59,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV91("span", { className: "grid", children: [
-          /* @__PURE__ */ jsxDEV91("span", { className: "text-primary font-satoshi-black", children: tournaments.length }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV90("span", { className: "grid", children: [
+          /* @__PURE__ */ jsxDEV90("span", { className: "text-primary font-satoshi-black", children: tournaments.length }, void 0, !1, {
             fileName: "app/routes/admin.tournaments._index.tsx",
             lineNumber: 61,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV91("span", { className: "", children: "Tournaments Created" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV90("span", { className: "", children: "Tournaments Created" }, void 0, !1, {
             fileName: "app/routes/admin.tournaments._index.tsx",
             lineNumber: 62,
             columnNumber: 25
@@ -17541,13 +17482,13 @@ function Tournaments() {
         lineNumber: 58,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV91("div", { className: "max-sm:my-2 max-sm:border-t sm:border-r sm:h-10" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV90("div", { className: "max-sm:my-2 max-sm:border-t sm:border-r sm:h-10" }, void 0, !1, {
         fileName: "app/routes/admin.tournaments._index.tsx",
         lineNumber: 65,
         columnNumber: 17
       }, this),
-      /* @__PURE__ */ jsxDEV91("div", { className: "flex gap-3 items-center", children: [
-        /* @__PURE__ */ jsxDEV91("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV91(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
+      /* @__PURE__ */ jsxDEV90("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsxDEV90("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsxDEV90(Svg, { src: icons.adminContestIcon, className: "text-primary" }, void 0, !1, {
           fileName: "app/routes/admin.tournaments._index.tsx",
           lineNumber: 67,
           columnNumber: 75
@@ -17556,13 +17497,13 @@ function Tournaments() {
           lineNumber: 67,
           columnNumber: 21
         }, this),
-        /* @__PURE__ */ jsxDEV91("span", { className: "grid", children: [
-          /* @__PURE__ */ jsxDEV91("span", { className: "text-primary font-satoshi-black", children: numberOfContests }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV90("span", { className: "grid", children: [
+          /* @__PURE__ */ jsxDEV90("span", { className: "text-primary font-satoshi-black", children: numberOfContests }, void 0, !1, {
             fileName: "app/routes/admin.tournaments._index.tsx",
             lineNumber: 69,
             columnNumber: 25
           }, this),
-          /* @__PURE__ */ jsxDEV91("span", { className: "", children: "Contests Created" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV90("span", { className: "", children: "Contests Created" }, void 0, !1, {
             fileName: "app/routes/admin.tournaments._index.tsx",
             lineNumber: 70,
             columnNumber: 25
@@ -17582,8 +17523,8 @@ function Tournaments() {
       lineNumber: 57,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV91(Cta_default, { element: "link", to: "add", className: "flex sm:hidden gap-2 justify-center items-center rounded-lg px-3 py-2", children: [
-      /* @__PURE__ */ jsxDEV91(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV90(Cta_default, { element: "link", to: "add", className: "flex sm:hidden gap-2 justify-center items-center rounded-lg px-3 py-2", children: [
+      /* @__PURE__ */ jsxDEV90(Svg, { src: icons.addIcon, width: ".9em" }, void 0, !1, {
         fileName: "app/routes/admin.tournaments._index.tsx",
         lineNumber: 75,
         columnNumber: 17
@@ -17594,7 +17535,7 @@ function Tournaments() {
       lineNumber: 74,
       columnNumber: 13
     }, this),
-    /* @__PURE__ */ jsxDEV91("section", { className: "my-8 grid sm:grid-cols-2 gap-6", children: tournaments.map((tournament) => /* @__PURE__ */ jsxDEV91(TournamentCard, { tournament }, tournament.id, !1, {
+    /* @__PURE__ */ jsxDEV90("section", { className: "my-8 grid sm:grid-cols-2 gap-6", children: tournaments.map((tournament) => /* @__PURE__ */ jsxDEV90(TournamentCard, { tournament }, tournament.id, !1, {
       fileName: "app/routes/admin.tournaments._index.tsx",
       lineNumber: 80,
       columnNumber: 21
@@ -17607,6 +17548,1037 @@ function Tournaments() {
     fileName: "app/routes/admin.tournaments._index.tsx",
     lineNumber: 49,
     columnNumber: 9
+  }, this);
+}
+
+// app/routes/partners.orders.$orderId.tsx
+var partners_orders_orderId_exports = {};
+__export(partners_orders_orderId_exports, {
+  action: () => action18,
+  default: () => PartnerOrderDetailPage,
+  loader: () => loader27
+});
+import { json as json27, redirect as redirect22 } from "@remix-run/node";
+import {
+  Link as Link18,
+  useFetcher as useFetcher15,
+  useLoaderData as useLoaderData25,
+  useNavigation as useNavigation10,
+  useRevalidator
+} from "@remix-run/react";
+import { ArrowLeft as ArrowLeft4, CreditCard as CreditCard2, PackageSearch as PackageSearch2, Phone, ShieldCheck, SquarePen } from "lucide-react";
+import { useEffect as useEffect21, useRef as useRef9, useState as useState31 } from "react";
+import { Fragment as Fragment13, jsxDEV as jsxDEV91 } from "react/jsx-dev-runtime";
+var actionableStatuses = ["Pending", "Active"];
+function formatMoney4(currency, value) {
+  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
+}
+function formatDateTime(value) {
+  return new Intl.DateTimeFormat("en-NG", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(value));
+}
+function formatStatusLabel(value) {
+  return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
+}
+function getErrorMessage(error, fallback) {
+  return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
+}
+function OrderPageSkeleton() {
+  return /* @__PURE__ */ jsxDEV91("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxDEV91("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "h-4 w-28 animate-pulse rounded-full bg-slate-200" }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 63,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "h-10 w-2/3 animate-pulse rounded-full bg-slate-200" }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 64,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "h-5 w-1/2 animate-pulse rounded-full bg-slate-200" }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 65,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 62,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 61,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV91("section", { className: "mt-6 grid gap-6 lg:grid-cols-[1.3fr_0.9fr]", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxDEV91("div", { className: "animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
+        /* @__PURE__ */ jsxDEV91("div", { className: "h-4 w-36 rounded-full bg-slate-200" }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 73,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 74,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 75,
+          columnNumber: 15
+        }, this)
+      ] }, index, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 72,
+        columnNumber: 13
+      }, this)) }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 70,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+        /* @__PURE__ */ jsxDEV91("div", { className: "animate-pulse rounded-2xl bg-slate-50 p-4", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "h-4 w-24 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 81,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-5 w-3/4 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 82,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 83,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 80,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "animate-pulse rounded-2xl bg-slate-50 p-4", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "h-4 w-24 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 86,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-5 w-3/4 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 87,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-3 h-5 w-2/3 rounded-full bg-slate-200" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 88,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 85,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 79,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 69,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/partners.orders.$orderId.tsx",
+    lineNumber: 60,
+    columnNumber: 5
+  }, this);
+}
+function OrderMutationDialog({
+  order,
+  item,
+  intent,
+  title,
+  description,
+  triggerLabel,
+  triggerClassName,
+  actionLabel
+}) {
+  let fetcher = useFetcher15(), revalidator = useRevalidator(), [open, setOpen] = useState31(!1), handledSuccessRef = useRef9(!1), isSubmitting = fetcher.state !== "idle";
+  useEffect21(() => {
+    fetcher.state === "submitting" && (handledSuccessRef.current = !1);
+  }, [fetcher.state]), useEffect21(() => {
+    let response = fetcher.data;
+    !response || !response.ok || handledSuccessRef.current || (handledSuccessRef.current = !0, setOpen(!1), revalidator.revalidate());
+  }, [fetcher.data, revalidator]);
+  let errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  return /* @__PURE__ */ jsxDEV91(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsxDEV91(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsxDEV91("button", { type: "button", className: triggerClassName, children: triggerLabel }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 141,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 140,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV91(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+      /* @__PURE__ */ jsxDEV91(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+        /* @__PURE__ */ jsxDEV91(DialogTitle, { className: "text-2xl font-black text-slate-950", children: title }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 147,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: description }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 148,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 146,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV91(fetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
+        /* @__PURE__ */ jsxDEV91("input", { type: "hidden", name: "intent", value: intent }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 154,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("input", { type: "hidden", name: "order_id", value: order._id }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 155,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 156,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 159,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 160,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the exact order code to confirm this action." }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 161,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 158,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsxDEV91("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 167,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91(
+            "input",
+            {
+              name: "order_code",
+              required: !0,
+              autoComplete: "off",
+              placeholder: "Enter the order code",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 168,
+              columnNumber: 13
+            },
+            this
+          )
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 166,
+          columnNumber: 11
+        }, this),
+        errorMessage ? /* @__PURE__ */ jsxDEV91("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 178,
+          columnNumber: 13
+        }, this) : null,
+        /* @__PURE__ */ jsxDEV91(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+          /* @__PURE__ */ jsxDEV91(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsxDEV91(
+            "button",
+            {
+              type: "button",
+              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Back"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 185,
+              columnNumber: 15
+            },
+            this
+          ) }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 184,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91(
+            "button",
+            {
+              type: "submit",
+              disabled: isSubmitting,
+              className: cn(
+                "inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70",
+                intent === "cancel" ? "bg-red-600 hover:bg-red-500" : "bg-slate-950 hover:bg-slate-800"
+              ),
+              children: isSubmitting ? "Working..." : actionLabel
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 192,
+              columnNumber: 13
+            },
+            this
+          )
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 183,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 153,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 145,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/partners.orders.$orderId.tsx",
+    lineNumber: 139,
+    columnNumber: 5
+  }, this);
+}
+function OrderItemCard({ order, item }) {
+  let hasRange = item.min_amount_total !== item.max_amount_total, canMutate = actionableStatuses.includes(item.status);
+  return /* @__PURE__ */ jsxDEV91("article", { className: "rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white", children: /* @__PURE__ */ jsxDEV91("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between", children: [
+    /* @__PURE__ */ jsxDEV91("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "flex flex-wrap items-center gap-2", children: [
+        /* @__PURE__ */ jsxDEV91("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700", children: formatStatusLabel(item.status) }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 218,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("span", { className: "rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white", children: [
+          "Qty ",
+          item.quantity
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 221,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 217,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { children: [
+        /* @__PURE__ */ jsxDEV91("h3", { className: "text-lg font-black text-slate-950", children: item.product_name }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 227,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("p", { className: "mt-1 text-sm leading-6 text-slate-600", children: hasRange ? `${formatMoney4(item.currency, item.min_amount_total)} - ${formatMoney4(item.currency, item.max_amount_total)}` : formatMoney4(item.currency, item.min_amount_total) }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 228,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 226,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "grid gap-2 text-sm text-slate-600 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxDEV91("div", { children: [
+          "Location: ",
+          /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: item.location_name || "Not assigned" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 237,
+            columnNumber: 25
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 236,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { children: [
+          "Fulfilled by: ",
+          /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: item.fulfilled_by || "Not fulfilled" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 240,
+            columnNumber: 29
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 239,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { children: [
+          "Contact:",
+          " ",
+          /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: item.location_contact_phone || order.business_phone_number }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 244,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 242,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { children: [
+          "Fulfilled at:",
+          " ",
+          /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: item.fulfilled_at ? formatDateTime(item.fulfilled_at) : "Pending" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 250,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 248,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 235,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 216,
+      columnNumber: 9
+    }, this),
+    /* @__PURE__ */ jsxDEV91("div", { className: "flex flex-col gap-3", children: canMutate ? /* @__PURE__ */ jsxDEV91(Fragment13, { children: [
+      /* @__PURE__ */ jsxDEV91(
+        OrderMutationDialog,
+        {
+          order,
+          item,
+          intent: "fulfill",
+          title: "Fulfill order item",
+          description: "Confirm the order code before marking this item as fulfilled.",
+          triggerLabel: "Fulfill order",
+          actionLabel: "Fulfill order",
+          triggerClassName: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 260,
+          columnNumber: 15
+        },
+        this
+      ),
+      /* @__PURE__ */ jsxDEV91(
+        OrderMutationDialog,
+        {
+          order,
+          item,
+          intent: "cancel",
+          title: "Cancel order item",
+          description: "Confirm the order code before cancelling this item.",
+          triggerLabel: "Cancel order",
+          actionLabel: "Cancel order",
+          triggerClassName: "inline-flex h-11 items-center justify-center rounded-full border border-red-200 bg-white px-5 text-sm font-bold text-red-600 transition hover:-translate-y-0.5 hover:border-red-300 hover:bg-red-50"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 271,
+          columnNumber: 15
+        },
+        this
+      )
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 259,
+      columnNumber: 13
+    }, this) : /* @__PURE__ */ jsxDEV91("div", { className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-500", children: item.status }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 283,
+      columnNumber: 13
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 257,
+      columnNumber: 9
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/partners.orders.$orderId.tsx",
+    lineNumber: 215,
+    columnNumber: 7
+  }, this) }, void 0, !1, {
+    fileName: "app/routes/partners.orders.$orderId.tsx",
+    lineNumber: 214,
+    columnNumber: 5
+  }, this);
+}
+async function loader27({ params, request }) {
+  let cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader)
+    return redirect22("/login");
+  let orderId = params.orderId;
+  if (!orderId)
+    return json27({ order: null, error: "Missing order id" }, { status: 400 });
+  let { data, error } = await partnerServer.getOrderById(orderId, cookieHeader);
+  return error ? json27(
+    {
+      order: null,
+      error: getErrorMessage(error, "Unable to load order details")
+    },
+    { status: 404 }
+  ) : json27({ order: data ?? null });
+}
+async function action18({ params, request }) {
+  let cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader)
+    return redirect22("/login");
+  let orderId = params.orderId;
+  if (!orderId)
+    return json27({ ok: !1, error: "Missing order id" }, { status: 400 });
+  let formData = await request.formData(), intent = String(formData.get("intent") ?? ""), orderCode = String(formData.get("order_code") ?? "").trim(), orderItemId = String(formData.get("order_item_id") ?? "").trim();
+  if (!intent || !["fulfill", "cancel"].includes(intent))
+    return json27({ ok: !1, error: "Unsupported order action" }, { status: 400 });
+  if (!orderCode)
+    return json27({ ok: !1, error: "Order code is required" }, { status: 400 });
+  if (!orderItemId)
+    return json27({ ok: !1, error: "Missing order item id" }, { status: 400 });
+  let orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  if (orderRes.error || !orderRes.data)
+    return json27(
+      {
+        ok: !1,
+        error: getErrorMessage(orderRes.error, "Unable to verify this order")
+      },
+      { status: 404 }
+    );
+  let order = orderRes.data;
+  if (order.order_code !== orderCode)
+    return json27({ ok: !1, error: "The order code does not match this order" }, { status: 400 });
+  let item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
+  if (!item)
+    return json27({ ok: !1, error: "Order item not found" }, { status: 404 });
+  if (!actionableStatuses.includes(item.status))
+    return json27(
+      { ok: !1, error: `This order item cannot be updated from ${formatStatusLabel(item.status)} status` },
+      { status: 400 }
+    );
+  let payload = {
+    order_id: order._id,
+    order_code: order.order_code,
+    order_items_ids: [item.order_item_id]
+  }, mutationRes = intent === "fulfill" ? await partnerServer.fulfillOrder(payload, cookieHeader) : await partnerServer.cancelOrder(payload, cookieHeader);
+  if (mutationRes.error)
+    return json27(
+      {
+        ok: !1,
+        error: getErrorMessage(mutationRes.error, `Unable to ${intent} this order item`)
+      },
+      { status: 400 }
+    );
+  let { headers } = await setToast({
+    request,
+    toast: `success::Order item has been ${intent === "fulfill" ? "fulfilled" : "cancelled"}::${Date.now()}`
+  });
+  return json27(
+    {
+      ok: !0,
+      message: `Order item has been ${intent === "fulfill" ? "fulfilled" : "cancelled"}`,
+      order: mutationRes.data ?? order
+    },
+    { headers }
+  );
+}
+function PartnerOrderDetailPage() {
+  let { order, error } = useLoaderData25();
+  if (useNavigation10().state === "loading" && !order)
+    return /* @__PURE__ */ jsxDEV91(OrderPageSkeleton, {}, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 413,
+      columnNumber: 12
+    }, this);
+  if (error || !order)
+    return /* @__PURE__ */ jsxDEV91("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxDEV91("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-10 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8", children: /* @__PURE__ */ jsxDEV91("div", { className: "flex items-start gap-4", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "flex size-12 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-700", children: /* @__PURE__ */ jsxDEV91(PackageSearch2, { className: "h-5 w-5" }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 422,
+        columnNumber: 15
+      }, this) }, void 0, !1, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 421,
+        columnNumber: 13
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxDEV91("div", { children: [
+          /* @__PURE__ */ jsxDEV91("p", { className: "text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Order details" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 426,
+            columnNumber: 17
+          }, this),
+          /* @__PURE__ */ jsxDEV91("h1", { className: "mt-2 text-3xl font-black text-slate-950", children: "We could not load this order." }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 427,
+            columnNumber: 17
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 425,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV91("p", { className: "max-w-2xl text-sm leading-7 text-slate-600", children: error ?? "The requested order could not be found." }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 429,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV91(
+          Link18,
+          {
+            to: "/partners/orders",
+            className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
+            children: "Back to orders"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 432,
+            columnNumber: 15
+          },
+          this
+        )
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 424,
+        columnNumber: 13
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 420,
+      columnNumber: 11
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 419,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 418,
+      columnNumber: 7
+    }, this);
+  let paymentLink = order.payment_details?.payment_link;
+  return /* @__PURE__ */ jsxDEV91("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxDEV91("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: /* @__PURE__ */ jsxDEV91("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "max-w-3xl space-y-4", children: [
+        /* @__PURE__ */ jsxDEV91(
+          Link18,
+          {
+            to: "/partners/orders",
+            className: "inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-slate-900",
+            children: [
+              /* @__PURE__ */ jsxDEV91(ArrowLeft4, { className: "h-4 w-4" }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 456,
+                columnNumber: 15
+              }, this),
+              "Back to orders"
+            ]
+          },
+          void 0,
+          !0,
+          {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 452,
+            columnNumber: 13
+          },
+          this
+        ),
+        /* @__PURE__ */ jsxDEV91("div", { className: "space-y-3", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Order details" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 461,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV91("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: order.business_name }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 464,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV91("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: [
+            "Order code ",
+            /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: order.order_code }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 468,
+              columnNumber: 28
+            }, this),
+            ", placed on",
+            " ",
+            /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-900", children: formatDateTime(order.created_at) }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 469,
+              columnNumber: 17
+            }, this),
+            "."
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 467,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 460,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 451,
+        columnNumber: 11
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "grid gap-4 sm:grid-cols-2 lg:w-[420px] lg:grid-cols-2", children: [
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Status" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 476,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-2 text-2xl font-black text-slate-950", children: formatStatusLabel(order.status) }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 477,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 475,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 480,
+            columnNumber: 15
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-2 text-2xl font-black text-slate-950", children: order.min_total_amount === order.max_total_amount ? formatMoney4(order.currency, order.min_total_amount) : `${formatMoney4(order.currency, order.min_total_amount)} - ${formatMoney4(order.currency, order.max_total_amount)}` }, void 0, !1, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 481,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 479,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 474,
+        columnNumber: 11
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 450,
+      columnNumber: 9
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 449,
+      columnNumber: 7
+    }, this),
+    /* @__PURE__ */ jsxDEV91("section", { className: "mt-6 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]", children: [
+      /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+        /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center justify-between gap-3", children: [
+          /* @__PURE__ */ jsxDEV91("div", { children: [
+            /* @__PURE__ */ jsxDEV91("h2", { className: "text-2xl font-black text-slate-950", children: "Order items" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 495,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("p", { className: "text-sm text-slate-500", children: "Only pending and active items can be updated." }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 496,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 494,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-500", children: [
+            /* @__PURE__ */ jsxDEV91(SquarePen, { className: "h-4 w-4" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 499,
+              columnNumber: 15
+            }, this),
+            order.orders.length,
+            " items"
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 498,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 493,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4", children: order.orders.length > 0 ? order.orders.map((item) => /* @__PURE__ */ jsxDEV91(OrderItemCard, { order, item }, item.order_item_id, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 506,
+          columnNumber: 40
+        }, this)) : /* @__PURE__ */ jsxDEV91("div", { className: "rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-5 py-8 text-sm text-slate-500", children: "No order items found." }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 508,
+          columnNumber: 15
+        }, this) }, void 0, !1, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 504,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 492,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV91("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+            /* @__PURE__ */ jsxDEV91(CreditCard2, { className: "h-4 w-4" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 518,
+              columnNumber: 15
+            }, this),
+            "Payment"
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 517,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-4 space-y-3 text-sm leading-6 text-slate-600", children: [
+            /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center justify-between gap-4", children: [
+              /* @__PURE__ */ jsxDEV91("span", { children: "Payment option" }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 523,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-950", children: order.payment_details?.payment_option }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 524,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 522,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center justify-between gap-4", children: [
+              /* @__PURE__ */ jsxDEV91("span", { children: "Payment status" }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 527,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-950", children: order.payment_details?.status }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 528,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 526,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center justify-between gap-4", children: [
+              /* @__PURE__ */ jsxDEV91("span", { children: "Reference" }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 531,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-950", children: order.payment_details?.reference }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 532,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 530,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center justify-between gap-4", children: [
+              /* @__PURE__ */ jsxDEV91("span", { children: "Amount" }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 535,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-950", children: formatMoney4(order.currency, order.payment_details?.amount ?? order.min_total_amount) }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 536,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 534,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 521,
+            columnNumber: 13
+          }, this),
+          paymentLink ? /* @__PURE__ */ jsxDEV91(
+            "a",
+            {
+              href: paymentLink,
+              target: "_blank",
+              rel: "noreferrer",
+              className: "mt-5 inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Open payment link"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 541,
+              columnNumber: 15
+            },
+            this
+          ) : null
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 516,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+            /* @__PURE__ */ jsxDEV91(Phone, { className: "h-4 w-4" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 554,
+              columnNumber: 15
+            }, this),
+            "Delivery"
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 553,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-4 space-y-2 text-sm leading-6 text-slate-600", children: [
+            /* @__PURE__ */ jsxDEV91("div", { className: "font-semibold text-slate-950", children: order.delivery_name || "Delivery details" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 558,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { children: order.delivery_street }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 559,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { children: [
+              order.delivery_city,
+              ", ",
+              order.delivery_state,
+              ", ",
+              order.delivery_country
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 560,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { className: "pt-2", children: [
+              "Phone: ",
+              /* @__PURE__ */ jsxDEV91("span", { className: "font-semibold text-slate-950", children: order.delivery_phone_number }, void 0, !1, {
+                fileName: "app/routes/partners.orders.$orderId.tsx",
+                lineNumber: 564,
+                columnNumber: 24
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 563,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 557,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 552,
+          columnNumber: 11
+        }, this),
+        /* @__PURE__ */ jsxDEV91("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsxDEV91("div", { className: "flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+            /* @__PURE__ */ jsxDEV91(ShieldCheck, { className: "h-4 w-4" }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 571,
+              columnNumber: 15
+            }, this),
+            "Business contact"
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 570,
+            columnNumber: 13
+          }, this),
+          /* @__PURE__ */ jsxDEV91("div", { className: "mt-4 space-y-2 text-sm leading-6 text-slate-600", children: [
+            /* @__PURE__ */ jsxDEV91("div", { className: "font-semibold text-slate-950", children: order.business_contact_person_name }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 575,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { children: order.business_contact_person_email }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 576,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV91("div", { children: order.business_contact_person_phone }, void 0, !1, {
+              fileName: "app/routes/partners.orders.$orderId.tsx",
+              lineNumber: 577,
+              columnNumber: 15
+            }, this)
+          ] }, void 0, !0, {
+            fileName: "app/routes/partners.orders.$orderId.tsx",
+            lineNumber: 574,
+            columnNumber: 13
+          }, this)
+        ] }, void 0, !0, {
+          fileName: "app/routes/partners.orders.$orderId.tsx",
+          lineNumber: 569,
+          columnNumber: 11
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/partners.orders.$orderId.tsx",
+        lineNumber: 515,
+        columnNumber: 9
+      }, this)
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders.$orderId.tsx",
+      lineNumber: 491,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, !0, {
+    fileName: "app/routes/partners.orders.$orderId.tsx",
+    lineNumber: 448,
+    columnNumber: 5
   }, this);
 }
 
@@ -17659,8 +18631,8 @@ __export(admin_accounts_allusers_exports, {
   default: () => Accounts,
   loader: () => loader29
 });
-import { json as json29, redirect as redirect22 } from "@remix-run/node";
-import { useLoaderData as useLoaderData27, Form as Form19, useNavigation as useNavigation10 } from "@remix-run/react";
+import { json as json29, redirect as redirect23 } from "@remix-run/node";
+import { useLoaderData as useLoaderData27, Form as Form19, useNavigation as useNavigation11 } from "@remix-run/react";
 
 // app/components/reusables/ToggleBtn.tsx
 import cn8 from "classnames";
@@ -17885,16 +18857,16 @@ import { jsxDEV as jsxDEV95 } from "react/jsx-dev-runtime";
 async function loader29({ request }) {
   let headings = ["full_name", "email", "username", "roles", "access"], cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect22("/login");
+    return redirect23("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   Object.keys(query).length;
   let pagedUsersRes = await adminRepo.queryUsers(cookieHeader, query);
-  return pagedUsersRes.authRequired ? redirect22("/login") : json29({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect23("/login") : json29({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts() {
-  let { headings, tableData, pagedUserData, query } = useLoaderData27(), navigation = useNavigation10();
+  let { headings, tableData, pagedUserData, query } = useLoaderData27(), navigation = useNavigation11();
   return console.log(pagedUserData), /* @__PURE__ */ jsxDEV95("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV95("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsxDEV95("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }, void 0, !1, {
@@ -18084,31 +19056,31 @@ function Accounts() {
 // app/routes/user.withdraw.$walletid.tsx
 var user_withdraw_walletid_exports = {};
 __export(user_withdraw_walletid_exports, {
-  action: () => action18,
+  action: () => action19,
   default: () => AddWithdrawalAccountPage2,
   loader: () => loader30,
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage2
 });
-import { redirect as redirect23 } from "@remix-run/node";
-import { Form as Form20, useNavigate as useNavigate15, useNavigation as useNavigation11 } from "@remix-run/react";
-import { useMemo as useMemo4, useRef as useRef9, useState as useState31 } from "react";
+import { redirect as redirect24 } from "@remix-run/node";
+import { Form as Form20, useNavigate as useNavigate15, useNavigation as useNavigation12 } from "@remix-run/react";
+import { useMemo as useMemo4, useRef as useRef10, useState as useState32 } from "react";
 import { useLoaderData as useLoaderData28, useActionData as useActionData8 } from "@remix-run/react";
 import { json as json30 } from "@remix-run/node";
-import { useEffect as useEffect21 } from "react";
+import { useEffect as useEffect22 } from "react";
 import { jsxDEV as jsxDEV96 } from "react/jsx-dev-runtime";
 async function loader30({ request, params }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
-  console.log({ cookieHeader }), cookieHeader || redirect23("/login");
+  console.log({ cookieHeader }), cookieHeader || redirect24("/login");
   let walletid = params.walletid;
   if (!walletid)
-    return redirect23("/user/wallet");
+    return redirect24("/user/wallet");
   let [wallet, withdrawalAccounts] = await Promise.all([walletRepo.getUserWalletById(walletid, cookieHeader), walletRepo.getWalletWithdrawalAccounts(walletid, cookieHeader)]);
-  if (wallet.authRequired && redirect23("/login"), !wallet.data)
-    return redirect23("/user/wallet");
+  if (wallet.authRequired && redirect24("/login"), !wallet.data)
+    return redirect24("/user/wallet");
   let walletAccount = wallet.data, walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, cookieHeader);
   return console.log("User wallets", { walletAccount, walletCurrencyBanks: walletCurrencyBanksResponse }), { error: wallet.error, walletAccount, walletCurrencyBanks: walletCurrencyBanksResponse.data, withdrawalAccounts: withdrawalAccounts.data, authRequired: wallet.authRequired };
 }
-async function action18({ request }) {
+async function action19({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), intent = formData.get("intent");
   switch (intent) {
     case "getCharge":
@@ -18135,14 +19107,14 @@ async function action18({ request }) {
   return json30({ success: !0 });
 }
 function useAddWithdrawalAccountPage2() {
-  let navigate = useNavigate15(), { error, walletAccount, walletCurrencyBanks, withdrawalAccounts, authRequired } = useLoaderData28(), { toast: toast5 } = useToast(), actionData = useActionData8(), [banks, setBanks] = useState31([]), [wallet, setWallet] = useState31(), [accountDetails, setAccountDetails] = useState31(null), [withdrawalCharges, setWithdrawalCharges] = useState31(null);
-  return useEffect21(() => {
+  let navigate = useNavigate15(), { error, walletAccount, walletCurrencyBanks, withdrawalAccounts, authRequired } = useLoaderData28(), { toast: toast5 } = useToast(), actionData = useActionData8(), [banks, setBanks] = useState32([]), [wallet, setWallet] = useState32(), [accountDetails, setAccountDetails] = useState32(null), [withdrawalCharges, setWithdrawalCharges] = useState32(null);
+  return useEffect22(() => {
     error && toast5({
       variant: "destructive",
       title: "An error occured",
       description: error?.detail.toString() ?? "Error occured"
     });
-  }, [error]), useEffect21(() => {
+  }, [error]), useEffect22(() => {
     if (actionData?.intent === "getCharge" && actionData?.data && setWithdrawalCharges(actionData.data), actionData?.intent === "addAccountDetails" && actionData?.data) {
       toast5({ title: "Success", description: "Recipient added successfully." }), navigate("/user/wallet");
       return;
@@ -18156,15 +19128,15 @@ function useAddWithdrawalAccountPage2() {
       title: "An error occured",
       description: actionData?.error?.detail.toString() ?? "Error occured"
     });
-  }, [actionData, actionData?.data]), useEffect21(() => {
+  }, [actionData, actionData?.data]), useEffect22(() => {
     walletCurrencyBanks && setBanks(walletCurrencyBanks), walletAccount && setWallet(walletAccount);
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges };
 }
 function AddWithdrawalAccountPage2() {
-  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage2(), isSubmitting = useNavigation11().state === "submitting", [searchTerm, setSearchTerm] = useState31(""), [isOpen, setIsOpen] = useState31(!1), [selectedBank, setSelectedBank] = useState31(null), [withdrawalAccount, setWithdrawalAccount] = useState31(null), [amount, setAmount] = useState31(0), dropdownRef = useRef9(null), filteredBanks = useMemo4(() => banks.filter(
+  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage2(), isSubmitting = useNavigation12().state === "submitting", [searchTerm, setSearchTerm] = useState32(""), [isOpen, setIsOpen] = useState32(!1), [selectedBank, setSelectedBank] = useState32(null), [withdrawalAccount, setWithdrawalAccount] = useState32(null), [amount, setAmount] = useState32(0), dropdownRef = useRef10(null), filteredBanks = useMemo4(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
-  useEffect21(() => {
+  useEffect22(() => {
     let handleClickOutside = (event) => {
       dropdownRef.current && !dropdownRef.current.contains(event.target) && setIsOpen(!1);
     };
@@ -18907,20 +19879,20 @@ function Results() {
 // app/routes/admin.accounts.$userId.tsx
 var admin_accounts_userId_exports = {};
 __export(admin_accounts_userId_exports, {
-  action: () => action19,
+  action: () => action20,
   default: () => EditAdminUser,
   loader: () => loader32
 });
-import { Form as Form21, useActionData as useActionData9, useLoaderData as useLoaderData30, useNavigate as useNavigate16, useNavigation as useNavigation12 } from "@remix-run/react";
-import { redirect as redirect24 } from "@remix-run/node";
+import { Form as Form21, useActionData as useActionData9, useLoaderData as useLoaderData30, useNavigate as useNavigate16, useNavigation as useNavigation13 } from "@remix-run/react";
+import { redirect as redirect25 } from "@remix-run/node";
 
 // app/components/admin/RolesFormControl.tsx
-import { useRef as useRef10, useState as useState32 } from "react";
+import { useRef as useRef11, useState as useState33 } from "react";
 import cn9 from "classnames";
 import { CounterClockwiseClockIcon as Restore } from "@radix-ui/react-icons";
 import { jsxDEV as jsxDEV98 } from "react/jsx-dev-runtime";
 function RolesFormControl({ roles, defaultRoles, ...props }) {
-  let [open, setOpen] = useState32(!1), fieldset = useRef10(null);
+  let [open, setOpen] = useState33(!1), fieldset = useRef11(null);
   function resetFieldset(e) {
     e.currentTarget.form?.roles.forEach((item) => {
       item.checked = item.defaultChecked;
@@ -19012,26 +19984,26 @@ function RolesFormControl({ roles, defaultRoles, ...props }) {
 }
 
 // app/routes/admin.accounts.$userId.tsx
-import { useEffect as useEffect22 } from "react";
+import { useEffect as useEffect23 } from "react";
 import { jsxDEV as jsxDEV99 } from "react/jsx-dev-runtime";
 async function loader32({ params, request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect24("/login");
+    return redirect25("/login");
   let rolesResponse = await adminRepo.getAllRoles(cookieHeader);
   if (rolesResponse.authRequired)
-    return redirect24("/login");
+    return redirect25("/login");
   let userId = params.userId ?? "", user = await adminRepo.getAdminUser(cookieHeader, userId);
   if (!user || !user.data) {
     let { headers } = await setToast({ request, toast: `error::Admin user not found::${Date.now()}` });
-    return redirect24("/admin/accounts", { headers });
+    return redirect25("/admin/accounts", { headers });
   }
   return { permissions, user: user.data, roles: rolesResponse.data };
 }
-async function action19({ params, request }) {
+async function action20({ params, request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect24("/login");
+    return redirect25("/login");
   let formData = await request.formData(), userId = params.userId ?? "", dto = {
     fullName: `${formData.get("firstName")} ${formData.get("lastName")}`,
     email: formData.get("email"),
@@ -19050,7 +20022,7 @@ function EditAdminUser() {
   for (let roleName in roles ?? [])
     rolesNames.push(roleName);
   let navigate = useNavigate16(), actionData = useActionData9();
-  useEffect22(() => {
+  useEffect23(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Create action failed",
@@ -19061,7 +20033,7 @@ function EditAdminUser() {
       description: "Admin account was successfully updated!"
     });
   }, [actionData]);
-  let isSubmitting = useNavigation12().state === "submitting";
+  let isSubmitting = useNavigation13().state === "submitting";
   return /* @__PURE__ */ jsxDEV99("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV99("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
       /* @__PURE__ */ jsxDEV99(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }, void 0, !1, {
@@ -19188,8 +20160,8 @@ __export(partners_orders_Index_exports, {
   loader: () => loader33
 });
 import { json as json32 } from "@remix-run/node";
-import { Form as Form22, Link as Link20, useLoaderData as useLoaderData31, useLocation as useLocation7, useNavigation as useNavigation13 } from "@remix-run/react";
-import { PackageSearch as PackageSearch2, Search, ShoppingBag as ShoppingBag2 } from "lucide-react";
+import { Form as Form22, Link as Link20, useLoaderData as useLoaderData31, useLocation as useLocation7, useNavigation as useNavigation14 } from "@remix-run/react";
+import { PackageSearch as PackageSearch3, Search, ShoppingBag as ShoppingBag2 } from "lucide-react";
 import { jsxDEV as jsxDEV100 } from "react/jsx-dev-runtime";
 var orderStatusOptions2 = [
   { label: "All statuses", value: "" },
@@ -19257,7 +20229,7 @@ function emptyPaginatedOrders2(pageSize = 10) {
     first_key_id: null
   };
 }
-function formatMoney4(currency, value) {
+function formatMoney5(currency, value) {
   return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
 function formatDate3(value) {
@@ -19266,7 +20238,7 @@ function formatDate3(value) {
     timeStyle: "short"
   }).format(new Date(value));
 }
-function formatStatusLabel(value) {
+function formatStatusLabel2(value) {
   return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
 }
 function OrdersSkeleton2() {
@@ -19310,61 +20282,43 @@ function OrderItemRow2({
   item
 }) {
   let hasRange = item.min_amount_total !== item.max_amount_total;
-  return /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:bg-white", children: /* @__PURE__ */ jsxDEV100("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: [
-    /* @__PURE__ */ jsxDEV100("div", { className: "space-y-1", children: [
-      /* @__PURE__ */ jsxDEV100("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }, void 0, !1, {
-        fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 149,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV100("div", { className: "text-xs text-slate-500", children: [
-        "Qty ",
-        item.quantity,
-        " \xB7 ",
-        hasRange ? `${formatMoney4(item.currency, item.min_amount_total)} - ${formatMoney4(item.currency, item.max_amount_total)}` : formatMoney4(item.currency, item.min_amount_total)
-      ] }, void 0, !0, {
-        fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 150,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV100("div", { className: "flex flex-wrap gap-2", children: [
-        /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: formatStatusLabel(item.status) }, void 0, !1, {
-          fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 154,
-          columnNumber: 13
-        }, this),
-        item.location_name ? /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: item.location_name }, void 0, !1, {
-          fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 158,
-          columnNumber: 15
-        }, this) : null
-      ] }, void 0, !0, {
-        fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 153,
-        columnNumber: 11
-      }, this)
+  return /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-slate-300 hover:bg-white", children: /* @__PURE__ */ jsxDEV100("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between", children: /* @__PURE__ */ jsxDEV100("div", { className: "space-y-1", children: [
+    /* @__PURE__ */ jsxDEV100("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }, void 0, !1, {
+      fileName: "app/routes/partners.orders._Index.tsx",
+      lineNumber: 149,
+      columnNumber: 11
+    }, this),
+    /* @__PURE__ */ jsxDEV100("div", { className: "text-xs text-slate-500", children: [
+      "Qty ",
+      item.quantity,
+      " \xB7 ",
+      hasRange ? `${formatMoney5(item.currency, item.min_amount_total)} - ${formatMoney5(item.currency, item.max_amount_total)}` : formatMoney5(item.currency, item.min_amount_total)
     ] }, void 0, !0, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 148,
-      columnNumber: 9
+      lineNumber: 150,
+      columnNumber: 11
     }, this),
-    /* @__PURE__ */ jsxDEV100(
-      Link20,
-      {
-        to: `/partners/orders/${item.order_item_id}`,
-        className: "inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-        children: "Open item"
-      },
-      void 0,
-      !1,
-      {
+    /* @__PURE__ */ jsxDEV100("div", { className: "flex flex-wrap gap-2", children: [
+      /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: formatStatusLabel2(item.status) }, void 0, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 165,
-        columnNumber: 9
-      },
-      this
-    )
+        lineNumber: 154,
+        columnNumber: 13
+      }, this),
+      item.location_name ? /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: item.location_name }, void 0, !1, {
+        fileName: "app/routes/partners.orders._Index.tsx",
+        lineNumber: 158,
+        columnNumber: 15
+      }, this) : null
+    ] }, void 0, !0, {
+      fileName: "app/routes/partners.orders._Index.tsx",
+      lineNumber: 153,
+      columnNumber: 11
+    }, this)
   ] }, void 0, !0, {
+    fileName: "app/routes/partners.orders._Index.tsx",
+    lineNumber: 148,
+    columnNumber: 9
+  }, this) }, void 0, !1, {
     fileName: "app/routes/partners.orders._Index.tsx",
     lineNumber: 147,
     columnNumber: 7
@@ -19385,7 +20339,7 @@ function OrderCard2({ order }) {
             lineNumber: 184,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel(order.status) }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV100("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel2(order.status) }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
             lineNumber: 187,
             columnNumber: 13
@@ -19394,7 +20348,23 @@ function OrderCard2({ order }) {
             fileName: "app/routes/partners.orders._Index.tsx",
             lineNumber: 191,
             columnNumber: 15
-          }, this) : null
+          }, this) : null,
+          /* @__PURE__ */ jsxDEV100(
+            Link20,
+            {
+              to: `/partners/orders/${order._id}`,
+              className: "inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Open Order"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/partners.orders._Index.tsx",
+              lineNumber: 196,
+              columnNumber: 13
+            },
+            this
+          )
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
           lineNumber: 183,
@@ -19403,7 +20373,7 @@ function OrderCard2({ order }) {
         /* @__PURE__ */ jsxDEV100("div", { children: [
           /* @__PURE__ */ jsxDEV100("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 198,
+            lineNumber: 205,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
@@ -19412,12 +20382,12 @@ function OrderCard2({ order }) {
             order.delivery_phone_number
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 199,
+            lineNumber: 206,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 197,
+          lineNumber: 204,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
@@ -19429,38 +20399,38 @@ function OrderCard2({ order }) {
         /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
           /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 207,
+            lineNumber: 214,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate3(order.created_at) }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 208,
+            lineNumber: 215,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 206,
+          lineNumber: 213,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
           /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 211,
+            lineNumber: 218,
             columnNumber: 13
           }, this),
-          /* @__PURE__ */ jsxDEV100("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney4(order.currency, order.min_total_amount) : `${formatMoney4(order.currency, order.min_total_amount)} - ${formatMoney4(order.currency, order.max_total_amount)}` }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV100("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney5(order.currency, order.min_total_amount) : `${formatMoney5(order.currency, order.min_total_amount)} - ${formatMoney5(order.currency, order.max_total_amount)}` }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 212,
+            lineNumber: 219,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 210,
+          lineNumber: 217,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 205,
+        lineNumber: 212,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
@@ -19472,42 +20442,42 @@ function OrderCard2({ order }) {
       /* @__PURE__ */ jsxDEV100("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 223,
+          lineNumber: 230,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV100("div", { className: "space-y-3", children: order.orders.length > 0 ? order.orders.map((item) => /* @__PURE__ */ jsxDEV100(OrderItemRow2, { item }, item.order_item_id, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 226,
+          lineNumber: 233,
           columnNumber: 40
         }, this)) : /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500", children: "No order items found." }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 228,
+          lineNumber: 235,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 224,
+          lineNumber: 231,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 222,
+        lineNumber: 229,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV100("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 236,
+          lineNumber: 243,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV100("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
           /* @__PURE__ */ jsxDEV100("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 238,
+            lineNumber: 245,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { children: order.delivery_street }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 239,
+            lineNumber: 246,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { children: [
@@ -19518,43 +20488,43 @@ function OrderCard2({ order }) {
             order.delivery_country
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 240,
+            lineNumber: 247,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { className: "mt-3", children: [
             "Payment option: ",
             /* @__PURE__ */ jsxDEV100("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 244,
+              lineNumber: 251,
               columnNumber: 31
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 243,
+            lineNumber: 250,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { children: [
             "Payment status: ",
             /* @__PURE__ */ jsxDEV100("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 247,
+              lineNumber: 254,
               columnNumber: 31
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 246,
+            lineNumber: 253,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { children: [
             "Reference: ",
             /* @__PURE__ */ jsxDEV100("span", { className: "font-semibold text-slate-900", children: order.payment_details?.reference }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 250,
+              lineNumber: 257,
               columnNumber: 26
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 249,
+            lineNumber: 256,
             columnNumber: 13
           }, this),
           paymentLink ? /* @__PURE__ */ jsxDEV100(
@@ -19570,24 +20540,24 @@ function OrderCard2({ order }) {
             !1,
             {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 253,
+              lineNumber: 260,
               columnNumber: 15
             },
             this
           ) : null
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 237,
+          lineNumber: 244,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 235,
+        lineNumber: 242,
         columnNumber: 9
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 221,
+      lineNumber: 228,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
@@ -19608,116 +20578,116 @@ async function loader33({ request }) {
   });
 }
 function PartnerOrdersPage() {
-  let { orders, query, error } = useLoaderData31(), navigation = useNavigation13(), location = useLocation7(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
+  let { orders, query, error } = useLoaderData31(), navigation = useNavigation14(), location = useLocation7(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxDEV100("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxDEV100("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxDEV100("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
         /* @__PURE__ */ jsxDEV100("div", { className: "max-w-3xl space-y-4", children: [
           /* @__PURE__ */ jsxDEV100("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 301,
+            lineNumber: 308,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { className: "space-y-3", children: [
             /* @__PURE__ */ jsxDEV100("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Search and manage partner orders." }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 305,
+              lineNumber: 312,
               columnNumber: 15
             }, this),
             /* @__PURE__ */ jsxDEV100("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Search by order code, delivery phone number, order status, or item status to find the exact order you need." }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 308,
+              lineNumber: 315,
               columnNumber: 15
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 304,
+            lineNumber: 311,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 300,
+          lineNumber: 307,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV100("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
           /* @__PURE__ */ jsxDEV100("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
             /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 316,
+              lineNumber: 323,
               columnNumber: 15
             }, this),
             /* @__PURE__ */ jsxDEV100("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 317,
+              lineNumber: 324,
               columnNumber: 15
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 315,
+            lineNumber: 322,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
             /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 320,
+              lineNumber: 327,
               columnNumber: 15
             }, this),
             /* @__PURE__ */ jsxDEV100("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 321,
+              lineNumber: 328,
               columnNumber: 15
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 319,
+            lineNumber: 326,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
             /* @__PURE__ */ jsxDEV100("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 324,
+              lineNumber: 331,
               columnNumber: 15
             }, this),
             /* @__PURE__ */ jsxDEV100("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page }, void 0, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 325,
+              lineNumber: 332,
               columnNumber: 15
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 323,
+            lineNumber: 330,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 314,
+          lineNumber: 321,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 299,
+        lineNumber: 306,
         columnNumber: 9
       }, this),
       error ? /* @__PURE__ */ jsxDEV100("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }, void 0, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 331,
+        lineNumber: 338,
         columnNumber: 11
       }, this) : null
     ] }, void 0, !0, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 298,
+      lineNumber: 305,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV100("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxDEV100(Form22, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxDEV100("input", { type: "hidden", name: "page_size", value: orders.items_per_page }, void 0, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 339,
+        lineNumber: 346,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV100("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsxDEV100("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 342,
+          lineNumber: 349,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100(
@@ -19732,20 +20702,20 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 343,
+            lineNumber: 350,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 341,
+        lineNumber: 348,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV100("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsxDEV100("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Delivery phone" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 352,
+          lineNumber: 359,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100(
@@ -19760,20 +20730,20 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 353,
+            lineNumber: 360,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 351,
+        lineNumber: 358,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV100("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsxDEV100("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 362,
+          lineNumber: 369,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100(
@@ -19784,7 +20754,7 @@ function PartnerOrdersPage() {
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
             children: orderStatusOptions2.map((option) => /* @__PURE__ */ jsxDEV100("option", { value: option.value, children: option.label }, option.label, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 369,
+              lineNumber: 376,
               columnNumber: 17
             }, this))
           },
@@ -19792,20 +20762,20 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 363,
+            lineNumber: 370,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 361,
+        lineNumber: 368,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV100("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsxDEV100("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 377,
+          lineNumber: 384,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100(
@@ -19816,7 +20786,7 @@ function PartnerOrdersPage() {
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
             children: orderProductStatusOptions2.map((option) => /* @__PURE__ */ jsxDEV100("option", { value: option.value, children: option.label }, option.label, !1, {
               fileName: "app/routes/partners.orders._Index.tsx",
-              lineNumber: 384,
+              lineNumber: 391,
               columnNumber: 17
             }, this))
           },
@@ -19824,14 +20794,14 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 378,
+            lineNumber: 385,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 376,
+        lineNumber: 383,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV100("div", { className: "flex gap-3", children: [
@@ -19843,7 +20813,7 @@ function PartnerOrdersPage() {
             children: [
               /* @__PURE__ */ jsxDEV100(Search, { className: "mr-2 h-4 w-4" }, void 0, !1, {
                 fileName: "app/routes/partners.orders._Index.tsx",
-                lineNumber: 396,
+                lineNumber: 403,
                 columnNumber: 15
               }, this),
               "Search"
@@ -19853,7 +20823,7 @@ function PartnerOrdersPage() {
           !0,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 392,
+            lineNumber: 399,
             columnNumber: 13
           },
           this
@@ -19869,23 +20839,23 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 399,
+            lineNumber: 406,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 391,
+        lineNumber: 398,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 338,
+      lineNumber: 345,
       columnNumber: 9
     }, this) }, void 0, !1, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 337,
+      lineNumber: 344,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV100("section", { className: "mt-8", children: [
@@ -19893,63 +20863,63 @@ function PartnerOrdersPage() {
         /* @__PURE__ */ jsxDEV100("div", { children: [
           /* @__PURE__ */ jsxDEV100("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 412,
+            lineNumber: 419,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV100("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 413,
+            lineNumber: 420,
             columnNumber: 13
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 411,
+          lineNumber: 418,
           columnNumber: 11
         }, this),
         /* @__PURE__ */ jsxDEV100("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
-          /* @__PURE__ */ jsxDEV100(PackageSearch2, { className: "h-4 w-4" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV100(PackageSearch3, { className: "h-4 w-4" }, void 0, !1, {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 418,
+            lineNumber: 425,
             columnNumber: 13
           }, this),
           "Page ",
           orders.current_page
         ] }, void 0, !0, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 417,
+          lineNumber: 424,
           columnNumber: 11
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 410,
+        lineNumber: 417,
         columnNumber: 9
       }, this),
       isLoading ? /* @__PURE__ */ jsxDEV100(OrdersSkeleton2, {}, void 0, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 424,
+        lineNumber: 431,
         columnNumber: 11
       }, this) : hasOrders ? /* @__PURE__ */ jsxDEV100("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsxDEV100(OrderCard2, { order }, order._id, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 428,
+        lineNumber: 435,
         columnNumber: 15
       }, this)) }, void 0, !1, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 426,
+        lineNumber: 433,
         columnNumber: 11
       }, this) : /* @__PURE__ */ jsxDEV100("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
         /* @__PURE__ */ jsxDEV100(ShoppingBag2, { className: "mx-auto h-10 w-10 text-slate-300" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 433,
+          lineNumber: 440,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders found" }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 434,
+          lineNumber: 441,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Try a different code, delivery phone number, or status combination." }, void 0, !1, {
           fileName: "app/routes/partners.orders._Index.tsx",
-          lineNumber: 435,
+          lineNumber: 442,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV100(
@@ -19963,19 +20933,19 @@ function PartnerOrdersPage() {
           !1,
           {
             fileName: "app/routes/partners.orders._Index.tsx",
-            lineNumber: 438,
+            lineNumber: 445,
             columnNumber: 13
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 432,
+        lineNumber: 439,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 409,
+      lineNumber: 416,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV100("section", { className: "mt-8", children: /* @__PURE__ */ jsxDEV100(
@@ -19989,18 +20959,18 @@ function PartnerOrdersPage() {
       !1,
       {
         fileName: "app/routes/partners.orders._Index.tsx",
-        lineNumber: 449,
+        lineNumber: 456,
         columnNumber: 9
       },
       this
     ) }, void 0, !1, {
       fileName: "app/routes/partners.orders._Index.tsx",
-      lineNumber: 448,
+      lineNumber: 455,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/partners.orders._Index.tsx",
-    lineNumber: 297,
+    lineNumber: 304,
     columnNumber: 5
   }, this);
 }
@@ -20011,22 +20981,22 @@ __export(admin_accounts_index_exports, {
   default: () => Accounts2,
   loader: () => loader34
 });
-import { json as json33, redirect as redirect25 } from "@remix-run/node";
-import { useLoaderData as useLoaderData32, Form as Form23, useNavigation as useNavigation14 } from "@remix-run/react";
+import { json as json33, redirect as redirect26 } from "@remix-run/node";
+import { useLoaderData as useLoaderData32, Form as Form23, useNavigation as useNavigation15 } from "@remix-run/react";
 import { jsxDEV as jsxDEV101 } from "react/jsx-dev-runtime";
 async function loader34({ request }) {
   let headings = ["full_name", "email", "username", "roles", "access"], cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect25("/login");
+    return redirect26("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   query.has_admin_access = "1";
   let pagedUsersRes = await adminRepo.queryUsers(cookieHeader, query);
-  return pagedUsersRes.authRequired ? redirect25("/login") : json33({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect26("/login") : json33({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts2() {
-  let { headings, tableData, pagedUserData, query } = useLoaderData32(), navigation = useNavigation14();
+  let { headings, tableData, pagedUserData, query } = useLoaderData32(), navigation = useNavigation15();
   return console.log(pagedUserData), /* @__PURE__ */ jsxDEV101("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV101("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsxDEV101("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }, void 0, !1, {
@@ -20216,7 +21186,7 @@ function Accounts2() {
 // app/routes/admin.contests._index.tsx
 var admin_contests_index_exports = {};
 __export(admin_contests_index_exports, {
-  action: () => action20,
+  action: () => action21,
   default: () => Contests2,
   loader: () => loader35
 });
@@ -20229,7 +21199,7 @@ async function loader35({}) {
     throw new Error(error.detail);
   return json34({ contests: contests2 });
 }
-async function action20({ request }) {
+async function action21({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "delete")
     return await deleteContest(formData, request);
@@ -20295,8 +21265,8 @@ __export(admin_partners_index_exports, {
   loader: () => loader36
 });
 import { json as json35 } from "@remix-run/node";
-import { useLoaderData as useLoaderData34, useNavigation as useNavigation15, Form as Form24 } from "@remix-run/react";
-import { useState as useState33 } from "react";
+import { useLoaderData as useLoaderData34, useNavigation as useNavigation16, Form as Form24 } from "@remix-run/react";
+import { useState as useState34 } from "react";
 import { jsxDEV as jsxDEV103 } from "react/jsx-dev-runtime";
 var statusColors2 = {
   Approved: "text-green-600 bg-green-50 border-green-200",
@@ -20314,7 +21284,7 @@ async function loader36({ request }) {
   return json35({ partnersRes: partnersRes.data ?? { items: [], items_per_page: 20 }, query });
 }
 function PartnersIndex() {
-  let data = useLoaderData34(), navigation = useNavigation15(), [search, setSearch] = useState33(data.query?.legal_business_name || "");
+  let data = useLoaderData34(), navigation = useNavigation16(), [search, setSearch] = useState34(data.query?.legal_business_name || "");
   if ("redirect" in data && typeof window < "u")
     return window.location.href = data.redirect, null;
   let { partnersRes, query } = data;
@@ -20625,7 +21595,7 @@ function PartnersIndex() {
   }, this);
 }
 function _PartnersIndex() {
-  let { partnersRes, query } = useLoaderData34(), navigation = useNavigation15(), [search, setSearch] = useState33(query.legal_business_name || "");
+  let { partnersRes, query } = useLoaderData34(), navigation = useNavigation16(), [search, setSearch] = useState34(query.legal_business_name || "");
   return /* @__PURE__ */ jsxDEV103("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV103("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsxDEV103("h1", { className: "text-2xl font-black text-primary", children: "Partners" }, void 0, !1, {
       fileName: "app/routes/admin.partners._index.tsx",
@@ -20844,10 +21814,10 @@ function _PartnersIndex() {
 // app/routes/admin.tournaments.add.tsx
 var admin_tournaments_add_exports = {};
 __export(admin_tournaments_add_exports, {
-  action: () => action21,
+  action: () => action22,
   default: () => AddTournament
 });
-import { json as json36, redirect as redirect26 } from "@remix-run/node";
+import { json as json36, redirect as redirect27 } from "@remix-run/node";
 import { useNavigate as useNavigate17 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateTournamentForm.tsx
@@ -20904,17 +21874,17 @@ function CreateTournamentForm() {
 
 // app/routes/admin.tournaments.add.tsx
 import { jsxDEV as jsxDEV105 } from "react/jsx-dev-runtime";
-async function action21({ request }) {
+async function action22({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect26("/login");
+    return redirect27("/login");
   let formData = await request.formData(), payload = prepareTournamentDto(formData), { error } = await tournamentRepo.createTournament(payload, cookieHeader);
   if (error) {
     let { headers: headers2 } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
     return json36(error, { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `success::A new tournament has been created::${Date.now()}` });
-  return redirect26("/admin/tournaments", { headers });
+  return redirect27("/admin/tournaments", { headers });
 }
 function AddTournament() {
   let navigate = useNavigate17();
@@ -20950,13 +21920,13 @@ function AddTournament() {
 // app/routes/user.setwithdrawalpin.tsx
 var user_setwithdrawalpin_exports = {};
 __export(user_setwithdrawalpin_exports, {
-  action: () => action22,
+  action: () => action23,
   default: () => SetWithdrawalPin,
   loader: () => loader37
 });
-import { json as json37, redirect as redirect27 } from "@remix-run/node";
+import { json as json37, redirect as redirect28 } from "@remix-run/node";
 import { Form as Form26, Link as Link21, useActionData as useActionData10, useLoaderData as useLoaderData35 } from "@remix-run/react";
-import { useState as useState34, useEffect as useEffect23 } from "react";
+import { useState as useState35, useEffect as useEffect24 } from "react";
 import { User, X } from "lucide-react";
 
 // app/services/auth/auth.server.ts
@@ -21014,7 +21984,7 @@ var AuthServer = class {
 // app/routes/user.setwithdrawalpin.tsx
 import { jsxDEV as jsxDEV106 } from "react/jsx-dev-runtime";
 var tokenRequested = !1;
-async function action22({ request }) {
+async function action23({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), withdrawalPinDto = {
     token: formData.get("token"),
     withdrawal_pin: formData.get("withdrawal_pin"),
@@ -21028,21 +21998,21 @@ async function loader37({ request }) {
   console.log("SEtting");
   let cookieHeader = request.headers.get("Cookie"), { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
   if (authRequired)
-    return redirect27("/login");
+    return redirect28("/login");
   if (data) {
     if (data.withdrawal_pin_set)
-      return redirect27("/user/wallet");
+      return redirect28("/user/wallet");
     if (!tokenRequested) {
       if (!(await walletRepo.requestWithdrawalToken(cookieHeader ?? "")).data)
-        return redirect27("/user/wallet");
+        return redirect28("/user/wallet");
       tokenRequested = !0;
     }
   }
   return json37({ data, error });
 }
 function useSetWithdrawalPinController() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState34(null), actionData = useActionData10(), loader_ = useLoaderData35();
-  return useEffect23(() => {
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState35(null), actionData = useActionData10(), loader_ = useLoaderData35();
+  return useEffect24(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
     user,
@@ -21053,7 +22023,7 @@ function useSetWithdrawalPinController() {
 }
 function SetWithdrawalPin() {
   let { loader_, actionData, setUserStoreManager } = useSetWithdrawalPinController();
-  return useEffect23(() => {
+  return useEffect24(() => {
     console.log({ actionData }), actionData?.error && toast({
       variant: "destructive",
       title: "Set Withdrawal Pin Failed",
@@ -21318,16 +22288,16 @@ __export(user_pending_uploads_exports, {
   loader: () => loader39,
   useUserPendingsUploadController: () => useUserPendingsUploadController
 });
-import { useEffect as useEffect24, useState as useState35 } from "react";
+import { useEffect as useEffect25, useState as useState36 } from "react";
 import { Link as Link22, useLoaderData as useLoaderData37 } from "@remix-run/react";
-import { json as json39, redirect as redirect28 } from "@remix-run/node";
+import { json as json39, redirect as redirect29 } from "@remix-run/node";
 import { jsxDEV as jsxDEV108 } from "react/jsx-dev-runtime";
 async function loader39({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (console.log({ cookieHeader }), !cookieHeader)
-    return redirect28("/login");
+    return redirect29("/login");
   let { data, error, authRequired } = await userServer.getPendingUploads(cookieHeader);
-  return console.log({ data, error }), authRequired ? redirect28("/login") : json39({ data, error, authRequired });
+  return console.log({ data, error }), authRequired ? redirect29("/login") : json39({ data, error, authRequired });
 }
 var PendingUploadCard = ({
   contestImageUrl,
@@ -21387,12 +22357,12 @@ var PendingUploadCard = ({
   columnNumber: 3
 }, this);
 function useUserPendingsUploadController() {
-  let { data, error, authRequired } = useLoaderData37(), [pendingUploads, setPendingUploads] = useState35([]);
+  let { data, error, authRequired } = useLoaderData37(), [pendingUploads, setPendingUploads] = useState36([]);
   return error && toast({
     variant: "destructive",
     title: "An error occured",
     description: error?.detail.toString() ?? "Error occured"
-  }), useEffect24(() => {
+  }), useEffect25(() => {
     if (data) {
       let flattenedUploads = contestantHelper.enrichContestsContestantsData(data);
       setPendingUploads(flattenedUploads), console.log({ flattenedUploads });
@@ -21465,8 +22435,8 @@ __export(user_givaah_credits_exports, {
   default: () => GivaahCreditsPage,
   loader: () => loader40
 });
-import { json as json40, redirect as redirect29 } from "@remix-run/node";
-import { Form as Form27, Link as Link23, useLoaderData as useLoaderData38, useNavigation as useNavigation16 } from "@remix-run/react";
+import { json as json40, redirect as redirect30 } from "@remix-run/node";
+import { Form as Form27, Link as Link23, useLoaderData as useLoaderData38, useNavigation as useNavigation17 } from "@remix-run/react";
 import { jsxDEV as jsxDEV109 } from "react/jsx-dev-runtime";
 function formatValue(value) {
   return new Intl.NumberFormat("en-NG", {
@@ -21526,7 +22496,7 @@ function CreditsSkeleton() {
 async function loader40({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect29("/login");
+    return redirect30("/login");
   let url = new URL(request.url), query = buildQuery(url.searchParams), validationError = query && (!query.phone || !query.order_code) ? "Please enter both phone and order code to search credits." : null, creditsRes = await userServer.getGivaahCredits(validationError ? void 0 : query ?? void 0, cookieHeader);
   return creditsRes.error ? json40({
     credits: null,
@@ -21541,7 +22511,7 @@ async function loader40({ request }) {
   });
 }
 function GivaahCreditsPage() {
-  let { credits, query, error, validationError } = useLoaderData38(), isBusy = useNavigation16().state !== "idle", pageCredits = credits?.credits ?? [];
+  let { credits, query, error, validationError } = useLoaderData38(), isBusy = useNavigation17().state !== "idle", pageCredits = credits?.credits ?? [];
   return /* @__PURE__ */ jsxDEV109("main", { className: "min-h-full bg-slate-50 p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxDEV109("div", { className: "mx-auto flex w-full max-w-6xl flex-col gap-6", children: [
     /* @__PURE__ */ jsxDEV109("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8", children: /* @__PURE__ */ jsxDEV109("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between", children: [
       /* @__PURE__ */ jsxDEV109("div", { className: "max-w-2xl space-y-3", children: [
@@ -21977,26 +22947,26 @@ function GivaahCreditsPage() {
 // app/routes/admin.accounts.add.tsx
 var admin_accounts_add_exports = {};
 __export(admin_accounts_add_exports, {
-  action: () => action23,
+  action: () => action24,
   default: () => AddAdminUser,
   loader: () => loader41,
   useAddAdminUser: () => useAddAdminUser
 });
-import { Form as Form28, useActionData as useActionData11, useLoaderData as useLoaderData39, useNavigate as useNavigate19, useNavigation as useNavigation17 } from "@remix-run/react";
-import { redirect as redirect30 } from "@remix-run/node";
-import { useEffect as useEffect25 } from "react";
+import { Form as Form28, useActionData as useActionData11, useLoaderData as useLoaderData39, useNavigate as useNavigate19, useNavigation as useNavigation18 } from "@remix-run/react";
+import { redirect as redirect31 } from "@remix-run/node";
+import { useEffect as useEffect26 } from "react";
 import { jsxDEV as jsxDEV110 } from "react/jsx-dev-runtime";
 async function loader41({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect30("/login");
+    return redirect31("/login");
   let rolesResponse = await adminRepo.getAllRoles(cookieHeader);
-  return rolesResponse.authRequired ? redirect30("/login") : { roles: rolesResponse.data, permissions };
+  return rolesResponse.authRequired ? redirect31("/login") : { roles: rolesResponse.data, permissions };
 }
-async function action23({ request }) {
+async function action24({ request }) {
   let formData = await request.formData(), cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect30("/login");
+    return redirect31("/login");
   let dto = {
     fullName: `${formData.get("firstName")} ${formData.get("lastName")}`,
     email: formData.get("email"),
@@ -22014,8 +22984,8 @@ function useAddAdminUser() {
   let { permissions: permissions2, roles } = useLoaderData39(), rolesNames = [];
   for (let roleName in roles)
     rolesNames.push(roleName);
-  let isSubmitting = useNavigation17().state === "submitting", actionData = useActionData11();
-  return useEffect25(() => {
+  let isSubmitting = useNavigation18().state === "submitting", actionData = useActionData11();
+  return useEffect26(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Create action failed",
@@ -22156,11 +23126,11 @@ function AddAdminUser() {
 // app/routes/admin.contests.add.tsx
 var admin_contests_add_exports = {};
 __export(admin_contests_add_exports, {
-  action: () => action24,
+  action: () => action25,
   default: () => AddContest,
   loader: () => loader42
 });
-import { json as json41, redirect as redirect31 } from "@remix-run/node";
+import { json as json41, redirect as redirect32 } from "@remix-run/node";
 import { useLoaderData as useLoaderData40, useNavigate as useNavigate20 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateContestForm.tsx
@@ -22325,14 +23295,14 @@ async function loader42({}) {
   let { data: tournaments = [] } = await tournamentRepo.getTournaments();
   return json41({ tournaments });
 }
-async function action24({ request }) {
+async function action25({ request }) {
   let payload = prepareContestPayload(await request.formData()), cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect31("/login");
+    return redirect32("/login");
   let { data, error } = await contestRepo.createContest(payload, cookieHeader);
   if (data) {
     let { headers: headers2 } = await setToast({ request, toast: `success::A new contest has been created::${Date.now()}` });
-    return redirect31("/admin/contests", { headers: headers2 });
+    return redirect32("/admin/contests", { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` });
   return json41(null, { headers });
@@ -22374,21 +23344,21 @@ __export(partners_location_exports, {
   default: () => PartnerProducts,
   loader: () => loader43
 });
-import { json as json42, redirect as redirect32 } from "@remix-run/node";
-import { useLoaderData as useLoaderData41, Form as Form30, useNavigation as useNavigation18 } from "@remix-run/react";
+import { json as json42, redirect as redirect33 } from "@remix-run/node";
+import { useLoaderData as useLoaderData41, Form as Form30, useNavigation as useNavigation19 } from "@remix-run/react";
 import { jsxDEV as jsxDEV113 } from "react/jsx-dev-runtime";
 async function loader43({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect32("/login");
+    return redirect33("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerLocations(query, cookieHeader);
-  return pagedUsersRes.authRequired ? redirect32("/login") : (console.log(pagedUsersRes), json42({ data: pagedUsersRes.data, query }));
+  return pagedUsersRes.authRequired ? redirect33("/login") : (console.log(pagedUsersRes), json42({ data: pagedUsersRes.data, query }));
 }
 function PartnerProducts() {
-  let { data, query } = useLoaderData41(), navigation = useNavigation18();
+  let { data, query } = useLoaderData41(), navigation = useNavigation19();
   return console.log(data), /* @__PURE__ */ jsxDEV113("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV113("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsxDEV113("h1", { className: "text-2xl font-black text-primary", children: "Products" }, void 0, !1, {
@@ -22639,7 +23609,7 @@ __export(public_winners_exports, {
   loader: () => loader44
 });
 import { Link as Link24, useLoaderData as useLoaderData42 } from "@remix-run/react";
-import { useEffect as useEffect26, useState as useState36 } from "react";
+import { useEffect as useEffect27, useState as useState37 } from "react";
 import { jsxDEV as jsxDEV114 } from "react/jsx-dev-runtime";
 async function loader44({ params }) {
   let { data: winners, error } = await contestRepo.getWinners();
@@ -22728,10 +23698,10 @@ var WinnerCard = ({
   this
 );
 function Winners() {
-  let { winners, error } = useLoaderData42(), [searchWinners, setSearchWinners] = useState36(""), [winnersFiltered, setWinnersFiltered] = useState36(winners ?? []);
-  return useEffect26(() => {
+  let { winners, error } = useLoaderData42(), [searchWinners, setSearchWinners] = useState37(""), [winnersFiltered, setWinnersFiltered] = useState37(winners ?? []);
+  return useEffect27(() => {
     setWinnersFiltered(winners ?? []);
-  }, [winners]), useEffect26(() => {
+  }, [winners]), useEffect27(() => {
     let updated = (winners ?? []).filter(
       (winner) => winner.full_name.toLowerCase().includes(searchWinners.trim().toLowerCase()) || winner.contest_name.toLowerCase().includes(searchWinners.trim().toLowerCase())
     );
@@ -22859,7 +23829,7 @@ __export(partner_account_exports, {
   default: () => PartnerLoginOrRequestPartnerShip
 });
 import { Link as Link25, useLocation as useLocation8 } from "@remix-run/react";
-import { useEffect as useEffect27 } from "react";
+import { useEffect as useEffect28 } from "react";
 import { jsxDEV as jsxDEV115 } from "react/jsx-dev-runtime";
 function PartnerLoginOrRequestPartnerShip() {
   let { setUserStoreManager, getUserStoreManager } = useUserManager();
@@ -22978,7 +23948,7 @@ function PartnerLoginOrRequestPartnerShip() {
       lineNumber: 22,
       columnNumber: 9
     }, this);
-  useEffect27(() => {
+  useEffect28(() => {
     window.location.replace("/partners/home");
   }, []);
 }
@@ -22986,19 +23956,19 @@ function PartnerLoginOrRequestPartnerShip() {
 // app/routes/partner.partner.tsx
 var partner_partner_exports = {};
 __export(partner_partner_exports, {
-  action: () => action25,
+  action: () => action26,
   default: () => PartnerOnboarding,
   loader: () => loader45
 });
 import { json as json43 } from "@remix-run/node";
-import { useActionData as useActionData13, Form as Form32, useNavigate as useNavigate22, useNavigation as useNavigation19 } from "@remix-run/react";
-import { useState as useState38 } from "react";
-import { useEffect as useEffect28 } from "react";
+import { useActionData as useActionData13, Form as Form32, useNavigate as useNavigate22, useNavigation as useNavigation20 } from "@remix-run/react";
+import { useState as useState39 } from "react";
+import { useEffect as useEffect29 } from "react";
 import { jsxDEV as jsxDEV116 } from "react/jsx-dev-runtime";
 async function loader45({}) {
   return json43({});
 }
-async function action25({ request }) {
+async function action26({ request }) {
   let formData = await request.formData();
   console.log("d");
   for (let [key, value] of formData.entries())
@@ -23079,12 +24049,12 @@ var Label2 = ({ children, required }) => /* @__PURE__ */ jsxDEV116("label", { cl
   columnNumber: 3
 }, this), inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-gray-400 bg-white";
 function usePartnerOnboardingController() {
-  let navigation = useNavigation19(), [section, setSection] = useState38(0), [form, setForm] = useState38({
+  let navigation = useNavigation20(), [section, setSection] = useState39(0), [form, setForm] = useState39({
     estimated_weekly_volume_currency: "USD",
     referral_percentage: 10,
     country_of_incorporation: "Nigeria"
   }), actionData = useActionData13(), isSuccess = !!actionData?.data && !actionData?.error, businessName = form.legal_business_name ?? "Partner", navigate = useNavigate22();
-  return useEffect28(() => {
+  return useEffect29(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Submission failed",
@@ -24503,7 +25473,7 @@ __export(admin_overview_exports, {
   default: () => Home,
   loader: () => loader46
 });
-import { json as json44, redirect as redirect33 } from "@remix-run/node";
+import { json as json44, redirect as redirect34 } from "@remix-run/node";
 import { useLoaderData as useLoaderData45 } from "@remix-run/react";
 
 // app/components/admin/AdminSummary.tsx
@@ -24908,7 +25878,7 @@ import { jsxDEV as jsxDEV126 } from "react/jsx-dev-runtime";
 async function loader46({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect33("/login");
+    return redirect34("/login");
   let { data: contests2 } = await contestRepo.getContests(), adminUsersquery = {
     has_admin_access: !0
   }, adminUsers3 = (await adminRepo.queryUsers(cookieHeader, adminUsersquery)).data?.items ?? [], { data: tournaments } = await tournamentRepo.getTournaments();
@@ -24981,25 +25951,25 @@ __export(user_affiliate_exports, {
   default: () => AffilliateLeaderBoard2,
   loader: () => loader47
 });
-import { json as json45, redirect as redirect34 } from "@remix-run/node";
-import { useLoaderData as useLoaderData46, Form as Form33, useNavigation as useNavigation20 } from "@remix-run/react";
+import { json as json45, redirect as redirect35 } from "@remix-run/node";
+import { useLoaderData as useLoaderData46, Form as Form33, useNavigation as useNavigation21 } from "@remix-run/react";
 import { jsxDEV as jsxDEV127 } from "react/jsx-dev-runtime";
 async function loader47({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect34("/login");
+    return redirect35("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     v && (query[k] = v);
   let walletsResponse = await walletRepo.getUserWallets(cookieHeader);
   if (!walletsResponse.data)
-    return redirect34("/login");
+    return redirect35("/login");
   query.wallet_id || (query.wallet_id = walletsResponse.data[0]?.str_id);
   let referralBoardRes = await walletRepo.queryReferralBoard(cookieHeader, query);
-  return referralBoardRes.authRequired ? redirect34("/login") : json45({ wallets: walletsResponse.data, referralBoardRes: referralBoardRes.data, query });
+  return referralBoardRes.authRequired ? redirect35("/login") : json45({ wallets: walletsResponse.data, referralBoardRes: referralBoardRes.data, query });
 }
 function AffilliateLeaderBoard2() {
-  let { wallets, referralBoardRes, query } = useLoaderData46(), navigation = useNavigation20();
+  let { wallets, referralBoardRes, query } = useLoaderData46(), navigation = useNavigation21();
   return console.log(referralBoardRes), /* @__PURE__ */ jsxDEV127("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV127("p", { className: "font-semibold", children: "Affiliates leader board" }, void 0, !1, {
       fileName: "app/routes/user.affiliate.tsx",
@@ -25177,21 +26147,21 @@ __export(partners_home_exports, {
   default: () => PartnerProducts2,
   loader: () => loader48
 });
-import { json as json46, redirect as redirect35 } from "@remix-run/node";
-import { useLoaderData as useLoaderData47, Form as Form34, useNavigation as useNavigation21 } from "@remix-run/react";
+import { json as json46, redirect as redirect36 } from "@remix-run/node";
+import { useLoaderData as useLoaderData47, Form as Form34, useNavigation as useNavigation22 } from "@remix-run/react";
 import { jsxDEV as jsxDEV128 } from "react/jsx-dev-runtime";
 async function loader48({ request }) {
   let headings = ["full_name", "email", "username", "roles", "access"], cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect35("/login");
+    return redirect36("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerProducts(query, cookieHeader);
-  return pagedUsersRes.authRequired ? redirect35("/login") : (console.log(pagedUsersRes), json46({ data: pagedUsersRes.data, query }));
+  return pagedUsersRes.authRequired ? redirect36("/login") : (console.log(pagedUsersRes), json46({ data: pagedUsersRes.data, query }));
 }
 function PartnerProducts2() {
-  let { data, query } = useLoaderData47(), navigation = useNavigation21();
+  let { data, query } = useLoaderData47(), navigation = useNavigation22();
   return console.log(data), /* @__PURE__ */ jsxDEV128("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxDEV128("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsxDEV128("h1", { className: "text-2xl font-black text-primary", children: "Products" }, void 0, !1, {
@@ -25485,35 +26455,35 @@ var admin_index_exports = {};
 __export(admin_index_exports, {
   loader: () => loader49
 });
-import { redirect as redirect36 } from "@remix-run/node";
+import { redirect as redirect37 } from "@remix-run/node";
 function loader49() {
-  return redirect36("/admin/overview");
+  return redirect37("/admin/overview");
 }
 
 // app/routes/partners.add.tsx
 var partners_add_exports = {};
 __export(partners_add_exports, {
-  action: () => action26,
+  action: () => action27,
   default: () => AddPartnerProduct,
   loader: () => loader50
 });
-import { json as json47, redirect as redirect37 } from "@remix-run/node";
-import { Form as Form35, useActionData as useActionData14, useLoaderData as useLoaderData48, useNavigate as useNavigate23, useNavigation as useNavigation22 } from "@remix-run/react";
-import { useEffect as useEffect29, useState as useState39 } from "react";
+import { json as json47, redirect as redirect38 } from "@remix-run/node";
+import { Form as Form35, useActionData as useActionData14, useLoaderData as useLoaderData48, useNavigate as useNavigate23, useNavigation as useNavigation23 } from "@remix-run/react";
+import { useEffect as useEffect30, useState as useState40 } from "react";
 import { jsxDEV as jsxDEV129 } from "react/jsx-dev-runtime";
 async function loader50({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect37("/login");
+    return redirect38("/login");
   let locationsRes = await partnerServer.getPartnerLocations({ page_size: 1e3 }, cookieHeader);
-  return locationsRes.authRequired ? redirect37("/login") : json47({
+  return locationsRes.authRequired ? redirect38("/login") : json47({
     locations: locationsRes.data?.items ?? []
   });
 }
-async function action26({ request }) {
+async function action27({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect37("/login");
+    return redirect38("/login");
   let formData = await request.formData(), dto = {
     name: formData.get("name"),
     description: formData.get("description"),
@@ -25530,8 +26500,8 @@ async function action26({ request }) {
   return await partnerServer.addPartnerProduct(dto, cookieHeader);
 }
 function AddPartnerProduct() {
-  let { locations } = useLoaderData48(), actionData = useActionData14(), isSubmitting = useNavigation22().state === "submitting", navigate = useNavigate23(), [tags, setTags] = useState39("");
-  return useEffect29(() => {
+  let { locations } = useLoaderData48(), actionData = useActionData14(), isSubmitting = useNavigation23().state === "submitting", navigate = useNavigate23(), [tags, setTags] = useState40("");
+  return useEffect30(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Add product failed",
@@ -25719,28 +26689,28 @@ function AddPartnerProduct() {
 // app/routes/user.profile.tsx
 var user_profile_exports = {};
 __export(user_profile_exports, {
-  action: () => action27,
+  action: () => action28,
   default: () => UserProfilePage,
   loader: () => loader51
 });
 import { Form as Form36, useLoaderData as useLoaderData49, useActionData as useActionData15, useNavigate as useNavigate24 } from "@remix-run/react";
-import { json as json48, redirect as redirect38 } from "@remix-run/node";
-import { useEffect as useEffect30, useRef as useRef12, useState as useState40 } from "react";
-import { Fragment as Fragment13, jsxDEV as jsxDEV130 } from "react/jsx-dev-runtime";
+import { json as json48, redirect as redirect39 } from "@remix-run/node";
+import { useEffect as useEffect31, useRef as useRef13, useState as useState41 } from "react";
+import { Fragment as Fragment14, jsxDEV as jsxDEV130 } from "react/jsx-dev-runtime";
 async function loader51({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect38("/login");
+    return redirect39("/login");
   let { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
-  return authRequired ? redirect38("/login") : json48({ data, error });
+  return authRequired ? redirect39("/login") : json48({ data, error });
 }
-async function action27({ request }) {
+async function action28({ request }) {
   let cookieHeader = request.headers.get("Cookie"), formData = await request.formData(), updateData = authServer.prepareUpdateUserPayload(formData), { data, error } = await authServer.updateProfile(updateData, cookieHeader || "");
   return json48({ data, error });
 }
 function useUserProfileController() {
-  let { toast: toast5 } = useToast(), loaderData = useLoaderData49(), actionData = useActionData15(), navigate = useNavigate24(), [profile, setProfile] = useState40(loaderData?.data?.user_profile || null), [email, setEmail] = useState40(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState40(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState40(profile?.image_url), fileInputRef = useRef12(null);
-  return useEffect30(() => {
+  let { toast: toast5 } = useToast(), loaderData = useLoaderData49(), actionData = useActionData15(), navigate = useNavigate24(), [profile, setProfile] = useState41(loaderData?.data?.user_profile || null), [email, setEmail] = useState41(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState41(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState41(profile?.image_url), fileInputRef = useRef13(null);
+  return useEffect31(() => {
     actionData?.error && toast5({
       variant: "destructive",
       title: "Update Failed",
@@ -25776,7 +26746,7 @@ function UserProfilePage() {
         lineNumber: 87,
         columnNumber: 11
       }, this),
-      isLoading ? /* @__PURE__ */ jsxDEV130(Fragment13, { children: [
+      isLoading ? /* @__PURE__ */ jsxDEV130(Fragment14, { children: [
         /* @__PURE__ */ jsxDEV130("div", { className: "h-8 w-40 bg-gray-200 rounded animate-pulse mb-2" }, void 0, !1, {
           fileName: "app/routes/user.profile.tsx",
           lineNumber: 98,
@@ -25791,7 +26761,7 @@ function UserProfilePage() {
         fileName: "app/routes/user.profile.tsx",
         lineNumber: 97,
         columnNumber: 13
-      }, this) : /* @__PURE__ */ jsxDEV130(Fragment13, { children: [
+      }, this) : /* @__PURE__ */ jsxDEV130(Fragment14, { children: [
         /* @__PURE__ */ jsxDEV130("h1", { className: "text-3xl font-bold text-gray-900", children: [
           profile?.first_name,
           " ",
@@ -25918,18 +26888,18 @@ function UserProfilePage() {
 // app/routes/user.wallet.tsx
 var user_wallet_exports = {};
 __export(user_wallet_exports, {
-  action: () => action28,
+  action: () => action29,
   default: () => WalletPage2,
   loader: () => loader52
 });
-import { json as json49, redirect as redirect39 } from "@remix-run/node";
-import { Link as Link26, useActionData as useActionData16, useLoaderData as useLoaderData50, useFetcher as useFetcher15 } from "@remix-run/react";
-import { useState as useState41, useMemo as useMemo6, useEffect as useEffect31 } from "react";
+import { json as json49, redirect as redirect40 } from "@remix-run/node";
+import { Link as Link26, useActionData as useActionData16, useLoaderData as useLoaderData50, useFetcher as useFetcher16 } from "@remix-run/react";
+import { useState as useState42, useMemo as useMemo6, useEffect as useEffect32 } from "react";
 import { jsxDEV as jsxDEV131 } from "react/jsx-dev-runtime";
 async function loader52({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect39("/login");
+    return redirect40("/login");
   let url = new URL(request.url), page_size = Number(url.searchParams.get("page_size") ?? "10"), last_key_id = url.searchParams.get("last_key_id"), first_key_id = url.searchParams.get("first_key_id"), wallet_id_param = url.searchParams.get("wallet_id"), walletsResponse = await walletRepo.getUserWallets(cookieHeader), wallets = [];
   if (walletsResponse.data?.length)
     for (let _wallet of walletsResponse.data) {
@@ -25951,7 +26921,7 @@ async function loader52({ request }) {
     }
   return json49({ wallets });
 }
-async function action28({ request }) {
+async function action29({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), cleaned = {};
   formData.forEach((value, key) => {
     let v = (value ?? "").toString().trim();
@@ -25981,20 +26951,20 @@ async function action28({ request }) {
   return console.log("WALLET RESP", walletResp, wallets), json49({ wallets });
 }
 function useWalletController2() {
-  let { wallets } = useLoaderData50(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState41(null), [activeWalletId, setActiveWalletId] = useState41(
+  let { wallets } = useLoaderData50(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState42(null), [activeWalletId, setActiveWalletId] = useState42(
     wallets.length > 0 ? wallets[0].wallet._id : null
   );
-  useEffect31(() => {
+  useEffect32(() => {
     let _user = getUserStoreManager();
     _user && setUser(_user);
   }, [getUserStoreManager]);
   let activeData = useMemo6(() => wallets.find((w) => w.wallet._id === activeWalletId) || null, [activeWalletId, wallets]), formatCurrency = (amount, currency) => new Intl.NumberFormat("en-US", {
     style: "currency",
     currency
-  }).format(amount), [searchOpen, setSearchOpen] = useState41(!1), fetcher = useFetcher15(), isSubmitting = fetcher.state === "submitting", actionData = useActionData16(), [walletsState, setWalletsState] = useState41(wallets);
-  return useEffect31(() => {
+  }).format(amount), [searchOpen, setSearchOpen] = useState42(!1), fetcher = useFetcher16(), isSubmitting = fetcher.state === "submitting", actionData = useActionData16(), [walletsState, setWalletsState] = useState42(wallets);
+  return useEffect32(() => {
     (fetcher.data?.wallets ?? actionData?.wallets) || setWalletsState(wallets);
-  }, [wallets, fetcher.data, actionData]), useEffect31(() => {
+  }, [wallets, fetcher.data, actionData]), useEffect32(() => {
     let fw = fetcher.data?.wallets ?? actionData?.wallets;
     fw && Array.isArray(fw) && setWalletsState(fw);
   }, [fetcher.data, actionData]), {
@@ -26697,18 +27667,18 @@ __export(partners_exports, {
   meta: () => meta
 });
 import { Outlet as Outlet3, useLocation as useLocation11 } from "@remix-run/react";
-import { useEffect as useEffect34, useState as useState44 } from "react";
+import { useEffect as useEffect35, useState as useState45 } from "react";
 
 // app/components/partner/PartnerPrimaryHeader.tsx
 import { Link as Link28 } from "@remix-run/react";
 
 // app/components/partner/PartnerToolBar.tsx
 import { Link as Link27, useNavigate as useNavigate25 } from "@remix-run/react";
-import { useEffect as useEffect32, useState as useState42 } from "react";
+import { useEffect as useEffect33, useState as useState43 } from "react";
 import { jsxDEV as jsxDEV132 } from "react/jsx-dev-runtime";
 function PartnerToolbar() {
-  let [user, setUser] = useState42(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate25();
-  useEffect32(() => {
+  let [user, setUser] = useState43(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate25();
+  useEffect33(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
@@ -26993,7 +27963,7 @@ var AccordionContent = React13.forwardRef(({ className, children, ...props }, re
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
 // app/components/partner/PartnerMobileNavigation.tsx
-import { useEffect as useEffect33, useRef as useRef13, useState as useState43 } from "react";
+import { useEffect as useEffect34, useRef as useRef14, useState as useState44 } from "react";
 import { jsxDEV as jsxDEV136 } from "react/jsx-dev-runtime";
 var primaryNavs = [
   { label: "Manage Products", icon: icons.adminTournamentIcon, url: "/partners/home" },
@@ -27011,8 +27981,8 @@ var primaryNavs = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function PartnerMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef13(null), [user, setUser] = useState43(null), navigate = useNavigate26(), { getUserStoreManager } = useUserManager(), location = useLocation9(), path = `${location.pathname}${location.search}${location.hash}`;
-  useEffect33(() => {
+  let mobileNav = useRef14(null), [user, setUser] = useState44(null), navigate = useNavigate26(), { getUserStoreManager } = useUserManager(), location = useLocation9(), path = `${location.pathname}${location.search}${location.hash}`;
+  useEffect34(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate(`/login?redirectTo=${encodeURIComponent(path)}`), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
@@ -27531,8 +28501,8 @@ var meta = () => [
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout({ children }) {
-  let [showNav, setShowNav] = useState44(!1);
-  return useEffect34(() => {
+  let [showNav, setShowNav] = useState45(!1);
+  return useEffect35(() => {
     setShowNav(window.innerWidth >= 640);
   }, []), /* @__PURE__ */ jsxDEV138("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsxDEV138(PartnerPrimaryHeader, { toggleNav: () => {
@@ -27704,18 +28674,18 @@ function Footer() {
 }
 
 // app/components/public/Navigation.tsx
-import { useEffect as useEffect36, useState as useState46 } from "react";
+import { useEffect as useEffect37, useState as useState47 } from "react";
 import { Link as Link32, NavLink as NavLink4, useLocation as useLocation13 } from "@remix-run/react";
 
 // app/components/public/MobileNavigation.tsx
 import { Link as Link31, NavLink as NavLink3, useLocation as useLocation12 } from "@remix-run/react";
-import { useEffect as useEffect35, useRef as useRef14, useState as useState45 } from "react";
+import { useEffect as useEffect36, useRef as useRef15, useState as useState46 } from "react";
 import { jsxDEV as jsxDEV140 } from "react/jsx-dev-runtime";
 function MobileNavigation({ show, onClose }) {
-  let { pathname } = useLocation12(), [user, setUser] = useState45(null), mobileNav = useRef14(null);
+  let { pathname } = useLocation12(), [user, setUser] = useState46(null), mobileNav = useRef15(null);
   mobileNav.current?.style.setProperty("--left", "0%");
   let { getUserStoreManager } = useUserManager();
-  return useEffect35(() => {
+  return useEffect36(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
   }, []), /* @__PURE__ */ jsxDEV140(
@@ -27936,8 +28906,8 @@ function MobileNavigation({ show, onClose }) {
 // app/components/public/Navigation.tsx
 import { jsxDEV as jsxDEV141 } from "react/jsx-dev-runtime";
 function Navigation() {
-  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState46(!1), { pathname } = useLocation13(), [user, setUser] = useState46(null);
-  return useEffect36(() => {
+  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState47(!1), { pathname } = useLocation13(), [user, setUser] = useState47(null);
+  return useEffect37(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
   }, []), /* @__PURE__ */ jsxDEV141("header", { className: "flex justify-between items-center wrapper py-5", children: [
@@ -28129,11 +29099,11 @@ __export(logout_exports, {
   default: () => Logout
 });
 import { Link as Link33, useSearchParams as useSearchParams4 } from "@remix-run/react";
-import { useEffect as useEffect37 } from "react";
+import { useEffect as useEffect38 } from "react";
 import { jsxDEV as jsxDEV143 } from "react/jsx-dev-runtime";
 function useLogoutController() {
   let [searchQuery] = useSearchParams4(), { deleteUserStoreManager } = useUserManager();
-  useEffect37(() => {
+  useEffect38(() => {
     deleteUserStoreManager();
   }, []);
 }
@@ -28174,18 +29144,18 @@ function Logout() {
 // app/routes/signup.tsx
 var signup_exports = {};
 __export(signup_exports, {
-  action: () => action29,
+  action: () => action30,
   default: () => Signup,
   loader: () => loader53
 });
 import { Form as Form38, Link as Link34, useActionData as useActionData17, useNavigate as useNavigate27, useSearchParams as useSearchParams5 } from "@remix-run/react";
 import { json as json50 } from "@remix-run/node";
-import { useEffect as useEffect38 } from "react";
+import { useEffect as useEffect39 } from "react";
 import { jsxDEV as jsxDEV144 } from "react/jsx-dev-runtime";
 async function loader53({ request }) {
   return null;
 }
-async function action29({ request }) {
+async function action30({ request }) {
   let formData = await request.formData(), signupData = authServer.prepareUserSignupPayload(formData), { error, data, headers } = await authServer.signup(signupData), responseHeaders = {};
   return error ? { error: error.detail?.toString() || "An error occurred during login.", data: null } : headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json50({ data, error: null }, {
     headers: responseHeaders
@@ -28193,13 +29163,13 @@ async function action29({ request }) {
 }
 function useSignupController() {
   let actionData = useActionData17(), [searchQuery] = useSearchParams5(), { setUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate27();
-  return useEffect38(() => {
+  return useEffect39(() => {
     actionData?.error && (toast5({
       variant: "destructive",
       title: "Sign Up Failed",
       description: actionData.error
     }), actionData.error = "");
-  }, [actionData?.error]), useEffect38(() => {
+  }, [actionData?.error]), useEffect39(() => {
     if (actionData?.data) {
       setUserStoreManager(actionData.data, !0), navigate(searchQuery.get("redirectTo") || "/user/profile");
       return;
@@ -28331,11 +29301,11 @@ __export(admin_exports, {
   meta: () => meta3
 });
 import { Outlet as Outlet5, useLocation as useLocation16 } from "@remix-run/react";
-import { useEffect as useEffect41, useState as useState49 } from "react";
+import { useEffect as useEffect42, useState as useState50 } from "react";
 
 // app/components/admin/AdminMobileNavigation.tsx
 import { NavLink as NavLink5, useLocation as useLocation14 } from "@remix-run/react";
-import { useEffect as useEffect39, useRef as useRef15, useState as useState47 } from "react";
+import { useEffect as useEffect40, useRef as useRef16, useState as useState48 } from "react";
 import { jsxDEV as jsxDEV145 } from "react/jsx-dev-runtime";
 var primaryNavs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
@@ -28367,16 +29337,16 @@ var primaryNavs2 = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function AdminMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef15(null);
-  useEffect39(() => {
+  let mobileNav = useRef16(null);
+  useEffect40(() => {
     mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
   let { pathname } = useLocation14();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState47(null);
-  useEffect39(() => {
+  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState48(null);
+  useEffect40(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
   let mainComponent = /* @__PURE__ */ jsxDEV145("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
@@ -28724,7 +29694,7 @@ function MobileHeader({ toggleNav }) {
 // app/components/admin/AdminNav.tsx
 import { NavLink as NavLink6, useLocation as useLocation15 } from "@remix-run/react";
 import { Accordion as Accordion3, AccordionContent as AccordionContent3, AccordionItem as AccordionItem3, AccordionTrigger as AccordionTrigger3 } from "@radix-ui/react-accordion";
-import { useEffect as useEffect40, useState as useState48 } from "react";
+import { useEffect as useEffect41, useState as useState49 } from "react";
 import { jsxDEV as jsxDEV147 } from "react/jsx-dev-runtime";
 var navs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
@@ -28753,8 +29723,8 @@ var navs2 = [
   }
 ];
 function AdminNavigation({ show }) {
-  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState48(null), userRolesSet = new Set(userRoles);
-  useEffect40(() => {
+  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState49(null), userRolesSet = new Set(userRoles);
+  useEffect41(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
   let { pathname } = useLocation15();
@@ -29116,8 +30086,8 @@ var meta3 = () => [
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout2({ children }) {
-  let [showNav, setShowNav] = useState49(!1);
-  return useEffect41(() => {
+  let [showNav, setShowNav] = useState50(!1);
+  return useEffect42(() => {
     setShowNav(window.innerWidth >= 640);
   }, []), /* @__PURE__ */ jsxDEV150("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsxDEV150(PrimaryHeader, { toggleNav: () => {
@@ -29207,18 +30177,18 @@ function ErrorBoundary3() {
 // app/routes/login.tsx
 var login_exports = {};
 __export(login_exports, {
-  action: () => action30,
+  action: () => action31,
   default: () => Login,
   loader: () => loader54
 });
 import { Form as Form39, Link as Link38, useActionData as useActionData18, useNavigate as useNavigate28, useSearchParams as useSearchParams6 } from "@remix-run/react";
 import { json as json51 } from "@remix-run/node";
-import { useEffect as useEffect42 } from "react";
+import { useEffect as useEffect43 } from "react";
 import { jsxDEV as jsxDEV151 } from "react/jsx-dev-runtime";
 async function loader54({ request }) {
   return null;
 }
-async function action30({ request }) {
+async function action31({ request }) {
   let searchQuery = new URL(request.url).searchParams, formData = await request.formData(), loginDto = {
     email: formData.get("email"),
     password: formData.get("password")
@@ -29232,16 +30202,16 @@ async function action30({ request }) {
 }
 function useLoginController() {
   let actionData = useActionData18(), [searchQuery] = useSearchParams6(), { setUserStoreManager, getUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate28();
-  return useEffect42(() => {
+  return useEffect43(() => {
     let user = getUserStoreManager(), requireNewLogin = searchQuery.get("requireNewLogin") || null;
     user && !requireNewLogin && navigate(searchQuery.get("redirectTo") || "/user/profile");
-  }, []), useEffect42(() => {
+  }, []), useEffect43(() => {
     actionData?.error && (toast5({
       variant: "destructive",
       title: "Login Failed",
       description: actionData.error
     }), actionData.error = "");
-  }, [actionData?.error]), useEffect42(() => {
+  }, [actionData?.error]), useEffect43(() => {
     if (actionData?.data) {
       setUserStoreManager(actionData.data, !0), navigate(searchQuery.get("redirectTo") || "/user/profile");
       return;
@@ -29372,18 +30342,18 @@ __export(user_exports, {
   meta: () => meta4
 });
 import { Outlet as Outlet6, useLocation as useLocation19 } from "@remix-run/react";
-import { useEffect as useEffect45, useState as useState52 } from "react";
+import { useEffect as useEffect46, useState as useState53 } from "react";
 
 // app/components/user/UserPrimaryHeader.tsx
 import { Link as Link40 } from "@remix-run/react";
 
 // app/components/user/UserToolBar.tsx
 import { Link as Link39, useNavigate as useNavigate29 } from "@remix-run/react";
-import { useEffect as useEffect43, useState as useState50 } from "react";
+import { useEffect as useEffect44, useState as useState51 } from "react";
 import { jsxDEV as jsxDEV152 } from "react/jsx-dev-runtime";
 function UserToolbar() {
-  let [user, setUser] = useState50(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate29();
-  useEffect43(() => {
+  let [user, setUser] = useState51(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate29();
+  useEffect44(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
@@ -29590,7 +30560,7 @@ function UserMobileHeader2({ toggleNav }) {
 
 // app/components/user/UserMobileNavigation.tsx
 import { NavLink as NavLink7, useLocation as useLocation17, useNavigate as useNavigate30 } from "@remix-run/react";
-import { useEffect as useEffect44, useRef as useRef16, useState as useState51 } from "react";
+import { useEffect as useEffect45, useRef as useRef17, useState as useState52 } from "react";
 import { jsxDEV as jsxDEV155 } from "react/jsx-dev-runtime";
 var primaryNavs3 = [
   { label: "Contests", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
@@ -29613,8 +30583,8 @@ var primaryNavs3 = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function UserMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef16(null), [user, setUser] = useState51(null), navigate = useNavigate30(), { getUserStoreManager } = useUserManager();
-  useEffect44(() => {
+  let mobileNav = useRef17(null), [user, setUser] = useState52(null), navigate = useNavigate30(), { getUserStoreManager } = useUserManager();
+  useEffect45(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
@@ -30138,8 +31108,8 @@ var meta4 = () => [
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout3({ children }) {
-  let [showNav, setShowNav] = useState52(!1);
-  return useEffect45(() => {
+  let [showNav, setShowNav] = useState53(!1);
+  return useEffect46(() => {
     setShowNav(window.innerWidth >= 640);
   }, []), /* @__PURE__ */ jsxDEV157("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsxDEV157(UserPrimaryHeader, { toggleNav: () => {
@@ -30231,7 +31201,7 @@ function ErrorBoundary4() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-VLRTVEPC.js", imports: ["/build/_shared/chunk-ZWGWGGVF.js", "/build/_shared/chunk-QORMC3GD.js", "/build/_shared/chunk-GIAAE3CH.js", "/build/_shared/chunk-XU7DNSPJ.js", "/build/_shared/chunk-2KT7MY3L.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-BOXFZXVX.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-R7VIE3PZ.js", imports: ["/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-U56KRJ5T.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-2FCSRWRA.js", imports: ["/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-QYHF7R77.js", imports: ["/build/_shared/chunk-JLTA5KZT.js", "/build/_shared/chunk-6DQOFBTV.js", "/build/_shared/chunk-F7JFGMOL.js", "/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-GLQZC3AA.js", imports: ["/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-DVUZBTJM.js", imports: ["/build/_shared/chunk-F7JFGMOL.js", "/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-RGZH3IIX.js", imports: ["/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-I7OZTHS5.js", imports: ["/build/_shared/chunk-6DQOFBTV.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-KFYWV2H2.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-FNPP2NNP.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-TRDAC4OG.js", imports: ["/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-6WFHEPTB.js", imports: ["/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-5C7RVL3X.js", imports: ["/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-DP2TUHAP.js", imports: ["/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-F4FTDTEO.js", imports: ["/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-5CJTSBOS.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-OYHPC7UT.js", imports: ["/build/_shared/chunk-7IGOFRJC.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-K7R73HTY.js", imports: ["/build/_shared/chunk-7IGOFRJC.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-N6LZGCC5.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-IYLXUOAR.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-HZCSWB5K.js", imports: ["/build/_shared/chunk-V25BTYGP.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-NVBFZ67R.js", imports: ["/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-K44ZCZJM.js", imports: ["/build/_shared/chunk-V25BTYGP.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-BTMRRECT.js", imports: ["/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-MUJE6SSY.js", imports: ["/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-AD6AYDN6.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-RLGIRQXJ.js", imports: ["/build/_shared/chunk-OMLBGYIA.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-HJH3KKXM.js", imports: ["/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-WQD624T6.js", imports: ["/build/_shared/chunk-OMLBGYIA.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-2HRSIYOO.js", imports: ["/build/_shared/chunk-SSC4JA5B.js", "/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-5BHHHEC5.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-B7JOQLLW.js", imports: ["/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-BZ7P7KLL.js", imports: ["/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-SQP4XDUP.js", imports: ["/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-2ZWQARKA.js", imports: ["/build/_shared/chunk-SSC4JA5B.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-OAPVSG3L.js", imports: ["/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-SMZLD6KK.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-JCFPQM5C.js", imports: ["/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-5W2CLAGZ.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-D3CJGMX2.js", imports: ["/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-AD6AYDN6.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-PZLDM55P.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-6HGQDUTP.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-GCXYZ2SM.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-PQXGSNRR.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-NXIT6VLP.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-HGGZZLPP.js", imports: ["/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-DV4ZPYSX.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-CXINU3DM.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderItemId": { id: "routes/partners.orders.$orderItemId", parentId: "routes/partners", path: "orders/:orderItemId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderItemId-KEPDLHPW.js", imports: ["/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-YS6CIH74.js", imports: ["/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-T7MUSHHC.js", imports: ["/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-6AR36HNJ.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-POM7MAJI.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-IJFEOKUL.js", imports: ["/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-7RSOOAWB.js", imports: ["/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-OBJ6Z7WW.js", imports: ["/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MV5P2UZX.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-BSWE24UU.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-BSKLCFIL.js", imports: ["/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-FH6RLWGF.js", imports: ["/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-Y3LDGTXY.js", imports: ["/build/_shared/chunk-JLTA5KZT.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-ATJ6YVGF.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-DVTBAODN.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-F6TA6X6U.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-YWYWBPG7.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-54QX73H6.js", imports: ["/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "130c7691", hmr: { runtime: "/build/_shared/chunk-2KT7MY3L.js", timestamp: 1782590737432 }, url: "/build/manifest-130C7691.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-VLRTVEPC.js", imports: ["/build/_shared/chunk-ZWGWGGVF.js", "/build/_shared/chunk-QORMC3GD.js", "/build/_shared/chunk-GIAAE3CH.js", "/build/_shared/chunk-XU7DNSPJ.js", "/build/_shared/chunk-2KT7MY3L.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-BOXFZXVX.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-2EZDZOTW.js", imports: ["/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-U56KRJ5T.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-2FCSRWRA.js", imports: ["/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-QYHF7R77.js", imports: ["/build/_shared/chunk-JLTA5KZT.js", "/build/_shared/chunk-6DQOFBTV.js", "/build/_shared/chunk-F7JFGMOL.js", "/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-GLQZC3AA.js", imports: ["/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-DVUZBTJM.js", imports: ["/build/_shared/chunk-F7JFGMOL.js", "/build/_shared/chunk-VC3JJBSZ.js", "/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-RGZH3IIX.js", imports: ["/build/_shared/chunk-PFTTYE6K.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-I7OZTHS5.js", imports: ["/build/_shared/chunk-6DQOFBTV.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-MCXCM64T.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-WF5NNSAN.js", "/build/_shared/chunk-JUDIPLC6.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-KFYWV2H2.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-FNPP2NNP.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-A2H36KLB.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-RVGZB2EH.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-CUOSGJYY.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-6LX2L4DV.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-F4FTDTEO.js", imports: ["/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-5CJTSBOS.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-OYHPC7UT.js", imports: ["/build/_shared/chunk-7IGOFRJC.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-K7R73HTY.js", imports: ["/build/_shared/chunk-7IGOFRJC.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-N6LZGCC5.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-IYLXUOAR.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-HZCSWB5K.js", imports: ["/build/_shared/chunk-V25BTYGP.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-NVBFZ67R.js", imports: ["/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-K44ZCZJM.js", imports: ["/build/_shared/chunk-V25BTYGP.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-BTMRRECT.js", imports: ["/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-MUJE6SSY.js", imports: ["/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-AD6AYDN6.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-K77LE7VE.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-RLGIRQXJ.js", imports: ["/build/_shared/chunk-OMLBGYIA.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-HJH3KKXM.js", imports: ["/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-WQD624T6.js", imports: ["/build/_shared/chunk-OMLBGYIA.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-2ZTNKWGC.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-2HRSIYOO.js", imports: ["/build/_shared/chunk-SSC4JA5B.js", "/build/_shared/chunk-D3U7F7EI.js", "/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-5BHHHEC5.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-BS63YW6K.js", imports: ["/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-BZ7P7KLL.js", imports: ["/build/_shared/chunk-P43TW6LH.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-SQP4XDUP.js", imports: ["/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-B3C7PCFE.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-2ZWQARKA.js", imports: ["/build/_shared/chunk-SSC4JA5B.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-OAPVSG3L.js", imports: ["/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-JOIDHCVX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-SMZLD6KK.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-JCFPQM5C.js", imports: ["/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-5W2CLAGZ.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-D3CJGMX2.js", imports: ["/build/_shared/chunk-R65623X7.js", "/build/_shared/chunk-AD6AYDN6.js", "/build/_shared/chunk-DFY3YDK7.js", "/build/_shared/chunk-FQHZK4DC.js", "/build/_shared/chunk-7IGOFRJC.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-7FCTUE5Q.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-PZLDM55P.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-6HGQDUTP.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-GCXYZ2SM.js", imports: ["/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-PQXGSNRR.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-NXIT6VLP.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-RJ7JSRJP.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-DV4ZPYSX.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-CXINU3DM.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-RRVTQ3IL.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-OO4YMRJ7.js", "/build/_shared/chunk-3BSRYLMA.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-EV32D4DT.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-XPCJHSQQ.js", imports: ["/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-OYUJC5BK.js", imports: ["/build/_shared/chunk-CTOGQ3KG.js", "/build/_shared/chunk-O4R66NJX.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-6AR36HNJ.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-POM7MAJI.js", imports: ["/build/_shared/chunk-DF7OCENW.js", "/build/_shared/chunk-KJN4MVRC.js", "/build/_shared/chunk-IHZBV5UE.js", "/build/_shared/chunk-QZFP5L6J.js", "/build/_shared/chunk-GJTSJNT7.js", "/build/_shared/chunk-YV5YKK5Q.js", "/build/_shared/chunk-7JPCB6PC.js", "/build/_shared/chunk-WF5NNSAN.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-IJFEOKUL.js", imports: ["/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-7RSOOAWB.js", imports: ["/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-OBJ6Z7WW.js", imports: ["/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MV5P2UZX.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-BSWE24UU.js", imports: ["/build/_shared/chunk-74QTE62H.js", "/build/_shared/chunk-RCMPT52E.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-BSKLCFIL.js", imports: ["/build/_shared/chunk-P6FANJ5S.js", "/build/_shared/chunk-6V2DDTBT.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-QLBUIWDT.js", "/build/_shared/chunk-DCNCPVVD.js", "/build/_shared/chunk-CWOOXBW5.js", "/build/_shared/chunk-BDFN2BKX.js", "/build/_shared/chunk-X2QOUWUY.js", "/build/_shared/chunk-76VUSQVA.js", "/build/_shared/chunk-4X4SKXSG.js", "/build/_shared/chunk-OUFOGEKV.js", "/build/_shared/chunk-LT4K6HQS.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-FH6RLWGF.js", imports: ["/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-Y3LDGTXY.js", imports: ["/build/_shared/chunk-JLTA5KZT.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-ATJ6YVGF.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-QTKIEQ4E.js", "/build/_shared/chunk-NMZL6IDN.js", "/build/_shared/chunk-65Q6VMM7.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-4BUMHWDR.js", imports: ["/build/_shared/chunk-YG2WIZWF.js", "/build/_shared/chunk-GGS6PL2H.js", "/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-YWYWBPG7.js", imports: ["/build/_shared/chunk-YZONELX2.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-54QX73H6.js", imports: ["/build/_shared/chunk-R6F4DP54.js", "/build/_shared/chunk-ZOVZPUI6.js", "/build/_shared/chunk-JQLQAHH7.js", "/build/_shared/chunk-JUDIPLC6.js", "/build/_shared/chunk-G7CHZRZX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "cc12faf1", hmr: { runtime: "/build/_shared/chunk-2KT7MY3L.js", timestamp: 1782599984278 }, url: "/build/manifest-CC12FAF1.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
@@ -30395,14 +31365,6 @@ var mode = "development", assetsBuildDirectory = "public/build", future = { v3_f
     caseSensitive: void 0,
     module: admin_tournaments_ID_index_exports
   },
-  "routes/partners.orders.$orderItemId": {
-    id: "routes/partners.orders.$orderItemId",
-    parentId: "routes/partners",
-    path: "orders/:orderItemId",
-    index: void 0,
-    caseSensitive: void 0,
-    module: partners_orders_orderItemId_exports
-  },
   "routes/_public.marketplace._index": {
     id: "routes/_public.marketplace._index",
     parentId: "routes/_public",
@@ -30466,6 +31428,14 @@ var mode = "development", assetsBuildDirectory = "public/build", future = { v3_f
     index: !0,
     caseSensitive: void 0,
     module: admin_tournaments_index_exports
+  },
+  "routes/partners.orders.$orderId": {
+    id: "routes/partners.orders.$orderId",
+    parentId: "routes/partners",
+    path: "orders/:orderId",
+    index: void 0,
+    caseSensitive: void 0,
+    module: partners_orders_orderId_exports
   },
   "routes/_public.contests._index": {
     id: "routes/_public.contests._index",

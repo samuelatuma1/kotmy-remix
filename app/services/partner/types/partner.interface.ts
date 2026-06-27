@@ -449,4 +449,11 @@ export interface BusinessSearchOrderDTO extends IBasePaginationQuery {
   order_product_status?: OrderProductStatus;
   order_code?: string;
   delivery_phone_number?: string;
+  order_id?: string
+}
+
+export interface IOrderData {
+  order_id: string;
+  order_code: string;
+  order_items_ids: string[];
 }

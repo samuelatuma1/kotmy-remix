@@ -276,7 +276,17 @@ export class ApiEndPoints {
         return `/v2/api/partner/business/orders`
     }
 
-    
+    static getPartnerOrderById(orderId: string) {
+        return `/v2/api/partner/business/order/${orderId}`;
+    }
+
+    static get fulfillPartnerOrder() {
+        return `/v2/api/partner/orders/fulfill`;
+    }
+
+    static get cancelPartnerOrder() {
+        return `/v2/api/partner/orders/cancel`;
+    }
 
     static get getPartnerProducts(){
         return `/v2/api/partner/products`

@@ -177,22 +177,47 @@ var __iconNode8 = [
 ];
 var Package = createLucideIcon("package", __iconNode8);
 
-// node_modules/lucide-react/dist/esm/icons/plus.js
+// node_modules/lucide-react/dist/esm/icons/phone.js
 var __iconNode9 = [
+  [
+    "path",
+    {
+      d: "M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384",
+      key: "9njp5v"
+    }
+  ]
+];
+var Phone = createLucideIcon("phone", __iconNode9);
+
+// node_modules/lucide-react/dist/esm/icons/plus.js
+var __iconNode10 = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "M12 5v14", key: "s699le" }]
 ];
-var Plus = createLucideIcon("plus", __iconNode9);
+var Plus = createLucideIcon("plus", __iconNode10);
 
 // node_modules/lucide-react/dist/esm/icons/search.js
-var __iconNode10 = [
+var __iconNode11 = [
   ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
   ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
 ];
-var Search = createLucideIcon("search", __iconNode10);
+var Search = createLucideIcon("search", __iconNode11);
+
+// node_modules/lucide-react/dist/esm/icons/shield-check.js
+var __iconNode12 = [
+  [
+    "path",
+    {
+      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+      key: "oel41y"
+    }
+  ],
+  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+];
+var ShieldCheck = createLucideIcon("shield-check", __iconNode12);
 
 // node_modules/lucide-react/dist/esm/icons/shopping-bag.js
-var __iconNode11 = [
+var __iconNode13 = [
   ["path", { d: "M16 10a4 4 0 0 1-8 0", key: "1ltviw" }],
   ["path", { d: "M3.103 6.034h17.794", key: "awc11p" }],
   [
@@ -203,10 +228,10 @@ var __iconNode11 = [
     }
   ]
 ];
-var ShoppingBag = createLucideIcon("shopping-bag", __iconNode11);
+var ShoppingBag = createLucideIcon("shopping-bag", __iconNode13);
 
 // node_modules/lucide-react/dist/esm/icons/shopping-cart.js
-var __iconNode12 = [
+var __iconNode14 = [
   ["circle", { cx: "8", cy: "21", r: "1", key: "jimo8o" }],
   ["circle", { cx: "19", cy: "21", r: "1", key: "13723u" }],
   [
@@ -217,31 +242,44 @@ var __iconNode12 = [
     }
   ]
 ];
-var ShoppingCart = createLucideIcon("shopping-cart", __iconNode12);
+var ShoppingCart = createLucideIcon("shopping-cart", __iconNode14);
+
+// node_modules/lucide-react/dist/esm/icons/square-pen.js
+var __iconNode15 = [
+  ["path", { d: "M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7", key: "1m0v6g" }],
+  [
+    "path",
+    {
+      d: "M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z",
+      key: "ohrbg2"
+    }
+  ]
+];
+var SquarePen = createLucideIcon("square-pen", __iconNode15);
 
 // node_modules/lucide-react/dist/esm/icons/trash-2.js
-var __iconNode13 = [
+var __iconNode16 = [
   ["path", { d: "M10 11v6", key: "nco0om" }],
   ["path", { d: "M14 11v6", key: "outv1u" }],
   ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", key: "miytrc" }],
   ["path", { d: "M3 6h18", key: "d0wm0j" }],
   ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
 ];
-var Trash2 = createLucideIcon("trash-2", __iconNode13);
+var Trash2 = createLucideIcon("trash-2", __iconNode16);
 
 // node_modules/lucide-react/dist/esm/icons/user.js
-var __iconNode14 = [
+var __iconNode17 = [
   ["path", { d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2", key: "975kel" }],
   ["circle", { cx: "12", cy: "7", r: "4", key: "17ys0d" }]
 ];
-var User = createLucideIcon("user", __iconNode14);
+var User = createLucideIcon("user", __iconNode17);
 
 // node_modules/lucide-react/dist/esm/icons/x.js
-var __iconNode15 = [
+var __iconNode18 = [
   ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
   ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
-var X = createLucideIcon("x", __iconNode15);
+var X = createLucideIcon("x", __iconNode18);
 
 export {
   ArrowLeft,
@@ -252,10 +290,13 @@ export {
   Minus,
   PackageSearch,
   Package,
+  Phone,
   Plus,
   Search,
+  ShieldCheck,
   ShoppingBag,
   ShoppingCart,
+  SquarePen,
   Trash2,
   User,
   X
@@ -390,6 +431,14 @@ lucide-react/dist/esm/icons/package.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/phone.js:
+  (**
+   * @license lucide-react v0.563.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/plus.js:
   (**
    * @license lucide-react v0.563.0 - ISC
@@ -406,6 +455,14 @@ lucide-react/dist/esm/icons/search.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 
+lucide-react/dist/esm/icons/shield-check.js:
+  (**
+   * @license lucide-react v0.563.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
 lucide-react/dist/esm/icons/shopping-bag.js:
   (**
    * @license lucide-react v0.563.0 - ISC
@@ -415,6 +472,14 @@ lucide-react/dist/esm/icons/shopping-bag.js:
    *)
 
 lucide-react/dist/esm/icons/shopping-cart.js:
+  (**
+   * @license lucide-react v0.563.0 - ISC
+   *
+   * This source code is licensed under the ISC license.
+   * See the LICENSE file in the root directory of this source tree.
+   *)
+
+lucide-react/dist/esm/icons/square-pen.js:
   (**
    * @license lucide-react v0.563.0 - ISC
    *
@@ -454,4 +519,4 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
-//# sourceMappingURL=/build/_shared/chunk-F6TA6X6U.js.map
+//# sourceMappingURL=/build/_shared/chunk-GGS6PL2H.js.map

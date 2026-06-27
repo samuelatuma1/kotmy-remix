@@ -1,9 +1,9 @@
 import {
-  Select
-} from "/build/_shared/chunk-O4R66NJX.js";
-import {
   require_partner
 } from "/build/_shared/chunk-CTOGQ3KG.js";
+import {
+  Select
+} from "/build/_shared/chunk-O4R66NJX.js";
 import {
   DragnDrop
 } from "/build/_shared/chunk-QTKIEQ4E.js";
@@ -303,4 +303,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   UpdatePartnerProduct as default
 };
-//# sourceMappingURL=/build/routes/partners.product.update.$productId-T7MUSHHC.js.map
+//# sourceMappingURL=/build/routes/partners.product.update.$productId-OYUJC5BK.js.map

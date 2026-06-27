@@ -2,11 +2,11 @@ import {
   RoundCta_default
 } from "/build/_shared/chunk-JOIDHCVX.js";
 import {
-  Select
-} from "/build/_shared/chunk-O4R66NJX.js";
-import {
   require_partner
 } from "/build/_shared/chunk-CTOGQ3KG.js";
+import {
+  Select
+} from "/build/_shared/chunk-O4R66NJX.js";
 import {
   require_session
 } from "/build/_shared/chunk-EV32D4DT.js";
@@ -590,4 +590,4 @@ window.$RefreshSig$ = prevRefreshSig;
 export {
   PartnerDetailsPage as default
 };
-//# sourceMappingURL=/build/routes/admin.partners.details.$id-B7JOQLLW.js.map
+//# sourceMappingURL=/build/routes/admin.partners.details.$id-BS63YW6K.js.map

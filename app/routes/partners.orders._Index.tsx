@@ -162,12 +162,12 @@ function OrderItemRow({
           </div>
         </div>
 
-        <Link
-          to={`/partners/orders/${item.order_item_id}`}
+        {/* <Link
+          to={`/partners/orders/${item}`}
           className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
         >
           Open item
-        </Link>
+        </Link> */}
       </div>
     </div>
   );
@@ -192,6 +192,13 @@ function OrderCard({ order }: { order: OrderResponse }) {
                 Prepaid
               </span>
             ) : null}
+
+            <Link
+          to={`/partners/orders/${order._id}`}
+          className="inline-flex h-10 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-xs font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+        >
+          Open Order
+        </Link>
           </div>
 
           <div>

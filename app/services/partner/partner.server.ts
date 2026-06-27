@@ -13,6 +13,7 @@ import {
   ICartDeliveryAndPaymentOptions,
   ICreatePartnerDTO,
   ICreatePartnerProductDTO,
+  IOrderData,
   IQueryPartnerLocations,
   IQueryPartnerProduct,
   IUpdateBusinessStatus,
@@ -303,6 +304,38 @@ export class PartnerServer {
     const { data, error } = await ApiCall.call<IPaginatedResponse<OrderResponse>, unknown>({
       url,
       method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getOrderById(orderId: string, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, unknown>({
+      url: ApiEndPoints.getPartnerOrderById(orderId),
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async fulfillOrder(dto: IOrderData, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
+      url: ApiEndPoints.fulfillPartnerOrder,
+      method: "PATCH",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async cancelOrder(dto: IOrderData, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
+      url: ApiEndPoints.cancelPartnerOrder,
+      method: "PATCH",
+      data: dto,
     }, cookies);
 
     if (error) return { error };
