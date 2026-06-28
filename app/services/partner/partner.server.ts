@@ -9,6 +9,7 @@ import {
   BusinessSearchOrderDTO,
   CustomerOrdersQuery,
   DeliveryDetails,
+  ICustomerConfirmOrder,
   IBusinessOwnerModel,
   ICartDeliveryAndPaymentOptions,
   ICreatePartnerDTO,
@@ -334,6 +335,20 @@ export class PartnerServer {
   async cancelOrder(dto: IOrderData, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
       url: ApiEndPoints.cancelPartnerOrder,
+      method: "PATCH",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async customerConfirmOrder(
+    dto: ICustomerConfirmOrder,
+    cookies: string
+  ): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, ICustomerConfirmOrder>({
+      url: ApiEndPoints.confirmPartnerOrderFulfillment,
       method: "PATCH",
       data: dto,
     }, cookies);

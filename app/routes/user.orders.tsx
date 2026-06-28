@@ -1,14 +1,28 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
-import { ArrowLeft, PackageSearch, ShoppingBag } from "lucide-react";
+import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
+import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } from "@remix-run/react";
+import { ArrowLeft, PackageSearch, ShoppingBag, Star } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Pagination from "~/components/reusables/Pagination";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/reusables/Dialog";
+import { toast as showToast } from "~/components/reusables/use-toast";
 import { partnerServer } from "~/services/partner/partner.server";
 import type {
   CustomerOrdersQuery,
-  OrderProductStatus,
+  ICustomerConfirmOrder,
+  OrderItem,
   OrderResponse,
   OrderStatus,
 } from "~/services/partner/types/partner.interface";
+import { OrderProductStatus } from "~/services/partner/types/partner.interface";
 import type { IPaginatedResponse } from "~/services/common/types/paginated_data";
 
 type OrdersLoaderData = {
@@ -16,6 +30,17 @@ type OrdersLoaderData = {
   query: CustomerOrdersQuery;
   error?: string | null;
 };
+
+type OrderMutationResponse =
+  | {
+      ok: true;
+      message: string;
+      order: OrderResponse;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
 
 const orderStatusOptions: Array<{ label: string; value: string }> = [
   { label: "All statuses", value: "" },
@@ -101,6 +126,22 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
+function formatStatusLabel(value: string) {
+  return value
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object" && "detail" in error && typeof error.detail === "string") {
+    return error.detail;
+  }
+  return fallback;
+}
+
 function OrdersSkeleton() {
   return (
     <div className="space-y-4">
@@ -116,25 +157,186 @@ function OrdersSkeleton() {
   );
 }
 
-function OrderItemRow({
+function FulfillmentConfirmDialog({
+  order,
   item,
 }: {
-  item: OrderResponse["orders"][number];
+  order: OrderResponse;
+  item: OrderItem;
+}) {
+  const fetcher = useFetcher<OrderMutationResponse>();
+  const revalidator = useRevalidator();
+  const [open, setOpen] = useState(false);
+  const handledSuccessRef = useRef(false);
+  const isSubmitting = fetcher.state !== "idle";
+  const errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+
+  useEffect(() => {
+    if (fetcher.state === "submitting") {
+      handledSuccessRef.current = false;
+    }
+  }, [fetcher.state]);
+
+  useEffect(() => {
+    if (!fetcher.data || !fetcher.data.ok || handledSuccessRef.current) return;
+
+    handledSuccessRef.current = true;
+    setOpen(false);
+    revalidator.revalidate();
+    showToast({
+      title: "Success",
+      description: fetcher.data.message,
+    });
+  }, [fetcher.data, revalidator]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
+        >
+          Confirm Fulfillment
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+        <DialogHeader className="border-b border-slate-100 p-6 text-left">
+          <DialogTitle className="text-2xl font-black text-slate-950">Confirm order receipt</DialogTitle>
+          <DialogDescription className="mt-2 text-sm leading-6 text-slate-600">
+            Type the order code below to confirm you have received this item. You can also leave an optional rating and remark.
+          </DialogDescription>
+        </DialogHeader>
+
+        <fetcher.Form method="post" className="space-y-5 p-6">
+          <input type="hidden" name="intent" value="confirm_fulfillment" />
+          <input type="hidden" name="order_id" value={order._id} />
+          <input type="hidden" name="order_item_id" value={item.order_item_id} />
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Order code</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900">{order.order_code}</div>
+          </div>
+
+          <label className="grid gap-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Confirm order code</span>
+            <input
+              name="order_code"
+              required
+              autoComplete="off"
+              placeholder="Type the displayed order code"
+              className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+              <Star className="h-3.5 w-3.5" />
+              Rating
+            </span>
+            <select
+              name="rating"
+              defaultValue=""
+              className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950"
+            >
+              <option value="">Optional rating</option>
+              {Array.from({ length: 5 }).map((_, index) => {
+                const rating = index + 1;
+                return (
+                  <option key={rating} value={rating}>
+                    {rating} star{rating > 1 ? "s" : ""}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Remark</span>
+            <textarea
+              name="remark"
+              rows={4}
+              placeholder="Optional remark about the product or delivery"
+              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            />
+          </label>
+
+          {errorMessage ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {errorMessage}
+            </div>
+          ) : null}
+
+          <DialogFooter className="gap-3 border-t border-slate-100 pt-5 sm:justify-end">
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+              >
+                Back
+              </button>
+            </DialogClose>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? "Working..." : "Confirm fulfillment"}
+            </button>
+          </DialogFooter>
+        </fetcher.Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function OrderItemRow({
+  order,
+  item,
+}: {
+  order: OrderResponse;
+  item: OrderItem;
 }) {
   const hasRange = item.min_amount_total !== item.max_amount_total;
+  const isFulfilled = item.status === OrderProductStatus.Fulfilled;
+
+  const handleDispute = () => {
+    showToast({
+      title: "Contact admin",
+      description: "Please contact admin for dispute resolution.",
+    });
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <div className="text-sm font-bold text-slate-950">{item.product_name}</div>
           <div className="mt-1 text-xs text-slate-500">
-            Qty {item.quantity} · {hasRange ? `${formatMoney(item.currency, item.min_amount_total)} - ${formatMoney(item.currency, item.max_amount_total)}` : formatMoney(item.currency, item.min_amount_total)}
+            Qty {item.quantity} ·{" "}
+            {hasRange
+              ? `${formatMoney(item.currency, item.min_amount_total)} - ${formatMoney(item.currency, item.max_amount_total)}`
+              : formatMoney(item.currency, item.min_amount_total)}
           </div>
         </div>
-        <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
-          {item.status.replace(/_/g, " ")}
-        </span>
+
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+            {formatStatusLabel(item.status)}
+          </span>
+
+          {isFulfilled ? (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <FulfillmentConfirmDialog order={order} item={item} />
+              <button
+                type="button"
+                onClick={handleDispute}
+                className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+              >
+                Dispute Order
+              </button>
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );
@@ -149,11 +351,9 @@ function OrderCard({ order }: { order: OrderResponse }) {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent">
-              {order.order_code}
-            </span>
+            <span className="rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent">{order.order_code}</span>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-              {order.status.replace(/_/g, " ")}
+              {formatStatusLabel(order.status)}
             </span>
             {isPrepaid ? (
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
@@ -191,7 +391,7 @@ function OrderCard({ order }: { order: OrderResponse }) {
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Order items</div>
           <div className="space-y-3">
             {order.orders.map(item => (
-              <OrderItemRow key={item.order_item_id} item={item} />
+              <OrderItemRow key={item.order_item_id} order={order} item={item} />
             ))}
           </div>
         </div>
@@ -247,6 +447,99 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return json<OrdersLoaderData>({
     orders: ordersRes.data ?? emptyPaginatedOrders(query.page_size ?? 10),
     query,
+  });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader) return redirect("/login");
+
+  const formData = await request.formData();
+  const intent = String(formData.get("intent") ?? "");
+  const orderId = String(formData.get("order_id") ?? "").trim();
+  const orderItemId = String(formData.get("order_item_id") ?? "").trim();
+  const orderCode = String(formData.get("order_code") ?? "").trim();
+  const ratingValue = String(formData.get("rating") ?? "").trim();
+  const remark = String(formData.get("remark") ?? "").trim();
+
+  if (intent !== "confirm_fulfillment") {
+    return json<OrderMutationResponse>({ ok: false, error: "Unsupported order action" }, { status: 400 });
+  }
+
+  if (!orderId || !orderItemId) {
+    return json<OrderMutationResponse>({ ok: false, error: "Missing order details" }, { status: 400 });
+  }
+
+  if (!orderCode) {
+    return json<OrderMutationResponse>({ ok: false, error: "Order code is required" }, { status: 400 });
+  }
+
+  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  if (orderRes.error || !orderRes.data) {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: getErrorMessage(orderRes.error, "Unable to verify this order"),
+      },
+      { status: 404 }
+    );
+  }
+
+  const order = orderRes.data;
+  const item = order.orders.find(entry => entry.order_item_id === orderItemId);
+
+  if (!item) {
+    return json<OrderMutationResponse>({ ok: false, error: "Order item not found" }, { status: 404 });
+  }
+
+  if (item.status !== OrderProductStatus.Fulfilled) {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: `This order item cannot be confirmed from ${formatStatusLabel(item.status)} status`,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (order.order_code !== orderCode) {
+    return json<OrderMutationResponse>({ ok: false, error: "The order code does not match this order" }, { status: 400 });
+  }
+
+  const payload: ICustomerConfirmOrder = {
+    order_id: order._id,
+    order_code: order.order_code,
+    order_item_id: item.order_item_id,
+  };
+
+  if (ratingValue) {
+    const rating = Number(ratingValue);
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return json<OrderMutationResponse>({ ok: false, error: "Rating must be between 1 and 5" }, { status: 400 });
+    }
+    payload.rating = rating;
+  }
+
+  if (remark) {
+    payload.remark = remark;
+  }
+
+  const mutationRes = await partnerServer.customerConfirmOrder(payload, cookieHeader);
+
+  if (mutationRes.error) {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: getErrorMessage(mutationRes.error, "Unable to confirm this order item"),
+      },
+      { status: 400 }
+    );
+  }
+
+  return json<OrderMutationResponse>({
+    ok: true,
+    message: "Order fulfillment confirmed successfully",
+    order: mutationRes.data ?? order,
   });
 }
 
@@ -358,7 +651,9 @@ export default function MarketplaceOrders() {
           <div>
             <h2 className="text-2xl font-black text-slate-950">Orders</h2>
             <p className="text-sm text-slate-500">
-              {orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters"}
+              {orders.total_items > 0
+                ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found`
+                : "No orders found for the selected filters"}
             </p>
           </div>
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -393,11 +688,7 @@ export default function MarketplaceOrders() {
       </section>
 
       <section className="mt-8">
-        <Pagination
-          lastKey={orders.last_key_id}
-          firstKey={orders.first_key_id}
-          pageSize={orders.items_per_page}
-        />
+        <Pagination lastKey={orders.last_key_id} firstKey={orders.first_key_id} pageSize={orders.items_per_page} />
       </section>
     </main>
   );

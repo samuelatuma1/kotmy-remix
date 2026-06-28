@@ -372,6 +372,9 @@ export interface OrderItem {
   fulfilled_at: string | null;
   fulfilled_by: string | null;
   fulfilled_by_email: string | null;
+  customer_confirmed_at?: string | null;
+  customer_rating?: number | null;
+  customer_remark?: string | null;
 }
 
 export interface OrderPaymentDetails {
@@ -458,4 +461,11 @@ export interface IOrderData {
   order_items_ids: string[];
 }
 
+export interface ICustomerConfirmOrder {
+  order_id: string;
+  order_code: string;
+  order_item_id: string;
+  rating?: number;
+  remark?: string;
+}
 

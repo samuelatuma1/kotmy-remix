@@ -288,6 +288,10 @@ export class ApiEndPoints {
         return `/v2/api/partner/orders/cancel`;
     }
 
+    static get confirmPartnerOrderFulfillment() {
+        return `/v2/api/partner/orders/confirm-fulfillment`;
+    }
+
     static get getPartnerProducts(){
         return `/v2/api/partner/products`
     }
