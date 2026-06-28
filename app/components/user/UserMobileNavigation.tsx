@@ -22,7 +22,9 @@ const primaryNavs = [
             { label: 'My Profile', url: '/user/profile' },
             { label: 'Affiliate Leaderboard', url: '/user/affiliate' },
             { label: 'Wallet', url: '/user/wallet' },
-            { label: 'My Givaah Credits', url: '/user/givaah-credits' }
+            { label: 'My Givaah Credits', url: '/user/givaah-credits' },
+            { label: 'My Orders', url: '/user/orders' },
+            
         ]
     },
 ]

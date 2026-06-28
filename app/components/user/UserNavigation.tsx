@@ -23,6 +23,8 @@ const navsWSubs = [
             { label: 'Affiliate Leaderboard', url: '/user/affiliate' },
             { label: 'Wallet', url: '/user/wallet' },
             { label: 'My Givaah Credits', url: '/user/givaah-credits' },
+
+            { label: 'My Orders', url: '/user/orders' },
         ]
     },
 ]
