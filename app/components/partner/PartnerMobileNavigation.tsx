@@ -17,7 +17,8 @@ const primaryNavs = [
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
             { label: 'Manage Products', icon: icons.adminTournamentIcon, url:  '/partners/add' },
             { label: 'Manage Locations', icon: icons.adminTournamentIcon, url:  '/partners/location'},
-            { label: 'Manage Orders', icon: icons.adminTournamentIcon, url:  '/partners/orders'}
+            { label: 'Manage Orders', icon: icons.adminTournamentIcon, url:  '/partners/orders'},
+            { label: 'Settlements', icon: icons.adminTournamentIcon, url:  '/partners/settlements'}
         ]
     },
 ]
@@ -136,4 +137,3 @@ export default function PartnerMobileNavigation({ show, onClose }: { show: boole
         </div>
     </div >)
 }
-

@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form, useLoaderData, useNavigation, useNavigate } from "@remix-run/react";
+import { Form, useLoaderData, useNavigation, useNavigate, Link } from "@remix-run/react";
 import { icons } from "~/assets/icons";
 import Cta from "~/components/reusables/Cta";
 import FormControl from "~/components/reusables/FormControl";
@@ -136,6 +136,18 @@ function DetailCard({ label, value }: { label: string; value?: string | number |
   );
 }
 
+function DetailCardWithLink({ label, value, link }: { label: string; value?: string | number | null, link: string }) {
+  return (
+    <Link to={link}>
+      <div className="rounded-2xl border border-gray-100 bg-white shadow-sm p-4">
+        <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">{label}</div>
+        <div className="mt-2 text-sm font-semibold text-gray-900">{value ?? "—"}</div>
+      </div>
+    </Link>
+    
+  );
+}
+
 export default function PartnerDetailsPage() {
   const { business } = useLoaderData<typeof loader>() as { business: Business };
   const navigation = useNavigation();
@@ -191,6 +203,7 @@ export default function PartnerDetailsPage() {
               <DetailCard label="Country" value={business.country_of_incorporation} />
               <DetailCard label="Referral %" value={business.referral_percentage} />
               <DetailCard label="Owner ID" value={business.owner_id || "Not set"} />
+              <DetailCardWithLink label="Partner Settlements" value={business._id} link={`/admin/partners/settlements/?business_id=${business._id}`} />
             </div>
           </div>
 

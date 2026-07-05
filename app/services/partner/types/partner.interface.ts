@@ -469,3 +469,81 @@ export interface ICustomerConfirmOrder {
   remark?: string;
 }
 
+export enum PartnerPendingSettlementEnum {
+  pending = "pending",
+  written_off = "written_off",
+  processing = "processing",
+  failed = "failed",
+  paid = "paid",
+  overdue = "overdue"
+}
+
+export enum SettlementPaymentOption {
+  wallet = "wallet",
+  provider = "provider"
+}
+
+export interface ISearchPartnerSettlementDTO extends IBasePaginationQuery {
+  business_id?: string;
+  status?: PartnerPendingSettlementEnum;
+  settlement_due_date?: string | Date; // Using string is standard for JSON serialized dates (ISO 8601)
+  unique_key?: string;
+  order_id?: string;
+  order_item_id?: string;
+  order_code?: string;
+  currency?: WalletCurrency;
+  business_name?: string;
+  settlement_payment_option?: SettlementPaymentOption;
+}
+
+export interface PartnerSettlement {
+  _id: string;
+  str_id: string;
+  created_at: string; // Or Date, if you parse it locally
+  updated_at: string;
+  is_deleted: boolean;
+  business_id: string;
+  original_amount: number;
+  order_id: string;
+  order_item_id: string;
+  settlement_amount: number;
+  settlement_due_date: string;
+  percent_of_original_amount: number;
+  status: PartnerPendingSettlementEnum;
+  currency: WalletCurrency; // Or your WalletCurrency type
+  unique_key: string;
+  settlement_ledger_reference: string | null;
+  waived_amount: number;
+  waived_by_id: string | null;
+  waived_by_email: string | null;
+  last_payment_update?: string | null; // Serialized date from the API
+  order_code: string;
+  settlement_payment_ref: string | null;
+  all_payment_refs: string[];
+  settlement_payment_option: SettlementPaymentOption;
+  processing_expiry?: string | null;
+  business?: Business;
+}
+export type IPartnerSettlement = PartnerSettlement;
+
+export interface ISettlementPayment{
+  settlement_ids: string[];
+  payment_option: SettlementPaymentOption,
+  redirect_url?: string
+}
+
+export interface ISettlementPaymentProviderResponse {
+  reference: string;
+  payment_link: string | null;
+}
+
+export interface ISettlementPaymentWalletResponse {
+  settlement_payment_ref: string;
+  business_id: string;
+  settlement_ids: string[];
+  amount: number;
+  currency: WalletCurrency; // You can fallback to `string` if this isn't strictly typed
+  payment_option: SettlementPaymentOption;
+  status: string; 
+  message: string;
+}

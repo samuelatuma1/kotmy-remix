@@ -311,4 +311,19 @@ export class ApiEndPoints {
     static get addBusinessOwner(){
         return `/v2/api/partner/add_business_owner`
     }
+
+    static get searchPartnerSettlements() {
+        return `/v2/api/partner/settlements`
+    }
+    static get adminSearchPartnerSettlements() {
+        return `/v2/api/admin/partner/settlements`
+    }
+    
+    static get settlementsProviderPayment() {
+        return `/v2/api/partner/settlements/provider-payment`
+    }
+
+    static get settlementsWalletPayment() {
+        return `/v2/api/partner/settlements/wallet-payment`
+    }
 }

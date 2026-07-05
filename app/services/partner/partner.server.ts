@@ -15,6 +15,11 @@ import {
   ICreatePartnerDTO,
   ICreatePartnerProductDTO,
   IOrderData,
+  IPartnerSettlement,
+  ISettlementPayment,
+  ISettlementPaymentProviderResponse,
+  ISettlementPaymentWalletResponse,
+  ISearchPartnerSettlementDTO,
   IQueryPartnerLocations,
   IQueryPartnerProduct,
   IUpdateBusinessStatus,
@@ -24,6 +29,7 @@ import {
   PartnerLocation,
   PartnerProduct,
   PartnerProductResponse,
+  PartnerSettlement,
   PlaceOrderDTO,
 } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
@@ -257,6 +263,67 @@ export class PartnerServer {
     const { data, error } = await ApiCall.call<ICartDeliveryAndPaymentOptions, unknown>({
       url: ApiEndPoints.getPartnerCartDelivery,
       method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async searchPartnerSettlements(
+    query: ISearchPartnerSettlementDTO,
+    cookies: string
+  ): Promise<TFetcherResponse<IPaginatedResponse<IPartnerSettlement>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.searchPartnerSettlements}?${params}` : ApiEndPoints.searchPartnerSettlements;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerSettlement>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  //
+  async adminSearchPartnerSettlements(
+    query: ISearchPartnerSettlementDTO,
+    cookies: string
+  ): Promise<TFetcherResponse<IPaginatedResponse<IPartnerSettlement>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.adminSearchPartnerSettlements}?${params}` : ApiEndPoints.adminSearchPartnerSettlements;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerSettlement>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async settlementsProviderPayment(
+    dto: ISettlementPayment,
+    cookies: string
+  ): Promise<TFetcherResponse<ISettlementPaymentProviderResponse>> {
+    const { data, error } = await ApiCall.call<ISettlementPaymentProviderResponse, ISettlementPayment>({
+      url: ApiEndPoints.settlementsProviderPayment,
+      method: "POST",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async settlementsWalletPayment(
+    dto: ISettlementPayment,
+    cookies: string
+  ): Promise<TFetcherResponse<ISettlementPaymentWalletResponse>> {
+    const { data, error } = await ApiCall.call<ISettlementPaymentWalletResponse, ISettlementPayment>({
+      url: ApiEndPoints.settlementsWalletPayment,
+      method: "POST",
+      data: dto,
     }, cookies);
 
     if (error) return { error };
