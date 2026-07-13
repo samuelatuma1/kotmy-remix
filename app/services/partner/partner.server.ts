@@ -9,7 +9,9 @@ import {
   BusinessSearchOrderDTO,
   CustomerOrdersQuery,
   DeliveryDetails,
+  IAdminResolveOrderDispute,
   ICustomerConfirmOrder,
+  ICustomerDisputeOrderFulfilledDTO,
   IBusinessOwnerModel,
   ICartDeliveryAndPaymentOptions,
   ICreatePartnerDTO,
@@ -31,6 +33,7 @@ import {
   PartnerProductResponse,
   PartnerSettlement,
   PlaceOrderDTO,
+  AdminSearchOrderDTO,
 } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
@@ -378,6 +381,30 @@ export class PartnerServer {
     return { data };
   }
 
+  async getAdminOrders(query: AdminSearchOrderDTO, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.adminPartnerOrders}?${params}` : ApiEndPoints.adminPartnerOrders;
+    
+    const { data, error } = await ApiCall.call<IPaginatedResponse<OrderResponse>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async adminResolveDispute(dto: IAdminResolveOrderDispute, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, IAdminResolveOrderDispute>({
+      url: ApiEndPoints.adminResolveOrderDispute,
+      method: "PATCH",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
   async getOrderById(orderId: string, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, unknown>({
       url: ApiEndPoints.getPartnerOrderById(orderId),
@@ -416,6 +443,20 @@ export class PartnerServer {
   ): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, ICustomerConfirmOrder>({
       url: ApiEndPoints.confirmPartnerOrderFulfillment,
+      method: "PATCH",
+      data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async customerDispute(
+    dto: ICustomerDisputeOrderFulfilledDTO,
+    cookies: string
+  ): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, ICustomerDisputeOrderFulfilledDTO>({
+      url: ApiEndPoints.disputePartnerOrderFulfillment,
       method: "PATCH",
       data: dto,
     }, cookies);

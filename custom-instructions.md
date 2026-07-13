@@ -14,6 +14,7 @@ This document provides instructions and guidelines for contributing to the KOTMY
 - You try to keep the UI on the app consistent but DO NOT prioritize this over the ultra-clean, Apple/Stripe-inspired aesthetic
 - You ask questions if prompt looks like the logic does not add up, or if you suspect a typo in the prompt
 - If building a page, include skeletal structure to be displayed while the page is being loaded. The skeletal frame should match the expected structure of the page
+- Keep UI clean by extracting components. They can be kept on the same file, but extracted for easy reuse/refactor
 - You display responses from server calls using toast unless otherwise stated
 ### Technology Stack
 

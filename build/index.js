@@ -121,7 +121,7 @@ import {
 } from "@remix-run/react";
 
 // app/global.css
-var global_default = "/build/_assets/global-U3GBHW3P.css";
+var global_default = "/build/_assets/global-FKOXWYFV.css";
 
 // app/autoplaycarousel.css
 var autoplaycarousel_default = "/build/_assets/autoplaycarousel-UE5MKUNL.css";
@@ -337,22 +337,22 @@ var toastTimeouts = /* @__PURE__ */ new Map(), addToRemoveQueue = (toastId) => {
     });
   }, TOAST_REMOVE_DELAY);
   toastTimeouts.set(toastId, timeout);
-}, reducer = (state, action35) => {
-  switch (action35.type) {
+}, reducer = (state, action36) => {
+  switch (action36.type) {
     case "ADD_TOAST":
       return {
         ...state,
-        toasts: [action35.toast, ...state.toasts].slice(0, TOAST_LIMIT)
+        toasts: [action36.toast, ...state.toasts].slice(0, TOAST_LIMIT)
       };
     case "UPDATE_TOAST":
       return {
         ...state,
         toasts: state.toasts.map(
-          (t) => t.id === action35.toast.id ? { ...t, ...action35.toast } : t
+          (t) => t.id === action36.toast.id ? { ...t, ...action36.toast } : t
         )
       };
     case "DISMISS_TOAST": {
-      let { toastId } = action35;
+      let { toastId } = action36;
       return toastId ? addToRemoveQueue(toastId) : state.toasts.forEach((toast5) => {
         addToRemoveQueue(toast5.id);
       }), {
@@ -366,17 +366,17 @@ var toastTimeouts = /* @__PURE__ */ new Map(), addToRemoveQueue = (toastId) => {
       };
     }
     case "REMOVE_TOAST":
-      return action35.toastId === void 0 ? {
+      return action36.toastId === void 0 ? {
         ...state,
         toasts: []
       } : {
         ...state,
-        toasts: state.toasts.filter((t) => t.id !== action35.toastId)
+        toasts: state.toasts.filter((t) => t.id !== action36.toastId)
       };
   }
 }, listeners = [], memoryState = { toasts: [] };
-function dispatch(action35) {
-  memoryState = reducer(memoryState, action35), listeners.forEach((listener) => {
+function dispatch(action36) {
+  memoryState = reducer(memoryState, action36), listeners.forEach((listener) => {
     listener(memoryState);
   });
 }
@@ -418,13 +418,13 @@ import { jsx as jsx5, jsxs } from "react/jsx-runtime";
 function Toaster() {
   let { toasts } = useToast();
   return /* @__PURE__ */ jsxs(ToastProvider, { children: [
-    toasts.map(function({ id, title, description, action: action35, ...props }) {
+    toasts.map(function({ id, title, description, action: action36, ...props }) {
       return /* @__PURE__ */ jsxs(Toast, { ...props, children: [
         /* @__PURE__ */ jsxs("div", { className: "grid gap-1", children: [
           title && /* @__PURE__ */ jsx5(ToastTitle, { children: title }),
           description && /* @__PURE__ */ jsx5(ToastDescription, { children: description })
         ] }),
-        action35,
+        action36,
         /* @__PURE__ */ jsx5(ToastClose, {})
       ] }, id);
     }),
@@ -878,6 +878,12 @@ var ApiEndPoints = class {
   static get getPartnerOrders() {
     return "/v2/api/partner/business/orders";
   }
+  static get adminPartnerOrders() {
+    return "/v2/api/admin/orders";
+  }
+  static get adminResolveOrderDispute() {
+    return "/v2/api/admin/orders/resolve-dispute";
+  }
   static getPartnerOrderById(orderId) {
     return `/v2/api/partner/business/order/${orderId}`;
   }
@@ -889,6 +895,9 @@ var ApiEndPoints = class {
   }
   static get confirmPartnerOrderFulfillment() {
     return "/v2/api/partner/orders/confirm-fulfillment";
+  }
+  static get disputePartnerOrderFulfillment() {
+    return "/v2/api/partner/orders/dispute-fulfillment";
   }
   static get getPartnerProducts() {
     return "/v2/api/partner/products";
@@ -5033,6 +5042,21 @@ var PartnerServer = class {
     }, cookies);
     return error ? { error } : { data };
   }
+  async getAdminOrders(query, cookies) {
+    let params = this.buildQueryString(query), url = params ? `${ApiEndPoints.adminPartnerOrders}?${params}` : ApiEndPoints.adminPartnerOrders, { data, error } = await ApiCall.call({
+      url,
+      method: "GET"
+    }, cookies);
+    return error ? { error } : { data };
+  }
+  async adminResolveDispute(dto, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.adminResolveOrderDispute,
+      method: "PATCH",
+      data: dto
+    }, cookies);
+    return error ? { error } : { data };
+  }
   async getOrderById(orderId, cookies) {
     let { data, error } = await ApiCall.call({
       url: ApiEndPoints.getPartnerOrderById(orderId),
@@ -5059,6 +5083,14 @@ var PartnerServer = class {
   async customerConfirmOrder(dto, cookies) {
     let { data, error } = await ApiCall.call({
       url: ApiEndPoints.confirmPartnerOrderFulfillment,
+      method: "PATCH",
+      data: dto
+    }, cookies);
+    return error ? { error } : { data };
+  }
+  async customerDispute(dto, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.disputePartnerOrderFulfillment,
       method: "PATCH",
       data: dto
     }, cookies);
@@ -5593,12 +5625,12 @@ function CategoryInputs({ categories }) {
 // app/components/admin/tournament/StageInputs.tsx
 import { useReducer } from "react";
 import { jsx as jsx61, jsxs as jsxs48 } from "react/jsx-runtime";
-function reducer2(stages, action35) {
-  return action35.type === "add" ? [...stages, {
+function reducer2(stages, action36) {
+  return action36.type === "add" ? [...stages, {
     stage: (stages.at(-1)?.stage ?? 0) + 1,
     weight: 0,
     rates: { social_media: { type: "facebook", amount: 0 }, tally: 0, judge: 0, givaah: 0 }
-  }] : action35.type === "remove" ? stages.filter((stage) => stage.stage !== action35.stageNumber || stage._id !== action35.value) : action35.type === "edit_sm_type" ? stages.map((stage) => stage.stage === action35.stageNumber ? { ...stage, rates: { ...stage.rates, social_media: { ...stage.rates.social_media, type: action35.value } } } : stage) : action35.type === "edit_stage_number" && !stages.some((stage) => stage.stage === action35.value) ? stages.map((stage) => stage.stage === action35.stageNumber ? { ...stage, stage: action35.value } : stage) : action35.type === "edit_stage_weight" ? stages.map((stage) => stage.stage === action35.stageNumber ? { ...stage, weight: action35.value } : stage) : stages;
+  }] : action36.type === "remove" ? stages.filter((stage) => stage.stage !== action36.stageNumber || stage._id !== action36.value) : action36.type === "edit_sm_type" ? stages.map((stage) => stage.stage === action36.stageNumber ? { ...stage, rates: { ...stage.rates, social_media: { ...stage.rates.social_media, type: action36.value } } } : stage) : action36.type === "edit_stage_number" && !stages.some((stage) => stage.stage === action36.value) ? stages.map((stage) => stage.stage === action36.stageNumber ? { ...stage, stage: action36.value } : stage) : action36.type === "edit_stage_weight" ? stages.map((stage) => stage.stage === action36.stageNumber ? { ...stage, weight: action36.value } : stage) : stages;
 }
 function StageInputs({ stages }) {
   let [stagesState, dispatch2] = useReducer(reducer2, stages ?? []);
@@ -8203,7 +8235,8 @@ var orderStatusOptions = [
   { label: "Partially fulfilled", value: "PartiallyFulfilled" },
   { label: "Fully fulfilled", value: "FullyFulfilled" },
   { label: "Completed", value: "Completed" },
-  { label: "Cancelled", value: "Cancelled" }
+  { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" }
 ], orderProductStatusOptions = [
   { label: "All item statuses", value: "" },
   { label: "Pending", value: "Pending" },
@@ -8211,7 +8244,11 @@ var orderStatusOptions = [
   { label: "Cancelled", value: "Cancelled" },
   { label: "Fulfilled", value: "Fulfilled" },
   { label: "Returned", value: "Returned" },
-  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" }
+  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" }
 ];
 function buildCustomerOrdersQuery(searchParams) {
   let query = {};
@@ -11243,7 +11280,8 @@ var orderStatusOptions2 = [
   { label: "Partially fulfilled", value: "PartiallyFulfilled" },
   { label: "Fully fulfilled", value: "FullyFulfilled" },
   { label: "Completed", value: "Completed" },
-  { label: "Cancelled", value: "Cancelled" }
+  { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" }
 ], orderProductStatusOptions2 = [
   { label: "All item statuses", value: "" },
   { label: "Pending", value: "Pending" },
@@ -11251,7 +11289,11 @@ var orderStatusOptions2 = [
   { label: "Cancelled", value: "Cancelled" },
   { label: "Fulfilled", value: "Fulfilled" },
   { label: "Returned", value: "Returned" },
-  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" }
+  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" }
 ];
 function buildPartnerOrdersQuery(searchParams) {
   let query = {};
@@ -11842,66 +11884,766 @@ function _PartnersIndex() {
   ] });
 }
 
-// app/routes/admin.tournaments.add.tsx
-var admin_tournaments_add_exports = {};
-__export(admin_tournaments_add_exports, {
+// app/routes/admin.partners.orders.tsx
+var admin_partners_orders_exports = {};
+__export(admin_partners_orders_exports, {
   action: () => action24,
-  default: () => AddTournament
+  default: () => AdminPartnerOrdersPage,
+  loader: () => loader40
 });
 import { json as json38, redirect as redirect30 } from "@remix-run/node";
-import { useNavigate as useNavigate17 } from "@remix-run/react";
-
-// app/components/admin/tournament/CreateTournamentForm.tsx
-import { Form as Form27 } from "@remix-run/react";
+import {
+  Form as Form27,
+  Link as Link22,
+  useFetcher as useFetcher16,
+  useLoaderData as useLoaderData37,
+  useLocation as useLocation8,
+  useNavigation as useNavigation19,
+  useRevalidator as useRevalidator2
+} from "@remix-run/react";
+import { PackageSearch as PackageSearch4, Search as Search4, ShieldCheck as ShieldCheck2, ShieldX, ShoppingBag as ShoppingBag3 } from "lucide-react";
+import { useEffect as useEffect26, useMemo as useMemo7, useRef as useRef12, useState as useState37 } from "react";
 import { jsx as jsx106, jsxs as jsxs92 } from "react/jsx-runtime";
-function CreateTournamentForm() {
-  return /* @__PURE__ */ jsxs92(Form27, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsx106("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Create New Tournament" }),
-    /* @__PURE__ */ jsxs92("div", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsx106(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", required: !0 }),
-      /* @__PURE__ */ jsx106(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
-      /* @__PURE__ */ jsx106(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", required: !0 }),
-      /* @__PURE__ */ jsx106(DragnDrop, { labelText: "Tournament Image", name: "image" })
-    ] }),
-    /* @__PURE__ */ jsx106("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx106(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Tournament" }) })
+var adminOrderStatusOptions = [
+  { label: "All statuses", value: "" },
+  { label: "Pending pre-payment", value: "PendingPrePayment" },
+  { label: "Pending", value: "Pending" },
+  { label: "Processing", value: "Processing" },
+  { label: "Paid pending fulfillment", value: "PaidPendingFulfillment" },
+  { label: "Partially fulfilled", value: "PartiallyFulfilled" },
+  { label: "Fully fulfilled", value: "FullyFulfilled" },
+  { label: "Completed", value: "Completed" },
+  { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" }
+], adminOrderItemStatusOptions = [
+  { label: "All item statuses", value: "" },
+  { label: "Pending", value: "Pending" },
+  { label: "Active", value: "Active" },
+  { label: "Cancelled", value: "Cancelled" },
+  { label: "Fulfilled", value: "Fulfilled" },
+  { label: "Returned", value: "Returned" },
+  { label: "Fulfillment confirmed by customer", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" }
+], adminResolveStatusOptions = [
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" /* ReturnedAndRefunded */ },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */ }
+], refundTypeOptions = [
+  { label: "Wallet", value: "wallet" /* wallet */ },
+  { label: "Customer bank", value: "customer_bank" /* customer_bank */ }
+];
+function buildEmptyOrders(pageSize = 20) {
+  return {
+    current_page: 1,
+    total_pages: 0,
+    total_items: 0,
+    items_per_page: pageSize,
+    items: [],
+    last_key_id: null,
+    first_key_id: null
+  };
+}
+function formatMoney8(currency, value) {
+  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
+}
+function formatDate6(value) {
+  try {
+    return new Intl.DateTimeFormat("en-NG", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }).format(new Date(value));
+  } catch {
+    return value;
+  }
+}
+function formatLabel3(value) {
+  return value ? value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim() : "N/A";
+}
+function getErrorMessage2(error, fallback) {
+  return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
+}
+function buildAdminOrdersQuery(searchParams) {
+  let query = {};
+  for (let [key, value] of searchParams.entries())
+    if (value) {
+      if (key === "page_size") {
+        let parsed = Number(value);
+        Number.isNaN(parsed) || (query.page_size = parsed);
+        continue;
+      }
+      if (key === "direction") {
+        query.direction = value === "previous" ? "previous" : "next";
+        continue;
+      }
+      if (key === "last_key_id") {
+        query.last_key_id = value;
+        continue;
+      }
+      if (key === "first_key_id") {
+        query.first_key_id = value;
+        continue;
+      }
+      if (key === "order_status") {
+        query.order_status = value;
+        continue;
+      }
+      if (key === "order_product_status") {
+        query.order_product_status = value;
+        continue;
+      }
+      if (key === "order_code") {
+        query.order_code = value.trim();
+        continue;
+      }
+      if (key === "order_id") {
+        query.order_id = value.trim();
+        continue;
+      }
+      key === "order_item_id" && (query.order_item_id = value.trim());
+    }
+  return query;
+}
+function OrdersSkeleton3() {
+  return /* @__PURE__ */ jsx106("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs92("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsx106("div", { className: "h-4 w-32 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx106("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx106("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx106("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx106("div", { className: "mt-5 h-28 rounded-2xl bg-slate-100" })
+  ] }, index)) });
+}
+function DetailRow3({ label, value }) {
+  return /* @__PURE__ */ jsxs92("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+    /* @__PURE__ */ jsx106("div", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500", children: label }),
+    /* @__PURE__ */ jsx106("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: value ?? "N/A" })
   ] });
 }
-
-// app/routes/admin.tournaments.add.tsx
-import { jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
+function OrderDetailsModal({
+  row,
+  open,
+  onOpenChange
+}) {
+  if (!row)
+    return null;
+  let { order, item } = row;
+  return /* @__PURE__ */ jsx106(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs92(DialogContent, { className: "max-h-[90vh] max-w-5xl overflow-y-auto border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+    /* @__PURE__ */ jsxs92(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+      /* @__PURE__ */ jsx106(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Order details" }),
+      /* @__PURE__ */ jsx106(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Review the order and item details before taking any admin action." })
+    ] }),
+    /* @__PURE__ */ jsxs92("div", { className: "space-y-6 p-6", children: [
+      /* @__PURE__ */ jsxs92("div", { className: "grid gap-4 lg:grid-cols-2", children: [
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx106("h3", { className: "text-sm font-black uppercase tracking-[0.18em] text-slate-500", children: "Order summary" }),
+          /* @__PURE__ */ jsxs92("div", { className: "mt-4 grid gap-3 sm:grid-cols-2", children: [
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Order status", value: formatLabel3(order.status) }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Order code", value: order.order_code }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Order id", value: order._id }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Currency", value: order.currency }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer name", value: order.delivery_name }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery email", value: order.delivery_email }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Business", value: order.business_name }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Business email", value: order.business_email })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx106("h3", { className: "text-sm font-black uppercase tracking-[0.18em] text-slate-500", children: "Item summary" }),
+          /* @__PURE__ */ jsxs92("div", { className: "mt-4 grid gap-3 sm:grid-cols-2", children: [
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Item status", value: formatLabel3(item.status) }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Order item id", value: item.order_item_id }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Amount", value: formatMoney8(item.currency, item.min_amount_total) }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Quantity", value: item.quantity }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer remark", value: item.customer_remark ?? "N/A" }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Partner remark", value: item.partner_remark ?? "N/A" }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Admin remark", value: item.admin_remark ?? "N/A" }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Fulfilled at", value: item.fulfilled_at ? formatDate6(item.fulfilled_at) : "N/A" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs92("div", { className: "grid gap-4 lg:grid-cols-[1.1fr_0.9fr]", children: [
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx106("h3", { className: "text-sm font-black uppercase tracking-[0.18em] text-slate-500", children: "Delivery details" }),
+          /* @__PURE__ */ jsxs92("div", { className: "mt-4 grid gap-3 sm:grid-cols-2", children: [
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery name", value: order.delivery_name }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery phone", value: order.delivery_phone_number }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery street", value: order.delivery_street }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery city", value: order.delivery_city }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery state", value: order.delivery_state }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Delivery country", value: order.delivery_country })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx106("h3", { className: "text-sm font-black uppercase tracking-[0.18em] text-slate-500", children: "Payment details" }),
+          /* @__PURE__ */ jsxs92("div", { className: "mt-4 grid gap-3 sm:grid-cols-2", children: [
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Payment option", value: formatLabel3(order.payment_details?.payment_option) }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Payment status", value: formatLabel3(order.payment_details?.status) }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Reference", value: order.payment_details?.reference }),
+            /* @__PURE__ */ jsx106(DetailRow3, { label: "Payment amount", value: formatMoney8(order.currency, order.payment_details?.amount ?? 0) }),
+            /* @__PURE__ */ jsx106("div", { className: "sm:col-span-2", children: /* @__PURE__ */ jsx106(DetailRow3, { label: "Order created", value: formatDate6(order.created_at) }) })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+        /* @__PURE__ */ jsx106("h3", { className: "text-sm font-black uppercase tracking-[0.18em] text-slate-500", children: "Status history" }),
+        /* @__PURE__ */ jsx106("div", { className: "mt-4 space-y-3", children: item.status_history?.length ? item.status_history.map((entry2, index) => /* @__PURE__ */ jsxs92("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsx106("div", { className: "text-sm font-semibold text-slate-900", children: formatLabel3(entry2.status) }),
+          /* @__PURE__ */ jsx106("div", { className: "mt-1 text-xs text-slate-500", children: formatDate6(String(entry2.updated_at)) })
+        ] }, `${entry2.status}-${index}`)) : /* @__PURE__ */ jsx106("div", { className: "rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500", children: "No status history available." }) })
+      ] })
+    ] })
+  ] }) });
+}
+function ResolveDisputeModal({
+  row,
+  open,
+  onOpenChange
+}) {
+  let fetcher = useFetcher16(), revalidator = useRevalidator2(), handledResponseRef = useRef12(!1), [updatedStatus, setUpdatedStatus] = useState37("FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */), [confirmationCode, setConfirmationCode] = useState37(""), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  useEffect26(() => {
+    fetcher.state === "submitting" && (handledResponseRef.current = !1);
+  }, [fetcher.state]), useEffect26(() => {
+    if (!(!fetcher.data || handledResponseRef.current)) {
+      if (handledResponseRef.current = !0, fetcher.data.ok) {
+        toast({
+          title: "Success",
+          description: fetcher.data.message
+        }), onOpenChange(!1), revalidator.revalidate();
+        return;
+      }
+      toast({
+        variant: "destructive",
+        title: "Resolve dispute failed",
+        description: fetcher.data.error
+      });
+    }
+  }, [fetcher.data, onOpenChange, revalidator]), useEffect26(() => {
+    open || (setUpdatedStatus("FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */), setConfirmationCode(""));
+  }, [open, row?.order.order_code]);
+  let requiresRefund = updatedStatus === "ReturnedAndRefunded" /* ReturnedAndRefunded */;
+  if (!row || row.item.status !== "Disputed" /* Disputed */)
+    return null;
+  let handleSubmit = (event) => {
+    let formData = new FormData(event.currentTarget), submittedCode = String(formData.get("order_code") ?? "").trim(), expectedCode = String(formData.get("expected_order_code") ?? "").trim();
+    (!submittedCode || submittedCode !== expectedCode) && (event.preventDefault(), toast({
+      variant: "destructive",
+      title: "Order code mismatch",
+      description: "Type the exact order code shown in the dialog before submitting."
+    }));
+  };
+  return /* @__PURE__ */ jsx106(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs92(DialogContent, { className: "max-h-[90vh] max-w-3xl overflow-y-auto border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+    /* @__PURE__ */ jsxs92(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+      /* @__PURE__ */ jsx106(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Resolve dispute" }),
+      /* @__PURE__ */ jsx106(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Verify the order code, choose the final item status, and provide the admin note before submitting." })
+    ] }),
+    /* @__PURE__ */ jsxs92(fetcher.Form, { method: "post", className: "space-y-5 p-6", onSubmit: handleSubmit, children: [
+      /* @__PURE__ */ jsx106("input", { type: "hidden", name: "intent", value: "resolve_dispute" }),
+      /* @__PURE__ */ jsx106("input", { type: "hidden", name: "order_id", value: row.order._id }),
+      /* @__PURE__ */ jsx106("input", { type: "hidden", name: "order_item_id", value: row.item.order_item_id }),
+      /* @__PURE__ */ jsx106("input", { type: "hidden", name: "expected_order_code", value: row.order.order_code }),
+      /* @__PURE__ */ jsxs92("div", { className: "grid gap-4 rounded-[1.5rem] border border-rose-100 bg-rose-50 p-4 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Order code", value: row.order.order_code }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Order Amount", value: `${row.order.currency} ${row.item.min_amount_total}` }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Current item status", value: formatLabel3(row.item.status) }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Order Business Name", value: formatLabel3(row.order.business_name) }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer Details", value: `${row.order.delivery_name} | ${row.order.delivery_email} | ${row.order.delivery_phone_number}` }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Partner Details", value: `Business Mail: ${row.order.business_contact_person_email} | Contact Mail:  ${row.order.business_contact_person_email} | Phone: Business ${row.order.business_contact_person_phone} | Contact Person ${row.order.business_contact_person_phone}` }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer Message", value: `${row.item.customer_remark}` }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Partner Message", value: `${row.item.partner_remark ?? ""}` }),
+        /* @__PURE__ */ jsx106(DetailRow3, { label: "Order Fulfilled at", value: `${row.item.fulfilled_at}` })
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
+        /* @__PURE__ */ jsx106(
+          "input",
+          {
+            name: "order_code",
+            required: !0,
+            autoComplete: "off",
+            value: confirmationCode,
+            onChange: (event) => setConfirmationCode(event.target.value),
+            placeholder: "Type the exact order code",
+            className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Updated order item status" }),
+        /* @__PURE__ */ jsx106(
+          "select",
+          {
+            name: "updated_order_item_status",
+            required: !0,
+            value: updatedStatus,
+            onChange: (event) => setUpdatedStatus(event.target.value),
+            className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950",
+            children: adminResolveStatusOptions.map((option) => /* @__PURE__ */ jsx106("option", { value: option.value, children: option.label }, option.value))
+          }
+        )
+      ] }),
+      requiresRefund ? /* @__PURE__ */ jsxs92("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Refund amount" }),
+          /* @__PURE__ */ jsx106(
+            "input",
+            {
+              name: "refund_amount",
+              type: "number",
+              min: "0",
+              step: "0.01",
+              required: !0,
+              placeholder: "Enter refund amount",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Refund type" }),
+          /* @__PURE__ */ jsxs92(
+            "select",
+            {
+              name: "refund_type",
+              required: !0,
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950",
+              children: [
+                /* @__PURE__ */ jsx106("option", { value: "", children: "Select refund type" }),
+                refundTypeOptions.map((option) => /* @__PURE__ */ jsx106("option", { value: option.value, children: option.label }, option.value))
+              ]
+            }
+          )
+        ] })
+      ] }) : null,
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Admin remark" }),
+        /* @__PURE__ */ jsx106(
+          "textarea",
+          {
+            name: "remark",
+            required: !0,
+            rows: 4,
+            placeholder: "Explain the resolution decision",
+            className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+          }
+        )
+      ] }),
+      errorMessage ? /* @__PURE__ */ jsx106("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
+      /* @__PURE__ */ jsxs92(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+        /* @__PURE__ */ jsx106(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx106(
+          "button",
+          {
+            type: "button",
+            className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+            children: "Back"
+          }
+        ) }),
+        /* @__PURE__ */ jsx106(
+          "button",
+          {
+            type: "submit",
+            disabled: isSubmitting,
+            className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70",
+            children: isSubmitting ? "Submitting..." : "Resolve dispute"
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+}
+function OrderItemCard2({
+  row,
+  onShowDetails,
+  onResolveDispute
+}) {
+  let { order, item } = row, hasRange = item.min_amount_total !== item.max_amount_total, isDisputed = item.status === "Disputed" /* Disputed */;
+  return /* @__PURE__ */ jsxs92("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.08)]", children: [
+    /* @__PURE__ */ jsxs92("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+      /* @__PURE__ */ jsxs92("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsxs92("div", { className: "flex flex-wrap items-center gap-2", children: [
+          /* @__PURE__ */ jsx106("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
+          /* @__PURE__ */ jsx106("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatLabel3(order.status) }),
+          /* @__PURE__ */ jsx106("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: formatLabel3(item.status) }),
+          isDisputed ? /* @__PURE__ */ jsx106("span", { className: "rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700", children: "Disputed" }) : null
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { children: [
+          /* @__PURE__ */ jsx106("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }),
+          /* @__PURE__ */ jsxs92("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
+            order.business_email,
+            " \xB7 ",
+            order.delivery_name
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs92("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Amount" }),
+          /* @__PURE__ */ jsx106("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: hasRange ? `${formatMoney8(item.currency, item.min_amount_total)} - ${formatMoney8(item.currency, item.max_amount_total)}` : formatMoney8(item.currency, item.min_amount_total) })
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order item id" }),
+          /* @__PURE__ */ jsx106("div", { className: "mt-1 break-all text-sm font-semibold text-slate-900", children: item.order_item_id })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs92("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
+      /* @__PURE__ */ jsxs92("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Important details" }),
+        /* @__PURE__ */ jsxs92("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer name", value: order.delivery_name }),
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer phone", value: order.delivery_phone_number }),
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Business email", value: order.business_email }),
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Order currency", value: order.currency }),
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Customer remark", value: item.customer_remark ?? "N/A" }),
+          /* @__PURE__ */ jsx106(DetailRow3, { label: "Order id", value: order._id })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs92("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Actions" }),
+        /* @__PURE__ */ jsxs92("div", { className: "flex flex-col gap-3 sm:flex-row lg:flex-col", children: [
+          /* @__PURE__ */ jsx106(
+            "button",
+            {
+              type: "button",
+              onClick: () => onShowDetails(row),
+              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Details"
+            }
+          ),
+          isDisputed ? /* @__PURE__ */ jsxs92(
+            "button",
+            {
+              type: "button",
+              onClick: () => onResolveDispute(row),
+              className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
+              children: [
+                /* @__PURE__ */ jsx106(ShieldX, { className: "mr-2 h-4 w-4" }),
+                "Resolve dispute"
+              ]
+            }
+          ) : /* @__PURE__ */ jsxs92("div", { className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-50 px-5 text-sm font-semibold text-slate-500", children: [
+            /* @__PURE__ */ jsx106(ShieldCheck2, { className: "mr-2 h-4 w-4" }),
+            "No dispute action"
+          ] })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+function OrderList({
+  rows,
+  onShowDetails,
+  onResolveDispute
+}) {
+  return /* @__PURE__ */ jsx106("div", { className: "space-y-4", children: rows.map((row) => /* @__PURE__ */ jsx106(
+    OrderItemCard2,
+    {
+      row,
+      onShowDetails,
+      onResolveDispute
+    },
+    `${row.order._id}-${row.item.order_item_id}`
+  )) });
+}
+async function loader40({ request }) {
+  let cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader)
+    return redirect30("/login");
+  let url = new URL(request.url), query = buildAdminOrdersQuery(url.searchParams), ordersRes = await partnerServer.getAdminOrders(query, cookieHeader);
+  return ordersRes.error ? json38({
+    orders: buildEmptyOrders(query.page_size ?? 20),
+    query,
+    error: getErrorMessage2(ordersRes.error, "Unable to load admin orders")
+  }) : json38({
+    orders: ordersRes.data ?? buildEmptyOrders(query.page_size ?? 20),
+    query
+  });
+}
 async function action24({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
     return redirect30("/login");
+  let formData = await request.formData();
+  if (String(formData.get("intent") ?? "") !== "resolve_dispute")
+    return json38({ ok: !1, error: "Unsupported admin order action" }, { status: 400 });
+  let orderId = String(formData.get("order_id") ?? "").trim(), orderItemId = String(formData.get("order_item_id") ?? "").trim(), confirmedCode = String(formData.get("order_code") ?? "").trim(), expectedCode = String(formData.get("expected_order_code") ?? "").trim(), updatedStatus = String(formData.get("updated_order_item_status") ?? "").trim(), remark = String(formData.get("remark") ?? "").trim(), refundAmountValue = String(formData.get("refund_amount") ?? "").trim(), refundTypeValue = String(formData.get("refund_type") ?? "").trim();
+  if (!orderId || !orderItemId)
+    return json38({ ok: !1, error: "Missing order details" }, { status: 400 });
+  if (!confirmedCode || confirmedCode !== expectedCode)
+    return json38({ ok: !1, error: "The confirmed order code does not match" }, { status: 400 });
+  if (!remark)
+    return json38({ ok: !1, error: "Admin remark is required" }, { status: 400 });
+  if (!(/* @__PURE__ */ new Set([
+    "ReturnedAndRefunded" /* ReturnedAndRefunded */,
+    "FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */
+  ])).has(updatedStatus))
+    return json38(
+      { ok: !1, error: "You can only resolve disputes as returned and refunded or fulfillment confirmed by admin" },
+      { status: 400 }
+    );
+  let orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  if (orderRes.error || !orderRes.data)
+    return json38(
+      { ok: !1, error: getErrorMessage2(orderRes.error, "Unable to verify this order") },
+      { status: 404 }
+    );
+  let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
+  if (!item)
+    return json38({ ok: !1, error: "Order item not found" }, { status: 404 });
+  if (item.status !== "Disputed" /* Disputed */)
+    return json38({ ok: !1, error: "Only disputed items can be resolved here" }, { status: 400 });
+  if (updatedStatus === "ReturnedAndRefunded" /* ReturnedAndRefunded */) {
+    let refundAmount = Number(refundAmountValue);
+    if (!refundAmountValue || Number.isNaN(refundAmount) || refundAmount <= 0)
+      return json38({ ok: !1, error: "Refund amount is required" }, { status: 400 });
+    if (!refundTypeValue)
+      return json38({ ok: !1, error: "Refund type is required" }, { status: 400 });
+    let payload2 = {
+      order_id: order._id,
+      order_code: order.order_code,
+      order_item_id: item.order_item_id,
+      updated_order_item_status: updatedStatus,
+      refund_amount: refundAmount,
+      refund_type: refundTypeValue,
+      remark
+    }, response2 = await partnerServer.adminResolveDispute(payload2, cookieHeader);
+    return response2.error || !response2.data ? json38(
+      { ok: !1, error: getErrorMessage2(response2.error, "Unable to resolve dispute") },
+      { status: 400 }
+    ) : json38({
+      ok: !0,
+      message: "Dispute resolved successfully",
+      order: response2.data
+    });
+  }
+  let payload = {
+    order_id: order._id,
+    order_code: order.order_code,
+    order_item_id: item.order_item_id,
+    updated_order_item_status: updatedStatus,
+    remark
+  }, response = await partnerServer.adminResolveDispute(payload, cookieHeader);
+  return response.error || !response.data ? json38(
+    { ok: !1, error: getErrorMessage2(response.error, "Unable to resolve dispute") },
+    { status: 400 }
+  ) : json38({
+    ok: !0,
+    message: "Dispute resolved successfully",
+    order: response.data
+  });
+}
+function AdminPartnerOrdersPage() {
+  let { orders, query, error } = useLoaderData37(), navigation = useNavigation19(), location = useLocation8(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, rows = useMemo7(
+    () => orders.items.flatMap(
+      (order) => order.orders.map((item) => ({
+        order,
+        item
+      }))
+    ),
+    [orders.items]
+  ), [detailsRow, setDetailsRow] = useState37(null), [resolveRow, setResolveRow] = useState37(null);
+  return /* @__PURE__ */ jsxs92("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxs92("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxs92("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxs92("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsx106("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }),
+          /* @__PURE__ */ jsxs92("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsx106("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Search and resolve orders." }),
+            /* @__PURE__ */ jsx106("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Search all platform orders by order code, order id, item id, or status, then inspect disputed items and resolve them." })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+          /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }),
+            /* @__PURE__ */ jsx106("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items })
+          ] }),
+          /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Items" }),
+            /* @__PURE__ */ jsx106("div", { className: "mt-2 text-3xl font-black text-slate-950", children: rows.length })
+          ] }),
+          /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx106("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page" }),
+            /* @__PURE__ */ jsx106("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page })
+          ] })
+        ] })
+      ] }),
+      error ? /* @__PURE__ */ jsx106("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
+    ] }),
+    /* @__PURE__ */ jsx106("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs92(Form27, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end", children: [
+      /* @__PURE__ */ jsx106("input", { type: "hidden", name: "page_size", value: orders.items_per_page }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
+        /* @__PURE__ */ jsx106(
+          "input",
+          {
+            name: "order_code",
+            defaultValue: query.order_code ?? "",
+            placeholder: "Search order code",
+            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:bg-white"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order id" }),
+        /* @__PURE__ */ jsx106(
+          "input",
+          {
+            name: "order_id",
+            defaultValue: query.order_id ?? "",
+            placeholder: "Search order id",
+            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:bg-white"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item id" }),
+        /* @__PURE__ */ jsx106(
+          "input",
+          {
+            name: "order_item_id",
+            defaultValue: query.order_item_id ?? "",
+            placeholder: "Search order item id",
+            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950 focus:bg-white"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
+        /* @__PURE__ */ jsx106(
+          "select",
+          {
+            name: "order_status",
+            defaultValue: query.order_status ?? "",
+            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
+            children: adminOrderStatusOptions.map((option) => /* @__PURE__ */ jsx106("option", { value: option.value, children: option.label }, option.label))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx106("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }),
+        /* @__PURE__ */ jsx106(
+          "select",
+          {
+            name: "order_product_status",
+            defaultValue: query.order_product_status ?? "",
+            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
+            children: adminOrderItemStatusOptions.map((option) => /* @__PURE__ */ jsx106("option", { value: option.value, children: option.label }, option.label))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs92("div", { className: "flex gap-3", children: [
+        /* @__PURE__ */ jsxs92(
+          "button",
+          {
+            type: "submit",
+            className: "inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
+            children: [
+              /* @__PURE__ */ jsx106(Search4, { className: "mr-2 h-4 w-4" }),
+              "Search"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsx106(
+          Link22,
+          {
+            to: "/admin/partner/orders",
+            className: "inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+            children: "Reset"
+          }
+        )
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsxs92("section", { className: "mt-8", children: [
+      /* @__PURE__ */ jsxs92("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
+        /* @__PURE__ */ jsxs92("div", { children: [
+          /* @__PURE__ */ jsx106("h2", { className: "text-2xl font-black text-slate-950", children: "Order items" }),
+          /* @__PURE__ */ jsx106("p", { className: "text-sm text-slate-500", children: rows.length > 0 ? `${rows.length} item${rows.length === 1 ? "" : "s"} shown` : "No orders found for the selected filters" })
+        ] }),
+        /* @__PURE__ */ jsxs92("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+          /* @__PURE__ */ jsx106(PackageSearch4, { className: "h-4 w-4" }),
+          "Page ",
+          orders.current_page
+        ] })
+      ] }),
+      isLoading ? /* @__PURE__ */ jsx106(OrdersSkeleton3, {}) : rows.length > 0 ? /* @__PURE__ */ jsx106(OrderList, { rows, onShowDetails: setDetailsRow, onResolveDispute: setResolveRow }) : /* @__PURE__ */ jsxs92("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsx106(ShoppingBag3, { className: "mx-auto h-10 w-10 text-slate-300" }),
+        /* @__PURE__ */ jsx106("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders found" }),
+        /* @__PURE__ */ jsx106("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Try a different order code, item id, or status combination." }),
+        /* @__PURE__ */ jsx106(
+          Link22,
+          {
+            to: "/admin/partner/orders",
+            className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
+            children: "Clear filters"
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx106("section", { className: "mt-8", children: /* @__PURE__ */ jsx106(Pagination, { lastKey: orders.last_key_id, firstKey: orders.first_key_id, pageSize: orders.items_per_page }) }),
+    /* @__PURE__ */ jsx106(OrderDetailsModal, { row: detailsRow, open: !!detailsRow, onOpenChange: (open) => !open && setDetailsRow(null) }),
+    /* @__PURE__ */ jsx106(ResolveDisputeModal, { row: resolveRow, open: !!resolveRow, onOpenChange: (open) => !open && setResolveRow(null) })
+  ] });
+}
+
+// app/routes/admin.tournaments.add.tsx
+var admin_tournaments_add_exports = {};
+__export(admin_tournaments_add_exports, {
+  action: () => action25,
+  default: () => AddTournament
+});
+import { json as json39, redirect as redirect31 } from "@remix-run/node";
+import { useNavigate as useNavigate17 } from "@remix-run/react";
+
+// app/components/admin/tournament/CreateTournamentForm.tsx
+import { Form as Form28 } from "@remix-run/react";
+import { jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
+function CreateTournamentForm() {
+  return /* @__PURE__ */ jsxs93(Form28, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx107("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Create New Tournament" }),
+    /* @__PURE__ */ jsxs93("div", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx107(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", required: !0 }),
+      /* @__PURE__ */ jsx107(FormControl, { as: "input", labelText: "Tournament Unique ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
+      /* @__PURE__ */ jsx107(FormControl, { as: "textarea", rows: 3, labelText: "Tournament Description", placeholder: "Enter tournament description", id: "description", name: "description", required: !0 }),
+      /* @__PURE__ */ jsx107(DragnDrop, { labelText: "Tournament Image", name: "image" })
+    ] }),
+    /* @__PURE__ */ jsx107("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx107(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Tournament" }) })
+  ] });
+}
+
+// app/routes/admin.tournaments.add.tsx
+import { jsx as jsx108, jsxs as jsxs94 } from "react/jsx-runtime";
+async function action25({ request }) {
+  let cookieHeader = request.headers.get("Cookie") ?? "";
+  if (!cookieHeader)
+    return redirect31("/login");
   let formData = await request.formData(), payload = prepareTournamentDto(formData), { error } = await tournamentRepo.createTournament(payload, cookieHeader);
   if (error) {
     let { headers: headers2 } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
-    return json38(error, { headers: headers2 });
+    return json39(error, { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `success::A new tournament has been created::${Date.now()}` });
-  return redirect30("/admin/tournaments", { headers });
+  return redirect31("/admin/tournaments", { headers });
 }
 function AddTournament() {
   let navigate = useNavigate17();
-  return /* @__PURE__ */ jsxs93("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs93("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsx107(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
-      /* @__PURE__ */ jsx107("span", { className: "font-black text-primary", children: "Create Tournament" })
+  return /* @__PURE__ */ jsxs94("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs94("div", { className: "flex items-center mb-8 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx108(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx108("span", { className: "font-black text-primary", children: "Create Tournament" })
     ] }),
-    /* @__PURE__ */ jsx107(CreateTournamentForm, {})
+    /* @__PURE__ */ jsx108(CreateTournamentForm, {})
   ] });
 }
 
 // app/routes/user.setwithdrawalpin.tsx
 var user_setwithdrawalpin_exports = {};
 __export(user_setwithdrawalpin_exports, {
-  action: () => action25,
+  action: () => action26,
   default: () => SetWithdrawalPin,
-  loader: () => loader40
+  loader: () => loader41
 });
-import { json as json39, redirect as redirect31 } from "@remix-run/node";
-import { Form as Form28, Link as Link22, useActionData as useActionData12, useLoaderData as useLoaderData37 } from "@remix-run/react";
-import { useState as useState37, useEffect as useEffect26 } from "react";
+import { json as json40, redirect as redirect32 } from "@remix-run/node";
+import { Form as Form29, Link as Link23, useActionData as useActionData12, useLoaderData as useLoaderData38 } from "@remix-run/react";
+import { useState as useState38, useEffect as useEffect27 } from "react";
 import { User, X as X3 } from "lucide-react";
 
 // app/services/auth/auth.server.ts
@@ -11957,9 +12699,9 @@ var AuthServer = class {
 }, authServer = new AuthServer();
 
 // app/routes/user.setwithdrawalpin.tsx
-import { jsx as jsx108, jsxs as jsxs94 } from "react/jsx-runtime";
+import { jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
 var tokenRequested = !1;
-async function action25({ request }) {
+async function action26({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), withdrawalPinDto = {
     token: formData.get("token"),
     withdrawal_pin: formData.get("withdrawal_pin"),
@@ -11967,27 +12709,27 @@ async function action25({ request }) {
   };
   console.log({ _DATA_: withdrawalPinDto });
   let { data, error, authRequired } = await walletRepo.createWithdrawalPin(withdrawalPinDto, cookieHeader);
-  return console.log({ data, error, authRequired }), json39({ data, error, authRequired });
+  return console.log({ data, error, authRequired }), json40({ data, error, authRequired });
 }
-async function loader40({ request }) {
+async function loader41({ request }) {
   console.log("SEtting");
   let cookieHeader = request.headers.get("Cookie"), { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
   if (authRequired)
-    return redirect31("/login");
+    return redirect32("/login");
   if (data) {
     if (data.withdrawal_pin_set)
-      return redirect31("/user/wallet");
+      return redirect32("/user/wallet");
     if (!tokenRequested) {
       if (!(await walletRepo.requestWithdrawalToken(cookieHeader ?? "")).data)
-        return redirect31("/user/wallet");
+        return redirect32("/user/wallet");
       tokenRequested = !0;
     }
   }
-  return json39({ data, error });
+  return json40({ data, error });
 }
 function useSetWithdrawalPinController() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState37(null), actionData = useActionData12(), loader_ = useLoaderData37();
-  return useEffect26(() => {
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState38(null), actionData = useActionData12(), loader_ = useLoaderData38();
+  return useEffect27(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
     user,
@@ -11998,7 +12740,7 @@ function useSetWithdrawalPinController() {
 }
 function SetWithdrawalPin() {
   let { loader_, actionData, setUserStoreManager } = useSetWithdrawalPinController();
-  return useEffect26(() => {
+  return useEffect27(() => {
     console.log({ actionData }), actionData?.error && toast({
       variant: "destructive",
       title: "Set Withdrawal Pin Failed",
@@ -12008,23 +12750,23 @@ function SetWithdrawalPin() {
       title: "Withdrawal PIN updated successfully",
       description: "Withdrawal PIN created successfully"
     }), setUserStoreManager(actionData.data, !0));
-  }, [actionData]), /* @__PURE__ */ jsxs94("div", { className: "flex min-h-screen items-center justify-center bg-white p-6 font-sans relative", children: [
-    /* @__PURE__ */ jsx108(Link22, { to: "/user/wallet", className: "absolute top-4 right-4 text-gray-500 hover:text-gray-800", children: /* @__PURE__ */ jsx108(X3, { size: 24 }) }),
-    /* @__PURE__ */ jsxs94(Form28, { className: "w-full max-w-lg text-center", method: "POST", children: [
-      /* @__PURE__ */ jsx108("input", { type: "hidden", name: "intent", value: "create-withdrawal-pin" }),
-      /* @__PURE__ */ jsx108("div", { className: "mb-8 flex justify-center", children: /* @__PURE__ */ jsxs94("div", { className: "relative flex h-16 w-16 items-center justify-center rounded-full bg-[#E5E5EF]", children: [
-        /* @__PURE__ */ jsx108("div", { className: "absolute h-24 w-24 rounded-full border border-slate-100" }),
-        /* @__PURE__ */ jsx108("div", { className: "absolute h-32 w-32 rounded-full border border-slate-50/50" }),
-        /* @__PURE__ */ jsx108(User, { className: "h-8 w-8 text-[#1A1A1A]", fill: "currentColor" })
+  }, [actionData]), /* @__PURE__ */ jsxs95("div", { className: "flex min-h-screen items-center justify-center bg-white p-6 font-sans relative", children: [
+    /* @__PURE__ */ jsx109(Link23, { to: "/user/wallet", className: "absolute top-4 right-4 text-gray-500 hover:text-gray-800", children: /* @__PURE__ */ jsx109(X3, { size: 24 }) }),
+    /* @__PURE__ */ jsxs95(Form29, { className: "w-full max-w-lg text-center", method: "POST", children: [
+      /* @__PURE__ */ jsx109("input", { type: "hidden", name: "intent", value: "create-withdrawal-pin" }),
+      /* @__PURE__ */ jsx109("div", { className: "mb-8 flex justify-center", children: /* @__PURE__ */ jsxs95("div", { className: "relative flex h-16 w-16 items-center justify-center rounded-full bg-[#E5E5EF]", children: [
+        /* @__PURE__ */ jsx109("div", { className: "absolute h-24 w-24 rounded-full border border-slate-100" }),
+        /* @__PURE__ */ jsx109("div", { className: "absolute h-32 w-32 rounded-full border border-slate-50/50" }),
+        /* @__PURE__ */ jsx109(User, { className: "h-8 w-8 text-[#1A1A1A]", fill: "currentColor" })
       ] }) }),
-      /* @__PURE__ */ jsx108("h1", { className: "mb-2 text-2xl font-bold tracking-tight text-[#1A1A1A]", children: "Set withdrawal PIN" }),
-      /* @__PURE__ */ jsx108("p", { className: "mb-10 text-[15px] text-gray-500", children: "We sent a token to your email address. Please enter it below along with your desired withdrawal PIN." }),
-      /* @__PURE__ */ jsxs94("div", { className: "text-left", children: [
-        /* @__PURE__ */ jsxs94("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
+      /* @__PURE__ */ jsx109("h1", { className: "mb-2 text-2xl font-bold tracking-tight text-[#1A1A1A]", children: "Set withdrawal PIN" }),
+      /* @__PURE__ */ jsx109("p", { className: "mb-10 text-[15px] text-gray-500", children: "We sent a token to your email address. Please enter it below along with your desired withdrawal PIN." }),
+      /* @__PURE__ */ jsxs95("div", { className: "text-left", children: [
+        /* @__PURE__ */ jsxs95("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
           "token",
-          /* @__PURE__ */ jsx108("span", { className: "ml-0.5 text-red-500", children: "*" })
+          /* @__PURE__ */ jsx109("span", { className: "ml-0.5 text-red-500", children: "*" })
         ] }),
-        /* @__PURE__ */ jsx108("div", { className: "relative", children: /* @__PURE__ */ jsx108(
+        /* @__PURE__ */ jsx109("div", { className: "relative", children: /* @__PURE__ */ jsx109(
           "input",
           {
             type: "text",
@@ -12037,12 +12779,12 @@ function SetWithdrawalPin() {
           }
         ) })
       ] }),
-      /* @__PURE__ */ jsxs94("div", { className: "text-left", children: [
-        /* @__PURE__ */ jsxs94("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
+      /* @__PURE__ */ jsxs95("div", { className: "text-left", children: [
+        /* @__PURE__ */ jsxs95("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
           "Withdrawal PIN",
-          /* @__PURE__ */ jsx108("span", { className: "ml-0.5 text-red-500", children: "*" })
+          /* @__PURE__ */ jsx109("span", { className: "ml-0.5 text-red-500", children: "*" })
         ] }),
-        /* @__PURE__ */ jsx108("div", { className: "relative", children: /* @__PURE__ */ jsx108(
+        /* @__PURE__ */ jsx109("div", { className: "relative", children: /* @__PURE__ */ jsx109(
           "input",
           {
             type: "text",
@@ -12055,12 +12797,12 @@ function SetWithdrawalPin() {
           }
         ) })
       ] }),
-      /* @__PURE__ */ jsxs94("div", { className: "text-left", children: [
-        /* @__PURE__ */ jsxs94("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
+      /* @__PURE__ */ jsxs95("div", { className: "text-left", children: [
+        /* @__PURE__ */ jsxs95("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
           "Confirm Withdrawal PIN",
-          /* @__PURE__ */ jsx108("span", { className: "ml-0.5 text-red-500", children: "*" })
+          /* @__PURE__ */ jsx109("span", { className: "ml-0.5 text-red-500", children: "*" })
         ] }),
-        /* @__PURE__ */ jsx108("div", { className: "relative", children: /* @__PURE__ */ jsx108(
+        /* @__PURE__ */ jsx109("div", { className: "relative", children: /* @__PURE__ */ jsx109(
           "input",
           {
             type: "text",
@@ -12073,7 +12815,7 @@ function SetWithdrawalPin() {
           }
         ) })
       ] }),
-      /* @__PURE__ */ jsx108(
+      /* @__PURE__ */ jsx109(
         "button",
         {
           type: "submit",
@@ -12089,22 +12831,22 @@ function SetWithdrawalPin() {
 var user_all_tournaments_exports = {};
 __export(user_all_tournaments_exports, {
   default: () => AllTournaments,
-  loader: () => loader41
+  loader: () => loader42
 });
-import { json as json40 } from "@remix-run/node";
-import { useLoaderData as useLoaderData38 } from "@remix-run/react";
-import { jsx as jsx109, jsxs as jsxs95 } from "react/jsx-runtime";
-async function loader41() {
+import { json as json41 } from "@remix-run/node";
+import { useLoaderData as useLoaderData39 } from "@remix-run/react";
+import { jsx as jsx110, jsxs as jsxs96 } from "react/jsx-runtime";
+async function loader42() {
   let { data: tournaments, error } = await tournamentRepo.getTournaments();
   if (error)
     throw new Error(error.detail);
-  return json40({ tournaments });
+  return json41({ tournaments });
 }
 function AllTournaments() {
-  let { tournaments } = useLoaderData38();
-  return /* @__PURE__ */ jsxs95("main", { className: "grow", children: [
-    /* @__PURE__ */ jsx109("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx109("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }) }),
-    /* @__PURE__ */ jsx109("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsx109(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id)) })
+  let { tournaments } = useLoaderData39();
+  return /* @__PURE__ */ jsxs96("main", { className: "grow", children: [
+    /* @__PURE__ */ jsx110("header", { className: "wrapper my-16", children: /* @__PURE__ */ jsx110("h1", { className: "text-2xl lg:text-4xl font-satoshi-medium max-w-3xl", children: "From Artistic Marvels to Captivating Moments. Unleash Your Talent and Win Big in Our Monthly and Yearly Contests!" }) }),
+    /* @__PURE__ */ jsx110("section", { className: "wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center", children: tournaments.map((tournament) => /* @__PURE__ */ jsx110(ContestCard, { contest: tournament, to: `/contests/${tournament.id}` }, tournament.id)) })
   ] });
 }
 
@@ -12112,19 +12854,19 @@ function AllTournaments() {
 var user_pending_uploads_exports = {};
 __export(user_pending_uploads_exports, {
   default: () => UserPendingsUpload,
-  loader: () => loader42,
+  loader: () => loader43,
   useUserPendingsUploadController: () => useUserPendingsUploadController
 });
-import { useEffect as useEffect27, useState as useState38 } from "react";
-import { Link as Link23, useLoaderData as useLoaderData39 } from "@remix-run/react";
-import { json as json41, redirect as redirect32 } from "@remix-run/node";
-import { jsx as jsx110, jsxs as jsxs96 } from "react/jsx-runtime";
-async function loader42({ request }) {
+import { useEffect as useEffect28, useState as useState39 } from "react";
+import { Link as Link24, useLoaderData as useLoaderData40 } from "@remix-run/react";
+import { json as json42, redirect as redirect33 } from "@remix-run/node";
+import { jsx as jsx111, jsxs as jsxs97 } from "react/jsx-runtime";
+async function loader43({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (console.log({ cookieHeader }), !cookieHeader)
-    return redirect32("/login");
+    return redirect33("/login");
   let { data, error, authRequired } = await userServer.getPendingUploads(cookieHeader);
-  return console.log({ data, error }), authRequired ? redirect32("/login") : json41({ data, error, authRequired });
+  return console.log({ data, error }), authRequired ? redirect33("/login") : json42({ data, error, authRequired });
 }
 var PendingUploadCard = ({
   contestImageUrl,
@@ -12132,8 +12874,8 @@ var PendingUploadCard = ({
   stage,
   full_name,
   contestantId
-}) => /* @__PURE__ */ jsx110(Link23, { to: `/user/contestant/${contestantId}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs96("article", { children: [
-  /* @__PURE__ */ jsx110(
+}) => /* @__PURE__ */ jsx111(Link24, { to: `/user/contestant/${contestantId}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs97("article", { children: [
+  /* @__PURE__ */ jsx111(
     "img",
     {
       src: contestImageUrl || no_image_default,
@@ -12141,23 +12883,23 @@ var PendingUploadCard = ({
       className: "w-full aspect-[3/4] rounded-lg object-cover"
     }
   ),
-  /* @__PURE__ */ jsxs96("div", { className: "pt-4", children: [
-    /* @__PURE__ */ jsxs96("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: [
+  /* @__PURE__ */ jsxs97("div", { className: "pt-4", children: [
+    /* @__PURE__ */ jsxs97("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: [
       contest_name,
-      /* @__PURE__ */ jsx110("br", {}),
+      /* @__PURE__ */ jsx111("br", {}),
       "stage ",
       stage
     ] }),
-    /* @__PURE__ */ jsx110("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
+    /* @__PURE__ */ jsx111("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
   ] })
 ] }) });
 function useUserPendingsUploadController() {
-  let { data, error, authRequired } = useLoaderData39(), [pendingUploads, setPendingUploads] = useState38([]);
+  let { data, error, authRequired } = useLoaderData40(), [pendingUploads, setPendingUploads] = useState39([]);
   return error && toast({
     variant: "destructive",
     title: "An error occured",
     description: error?.detail.toString() ?? "Error occured"
-  }), useEffect27(() => {
+  }), useEffect28(() => {
     if (data) {
       let flattenedUploads = contestantHelper.enrichContestsContestantsData(data);
       setPendingUploads(flattenedUploads), console.log({ flattenedUploads });
@@ -12166,12 +12908,12 @@ function useUserPendingsUploadController() {
 }
 function UserPendingsUpload() {
   let { pendingUploads } = useUserPendingsUploadController();
-  return /* @__PURE__ */ jsx110("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs96("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
-    /* @__PURE__ */ jsx110("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs96("div", { className: "max-w-3xl mx-auto text-center", children: [
-      /* @__PURE__ */ jsx110("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Pending uploads" }),
-      /* @__PURE__ */ jsx110("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "Please, we are expecting your uploads for the following stages" })
+  return /* @__PURE__ */ jsx111("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs97("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
+    /* @__PURE__ */ jsx111("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs97("div", { className: "max-w-3xl mx-auto text-center", children: [
+      /* @__PURE__ */ jsx111("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Pending uploads" }),
+      /* @__PURE__ */ jsx111("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "Please, we are expecting your uploads for the following stages" })
     ] }) }),
-    /* @__PURE__ */ jsx110("main", { className: "py-12 md:py-16", children: /* @__PURE__ */ jsx110("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: pendingUploads.map((pendingUpload, idx) => /* @__PURE__ */ jsx110(
+    /* @__PURE__ */ jsx111("main", { className: "py-12 md:py-16", children: /* @__PURE__ */ jsx111("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: pendingUploads.map((pendingUpload, idx) => /* @__PURE__ */ jsx111(
       PendingUploadCard,
       {
         contestImageUrl: pendingUpload.contestImage,
@@ -12189,11 +12931,11 @@ function UserPendingsUpload() {
 var user_givaah_credits_exports = {};
 __export(user_givaah_credits_exports, {
   default: () => GivaahCreditsPage,
-  loader: () => loader43
+  loader: () => loader44
 });
-import { json as json42, redirect as redirect33 } from "@remix-run/node";
-import { Form as Form29, Link as Link24, useLoaderData as useLoaderData40, useNavigation as useNavigation19 } from "@remix-run/react";
-import { jsx as jsx111, jsxs as jsxs97 } from "react/jsx-runtime";
+import { json as json43, redirect as redirect34 } from "@remix-run/node";
+import { Form as Form30, Link as Link25, useLoaderData as useLoaderData41, useNavigation as useNavigation20 } from "@remix-run/react";
+import { jsx as jsx112, jsxs as jsxs98 } from "react/jsx-runtime";
 function formatValue(value) {
   return new Intl.NumberFormat("en-NG", {
     maximumFractionDigits: 0
@@ -12207,27 +12949,27 @@ function buildQuery(searchParams) {
   };
 }
 function CreditsSkeleton() {
-  return /* @__PURE__ */ jsx111("div", { className: "grid gap-4 md:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs97("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsx111("div", { className: "h-4 w-20 animate-pulse rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx111("div", { className: "mt-4 h-8 w-32 animate-pulse rounded-xl bg-slate-200" }),
-    /* @__PURE__ */ jsxs97("div", { className: "mt-6 space-y-3", children: [
-      /* @__PURE__ */ jsx111("div", { className: "h-4 w-full animate-pulse rounded-full bg-slate-200" }),
-      /* @__PURE__ */ jsx111("div", { className: "h-4 w-5/6 animate-pulse rounded-full bg-slate-200" }),
-      /* @__PURE__ */ jsx111("div", { className: "h-4 w-4/6 animate-pulse rounded-full bg-slate-200" })
+  return /* @__PURE__ */ jsx112("div", { className: "grid gap-4 md:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs98("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsx112("div", { className: "h-4 w-20 animate-pulse rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx112("div", { className: "mt-4 h-8 w-32 animate-pulse rounded-xl bg-slate-200" }),
+    /* @__PURE__ */ jsxs98("div", { className: "mt-6 space-y-3", children: [
+      /* @__PURE__ */ jsx112("div", { className: "h-4 w-full animate-pulse rounded-full bg-slate-200" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-4 w-5/6 animate-pulse rounded-full bg-slate-200" }),
+      /* @__PURE__ */ jsx112("div", { className: "h-4 w-4/6 animate-pulse rounded-full bg-slate-200" })
     ] })
   ] }, index)) });
 }
-async function loader43({ request }) {
+async function loader44({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect33("/login");
+    return redirect34("/login");
   let url = new URL(request.url), query = buildQuery(url.searchParams), validationError = query && (!query.phone || !query.order_code) ? "Please enter both phone and order code to search credits." : null, creditsRes = await userServer.getGivaahCredits(validationError ? void 0 : query ?? void 0, cookieHeader);
-  return creditsRes.error ? json42({
+  return creditsRes.error ? json43({
     credits: null,
     query,
     error: typeof creditsRes.error.detail == "string" ? creditsRes.error.detail : "Unable to load credits",
     validationError
-  }) : json42({
+  }) : json43({
     credits: creditsRes.data ?? null,
     query,
     error: null,
@@ -12235,30 +12977,30 @@ async function loader43({ request }) {
   });
 }
 function GivaahCreditsPage() {
-  let { credits, query, error, validationError } = useLoaderData40(), isBusy = useNavigation19().state !== "idle", pageCredits = credits?.credits ?? [];
-  return /* @__PURE__ */ jsx111("main", { className: "min-h-full bg-slate-50 p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxs97("div", { className: "mx-auto flex w-full max-w-6xl flex-col gap-6", children: [
-    /* @__PURE__ */ jsx111("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8", children: /* @__PURE__ */ jsxs97("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between", children: [
-      /* @__PURE__ */ jsxs97("div", { className: "max-w-2xl space-y-3", children: [
-        /* @__PURE__ */ jsx111("p", { className: "text-xs font-semibold uppercase tracking-[0.28em] text-slate-500", children: "User Credits" }),
-        /* @__PURE__ */ jsx111("h1", { className: "text-3xl font-black tracking-tight text-slate-950 sm:text-4xl", children: "Givaah Credits" }),
-        /* @__PURE__ */ jsx111("p", { className: "text-sm leading-6 text-slate-600 sm:text-base", children: "Review your available voting credits and look up a specific credit record using the phone number and order code tied to the purchase." })
+  let { credits, query, error, validationError } = useLoaderData41(), isBusy = useNavigation20().state !== "idle", pageCredits = credits?.credits ?? [];
+  return /* @__PURE__ */ jsx112("main", { className: "min-h-full bg-slate-50 p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxs98("div", { className: "mx-auto flex w-full max-w-6xl flex-col gap-6", children: [
+    /* @__PURE__ */ jsx112("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8", children: /* @__PURE__ */ jsxs98("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between", children: [
+      /* @__PURE__ */ jsxs98("div", { className: "max-w-2xl space-y-3", children: [
+        /* @__PURE__ */ jsx112("p", { className: "text-xs font-semibold uppercase tracking-[0.28em] text-slate-500", children: "User Credits" }),
+        /* @__PURE__ */ jsx112("h1", { className: "text-3xl font-black tracking-tight text-slate-950 sm:text-4xl", children: "Givaah Credits" }),
+        /* @__PURE__ */ jsx112("p", { className: "text-sm leading-6 text-slate-600 sm:text-base", children: "Review your available voting credits and look up a specific credit record using the phone number and order code tied to the purchase." })
       ] }),
-      /* @__PURE__ */ jsxs97("div", { className: "grid gap-3 sm:grid-cols-2", children: [
-        /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4", children: [
-          /* @__PURE__ */ jsx111("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Available Credit" }),
-          /* @__PURE__ */ jsx111("p", { className: "mt-2 text-2xl font-black text-slate-950", children: isBusy && !credits ? "..." : formatValue(credits?.available_credit_value) })
+      /* @__PURE__ */ jsxs98("div", { className: "grid gap-3 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4", children: [
+          /* @__PURE__ */ jsx112("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Available Credit" }),
+          /* @__PURE__ */ jsx112("p", { className: "mt-2 text-2xl font-black text-slate-950", children: isBusy && !credits ? "..." : formatValue(credits?.available_credit_value) })
         ] }),
-        /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4", children: [
-          /* @__PURE__ */ jsx111("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Credit Records" }),
-          /* @__PURE__ */ jsx111("p", { className: "mt-2 text-2xl font-black text-slate-950", children: isBusy && !credits ? "..." : pageCredits.length })
+        /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4", children: [
+          /* @__PURE__ */ jsx112("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Credit Records" }),
+          /* @__PURE__ */ jsx112("p", { className: "mt-2 text-2xl font-black text-slate-950", children: isBusy && !credits ? "..." : pageCredits.length })
         ] })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs97("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
-      /* @__PURE__ */ jsxs97(Form29, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
-        /* @__PURE__ */ jsxs97("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx111("span", { className: "text-sm font-semibold text-slate-700", children: "Phone" }),
-          /* @__PURE__ */ jsx111(
+    /* @__PURE__ */ jsxs98("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
+      /* @__PURE__ */ jsxs98(Form30, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+        /* @__PURE__ */ jsxs98("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx112("span", { className: "text-sm font-semibold text-slate-700", children: "Phone" }),
+          /* @__PURE__ */ jsx112(
             "input",
             {
               name: "phone",
@@ -12270,9 +13012,9 @@ function GivaahCreditsPage() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs97("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx111("span", { className: "text-sm font-semibold text-slate-700", children: "Order Code" }),
-          /* @__PURE__ */ jsx111(
+        /* @__PURE__ */ jsxs98("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx112("span", { className: "text-sm font-semibold text-slate-700", children: "Order Code" }),
+          /* @__PURE__ */ jsx112(
             "input",
             {
               name: "order_code",
@@ -12284,7 +13026,7 @@ function GivaahCreditsPage() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsx111(
+        /* @__PURE__ */ jsx112(
           "button",
           {
             type: "submit",
@@ -12294,69 +13036,69 @@ function GivaahCreditsPage() {
           }
         )
       ] }),
-      validationError ? /* @__PURE__ */ jsx111("p", { className: "mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: validationError }) : null,
-      error ? /* @__PURE__ */ jsx111("p", { className: "mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700", children: error }) : null
+      validationError ? /* @__PURE__ */ jsx112("p", { className: "mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: validationError }) : null,
+      error ? /* @__PURE__ */ jsx112("p", { className: "mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsxs97("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
-      /* @__PURE__ */ jsxs97("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", children: [
-        /* @__PURE__ */ jsxs97("div", { children: [
-          /* @__PURE__ */ jsx111("h2", { className: "text-lg font-black text-slate-950", children: "Credit Breakdown" }),
-          /* @__PURE__ */ jsx111("p", { className: "text-sm text-slate-600", children: pageCredits.length > 0 ? "The list below shows the credit entries currently associated with your account." : "No credit records were returned for this search." })
+    /* @__PURE__ */ jsxs98("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
+      /* @__PURE__ */ jsxs98("div", { className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", children: [
+        /* @__PURE__ */ jsxs98("div", { children: [
+          /* @__PURE__ */ jsx112("h2", { className: "text-lg font-black text-slate-950", children: "Credit Breakdown" }),
+          /* @__PURE__ */ jsx112("p", { className: "text-sm text-slate-600", children: pageCredits.length > 0 ? "The list below shows the credit entries currently associated with your account." : "No credit records were returned for this search." })
         ] }),
-        /* @__PURE__ */ jsxs97("div", { className: "text-sm text-slate-600", children: [
-          /* @__PURE__ */ jsx111("p", { children: "Get more credit to vote your favourite contestant by purchasing from our partners." }),
-          /* @__PURE__ */ jsxs97("p", { className: "mt-1", children: [
+        /* @__PURE__ */ jsxs98("div", { className: "text-sm text-slate-600", children: [
+          /* @__PURE__ */ jsx112("p", { children: "Get more credit to vote your favourite contestant by purchasing from our partners." }),
+          /* @__PURE__ */ jsxs98("p", { className: "mt-1", children: [
             "Visit the",
             " ",
-            /* @__PURE__ */ jsx111(Link24, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
+            /* @__PURE__ */ jsx112(Link25, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
             " ",
             "to explore available packages."
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx111("div", { className: "mt-6", children: isBusy && !credits ? /* @__PURE__ */ jsx111(CreditsSkeleton, {}) : pageCredits.length > 0 ? /* @__PURE__ */ jsx111("div", { className: "grid gap-4 md:grid-cols-2 xl:grid-cols-3", children: pageCredits.map((credit, index) => /* @__PURE__ */ jsx111(
+      /* @__PURE__ */ jsx112("div", { className: "mt-6", children: isBusy && !credits ? /* @__PURE__ */ jsx112(CreditsSkeleton, {}) : pageCredits.length > 0 ? /* @__PURE__ */ jsx112("div", { className: "grid gap-4 md:grid-cols-2 xl:grid-cols-3", children: pageCredits.map((credit, index) => /* @__PURE__ */ jsx112(
         "article",
         {
           className: "flex h-full flex-col justify-between rounded-[1.75rem] border border-slate-200 bg-slate-50 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
-          children: /* @__PURE__ */ jsxs97("div", { className: "space-y-4", children: [
-            /* @__PURE__ */ jsxs97("div", { className: "flex items-start justify-between gap-4", children: [
-              /* @__PURE__ */ jsxs97("div", { children: [
-                /* @__PURE__ */ jsx111("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Order Code" }),
-                /* @__PURE__ */ jsx111("h3", { className: "mt-2 text-xl font-black text-slate-950", children: credit.order_code })
+          children: /* @__PURE__ */ jsxs98("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs98("div", { className: "flex items-start justify-between gap-4", children: [
+              /* @__PURE__ */ jsxs98("div", { children: [
+                /* @__PURE__ */ jsx112("p", { className: "text-xs font-semibold uppercase tracking-[0.2em] text-slate-500", children: "Order Code" }),
+                /* @__PURE__ */ jsx112("h3", { className: "mt-2 text-xl font-black text-slate-950", children: credit.order_code })
               ] }),
-              /* @__PURE__ */ jsx111("div", { className: "rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white", children: credit.order_currency })
+              /* @__PURE__ */ jsx112("div", { className: "rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white", children: credit.order_currency })
             ] }),
-            /* @__PURE__ */ jsxs97("dl", { className: "grid grid-cols-2 gap-3 text-sm", children: [
-              /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
-                /* @__PURE__ */ jsx111("dt", { className: "text-slate-500", children: "Available" }),
-                /* @__PURE__ */ jsx111("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.available_credit_value) })
+            /* @__PURE__ */ jsxs98("dl", { className: "grid grid-cols-2 gap-3 text-sm", children: [
+              /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
+                /* @__PURE__ */ jsx112("dt", { className: "text-slate-500", children: "Available" }),
+                /* @__PURE__ */ jsx112("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.available_credit_value) })
               ] }),
-              /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
-                /* @__PURE__ */ jsx111("dt", { className: "text-slate-500", children: "Used" }),
-                /* @__PURE__ */ jsx111("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.used_credit_value) })
+              /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
+                /* @__PURE__ */ jsx112("dt", { className: "text-slate-500", children: "Used" }),
+                /* @__PURE__ */ jsx112("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.used_credit_value) })
               ] }),
-              /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
-                /* @__PURE__ */ jsx111("dt", { className: "text-slate-500", children: "Redeemed" }),
-                /* @__PURE__ */ jsx111("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.redeemed_credit_value) })
+              /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
+                /* @__PURE__ */ jsx112("dt", { className: "text-slate-500", children: "Redeemed" }),
+                /* @__PURE__ */ jsx112("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.redeemed_credit_value) })
               ] }),
-              /* @__PURE__ */ jsxs97("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
-                /* @__PURE__ */ jsx111("dt", { className: "text-slate-500", children: "Original" }),
-                /* @__PURE__ */ jsx111("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.original_total_credit_value) })
+              /* @__PURE__ */ jsxs98("div", { className: "rounded-2xl border border-slate-200 bg-white px-4 py-3", children: [
+                /* @__PURE__ */ jsx112("dt", { className: "text-slate-500", children: "Original" }),
+                /* @__PURE__ */ jsx112("dd", { className: "mt-1 text-base font-bold text-slate-950", children: formatValue(credit.original_total_credit_value) })
               ] })
             ] }),
-            /* @__PURE__ */ jsxs97("div", { className: "space-y-1 text-sm text-slate-600", children: [
-              /* @__PURE__ */ jsxs97("p", { children: [
-                /* @__PURE__ */ jsx111("span", { className: "font-semibold text-slate-800", children: "Phone:" }),
+            /* @__PURE__ */ jsxs98("div", { className: "space-y-1 text-sm text-slate-600", children: [
+              /* @__PURE__ */ jsxs98("p", { children: [
+                /* @__PURE__ */ jsx112("span", { className: "font-semibold text-slate-800", children: "Phone:" }),
                 " ",
                 credit.delivery_details_phone || credits?.phone_number || "N/A"
               ] }),
-              /* @__PURE__ */ jsxs97("p", { children: [
-                /* @__PURE__ */ jsx111("span", { className: "font-semibold text-slate-800", children: "User:" }),
+              /* @__PURE__ */ jsxs98("p", { children: [
+                /* @__PURE__ */ jsx112("span", { className: "font-semibold text-slate-800", children: "User:" }),
                 " ",
                 credits?.user_id ?? "N/A"
               ] }),
-              /* @__PURE__ */ jsxs97("p", { children: [
-                /* @__PURE__ */ jsx111("span", { className: "font-semibold text-slate-800", children: "Credit Entries:" }),
+              /* @__PURE__ */ jsxs98("p", { children: [
+                /* @__PURE__ */ jsx112("span", { className: "font-semibold text-slate-800", children: "Credit Entries:" }),
                 " ",
                 credit.redeemed_credit_value_break_down.length + credit.used_credit_value_break_down.length
               ] })
@@ -12364,12 +13106,12 @@ function GivaahCreditsPage() {
           ] })
         },
         credit._id ?? `${credit.order_code}-${index}`
-      )) }) : /* @__PURE__ */ jsxs97("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-slate-50 p-10 text-center", children: [
-        /* @__PURE__ */ jsx111("p", { className: "text-base font-semibold text-slate-950", children: "No credit entries found." }),
-        /* @__PURE__ */ jsxs97("p", { className: "mt-2 text-sm text-slate-600", children: [
+      )) }) : /* @__PURE__ */ jsxs98("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-slate-50 p-10 text-center", children: [
+        /* @__PURE__ */ jsx112("p", { className: "text-base font-semibold text-slate-950", children: "No credit entries found." }),
+        /* @__PURE__ */ jsxs98("p", { className: "mt-2 text-sm text-slate-600", children: [
           "Try a different phone number and order code, or purchase more credits from the",
           " ",
-          /* @__PURE__ */ jsx111(Link24, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
+          /* @__PURE__ */ jsx112(Link25, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
           "."
         ] })
       ] }) })
@@ -12380,26 +13122,26 @@ function GivaahCreditsPage() {
 // app/routes/admin.accounts.add.tsx
 var admin_accounts_add_exports = {};
 __export(admin_accounts_add_exports, {
-  action: () => action26,
+  action: () => action27,
   default: () => AddAdminUser,
-  loader: () => loader44,
+  loader: () => loader45,
   useAddAdminUser: () => useAddAdminUser
 });
-import { Form as Form30, useActionData as useActionData13, useLoaderData as useLoaderData41, useNavigate as useNavigate19, useNavigation as useNavigation20 } from "@remix-run/react";
-import { redirect as redirect34 } from "@remix-run/node";
-import { useEffect as useEffect28 } from "react";
-import { jsx as jsx112, jsxs as jsxs98 } from "react/jsx-runtime";
-async function loader44({ request }) {
+import { Form as Form31, useActionData as useActionData13, useLoaderData as useLoaderData42, useNavigate as useNavigate19, useNavigation as useNavigation21 } from "@remix-run/react";
+import { redirect as redirect35 } from "@remix-run/node";
+import { useEffect as useEffect29 } from "react";
+import { jsx as jsx113, jsxs as jsxs99 } from "react/jsx-runtime";
+async function loader45({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect34("/login");
+    return redirect35("/login");
   let rolesResponse = await adminRepo.getAllRoles(cookieHeader);
-  return rolesResponse.authRequired ? redirect34("/login") : { roles: rolesResponse.data, permissions };
+  return rolesResponse.authRequired ? redirect35("/login") : { roles: rolesResponse.data, permissions };
 }
-async function action26({ request }) {
+async function action27({ request }) {
   let formData = await request.formData(), cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect34("/login");
+    return redirect35("/login");
   let dto = {
     fullName: `${formData.get("firstName")} ${formData.get("lastName")}`,
     email: formData.get("email"),
@@ -12414,11 +13156,11 @@ async function action26({ request }) {
   return await adminRepo.createAdminUser(cookieHeader, dto);
 }
 function useAddAdminUser() {
-  let { permissions: permissions2, roles } = useLoaderData41(), rolesNames = [];
+  let { permissions: permissions2, roles } = useLoaderData42(), rolesNames = [];
   for (let roleName in roles)
     rolesNames.push(roleName);
-  let isSubmitting = useNavigation20().state === "submitting", actionData = useActionData13();
-  return useEffect28(() => {
+  let isSubmitting = useNavigation21().state === "submitting", actionData = useActionData13();
+  return useEffect29(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Create action failed",
@@ -12432,33 +13174,33 @@ function useAddAdminUser() {
 }
 function AddAdminUser() {
   let { permissions: permissions2, rolesNames, isSubmitting } = useAddAdminUser(), navigate = useNavigate19();
-  return /* @__PURE__ */ jsxs98("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs98("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsx112(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
-      /* @__PURE__ */ jsx112("h1", { className: "text-2xl font-black text-primary", children: "Add User" })
+  return /* @__PURE__ */ jsxs99("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs99("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx113(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx113("h1", { className: "text-2xl font-black text-primary", children: "Add User" })
     ] }),
-    /* @__PURE__ */ jsxs98(Form30, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
-      /* @__PURE__ */ jsx112(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", required: !0 }),
-      /* @__PURE__ */ jsx112(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", required: !0 }),
-      /* @__PURE__ */ jsx112(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", required: !0 }),
-      /* @__PURE__ */ jsx112(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", required: !0 }),
-      /* @__PURE__ */ jsx112(FormControl, { as: "input", labelText: "Password", className: "", placeholder: "Enter username", id: "password", name: "password", required: !0 }),
-      /* @__PURE__ */ jsxs98(Select2, { label: "Assign Staff", id: "is_staff", name: "is_staff", defaultValue: "1", required: !0, children: [
-        /* @__PURE__ */ jsx112("option", { value: "0", children: "Disable" }),
-        /* @__PURE__ */ jsx112("option", { value: "1", children: "Enable" })
+    /* @__PURE__ */ jsxs99(Form31, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
+      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", required: !0 }),
+      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", required: !0 }),
+      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", required: !0 }),
+      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Username", className: "", placeholder: "Enter username", id: "username", name: "username", required: !0 }),
+      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Password", className: "", placeholder: "Enter username", id: "password", name: "password", required: !0 }),
+      /* @__PURE__ */ jsxs99(Select2, { label: "Assign Staff", id: "is_staff", name: "is_staff", defaultValue: "1", required: !0, children: [
+        /* @__PURE__ */ jsx113("option", { value: "0", children: "Disable" }),
+        /* @__PURE__ */ jsx113("option", { value: "1", children: "Enable" })
       ] }),
-      /* @__PURE__ */ jsxs98(Select2, { label: "Set Active", id: "is_active", name: "is_active", defaultValue: "1", required: !0, children: [
-        /* @__PURE__ */ jsx112("option", { value: "0", children: "De-activate" }),
-        /* @__PURE__ */ jsx112("option", { value: "1", children: "Activate" })
+      /* @__PURE__ */ jsxs99(Select2, { label: "Set Active", id: "is_active", name: "is_active", defaultValue: "1", required: !0, children: [
+        /* @__PURE__ */ jsx113("option", { value: "0", children: "De-activate" }),
+        /* @__PURE__ */ jsx113("option", { value: "1", children: "Activate" })
       ] }),
-      /* @__PURE__ */ jsxs98(Select2, { label: "Has Admin access", id: "has_admin_access", name: "has_admin_access", defaultValue: "1", required: !0, children: [
-        /* @__PURE__ */ jsx112("option", { value: "0", children: "False" }),
-        /* @__PURE__ */ jsx112("option", { value: "1", children: "True" })
+      /* @__PURE__ */ jsxs99(Select2, { label: "Has Admin access", id: "has_admin_access", name: "has_admin_access", defaultValue: "1", required: !0, children: [
+        /* @__PURE__ */ jsx113("option", { value: "0", children: "False" }),
+        /* @__PURE__ */ jsx113("option", { value: "1", children: "True" })
       ] }),
-      /* @__PURE__ */ jsx112(RolesFormControl, { roles: rolesNames }),
-      /* @__PURE__ */ jsxs98("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
-        /* @__PURE__ */ jsx112(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
-        /* @__PURE__ */ jsx112(Cta_default, { disabled: isSubmitting, element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: isSubmitting ? "Creating admin user" : "Create admin user" })
+      /* @__PURE__ */ jsx113(RolesFormControl, { roles: rolesNames }),
+      /* @__PURE__ */ jsxs99("div", { className: "grid grid-cols-2 sm:flex justify-end gap-3 sm:gap-6 sm:col-span-2 mt-4", children: [
+        /* @__PURE__ */ jsx113(Cta_default, { element: "button", type: "reset", className: "px-4 sm:px-8 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
+        /* @__PURE__ */ jsx113(Cta_default, { disabled: isSubmitting, element: "button", type: "submit", className: "px-4 sm:px-8 py-2 rounded-lg font-medium", children: isSubmitting ? "Creating admin user" : "Create admin user" })
       ] })
     ] })
   ] });
@@ -12467,79 +13209,79 @@ function AddAdminUser() {
 // app/routes/admin.contests.add.tsx
 var admin_contests_add_exports = {};
 __export(admin_contests_add_exports, {
-  action: () => action27,
+  action: () => action28,
   default: () => AddContest,
-  loader: () => loader45
+  loader: () => loader46
 });
-import { json as json43, redirect as redirect35 } from "@remix-run/node";
-import { useLoaderData as useLoaderData42, useNavigate as useNavigate20 } from "@remix-run/react";
+import { json as json44, redirect as redirect36 } from "@remix-run/node";
+import { useLoaderData as useLoaderData43, useNavigate as useNavigate20 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateContestForm.tsx
-import { Form as Form31, useSearchParams as useSearchParams3 } from "@remix-run/react";
-import { jsx as jsx113, jsxs as jsxs99 } from "react/jsx-runtime";
+import { Form as Form32, useSearchParams as useSearchParams3 } from "@remix-run/react";
+import { jsx as jsx114, jsxs as jsxs100 } from "react/jsx-runtime";
 function CreateContestForm({ tournaments }) {
   let [searchParams] = useSearchParams3(), defaultTournament = searchParams.get("tournament") ?? void 0;
-  return /* @__PURE__ */ jsxs99(Form31, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
-    /* @__PURE__ */ jsx113("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
-    /* @__PURE__ */ jsxs99("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
-      /* @__PURE__ */ jsxs99(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: defaultTournament, required: !0, children: [
-        /* @__PURE__ */ jsx113("option", { value: "", children: "Select a tournament" }),
-        tournaments.map((tournament) => /* @__PURE__ */ jsx113("option", { value: tournament.id, children: tournament.id }, tournament.id))
+  return /* @__PURE__ */ jsxs100(Form32, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+    /* @__PURE__ */ jsx114("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
+    /* @__PURE__ */ jsxs100("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs100(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: defaultTournament, required: !0, children: [
+        /* @__PURE__ */ jsx114("option", { value: "", children: "Select a tournament" }),
+        tournaments.map((tournament) => /* @__PURE__ */ jsx114("option", { value: tournament.id, children: tournament.id }, tournament.id))
       ] }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", required: !0 }),
-      /* @__PURE__ */ jsx113(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1 })
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", labelText: "Contest Name", placeholder: "Enter contest name", id: "name", name: "name", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "textarea", rows: 3, labelClassNames: "sm:col-span-2", labelText: "Contest Description", placeholder: "Enter contest description", id: "description", name: "description", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", labelText: "Unique Contest ID", placeholder: "Enter unique ID", id: "uniqueId", name: "uniqueId", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "datetime-local", labelText: "Registration Deadline", id: "reg_deadline", name: "reg_deadline", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "datetime-local", labelText: "Contest Start Date", id: "start_date", name: "start_date", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "datetime-local", labelText: "Contest End Date", id: "end_date", name: "end_date", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "textarea", rows: 2, labelText: "Contest Prizes", labelClassNames: "sm:col-span-2", placeholder: "Enter contest prizes", id: "prizes", name: "prizes", required: !0 }),
+      /* @__PURE__ */ jsx114(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1 })
     ] }),
-    /* @__PURE__ */ jsx113(CategoryInputs, {}),
-    /* @__PURE__ */ jsx113(StageInputs, {}),
-    /* @__PURE__ */ jsxs99("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
-      /* @__PURE__ */ jsx113("legend", { className: "text-lg mb-4 font-bold", children: "Contestants and Referrals Earnings" }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Contestant Share Percentage", id: "contestant_share_percent", name: "contestant_share_percent", defaultValue: 50, required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "number", labelText: "Minimum amount for affiliate to earn", id: "min_for_referral_earning", name: "min_for_referral_earning", defaultValue: 3e3, required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "number", labelText: "Amount affiliate would earn from minimum", id: "referral_bonus_from_min", name: "referral_bonus_from_min", defaultValue: 500, required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Affiliate percentage earnings after minimum", id: "referral_percent_after_min", name: "referral_percent_after_min", defaultValue: 1, required: !0 })
+    /* @__PURE__ */ jsx114(CategoryInputs, {}),
+    /* @__PURE__ */ jsx114(StageInputs, {}),
+    /* @__PURE__ */ jsxs100("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsx114("legend", { className: "text-lg mb-4 font-bold", children: "Contestants and Referrals Earnings" }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Contestant Share Percentage", id: "contestant_share_percent", name: "contestant_share_percent", defaultValue: 50, required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "number", labelText: "Minimum amount for affiliate to earn", id: "min_for_referral_earning", name: "min_for_referral_earning", defaultValue: 3e3, required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "number", labelText: "Amount affiliate would earn from minimum", id: "referral_bonus_from_min", name: "referral_bonus_from_min", defaultValue: 500, required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "input", type: "number", step: 1, max: 100, min: 0, labelText: "Affiliate percentage earnings after minimum", id: "referral_percent_after_min", name: "referral_percent_after_min", defaultValue: 1, required: !0 })
     ] }),
-    /* @__PURE__ */ jsxs99("fieldset", { className: "grid gap-3 sm:gap-6", children: [
-      /* @__PURE__ */ jsx113("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", required: !0 }),
-      /* @__PURE__ */ jsx113(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", required: !0 })
+    /* @__PURE__ */ jsxs100("fieldset", { className: "grid gap-3 sm:gap-6", children: [
+      /* @__PURE__ */ jsx114("legend", { className: "text-lg mb-4 font-bold", children: "Submission Guidelines" }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "textarea", rows: 4, labelText: "Submission Requirements", placeholder: "Enter text here...", id: "sub_req", name: "sub_req", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "textarea", rows: 4, labelText: "Terms & Conditions", placeholder: "Enter text here...", id: "tnc", name: "tnc", required: !0 }),
+      /* @__PURE__ */ jsx114(FormControl, { as: "textarea", rows: 4, labelText: "Additional Information", placeholder: "Enter text here...", id: "add_info", name: "add_info", required: !0 })
     ] }),
-    /* @__PURE__ */ jsx113("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx113(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Contest" }) })
+    /* @__PURE__ */ jsx114("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx114(Cta_default, { element: "button", type: "submit", className: "px-8 py-2 rounded-lg font-medium max-sm:grow", children: "Create Contest" }) })
   ] });
 }
 
 // app/routes/admin.contests.add.tsx
-import { jsx as jsx114, jsxs as jsxs100 } from "react/jsx-runtime";
-async function loader45({}) {
+import { jsx as jsx115, jsxs as jsxs101 } from "react/jsx-runtime";
+async function loader46({}) {
   let { data: tournaments = [] } = await tournamentRepo.getTournaments();
-  return json43({ tournaments });
+  return json44({ tournaments });
 }
-async function action27({ request }) {
+async function action28({ request }) {
   let payload = prepareContestPayload(await request.formData()), cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect35("/login");
+    return redirect36("/login");
   let { data, error } = await contestRepo.createContest(payload, cookieHeader);
   if (data) {
     let { headers: headers2 } = await setToast({ request, toast: `success::A new contest has been created::${Date.now()}` });
-    return redirect35("/admin/contests", { headers: headers2 });
+    return redirect36("/admin/contests", { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` });
-  return json43(null, { headers });
+  return json44(null, { headers });
 }
 function AddContest() {
-  let { tournaments } = useLoaderData42(), navigate = useNavigate20();
-  return /* @__PURE__ */ jsxs100("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs100("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsx114(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
-      /* @__PURE__ */ jsx114("span", { className: "font-black text-primary", children: "Create Contest" })
+  let { tournaments } = useLoaderData43(), navigate = useNavigate20();
+  return /* @__PURE__ */ jsxs101("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs101("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx115(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
+      /* @__PURE__ */ jsx115("span", { className: "font-black text-primary", children: "Create Contest" })
     ] }),
-    /* @__PURE__ */ jsx114(CreateContestForm, { tournaments })
+    /* @__PURE__ */ jsx115(CreateContestForm, { tournaments })
   ] });
 }
 
@@ -12547,35 +13289,35 @@ function AddContest() {
 var partners_location_exports = {};
 __export(partners_location_exports, {
   default: () => PartnerProducts,
-  loader: () => loader46
+  loader: () => loader47
 });
-import { json as json44, redirect as redirect36 } from "@remix-run/node";
-import { useLoaderData as useLoaderData43, Form as Form32, useNavigation as useNavigation21 } from "@remix-run/react";
-import { jsx as jsx115, jsxs as jsxs101 } from "react/jsx-runtime";
-async function loader46({ request }) {
+import { json as json45, redirect as redirect37 } from "@remix-run/node";
+import { useLoaderData as useLoaderData44, Form as Form33, useNavigation as useNavigation22 } from "@remix-run/react";
+import { jsx as jsx116, jsxs as jsxs102 } from "react/jsx-runtime";
+async function loader47({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect36("/login");
+    return redirect37("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerLocations(query, cookieHeader);
-  return pagedUsersRes.authRequired ? redirect36("/login") : (console.log(pagedUsersRes), json44({ data: pagedUsersRes.data, query }));
+  return pagedUsersRes.authRequired ? redirect37("/login") : (console.log(pagedUsersRes), json45({ data: pagedUsersRes.data, query }));
 }
 function PartnerProducts() {
-  let { data, query } = useLoaderData43(), navigation = useNavigation21();
-  return console.log(data), /* @__PURE__ */ jsxs101("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs101("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
-      /* @__PURE__ */ jsx115("h1", { className: "text-2xl font-black text-primary", children: "Products" }),
-      /* @__PURE__ */ jsxs101(Cta_default, { element: "link", to: "/partners/add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
-        /* @__PURE__ */ jsx115(Svg, { src: icons.addIcon, width: ".9em" }),
+  let { data, query } = useLoaderData44(), navigation = useNavigation22();
+  return console.log(data), /* @__PURE__ */ jsxs102("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs102("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
+      /* @__PURE__ */ jsx116("h1", { className: "text-2xl font-black text-primary", children: "Products" }),
+      /* @__PURE__ */ jsxs102(Cta_default, { element: "link", to: "/partners/add", className: "hidden sm:flex gap-2 items-center rounded-lg px-3 py-2", children: [
+        /* @__PURE__ */ jsx116(Svg, { src: icons.addIcon, width: ".9em" }),
         "Add Product"
       ] })
     ] }),
-    /* @__PURE__ */ jsx115("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx115(Form32, { method: "get", className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs101("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
-      /* @__PURE__ */ jsxs101("div", { children: [
-        /* @__PURE__ */ jsx115("label", { className: "block text-xs font-semibold mb-1", children: "Product Price" }),
-        /* @__PURE__ */ jsx115(
+    /* @__PURE__ */ jsx116("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx116(Form33, { method: "get", className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs102("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
+      /* @__PURE__ */ jsxs102("div", { children: [
+        /* @__PURE__ */ jsx116("label", { className: "block text-xs font-semibold mb-1", children: "Product Price" }),
+        /* @__PURE__ */ jsx116(
           "input",
           {
             type: "number",
@@ -12585,9 +13327,9 @@ function PartnerProducts() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs101("div", { children: [
-        /* @__PURE__ */ jsx115("label", { className: "block text-xs font-semibold mb-1", children: "Name, Description or tag" }),
-        /* @__PURE__ */ jsx115(
+      /* @__PURE__ */ jsxs102("div", { children: [
+        /* @__PURE__ */ jsx116("label", { className: "block text-xs font-semibold mb-1", children: "Name, Description or tag" }),
+        /* @__PURE__ */ jsx116(
           "input",
           {
             type: "text",
@@ -12597,41 +13339,41 @@ function PartnerProducts() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs101("div", { children: [
-        /* @__PURE__ */ jsx115("label", { className: "block text-xs font-semibold mb-1", children: "Status" }),
-        /* @__PURE__ */ jsxs101(
+      /* @__PURE__ */ jsxs102("div", { children: [
+        /* @__PURE__ */ jsx116("label", { className: "block text-xs font-semibold mb-1", children: "Status" }),
+        /* @__PURE__ */ jsxs102(
           "select",
           {
             name: "status",
             className: "w-full border rounded-lg px-3 py-2",
             children: [
-              /* @__PURE__ */ jsx115("option", { value: "available", children: "Available" }),
-              /* @__PURE__ */ jsx115("option", { value: "out_of_stock", children: "Out of Stock" }),
-              /* @__PURE__ */ jsx115("option", { value: "suspended", children: "Suspended" })
+              /* @__PURE__ */ jsx116("option", { value: "available", children: "Available" }),
+              /* @__PURE__ */ jsx116("option", { value: "out_of_stock", children: "Out of Stock" }),
+              /* @__PURE__ */ jsx116("option", { value: "suspended", children: "Suspended" })
             ]
           }
         )
       ] }),
-      /* @__PURE__ */ jsx115("div", { className: "sm:col-span-1 flex gap-2 mt-2 sm:mt-0", children: /* @__PURE__ */ jsx115("button", { type: "submit", className: "bg-[#4B4870] text-white px-4 py-2 rounded-lg font-semibold", children: "Search" }) })
+      /* @__PURE__ */ jsx116("div", { className: "sm:col-span-1 flex gap-2 mt-2 sm:mt-0", children: /* @__PURE__ */ jsx116("button", { type: "submit", className: "bg-[#4B4870] text-white px-4 py-2 rounded-lg font-semibold", children: "Search" }) })
     ] }) }) }),
-    /* @__PURE__ */ jsx115("div", { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8", children: data?.items && data.items.length > 0 ? data.items.map((product) => {
+    /* @__PURE__ */ jsx116("div", { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8", children: data?.items && data.items.length > 0 ? data.items.map((product) => {
       let imgSrc = no_image_default;
-      return /* @__PURE__ */ jsxs101("div", { className: "my-2 p-2 bg-slate-50 rounded-lg border border-slate-100", children: [
-        /* @__PURE__ */ jsxs101("div", { className: "flex items-start gap-2", children: [
-          /* @__PURE__ */ jsx115("div", { className: "mt-1 text-indigo-500", children: /* @__PURE__ */ jsxs101("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-4 w-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: [
-            /* @__PURE__ */ jsx115("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" }),
-            /* @__PURE__ */ jsx115("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M15 11a3 3 0 11-6 0 3 3 0 016 0z" })
+      return /* @__PURE__ */ jsxs102("div", { className: "my-2 p-2 bg-slate-50 rounded-lg border border-slate-100", children: [
+        /* @__PURE__ */ jsxs102("div", { className: "flex items-start gap-2", children: [
+          /* @__PURE__ */ jsx116("div", { className: "mt-1 text-indigo-500", children: /* @__PURE__ */ jsxs102("svg", { xmlns: "http://www.w3.org/2000/svg", className: "h-4 w-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: [
+            /* @__PURE__ */ jsx116("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" }),
+            /* @__PURE__ */ jsx116("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M15 11a3 3 0 11-6 0 3 3 0 016 0z" })
           ] }) }),
-          /* @__PURE__ */ jsxs101("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsx115("span", { className: "text-xs font-bold text-gray-700", children: product.name }),
-            /* @__PURE__ */ jsxs101("span", { className: "text-[11px] text-gray-500", children: [
+          /* @__PURE__ */ jsxs102("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx116("span", { className: "text-xs font-bold text-gray-700", children: product.name }),
+            /* @__PURE__ */ jsxs102("span", { className: "text-[11px] text-gray-500", children: [
               product.city,
               ", ",
               product.state_name
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx115(
+        /* @__PURE__ */ jsx116(
           "a",
           {
             href: `https://www.google.com/maps/dir/?api=1&destination=${product.latitude},${product.longitude}`,
@@ -12642,8 +13384,8 @@ function PartnerProducts() {
           }
         )
       ] });
-    }) : /* @__PURE__ */ jsx115("div", { className: "col-span-full text-center text-gray-400 py-12", children: "No products found." }) }),
-    /* @__PURE__ */ jsx115("div", { className: " sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx115(Pagination, { lastKey: query?.last_key_id, pageSize: query?.items_per_page, firstKey: query?.first_key_id }) })
+    }) : /* @__PURE__ */ jsx116("div", { className: "col-span-full text-center text-gray-400 py-12", children: "No products found." }) }),
+    /* @__PURE__ */ jsx116("div", { className: " sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx116(Pagination, { lastKey: query?.last_key_id, pageSize: query?.items_per_page, firstKey: query?.first_key_id }) })
   ] });
 }
 
@@ -12651,12 +13393,12 @@ function PartnerProducts() {
 var public_winners_exports = {};
 __export(public_winners_exports, {
   default: () => Winners,
-  loader: () => loader47
+  loader: () => loader48
 });
-import { Link as Link25, useLoaderData as useLoaderData44 } from "@remix-run/react";
-import { useEffect as useEffect29, useState as useState39 } from "react";
-import { jsx as jsx116, jsxs as jsxs102 } from "react/jsx-runtime";
-async function loader47({ params }) {
+import { Link as Link26, useLoaderData as useLoaderData45 } from "@remix-run/react";
+import { useEffect as useEffect30, useState as useState40 } from "react";
+import { jsx as jsx117, jsxs as jsxs103 } from "react/jsx-runtime";
+async function loader48({ params }) {
   let { data: winners, error } = await contestRepo.getWinners();
   return { winners, error };
 }
@@ -12666,8 +13408,8 @@ var WinnerCard = ({
   remark,
   full_name,
   id
-}) => /* @__PURE__ */ jsx116(Link25, { to: `/winner/${id}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs102("article", { children: [
-  /* @__PURE__ */ jsx116(
+}) => /* @__PURE__ */ jsx117(Link26, { to: `/winner/${id}`, className: "block transition-shadow", children: /* @__PURE__ */ jsxs103("article", { children: [
+  /* @__PURE__ */ jsx117(
     "img",
     {
       src: image_url,
@@ -12675,11 +13417,11 @@ var WinnerCard = ({
       className: "w-full aspect-[3/4] rounded-lg object-cover"
     }
   ),
-  /* @__PURE__ */ jsxs102("div", { className: "pt-4", children: [
-    /* @__PURE__ */ jsx116("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: contest_name }),
-    /* @__PURE__ */ jsx116("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
+  /* @__PURE__ */ jsxs103("div", { className: "pt-4", children: [
+    /* @__PURE__ */ jsx117("p", { className: "text-xs font-semibold uppercase tracking-wide text-gray-500", children: contest_name }),
+    /* @__PURE__ */ jsx117("h3", { className: "mt-1 text-lg font-bold text-gray-900", children: full_name })
   ] })
-] }) }), SearchIcon = (props) => /* @__PURE__ */ jsx116(
+] }) }), SearchIcon = (props) => /* @__PURE__ */ jsx117(
   "svg",
   {
     xmlns: "http://www.w3.org/2000/svg",
@@ -12688,7 +13430,7 @@ var WinnerCard = ({
     strokeWidth: 1.5,
     stroke: "currentColor",
     ...props,
-    children: /* @__PURE__ */ jsx116(
+    children: /* @__PURE__ */ jsx117(
       "path",
       {
         strokeLinecap: "round",
@@ -12699,20 +13441,20 @@ var WinnerCard = ({
   }
 );
 function Winners() {
-  let { winners, error } = useLoaderData44(), [searchWinners, setSearchWinners] = useState39(""), [winnersFiltered, setWinnersFiltered] = useState39(winners ?? []);
-  return useEffect29(() => {
+  let { winners, error } = useLoaderData45(), [searchWinners, setSearchWinners] = useState40(""), [winnersFiltered, setWinnersFiltered] = useState40(winners ?? []);
+  return useEffect30(() => {
     setWinnersFiltered(winners ?? []);
-  }, [winners]), useEffect29(() => {
+  }, [winners]), useEffect30(() => {
     let updated = (winners ?? []).filter(
       (winner) => winner.full_name.toLowerCase().includes(searchWinners.trim().toLowerCase()) || winner.contest_name.toLowerCase().includes(searchWinners.trim().toLowerCase())
     );
     setWinnersFiltered(updated);
-  }, [searchWinners, winners]), error ? /* @__PURE__ */ jsx116("h1", { className: "font-satoshi-bold text-4xl text-center", children: error.detail }) : /* @__PURE__ */ jsx116("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs102("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
-    /* @__PURE__ */ jsx116("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs102("div", { className: "max-w-3xl mx-auto text-center", children: [
-      /* @__PURE__ */ jsx116("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Meet Our Talented Contest Winners" }),
-      /* @__PURE__ */ jsx116("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "A Glimpse of the Extraordinary Creations That Stole the Show" }),
-      /* @__PURE__ */ jsxs102("div", { className: "mt-8 relative max-w-lg mx-auto", children: [
-        /* @__PURE__ */ jsx116(
+  }, [searchWinners, winners]), error ? /* @__PURE__ */ jsx117("h1", { className: "font-satoshi-bold text-4xl text-center", children: error.detail }) : /* @__PURE__ */ jsx117("div", { className: "min-h-screen", children: /* @__PURE__ */ jsxs103("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8", children: [
+    /* @__PURE__ */ jsx117("header", { className: "bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5", children: /* @__PURE__ */ jsxs103("div", { className: "max-w-3xl mx-auto text-center", children: [
+      /* @__PURE__ */ jsx117("h1", { className: "text-3xl md:text-4xl lg:text-5xl font-bold text-white", children: "Meet Our Talented Contest Winners" }),
+      /* @__PURE__ */ jsx117("p", { className: "mt-4 text-base md:text-lg text-purple-100", children: "A Glimpse of the Extraordinary Creations That Stole the Show" }),
+      /* @__PURE__ */ jsxs103("div", { className: "mt-8 relative max-w-lg mx-auto", children: [
+        /* @__PURE__ */ jsx117(
           "input",
           {
             type: "text",
@@ -12722,11 +13464,11 @@ function Winners() {
             className: "w-full rounded-2xl py-3 px-6 pr-12 text-gray-900 shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
           }
         ),
-        /* @__PURE__ */ jsx116("div", { className: "absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-auto", children: /* @__PURE__ */ jsx116(SearchIcon, { className: "h-5 w-5 text-gray-400" }) })
+        /* @__PURE__ */ jsx117("div", { className: "absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-auto", children: /* @__PURE__ */ jsx117(SearchIcon, { className: "h-5 w-5 text-gray-400" }) })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs102("main", { className: "py-12 md:py-16", children: [
-      /* @__PURE__ */ jsx116("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: winnersFiltered.map((winner, idx) => /* @__PURE__ */ jsx116(
+    /* @__PURE__ */ jsxs103("main", { className: "py-12 md:py-16", children: [
+      /* @__PURE__ */ jsx117("div", { className: "grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", children: winnersFiltered.map((winner, idx) => /* @__PURE__ */ jsx117(
         WinnerCard,
         {
           image_url: winner.image_url,
@@ -12737,7 +13479,7 @@ function Winners() {
         },
         winner.contestant_code || idx
       )) }),
-      /* @__PURE__ */ jsx116("div", { className: "mt-12 md:mt-16 text-center", children: /* @__PURE__ */ jsx116(
+      /* @__PURE__ */ jsx117("div", { className: "mt-12 md:mt-16 text-center", children: /* @__PURE__ */ jsx117(
         "button",
         {
           type: "button",
@@ -12754,25 +13496,25 @@ var partner_account_exports = {};
 __export(partner_account_exports, {
   default: () => PartnerLoginOrRequestPartnerShip
 });
-import { Link as Link26, useLocation as useLocation8 } from "@remix-run/react";
-import { useEffect as useEffect30 } from "react";
-import { jsx as jsx117, jsxs as jsxs103 } from "react/jsx-runtime";
+import { Link as Link27, useLocation as useLocation9 } from "@remix-run/react";
+import { useEffect as useEffect31 } from "react";
+import { jsx as jsx118, jsxs as jsxs104 } from "react/jsx-runtime";
 function PartnerLoginOrRequestPartnerShip() {
   let { setUserStoreManager, getUserStoreManager } = useUserManager();
   var user = getUserStoreManager();
-  let location = useLocation8();
+  let location = useLocation9();
   if (!user || !user.is_partner_account)
-    return /* @__PURE__ */ jsxs103("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-      /* @__PURE__ */ jsx117(Link26, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx117(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
-      /* @__PURE__ */ jsxs103("div", { className: "flex flex-col md:flex-row gap-6 p-8  rounded-2xl border border-gray-100", children: [
-        /* @__PURE__ */ jsxs103("div", { className: "flex-1 flex flex-col items-start gap-4", children: [
-          /* @__PURE__ */ jsx117("div", { className: "p-3 rounded-lg shadow-sm" }),
-          /* @__PURE__ */ jsxs103("div", { children: [
-            /* @__PURE__ */ jsx117("h3", { className: "font-satoshi-black text-xl text-gray-900", children: "Welcome Back" }),
-            /* @__PURE__ */ jsx117("p", { className: "text-gray-500 text-sm mt-1", children: "Access your partner dashboard and manage your account." })
+    return /* @__PURE__ */ jsxs104("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+      /* @__PURE__ */ jsx118(Link27, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx118(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+      /* @__PURE__ */ jsxs104("div", { className: "flex flex-col md:flex-row gap-6 p-8  rounded-2xl border border-gray-100", children: [
+        /* @__PURE__ */ jsxs104("div", { className: "flex-1 flex flex-col items-start gap-4", children: [
+          /* @__PURE__ */ jsx118("div", { className: "p-3 rounded-lg shadow-sm" }),
+          /* @__PURE__ */ jsxs104("div", { children: [
+            /* @__PURE__ */ jsx118("h3", { className: "font-satoshi-black text-xl text-gray-900", children: "Welcome Back" }),
+            /* @__PURE__ */ jsx118("p", { className: "text-gray-500 text-sm mt-1", children: "Access your partner dashboard and manage your account." })
           ] }),
-          /* @__PURE__ */ jsx117(
-            Link26,
+          /* @__PURE__ */ jsx118(
+            Link27,
             {
               to: "/login?redirectTo=/partners/home?&requireNewLogin=1",
               className: "text-accent font-satoshi-black flex items-center gap-2 hover:underline transition-all",
@@ -12780,15 +13522,15 @@ function PartnerLoginOrRequestPartnerShip() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsx117("div", { className: "w-px bg-gray-200 hidden md:block" }),
-        /* @__PURE__ */ jsxs103("div", { className: "flex-1 flex flex-col items-start gap-4", children: [
-          /* @__PURE__ */ jsx117("div", { className: "bg-accent/10 p-3 rounded-lg" }),
-          /* @__PURE__ */ jsxs103("div", { children: [
-            /* @__PURE__ */ jsx117("h3", { className: "font-satoshi-black text-xl text-gray-900", children: "New Here?" }),
-            /* @__PURE__ */ jsx117("p", { className: "text-gray-500 text-sm mt-1", children: "Join our network and start growing your business with us." })
+        /* @__PURE__ */ jsx118("div", { className: "w-px bg-gray-200 hidden md:block" }),
+        /* @__PURE__ */ jsxs104("div", { className: "flex-1 flex flex-col items-start gap-4", children: [
+          /* @__PURE__ */ jsx118("div", { className: "bg-accent/10 p-3 rounded-lg" }),
+          /* @__PURE__ */ jsxs104("div", { children: [
+            /* @__PURE__ */ jsx118("h3", { className: "font-satoshi-black text-xl text-gray-900", children: "New Here?" }),
+            /* @__PURE__ */ jsx118("p", { className: "text-gray-500 text-sm mt-1", children: "Join our network and start growing your business with us." })
           ] }),
-          /* @__PURE__ */ jsx117(
-            Link26,
+          /* @__PURE__ */ jsx118(
+            Link27,
             {
               to: "/partner/partner",
               className: "bg-accent text-white px-6 py-2 rounded-full font-satoshi-black hover:opacity-90 transition-all",
@@ -12798,7 +13540,7 @@ function PartnerLoginOrRequestPartnerShip() {
         ] })
       ] })
     ] });
-  useEffect30(() => {
+  useEffect31(() => {
     window.location.replace("/partners/home");
   }, []);
 }
@@ -12806,19 +13548,19 @@ function PartnerLoginOrRequestPartnerShip() {
 // app/routes/partner.partner.tsx
 var partner_partner_exports = {};
 __export(partner_partner_exports, {
-  action: () => action28,
+  action: () => action29,
   default: () => PartnerOnboarding,
-  loader: () => loader48
+  loader: () => loader49
 });
-import { json as json45 } from "@remix-run/node";
-import { useActionData as useActionData15, Form as Form34, useNavigate as useNavigate22, useNavigation as useNavigation22 } from "@remix-run/react";
-import { useState as useState41 } from "react";
-import { useEffect as useEffect31 } from "react";
-import { jsx as jsx118, jsxs as jsxs104 } from "react/jsx-runtime";
-async function loader48({}) {
-  return json45({});
+import { json as json46 } from "@remix-run/node";
+import { useActionData as useActionData15, Form as Form35, useNavigate as useNavigate22, useNavigation as useNavigation23 } from "@remix-run/react";
+import { useState as useState42 } from "react";
+import { useEffect as useEffect32 } from "react";
+import { jsx as jsx119, jsxs as jsxs105 } from "react/jsx-runtime";
+async function loader49({}) {
+  return json46({});
 }
-async function action28({ request }) {
+async function action29({ request }) {
   let formData = await request.formData();
   console.log("d");
   for (let [key, value] of formData.entries())
@@ -12859,24 +13601,24 @@ async function action28({ request }) {
 }
 function Stepper({ currentStep }) {
   let steps = ["Business info", "Business address", "Contact details"];
-  return /* @__PURE__ */ jsx118("div", { className: "flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-xs sm:text-sm font-medium text-gray-400 mb-8 sm:mb-12", children: steps.map((step, i) => /* @__PURE__ */ jsxs104("div", { className: "flex items-center gap-x-1 sm:gap-x-2", children: [
-    /* @__PURE__ */ jsx118("span", { className: `flex h-6 w-6 items-center justify-center rounded-full text-xs ${i === currentStep ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`, children: i + 1 }),
-    /* @__PURE__ */ jsx118("span", { className: i === currentStep ? "text-black" : "", children: step }),
-    i < steps.length - 1 && /* @__PURE__ */ jsx118("span", { className: "hidden sm:inline", children: ">" })
+  return /* @__PURE__ */ jsx119("div", { className: "flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-xs sm:text-sm font-medium text-gray-400 mb-8 sm:mb-12", children: steps.map((step, i) => /* @__PURE__ */ jsxs105("div", { className: "flex items-center gap-x-1 sm:gap-x-2", children: [
+    /* @__PURE__ */ jsx119("span", { className: `flex h-6 w-6 items-center justify-center rounded-full text-xs ${i === currentStep ? "bg-black text-white" : "bg-gray-200 text-gray-500"}`, children: i + 1 }),
+    /* @__PURE__ */ jsx119("span", { className: i === currentStep ? "text-black" : "", children: step }),
+    i < steps.length - 1 && /* @__PURE__ */ jsx119("span", { className: "hidden sm:inline", children: ">" })
   ] }, step)) });
 }
-var Label2 = ({ children, required }) => /* @__PURE__ */ jsxs104("label", { className: "block text-sm font-semibold text-gray-700 mb-2 mt-5", children: [
+var Label2 = ({ children, required }) => /* @__PURE__ */ jsxs105("label", { className: "block text-sm font-semibold text-gray-700 mb-2 mt-5", children: [
   children,
   " ",
-  required && /* @__PURE__ */ jsx118("span", { className: "text-red-500", children: "*" })
+  required && /* @__PURE__ */ jsx119("span", { className: "text-red-500", children: "*" })
 ] }), inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-gray-400 bg-white";
 function usePartnerOnboardingController() {
-  let navigation = useNavigation22(), [section, setSection] = useState41(0), [form, setForm] = useState41({
+  let navigation = useNavigation23(), [section, setSection] = useState42(0), [form, setForm] = useState42({
     estimated_weekly_volume_currency: "USD",
     referral_percentage: 10,
     country_of_incorporation: "Nigeria"
   }), actionData = useActionData15(), isSuccess = !!actionData?.data && !actionData?.error, businessName = form.legal_business_name ?? "Partner", navigate = useNavigate22();
-  return useEffect31(() => {
+  return useEffect32(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Submission failed",
@@ -12892,24 +13634,24 @@ function usePartnerOnboardingController() {
 }
 function PartnerOnboarding() {
   let { section, form, navigation, handleChange, setSection, isSuccess, navigate, businessName } = usePartnerOnboardingController();
-  return isSuccess ? /* @__PURE__ */ jsx118("main", { className: "min-h-screen bg-white font-sans text-slate-900 flex items-center justify-center", children: /* @__PURE__ */ jsxs104("div", { className: "max-w-xl w-full mx-auto px-4 py-16 text-center", children: [
-    /* @__PURE__ */ jsxs104("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxs104("svg", { className: "mx-auto mb-4 text-green-500", width: "48", height: "48", fill: "none", viewBox: "0 0 24 24", children: [
-        /* @__PURE__ */ jsx118("circle", { cx: "12", cy: "12", r: "12", fill: "#22C55E", opacity: "0.1" }),
-        /* @__PURE__ */ jsx118("path", { d: "M7 13l3 3 7-7", stroke: "#22C55E", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })
+  return isSuccess ? /* @__PURE__ */ jsx119("main", { className: "min-h-screen bg-white font-sans text-slate-900 flex items-center justify-center", children: /* @__PURE__ */ jsxs105("div", { className: "max-w-xl w-full mx-auto px-4 py-16 text-center", children: [
+    /* @__PURE__ */ jsxs105("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs105("svg", { className: "mx-auto mb-4 text-green-500", width: "48", height: "48", fill: "none", viewBox: "0 0 24 24", children: [
+        /* @__PURE__ */ jsx119("circle", { cx: "12", cy: "12", r: "12", fill: "#22C55E", opacity: "0.1" }),
+        /* @__PURE__ */ jsx119("path", { d: "M7 13l3 3 7-7", stroke: "#22C55E", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })
       ] }),
-      /* @__PURE__ */ jsxs104("h1", { className: "text-2xl sm:text-3xl font-bold mb-2", children: [
+      /* @__PURE__ */ jsxs105("h1", { className: "text-2xl sm:text-3xl font-bold mb-2", children: [
         "Thank you, ",
         businessName,
         "!"
       ] }),
-      /* @__PURE__ */ jsxs104("p", { className: "text-gray-700 text-base sm:text-lg mb-6", children: [
+      /* @__PURE__ */ jsxs105("p", { className: "text-gray-700 text-base sm:text-lg mb-6", children: [
         "We have received your request to partner with us.",
-        /* @__PURE__ */ jsx118("br", {}),
+        /* @__PURE__ */ jsx119("br", {}),
         "A member of our team will contact you soon."
       ] })
     ] }),
-    /* @__PURE__ */ jsx118(
+    /* @__PURE__ */ jsx119(
       "button",
       {
         className: "inline-block bg-[#4B4870] hover:bg-[#3d3a5c] text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all text-base sm:text-lg",
@@ -12917,49 +13659,49 @@ function PartnerOnboarding() {
         children: "Go to Homepage"
       }
     )
-  ] }) }) : /* @__PURE__ */ jsx118("main", { className: "min-h-screen bg-white font-sans text-slate-900 pb-20", children: /* @__PURE__ */ jsxs104("div", { className: "max-w-3xl mx-auto px-2 sm:px-6 pt-8 sm:pt-12", children: [
-    /* @__PURE__ */ jsx118(Stepper, { currentStep: section }),
-    /* @__PURE__ */ jsx118("div", { className: "text-center mb-8 sm:mb-10", children: /* @__PURE__ */ jsx118("h1", { className: "text-2xl sm:text-4xl font-bold tracking-tight text-gray-900", children: section === 0 ? "Tell us about your business" : section === 1 ? "Enter your business's legal address" : "Enter contact info details" }) }),
-    /* @__PURE__ */ jsx118("div", { className: "w-full max-w-xl mx-auto", children: /* @__PURE__ */ jsxs104(Form34, { method: "post", className: "space-y-6", children: [
-      /* @__PURE__ */ jsxs104("div", { className: section === 0 ? "" : "hidden", children: [
-        /* @__PURE__ */ jsxs104("div", { className: "bg-gray-50 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-100", children: [
-          /* @__PURE__ */ jsx118("h3", { className: "text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 sm:mb-4", children: "Company information" }),
-          /* @__PURE__ */ jsxs104("div", { className: "space-y-2 text-xs sm:text-sm", children: [
-            /* @__PURE__ */ jsxs104("div", { className: "flex justify-between flex-wrap", children: [
-              /* @__PURE__ */ jsx118("span", { className: "text-gray-500", children: "Company name:" }),
+  ] }) }) : /* @__PURE__ */ jsx119("main", { className: "min-h-screen bg-white font-sans text-slate-900 pb-20", children: /* @__PURE__ */ jsxs105("div", { className: "max-w-3xl mx-auto px-2 sm:px-6 pt-8 sm:pt-12", children: [
+    /* @__PURE__ */ jsx119(Stepper, { currentStep: section }),
+    /* @__PURE__ */ jsx119("div", { className: "text-center mb-8 sm:mb-10", children: /* @__PURE__ */ jsx119("h1", { className: "text-2xl sm:text-4xl font-bold tracking-tight text-gray-900", children: section === 0 ? "Tell us about your business" : section === 1 ? "Enter your business's legal address" : "Enter contact info details" }) }),
+    /* @__PURE__ */ jsx119("div", { className: "w-full max-w-xl mx-auto", children: /* @__PURE__ */ jsxs105(Form35, { method: "post", className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs105("div", { className: section === 0 ? "" : "hidden", children: [
+        /* @__PURE__ */ jsxs105("div", { className: "bg-gray-50 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-100", children: [
+          /* @__PURE__ */ jsx119("h3", { className: "text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 sm:mb-4", children: "Company information" }),
+          /* @__PURE__ */ jsxs105("div", { className: "space-y-2 text-xs sm:text-sm", children: [
+            /* @__PURE__ */ jsxs105("div", { className: "flex justify-between flex-wrap", children: [
+              /* @__PURE__ */ jsx119("span", { className: "text-gray-500", children: "Company name:" }),
               " ",
-              /* @__PURE__ */ jsxs104("span", { className: "font-semibold", children: [
+              /* @__PURE__ */ jsxs105("span", { className: "font-semibold", children: [
                 form.legal_business_name,
                 " ",
-                /* @__PURE__ */ jsx118("span", { className: "text-green-500", children: "\u25CF" })
+                /* @__PURE__ */ jsx119("span", { className: "text-green-500", children: "\u25CF" })
               ] })
             ] }),
-            /* @__PURE__ */ jsxs104("div", { className: "flex justify-between flex-wrap", children: [
-              /* @__PURE__ */ jsx118("span", { className: "text-gray-500", children: "Phone Number:" }),
+            /* @__PURE__ */ jsxs105("div", { className: "flex justify-between flex-wrap", children: [
+              /* @__PURE__ */ jsx119("span", { className: "text-gray-500", children: "Phone Number:" }),
               " ",
-              /* @__PURE__ */ jsx118("span", { className: "font-semibold", children: form.phone_number })
+              /* @__PURE__ */ jsx119("span", { className: "font-semibold", children: form.phone_number })
             ] }),
-            /* @__PURE__ */ jsxs104("div", { className: "flex justify-between flex-wrap", children: [
-              /* @__PURE__ */ jsx118("span", { className: "text-gray-500", children: "Status:" }),
+            /* @__PURE__ */ jsxs105("div", { className: "flex justify-between flex-wrap", children: [
+              /* @__PURE__ */ jsx119("span", { className: "text-gray-500", children: "Status:" }),
               " ",
-              /* @__PURE__ */ jsx118("span", { className: "text-blue-600 font-semibold inline-flex items-center gap-1", children: "\u2713 Active" })
+              /* @__PURE__ */ jsx119("span", { className: "text-blue-600 font-semibold inline-flex items-center gap-1", children: "\u2713 Active" })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Legal business name" }),
-          /* @__PURE__ */ jsx118("input", { name: "legal_business_name", required: !0, className: inputClass, value: form.legal_business_name || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Legal business name" }),
+          /* @__PURE__ */ jsx119("input", { name: "legal_business_name", required: !0, className: inputClass, value: form.legal_business_name || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Country of incorporation" }),
-          /* @__PURE__ */ jsxs104("select", { name: "country_of_incorporation", className: inputClass, value: form.country_of_incorporation, onChange: handleChange, children: [
-            /* @__PURE__ */ jsx118("option", { value: "Nigeria", children: "\u{1F1F3}\u{1F1EC} Nigeria" }),
-            /* @__PURE__ */ jsx118("option", { value: "Kenya", children: "\u{1F1F0}\u{1F1EA} Kenya" })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Country of incorporation" }),
+          /* @__PURE__ */ jsxs105("select", { name: "country_of_incorporation", className: inputClass, value: form.country_of_incorporation, onChange: handleChange, children: [
+            /* @__PURE__ */ jsx119("option", { value: "Nigeria", children: "\u{1F1F3}\u{1F1EC} Nigeria" }),
+            /* @__PURE__ */ jsx119("option", { value: "Kenya", children: "\u{1F1F0}\u{1F1EA} Kenya" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Business Email" }),
-          /* @__PURE__ */ jsx118(
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Business Email" }),
+          /* @__PURE__ */ jsx119(
             "input",
             {
               name: "business_email",
@@ -12972,10 +13714,10 @@ function PartnerOnboarding() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Partner commision support (%)" }),
-          /* @__PURE__ */ jsx118("p", { className: "text-xs sm:text-sm  text-gray-500  tracking-wider mb-3 sm:mb-1", children: "We connect you to paying customers. What percentage of each sale are you willing to contribute as a partnership commission?" }),
-          /* @__PURE__ */ jsx118(
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Partner commision support (%)" }),
+          /* @__PURE__ */ jsx119("p", { className: "text-xs sm:text-sm  text-gray-500  tracking-wider mb-3 sm:mb-1", children: "We connect you to paying customers. What percentage of each sale are you willing to contribute as a partnership commission?" }),
+          /* @__PURE__ */ jsx119(
             "input",
             {
               name: "referral_percentage",
@@ -12988,23 +13730,23 @@ function PartnerOnboarding() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Phone number" }),
-          /* @__PURE__ */ jsxs104("div", { className: "flex flex-col sm:flex-row gap-2 items-stretch", children: [
-            /* @__PURE__ */ jsxs104("div", { className: "relative w-full sm:w-32", children: [
-              /* @__PURE__ */ jsx118(
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Phone number" }),
+          /* @__PURE__ */ jsxs105("div", { className: "flex flex-col sm:flex-row gap-2 items-stretch", children: [
+            /* @__PURE__ */ jsxs105("div", { className: "relative w-full sm:w-32", children: [
+              /* @__PURE__ */ jsx119(
                 "select",
                 {
                   name: "phone_country_code",
                   className: "block w-full appearance-none px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base pr-8",
                   defaultValue: "+234",
                   style: { minWidth: "5.5rem" },
-                  children: /* @__PURE__ */ jsx118("option", { value: "+234", children: "\u{1F1F3}\u{1F1EC} +234" })
+                  children: /* @__PURE__ */ jsx119("option", { value: "+234", children: "\u{1F1F3}\u{1F1EC} +234" })
                 }
               ),
-              /* @__PURE__ */ jsx118("span", { className: "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg", children: "\u25BC" })
+              /* @__PURE__ */ jsx119("span", { className: "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg", children: "\u25BC" })
             ] }),
-            /* @__PURE__ */ jsx118(
+            /* @__PURE__ */ jsx119(
               "input",
               {
                 name: "phone_number",
@@ -13019,17 +13761,17 @@ function PartnerOnboarding() {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { children: "ROC / CAC Number" }),
-          /* @__PURE__ */ jsx118("input", { name: "roc_cac_number", className: inputClass, value: form.roc_cac_number || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { children: "ROC / CAC Number" }),
+          /* @__PURE__ */ jsx119("input", { name: "roc_cac_number", className: inputClass, value: form.roc_cac_number || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { children: "Tax ID (TIN)" }),
-          /* @__PURE__ */ jsx118("input", { name: "tax_id", className: inputClass, value: form.tax_id || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { children: "Tax ID (TIN)" }),
+          /* @__PURE__ */ jsx119("input", { name: "tax_id", className: inputClass, value: form.tax_id || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Estimated Weekly Volume Currency" }),
-          /* @__PURE__ */ jsxs104(
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Estimated Weekly Volume Currency" }),
+          /* @__PURE__ */ jsxs105(
             "select",
             {
               name: "estimated_weekly_volume_currency",
@@ -13038,40 +13780,40 @@ function PartnerOnboarding() {
               onChange: handleChange,
               required: !0,
               children: [
-                /* @__PURE__ */ jsx118("option", { value: "", children: "Select currency" }),
-                /* @__PURE__ */ jsx118("option", { value: "NGN", children: "NGN" }),
-                /* @__PURE__ */ jsx118("option", { value: "USD", children: "USD" })
+                /* @__PURE__ */ jsx119("option", { value: "", children: "Select currency" }),
+                /* @__PURE__ */ jsx119("option", { value: "NGN", children: "NGN" }),
+                /* @__PURE__ */ jsx119("option", { value: "USD", children: "USD" })
               ]
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Estimated weekly volume" }),
-          /* @__PURE__ */ jsxs104("div", { className: "flex flex-col sm:flex-row gap-2 sm:gap-4", children: [
-            /* @__PURE__ */ jsxs104("div", { className: "relative flex-1", children: [
-              /* @__PURE__ */ jsx118("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }),
-              /* @__PURE__ */ jsx118("input", { name: "estimated_weekly_volume_min", type: "number", placeholder: "Min", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_min || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Estimated weekly volume" }),
+          /* @__PURE__ */ jsxs105("div", { className: "flex flex-col sm:flex-row gap-2 sm:gap-4", children: [
+            /* @__PURE__ */ jsxs105("div", { className: "relative flex-1", children: [
+              /* @__PURE__ */ jsx119("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }),
+              /* @__PURE__ */ jsx119("input", { name: "estimated_weekly_volume_min", type: "number", placeholder: "Min", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_min || "", onChange: handleChange })
             ] }),
-            /* @__PURE__ */ jsxs104("div", { className: "relative flex-1", children: [
-              /* @__PURE__ */ jsx118("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }),
-              /* @__PURE__ */ jsx118("input", { name: "estimated_weekly_volume_max", type: "number", placeholder: "Max", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_max || "", onChange: handleChange })
+            /* @__PURE__ */ jsxs105("div", { className: "relative flex-1", children: [
+              /* @__PURE__ */ jsx119("span", { className: "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400", children: form.estimated_weekly_volume_currency }),
+              /* @__PURE__ */ jsx119("input", { name: "estimated_weekly_volume_max", type: "number", placeholder: "Max", className: `${inputClass} pl-16`, value: form.estimated_weekly_volume_max || "", onChange: handleChange })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Business description" }),
-          /* @__PURE__ */ jsxs104("div", { className: "relative", children: [
-            /* @__PURE__ */ jsx118("textarea", { name: "business_description", required: !0, className: `${inputClass} h-32 resize-none`, value: form.business_description || "", onChange: handleChange }),
-            /* @__PURE__ */ jsx118("span", { className: "absolute bottom-3 right-3 text-xs text-gray-400", children: "0/5000" })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Business description" }),
+          /* @__PURE__ */ jsxs105("div", { className: "relative", children: [
+            /* @__PURE__ */ jsx119("textarea", { name: "business_description", required: !0, className: `${inputClass} h-32 resize-none`, value: form.business_description || "", onChange: handleChange }),
+            /* @__PURE__ */ jsx119("span", { className: "absolute bottom-3 right-3 text-xs text-gray-400", children: "0/5000" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { children: "Website (Optional)" }),
-          /* @__PURE__ */ jsx118("input", { name: "website", className: inputClass, placeholder: "https://www.acmetrading.com", value: form.website || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { children: "Website (Optional)" }),
+          /* @__PURE__ */ jsx119("input", { name: "website", className: inputClass, placeholder: "https://www.acmetrading.com", value: form.website || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Industry" }),
-          /* @__PURE__ */ jsxs104(
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Industry" }),
+          /* @__PURE__ */ jsxs105(
             "select",
             {
               name: "industry",
@@ -13080,80 +13822,80 @@ function PartnerOnboarding() {
               onChange: handleChange,
               required: !0,
               children: [
-                /* @__PURE__ */ jsx118("option", { value: "", children: "Select industry" }),
-                /* @__PURE__ */ jsx118("option", { value: "Services", children: "Services" }),
-                /* @__PURE__ */ jsx118("option", { value: "Manufacturing", children: "Manufacturing" }),
-                /* @__PURE__ */ jsx118("option", { value: "Hospitality", children: "Hospitality" }),
-                /* @__PURE__ */ jsx118("option", { value: "Financial Industry", children: "Financial Industry" }),
-                /* @__PURE__ */ jsx118("option", { value: "Technology", children: "Technology" }),
-                /* @__PURE__ */ jsx118("option", { value: "Education", children: "Education" }),
-                /* @__PURE__ */ jsx118("option", { value: "Healthcare", children: "Healthcare" }),
-                /* @__PURE__ */ jsx118("option", { value: "Retail", children: "Retail" }),
-                /* @__PURE__ */ jsx118("option", { value: "Agriculture", children: "Agriculture" }),
-                /* @__PURE__ */ jsx118("option", { value: "Construction", children: "Construction" }),
-                /* @__PURE__ */ jsx118("option", { value: "Transportation", children: "Transportation" }),
-                /* @__PURE__ */ jsx118("option", { value: "Other", children: "Other" })
+                /* @__PURE__ */ jsx119("option", { value: "", children: "Select industry" }),
+                /* @__PURE__ */ jsx119("option", { value: "Services", children: "Services" }),
+                /* @__PURE__ */ jsx119("option", { value: "Manufacturing", children: "Manufacturing" }),
+                /* @__PURE__ */ jsx119("option", { value: "Hospitality", children: "Hospitality" }),
+                /* @__PURE__ */ jsx119("option", { value: "Financial Industry", children: "Financial Industry" }),
+                /* @__PURE__ */ jsx119("option", { value: "Technology", children: "Technology" }),
+                /* @__PURE__ */ jsx119("option", { value: "Education", children: "Education" }),
+                /* @__PURE__ */ jsx119("option", { value: "Healthcare", children: "Healthcare" }),
+                /* @__PURE__ */ jsx119("option", { value: "Retail", children: "Retail" }),
+                /* @__PURE__ */ jsx119("option", { value: "Agriculture", children: "Agriculture" }),
+                /* @__PURE__ */ jsx119("option", { value: "Construction", children: "Construction" }),
+                /* @__PURE__ */ jsx119("option", { value: "Transportation", children: "Transportation" }),
+                /* @__PURE__ */ jsx119("option", { value: "Other", children: "Other" })
               ]
             }
           )
         ] }),
-        /* @__PURE__ */ jsx118("button", { type: "button", className: "w-full bg-[#4B4870] hover:bg-[#3d3a5c] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg transition-all mt-4 text-base sm:text-lg", onClick: () => setSection(1), children: "Next" })
+        /* @__PURE__ */ jsx119("button", { type: "button", className: "w-full bg-[#4B4870] hover:bg-[#3d3a5c] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg transition-all mt-4 text-base sm:text-lg", onClick: () => setSection(1), children: "Next" })
       ] }),
-      /* @__PURE__ */ jsxs104("div", { className: section === 1 ? "" : "hidden", children: [
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Country of territory" }),
-          /* @__PURE__ */ jsxs104("select", { name: "location_country", required: !0, className: inputClass, value: form.location_country || "", onChange: handleChange, children: [
-            /* @__PURE__ */ jsx118("option", { value: "", children: "Select your country" }),
-            /* @__PURE__ */ jsx118("option", { value: "Nigeria", children: "Nigeria" })
+      /* @__PURE__ */ jsxs105("div", { className: section === 1 ? "" : "hidden", children: [
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Country of territory" }),
+          /* @__PURE__ */ jsxs105("select", { name: "location_country", required: !0, className: inputClass, value: form.location_country || "", onChange: handleChange, children: [
+            /* @__PURE__ */ jsx119("option", { value: "", children: "Select your country" }),
+            /* @__PURE__ */ jsx119("option", { value: "Nigeria", children: "Nigeria" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Street Address" }),
-          /* @__PURE__ */ jsx118("input", { name: "location_street", required: !0, placeholder: "123 Main Street", className: inputClass, value: form.location_street || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Street Address" }),
+          /* @__PURE__ */ jsx119("input", { name: "location_street", required: !0, placeholder: "123 Main Street", className: inputClass, value: form.location_street || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "State" }),
-          /* @__PURE__ */ jsxs104("select", { name: "location_state", required: !0, className: inputClass, value: form.location_state || "", onChange: handleChange, children: [
-            /* @__PURE__ */ jsx118("option", { value: "", children: "Select state" }),
-            /* @__PURE__ */ jsx118("option", { value: "Lagos", children: "Lagos" })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "State" }),
+          /* @__PURE__ */ jsxs105("select", { name: "location_state", required: !0, className: inputClass, value: form.location_state || "", onChange: handleChange, children: [
+            /* @__PURE__ */ jsx119("option", { value: "", children: "Select state" }),
+            /* @__PURE__ */ jsx119("option", { value: "Lagos", children: "Lagos" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "City" }),
-          /* @__PURE__ */ jsx118("input", { name: "location_city", required: !0, className: inputClass, value: form.location_city || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "City" }),
+          /* @__PURE__ */ jsx119("input", { name: "location_city", required: !0, className: inputClass, value: form.location_city || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Postal Code" }),
-          /* @__PURE__ */ jsx118("input", { name: "location_postal", className: inputClass, value: form.location_postal || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Postal Code" }),
+          /* @__PURE__ */ jsx119("input", { name: "location_postal", className: inputClass, value: form.location_postal || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { className: "flex flex-col sm:flex-row gap-3 pt-4 mt-5", children: [
-          /* @__PURE__ */ jsx118("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(0), children: "Back" }),
-          /* @__PURE__ */ jsx118("button", { type: "button", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", onClick: () => setSection(2), children: "Next" })
+        /* @__PURE__ */ jsxs105("div", { className: "flex flex-col sm:flex-row gap-3 pt-4 mt-5", children: [
+          /* @__PURE__ */ jsx119("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(0), children: "Back" }),
+          /* @__PURE__ */ jsx119("button", { type: "button", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", onClick: () => setSection(2), children: "Next" })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs104("div", { className: section === 2 ? "" : "hidden", children: [
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Country of territory" }),
-          /* @__PURE__ */ jsxs104("select", { name: "contact_country", required: !0, className: inputClass, value: form.contact_country || "", onChange: handleChange, children: [
-            /* @__PURE__ */ jsx118("option", { value: "", children: "Select your country" }),
-            /* @__PURE__ */ jsx118("option", { value: "Nigeria", children: "Nigeria" })
+      /* @__PURE__ */ jsxs105("div", { className: section === 2 ? "" : "hidden", children: [
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Country of territory" }),
+          /* @__PURE__ */ jsxs105("select", { name: "contact_country", required: !0, className: inputClass, value: form.contact_country || "", onChange: handleChange, children: [
+            /* @__PURE__ */ jsx119("option", { value: "", children: "Select your country" }),
+            /* @__PURE__ */ jsx119("option", { value: "Nigeria", children: "Nigeria" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Contact Name" }),
-          /* @__PURE__ */ jsx118("input", { name: "contact_name", required: !0, placeholder: "John Doe", className: inputClass, value: form.contact_name || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Contact Name" }),
+          /* @__PURE__ */ jsx119("input", { name: "contact_name", required: !0, placeholder: "John Doe", className: inputClass, value: form.contact_name || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Contact Email" }),
-          /* @__PURE__ */ jsx118("input", { name: "contact_email", required: !0, className: inputClass, value: form.contact_email || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Contact Email" }),
+          /* @__PURE__ */ jsx119("input", { name: "contact_email", required: !0, className: inputClass, value: form.contact_email || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { children: [
-          /* @__PURE__ */ jsx118(Label2, { required: !0, children: "Contact Phone" }),
-          /* @__PURE__ */ jsx118("input", { name: "contact_phone", className: inputClass, value: form.contact_phone || "", onChange: handleChange })
+        /* @__PURE__ */ jsxs105("div", { children: [
+          /* @__PURE__ */ jsx119(Label2, { required: !0, children: "Contact Phone" }),
+          /* @__PURE__ */ jsx119("input", { name: "contact_phone", className: inputClass, value: form.contact_phone || "", onChange: handleChange })
         ] }),
-        /* @__PURE__ */ jsxs104("div", { className: "flex flex-col sm:flex-row gap-3 pt-4", children: [
-          /* @__PURE__ */ jsx118("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(1), children: "Back" }),
-          /* @__PURE__ */ jsx118("button", { type: "submit", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", children: navigation.state === "submitting" ? "Submitting..." : "Submit" })
+        /* @__PURE__ */ jsxs105("div", { className: "flex flex-col sm:flex-row gap-3 pt-4", children: [
+          /* @__PURE__ */ jsx119("button", { type: "button", className: "w-full sm:flex-1 bg-gray-100 text-gray-600 font-semibold py-3 sm:py-4 rounded-xl", onClick: () => setSection(1), children: "Back" }),
+          /* @__PURE__ */ jsx119("button", { type: "submit", className: "w-full sm:flex-[2] bg-[#4B4870] text-white font-semibold py-3 sm:py-4 rounded-xl shadow-lg", children: navigation.state === "submitting" ? "Submitting..." : "Submit" })
         ] })
       ] })
     ] }) })
@@ -13167,11 +13909,11 @@ __export(public_index_exports, {
 });
 
 // app/components/public/landingpage/ContactForm.tsx
-import { jsx as jsx119, jsxs as jsxs105 } from "react/jsx-runtime";
+import { jsx as jsx120, jsxs as jsxs106 } from "react/jsx-runtime";
 function ContactForm() {
-  return /* @__PURE__ */ jsxs105("form", { className: "wrapper flex flex-col gap-6", children: [
-    /* @__PURE__ */ jsxs105("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsx119(
+  return /* @__PURE__ */ jsxs106("form", { className: "wrapper flex flex-col gap-6", children: [
+    /* @__PURE__ */ jsxs106("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx120(
         FormControl,
         {
           as: "input",
@@ -13181,7 +13923,7 @@ function ContactForm() {
           placeholder: "Enter your full name"
         }
       ),
-      /* @__PURE__ */ jsx119(
+      /* @__PURE__ */ jsx120(
         FormControl,
         {
           as: "input",
@@ -13192,7 +13934,7 @@ function ContactForm() {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx119(
+    /* @__PURE__ */ jsx120(
       FormControl,
       {
         as: "input",
@@ -13202,7 +13944,7 @@ function ContactForm() {
         placeholder: "Enter subject"
       }
     ),
-    /* @__PURE__ */ jsx119(
+    /* @__PURE__ */ jsx120(
       FormControl,
       {
         as: "textarea",
@@ -13212,17 +13954,17 @@ function ContactForm() {
         placeholder: "Enter your message here..."
       }
     ),
-    /* @__PURE__ */ jsx119(Button, { element: "button", className: "md:self-end", children: "Submit" })
+    /* @__PURE__ */ jsx120(Button, { element: "button", className: "md:self-end", children: "Submit" })
   ] });
 }
 
 // app/components/public/landingpage/WhyCard.tsx
-import { jsx as jsx120, jsxs as jsxs106 } from "react/jsx-runtime";
+import { jsx as jsx121, jsxs as jsxs107 } from "react/jsx-runtime";
 function WhyCard(props) {
-  return /* @__PURE__ */ jsxs106("article", { className: `block p-8 text-white rounded-3xl ${props.backgroundColor}`, children: [
-    /* @__PURE__ */ jsx120("div", { className: "p-6 mb-8 rounded-3xl bg-[#FFFFFF29] w-fit", children: /* @__PURE__ */ jsx120(Svg, { src: props.icon, width: 24, height: 24 }) }),
-    /* @__PURE__ */ jsx120("h3", { className: "mb-4 text-2xl font-black", children: props.title }),
-    /* @__PURE__ */ jsx120("p", { className: "font-bold", children: props.subtext })
+  return /* @__PURE__ */ jsxs107("article", { className: `block p-8 text-white rounded-3xl ${props.backgroundColor}`, children: [
+    /* @__PURE__ */ jsx121("div", { className: "p-6 mb-8 rounded-3xl bg-[#FFFFFF29] w-fit", children: /* @__PURE__ */ jsx121(Svg, { src: props.icon, width: 24, height: 24 }) }),
+    /* @__PURE__ */ jsx121("h3", { className: "mb-4 text-2xl font-black", children: props.title }),
+    /* @__PURE__ */ jsx121("p", { className: "font-bold", children: props.subtext })
   ] });
 }
 
@@ -13255,100 +13997,100 @@ var whyUsData = [
 ];
 
 // app/components/public/landingpage/SponsorsSlider.tsx
-import { jsx as jsx121 } from "react/jsx-runtime";
+import { jsx as jsx122 } from "react/jsx-runtime";
 function SponsorsSlider() {
-  return /* @__PURE__ */ jsx121(AutoplayCarousel, { children: /* @__PURE__ */ jsx121(CarouselItem, { children: /* @__PURE__ */ jsx121("img", { src: sponsor_logo_default, alt: "Zendesk" }) }) });
+  return /* @__PURE__ */ jsx122(AutoplayCarousel, { children: /* @__PURE__ */ jsx122(CarouselItem, { children: /* @__PURE__ */ jsx122("img", { src: sponsor_logo_default, alt: "Zendesk" }) }) });
 }
 
 // app/routes/_public._index.tsx
-import { jsx as jsx122, jsxs as jsxs107 } from "react/jsx-runtime";
+import { jsx as jsx123, jsxs as jsxs108 } from "react/jsx-runtime";
 function LandingPage() {
-  return /* @__PURE__ */ jsxs107("main", { className: "snap-y", children: [
-    /* @__PURE__ */ jsxs107("section", { className: "wrapper flex flex-col md:flex-row gap-16 xl:gap-24 md:items-center py-8 md:py-16", children: [
-      /* @__PURE__ */ jsxs107("div", { className: "flex flex-col gap-6 sm:gap-8", children: [
-        /* @__PURE__ */ jsxs107("h1", { className: "font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug whitespace-nowrap", children: [
+  return /* @__PURE__ */ jsxs108("main", { className: "snap-y", children: [
+    /* @__PURE__ */ jsxs108("section", { className: "wrapper flex flex-col md:flex-row gap-16 xl:gap-24 md:items-center py-8 md:py-16", children: [
+      /* @__PURE__ */ jsxs108("div", { className: "flex flex-col gap-6 sm:gap-8", children: [
+        /* @__PURE__ */ jsxs108("h1", { className: "font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug whitespace-nowrap", children: [
           "Capturing Moments",
-          /* @__PURE__ */ jsx122("br", {}),
+          /* @__PURE__ */ jsx123("br", {}),
           "Creating ",
-          /* @__PURE__ */ jsx122("span", { className: "text-accent", children: "Memories." })
+          /* @__PURE__ */ jsx123("span", { className: "text-accent", children: "Memories." })
         ] }),
-        /* @__PURE__ */ jsx122("p", { className: "text-xl", children: "Join our monthly/yearly photo contests open to kids, both male and female aged 0-14 years and discover a world of imagination and inspiration." }),
-        /* @__PURE__ */ jsxs107("div", { className: "flex gap-4 flex-wrap", children: [
-          /* @__PURE__ */ jsx122(Button, { element: "button", className: "w-full sm:w-auto", children: "Join Now" }),
-          /* @__PURE__ */ jsx122(Button, { element: "a", href: "/contests", className: "w-full sm:w-auto", variant: "outline", children: "Explore Contests" })
+        /* @__PURE__ */ jsx123("p", { className: "text-xl", children: "Join our monthly/yearly photo contests open to kids, both male and female aged 0-14 years and discover a world of imagination and inspiration." }),
+        /* @__PURE__ */ jsxs108("div", { className: "flex gap-4 flex-wrap", children: [
+          /* @__PURE__ */ jsx123(Button, { element: "button", className: "w-full sm:w-auto", children: "Join Now" }),
+          /* @__PURE__ */ jsx123(Button, { element: "a", href: "/contests", className: "w-full sm:w-auto", variant: "outline", children: "Explore Contests" })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs107("div", { className: "grid grid-cols-3 gap-8 xl:gap-9 w-full", children: [
-        /* @__PURE__ */ jsxs107("div", { className: "flex flex-col gap-8 xl:gap-9", children: [
-          /* @__PURE__ */ jsx122("img", { className: "aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full", src: hero_1_default, alt: "kid smiling" }),
-          /* @__PURE__ */ jsx122("img", { className: "aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_2_default, alt: "kid smiling" })
+      /* @__PURE__ */ jsxs108("div", { className: "grid grid-cols-3 gap-8 xl:gap-9 w-full", children: [
+        /* @__PURE__ */ jsxs108("div", { className: "flex flex-col gap-8 xl:gap-9", children: [
+          /* @__PURE__ */ jsx123("img", { className: "aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full", src: hero_1_default, alt: "kid smiling" }),
+          /* @__PURE__ */ jsx123("img", { className: "aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_2_default, alt: "kid smiling" })
         ] }),
-        /* @__PURE__ */ jsxs107("div", { className: "flex flex-col gap-8 xl:gap-9 justify-center", children: [
-          /* @__PURE__ */ jsx122("img", { className: "aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_3_default, alt: "kid smiling" }),
-          /* @__PURE__ */ jsx122("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_4_default, alt: "kid smiling" })
+        /* @__PURE__ */ jsxs108("div", { className: "flex flex-col gap-8 xl:gap-9 justify-center", children: [
+          /* @__PURE__ */ jsx123("img", { className: "aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_3_default, alt: "kid smiling" }),
+          /* @__PURE__ */ jsx123("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_4_default, alt: "kid smiling" })
         ] }),
-        /* @__PURE__ */ jsx122("div", { className: "flex flex-col justify-center", children: /* @__PURE__ */ jsx122("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_5_default, alt: "kid smiling" }) })
+        /* @__PURE__ */ jsx123("div", { className: "flex flex-col justify-center", children: /* @__PURE__ */ jsx123("img", { className: "aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full", src: hero_5_default, alt: "kid smiling" }) })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs107("section", { className: "wrapper py-8 md:py-16", children: [
-      /* @__PURE__ */ jsx122("h2", { className: "font-bold text-xl mb-4", children: "Who supports us" }),
-      /* @__PURE__ */ jsx122(SponsorsSlider, {})
+    /* @__PURE__ */ jsxs108("section", { className: "wrapper py-8 md:py-16", children: [
+      /* @__PURE__ */ jsx123("h2", { className: "font-bold text-xl mb-4", children: "Who supports us" }),
+      /* @__PURE__ */ jsx123(SponsorsSlider, {})
     ] }),
-    /* @__PURE__ */ jsx122("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsxs107("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxs107("div", { className: "wrapper", children: [
-        /* @__PURE__ */ jsxs107("div", { className: "mb-8", children: [
-          /* @__PURE__ */ jsx122("p", { className: "font-black text-xl", children: "Our Vision" }),
-          /* @__PURE__ */ jsx122("img", { className: "object-cover object-center", src: underline_default, alt: "underline", width: 100 })
+    /* @__PURE__ */ jsx123("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsxs108("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs108("div", { className: "wrapper", children: [
+        /* @__PURE__ */ jsxs108("div", { className: "mb-8", children: [
+          /* @__PURE__ */ jsx123("p", { className: "font-black text-xl", children: "Our Vision" }),
+          /* @__PURE__ */ jsx123("img", { className: "object-cover object-center", src: underline_default, alt: "underline", width: 100 })
         ] }),
-        /* @__PURE__ */ jsxs107("h2", { className: "text-2xl sm:text-3xl font-black mb-6 leading-snug", children: [
+        /* @__PURE__ */ jsxs108("h2", { className: "text-2xl sm:text-3xl font-black mb-6 leading-snug", children: [
           "Crafting ",
-          /* @__PURE__ */ jsx122("span", { className: "text-accent", children: "Unforgettable" }),
+          /* @__PURE__ */ jsx123("span", { className: "text-accent", children: "Unforgettable" }),
           " Moments for Every Child's Special Day."
         ] }),
-        /* @__PURE__ */ jsx122("p", { className: "font-medium", children: "To create uniquely memorable and exciting kid's birthdays, we strive to be entertaining, transparent, innovative, creative, exciting, efficient, and reliable in every aspect of our service." })
+        /* @__PURE__ */ jsx123("p", { className: "font-medium", children: "To create uniquely memorable and exciting kid's birthdays, we strive to be entertaining, transparent, innovative, creative, exciting, efficient, and reliable in every aspect of our service." })
       ] }),
-      /* @__PURE__ */ jsx122("div", { className: "wrapper", children: /* @__PURE__ */ jsx122("img", { className: "object-cover object-center w-full", src: birthday_present_default, alt: "wrapped gift" }) })
+      /* @__PURE__ */ jsx123("div", { className: "wrapper", children: /* @__PURE__ */ jsx123("img", { className: "object-cover object-center w-full", src: birthday_present_default, alt: "wrapped gift" }) })
     ] }) }),
-    /* @__PURE__ */ jsxs107("section", { className: "py-8 md:py-16 wrapper flex flex-col items-center", children: [
-      /* @__PURE__ */ jsxs107("div", { className: "mb-6 sm:mb-16", children: [
-        /* @__PURE__ */ jsx122("h2", { className: "font-satoshi-black text-2xl", children: "Why KOTMY?" }),
-        /* @__PURE__ */ jsx122("img", { className: "object-fill w-[159px] h-5", src: underline_default, alt: "underline" })
+    /* @__PURE__ */ jsxs108("section", { className: "py-8 md:py-16 wrapper flex flex-col items-center", children: [
+      /* @__PURE__ */ jsxs108("div", { className: "mb-6 sm:mb-16", children: [
+        /* @__PURE__ */ jsx123("h2", { className: "font-satoshi-black text-2xl", children: "Why KOTMY?" }),
+        /* @__PURE__ */ jsx123("img", { className: "object-fill w-[159px] h-5", src: underline_default, alt: "underline" })
       ] }),
-      /* @__PURE__ */ jsx122("div", { className: "grid gap-6 lg:gap-12 sm:grid-cols-2 max-w-5xl", children: whyUsData.map((item) => /* @__PURE__ */ jsx122(WhyCard, { backgroundColor: item.bg, icon: item.icon, title: item.title, subtext: item.subtext }, item.title)) })
+      /* @__PURE__ */ jsx123("div", { className: "grid gap-6 lg:gap-12 sm:grid-cols-2 max-w-5xl", children: whyUsData.map((item) => /* @__PURE__ */ jsx123(WhyCard, { backgroundColor: item.bg, icon: item.icon, title: item.title, subtext: item.subtext }, item.title)) })
     ] }),
-    /* @__PURE__ */ jsx122("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsx122(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] }) }),
-    /* @__PURE__ */ jsx122("section", { className: "pt-4 sm:py-8 md:py-16", children: /* @__PURE__ */ jsxs107("div", { className: "sm:wrapper bg-[#817EFB] bg-pattern bg-cover bg-left text-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxs107("div", { className: "wrapper", children: [
-        /* @__PURE__ */ jsx122("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black mb-6 leading-snug", children: "Refer A Friend And Earn Rewards" }),
-        /* @__PURE__ */ jsx122("p", { className: "font-satoshi-medium mb-8", children: "Lorem ipsum dolor sit amet consectetur. Velit egestas auctor in amet dis sed sit egestas. Viverra morbi eget consectetur accumsan integer. Mi et etiam amet est egestas tellus quis." }),
-        /* @__PURE__ */ jsx122("span", { className: "inline-block bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap", children: "COMING SOON" })
+    /* @__PURE__ */ jsx123("section", { className: "py-8 md:py-16", children: /* @__PURE__ */ jsx123(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] }) }),
+    /* @__PURE__ */ jsx123("section", { className: "pt-4 sm:py-8 md:py-16", children: /* @__PURE__ */ jsxs108("div", { className: "sm:wrapper bg-[#817EFB] bg-pattern bg-cover bg-left text-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs108("div", { className: "wrapper", children: [
+        /* @__PURE__ */ jsx123("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black mb-6 leading-snug", children: "Refer A Friend And Earn Rewards" }),
+        /* @__PURE__ */ jsx123("p", { className: "font-satoshi-medium mb-8", children: "Lorem ipsum dolor sit amet consectetur. Velit egestas auctor in amet dis sed sit egestas. Viverra morbi eget consectetur accumsan integer. Mi et etiam amet est egestas tellus quis." }),
+        /* @__PURE__ */ jsx123("span", { className: "inline-block bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap", children: "COMING SOON" })
       ] }),
-      /* @__PURE__ */ jsx122("div", { className: "wrapper bg-[#E7E7E7] rounded-3xl w-full aspect-square" })
+      /* @__PURE__ */ jsx123("div", { className: "wrapper bg-[#E7E7E7] rounded-3xl w-full aspect-square" })
     ] }) }),
-    /* @__PURE__ */ jsx122("section", { id: "contact", className: "sm:py-8 md:py-16 sm:-scroll-m-4 md:-scroll-m-8 snap-start", children: /* @__PURE__ */ jsxs107("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between gap-16 sm:rounded-3xl", children: [
-      /* @__PURE__ */ jsxs107("div", { className: "wrapper flex flex-col gap-12", children: [
-        /* @__PURE__ */ jsx122("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black leading-tight", children: "Do you want to know more about the way we work?" }),
-        /* @__PURE__ */ jsxs107("div", { className: "flex flex-col lg:flex-row gap-6", children: [
-          /* @__PURE__ */ jsxs107("p", { children: [
-            /* @__PURE__ */ jsx122("span", { className: "block font-satoshi-black mb-3", children: "Phone Us" }),
-            /* @__PURE__ */ jsx122("span", { className: "font-satoshi-medium whitespace-nowrap", children: "+234 703 515 9093" })
+    /* @__PURE__ */ jsx123("section", { id: "contact", className: "sm:py-8 md:py-16 sm:-scroll-m-4 md:-scroll-m-8 snap-start", children: /* @__PURE__ */ jsxs108("div", { className: "sm:wrapper bg-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between gap-16 sm:rounded-3xl", children: [
+      /* @__PURE__ */ jsxs108("div", { className: "wrapper flex flex-col gap-12", children: [
+        /* @__PURE__ */ jsx123("h2", { className: "text-2xl sm:text-[40px] font-satoshi-black leading-tight", children: "Do you want to know more about the way we work?" }),
+        /* @__PURE__ */ jsxs108("div", { className: "flex flex-col lg:flex-row gap-6", children: [
+          /* @__PURE__ */ jsxs108("p", { children: [
+            /* @__PURE__ */ jsx123("span", { className: "block font-satoshi-black mb-3", children: "Phone Us" }),
+            /* @__PURE__ */ jsx123("span", { className: "font-satoshi-medium whitespace-nowrap", children: "+234 703 515 9093" })
           ] }),
-          /* @__PURE__ */ jsxs107("p", { children: [
-            /* @__PURE__ */ jsx122("span", { className: "block font-satoshi-black mb-3", children: "Email Us" }),
-            /* @__PURE__ */ jsx122("span", { className: "font-satoshi-medium", children: "kidmonthyear@gmail.com" })
+          /* @__PURE__ */ jsxs108("p", { children: [
+            /* @__PURE__ */ jsx123("span", { className: "block font-satoshi-black mb-3", children: "Email Us" }),
+            /* @__PURE__ */ jsx123("span", { className: "font-satoshi-medium", children: "kidmonthyear@gmail.com" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs107("div", { children: [
-          /* @__PURE__ */ jsx122("span", { className: "block font-satoshi-black mb-3", children: "Follow Us" }),
-          /* @__PURE__ */ jsxs107("span", { className: "flex gap-4", children: [
-            /* @__PURE__ */ jsx122(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
-            /* @__PURE__ */ jsx122(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
-            /* @__PURE__ */ jsx122(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
-            /* @__PURE__ */ jsx122(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
+        /* @__PURE__ */ jsxs108("div", { children: [
+          /* @__PURE__ */ jsx123("span", { className: "block font-satoshi-black mb-3", children: "Follow Us" }),
+          /* @__PURE__ */ jsxs108("span", { className: "flex gap-4", children: [
+            /* @__PURE__ */ jsx123(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx123(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx123(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
+            /* @__PURE__ */ jsx123(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx122(ContactForm, {})
+      /* @__PURE__ */ jsx123(ContactForm, {})
     ] }) })
   ] });
 }
@@ -13357,18 +14099,18 @@ function LandingPage() {
 var admin_overview_exports = {};
 __export(admin_overview_exports, {
   default: () => Home,
-  loader: () => loader49
+  loader: () => loader50
 });
-import { json as json46, redirect as redirect37 } from "@remix-run/node";
-import { useLoaderData as useLoaderData47 } from "@remix-run/react";
+import { json as json47, redirect as redirect38 } from "@remix-run/node";
+import { useLoaderData as useLoaderData48 } from "@remix-run/react";
 
 // app/components/admin/AdminSummary.tsx
-import { jsx as jsx123, jsxs as jsxs108 } from "react/jsx-runtime";
+import { jsx as jsx124, jsxs as jsxs109 } from "react/jsx-runtime";
 function AdminSummary({ users }) {
-  return /* @__PURE__ */ jsxs108("div", { className: "border rounded-xl overflow-hidden basis-3/5 max-w-xl", children: [
-    /* @__PURE__ */ jsxs108("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsx123("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Admin Accounts" }),
-      /* @__PURE__ */ jsx123(
+  return /* @__PURE__ */ jsxs109("div", { className: "border rounded-xl overflow-hidden basis-3/5 max-w-xl", children: [
+    /* @__PURE__ */ jsxs109("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx124("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Admin Accounts" }),
+      /* @__PURE__ */ jsx124(
         Cta_default,
         {
           element: "link",
@@ -13379,20 +14121,20 @@ function AdminSummary({ users }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx123("div", { className: "px-4 grid", children: users.slice(0, 5).map((user) => /* @__PURE__ */ jsx123(AdminUserCard, { user, className: "border-0 shadow-none rounded-none border-b last:border-b-0" }, user._id)) })
+    /* @__PURE__ */ jsx124("div", { className: "px-4 grid", children: users.slice(0, 5).map((user) => /* @__PURE__ */ jsx124(AdminUserCard, { user, className: "border-0 shadow-none rounded-none border-b last:border-b-0" }, user._id)) })
   ] });
 }
 
 // app/components/admin/ArticleSummary.tsx
-import { jsx as jsx124 } from "react/jsx-runtime";
+import { jsx as jsx125 } from "react/jsx-runtime";
 function ArticleSummary() {
-  return /* @__PURE__ */ jsx124("div", { className: "basis-1/5 p-3" });
+  return /* @__PURE__ */ jsx125("div", { className: "basis-1/5 p-3" });
 }
 
 // app/components/admin/Aggregator.tsx
-import { jsx as jsx125 } from "react/jsx-runtime";
+import { jsx as jsx126 } from "react/jsx-runtime";
 function Aggregator({ className, children, ...props }) {
-  return /* @__PURE__ */ jsx125("div", { className: "@container", children: /* @__PURE__ */ jsx125(
+  return /* @__PURE__ */ jsx126("div", { className: "@container", children: /* @__PURE__ */ jsx126(
     "aside",
     {
       ...props,
@@ -13406,17 +14148,17 @@ function Aggregator({ className, children, ...props }) {
   ) });
 }
 function AggregatorItem({ className, children, ...props }) {
-  return /* @__PURE__ */ jsx125("div", { className: cn("flex gap-3 items-center text-nowrap min-w-48", className), ...props, children });
+  return /* @__PURE__ */ jsx126("div", { className: cn("flex gap-3 items-center text-nowrap min-w-48", className), ...props, children });
 }
 
 // app/components/admin/ContestSummary.tsx
-import { jsx as jsx126, jsxs as jsxs109 } from "react/jsx-runtime";
+import { jsx as jsx127, jsxs as jsxs110 } from "react/jsx-runtime";
 function ContestSummary({ contests: contests2 }) {
   let ongoingCount = contests2.filter((contest) => contest.status === "ongoing").length, yetToStartCount = contests2.filter((contest) => contest.status === "yet_to_start").length, closedCount = contests2.filter((contest) => ["completed", "registering"].includes(contest.status)).length;
-  return /* @__PURE__ */ jsxs109("div", { className: "border rounded-xl overflow-hidden grow", children: [
-    /* @__PURE__ */ jsxs109("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsx126("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Contests" }),
-      /* @__PURE__ */ jsx126(
+  return /* @__PURE__ */ jsxs110("div", { className: "border rounded-xl overflow-hidden grow", children: [
+    /* @__PURE__ */ jsxs110("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx127("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Contests" }),
+      /* @__PURE__ */ jsx127(
         Cta_default,
         {
           element: "link",
@@ -13427,50 +14169,50 @@ function ContestSummary({ contests: contests2 }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs109("div", { className: "px-4", children: [
-      /* @__PURE__ */ jsxs109(Aggregator, { className: "my-4", children: [
-        /* @__PURE__ */ jsxs109(AggregatorItem, { children: [
-          /* @__PURE__ */ jsx126("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx126(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx126("span", { className: "text-primary font-satoshi-black", children: contests2.length }),
-            /* @__PURE__ */ jsx126("span", { className: "", children: "Contests Created" })
+    /* @__PURE__ */ jsxs110("div", { className: "px-4", children: [
+      /* @__PURE__ */ jsxs110(Aggregator, { className: "my-4", children: [
+        /* @__PURE__ */ jsxs110(AggregatorItem, { children: [
+          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: contests2.length }),
+            /* @__PURE__ */ jsx127("span", { className: "", children: "Contests Created" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs109(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx126("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx126(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx126("span", { className: "text-primary font-satoshi-black", children: ongoingCount }),
-            /* @__PURE__ */ jsx126("span", { className: "", children: "Ongoing Contests" })
+        /* @__PURE__ */ jsxs110(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: ongoingCount }),
+            /* @__PURE__ */ jsx127("span", { className: "", children: "Ongoing Contests" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs109(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx126("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx126(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx126("span", { className: "text-primary font-satoshi-black", children: yetToStartCount }),
-            /* @__PURE__ */ jsx126("span", { className: "", children: "Yet To Start Contests" })
+        /* @__PURE__ */ jsxs110(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: yetToStartCount }),
+            /* @__PURE__ */ jsx127("span", { className: "", children: "Yet To Start Contests" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs109(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx126("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx126(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs109("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx126("span", { className: "text-primary font-satoshi-black", children: closedCount }),
-            /* @__PURE__ */ jsx126("span", { className: "", children: "Closed Contests" })
+        /* @__PURE__ */ jsxs110(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: closedCount }),
+            /* @__PURE__ */ jsx127("span", { className: "", children: "Closed Contests" })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx126(ContestTable, { data: contests2.slice(0, 5) })
+      /* @__PURE__ */ jsx127(ContestTable, { data: contests2.slice(0, 5) })
     ] })
   ] });
 }
 
 // app/components/admin/TournamentSummary.tsx
-import { jsx as jsx127, jsxs as jsxs110 } from "react/jsx-runtime";
+import { jsx as jsx128, jsxs as jsxs111 } from "react/jsx-runtime";
 function TournamentSummary({ tournaments }) {
   let numberOfContests = tournaments.reduce((total, tournament) => total + tournament.contests.length, 0);
-  return /* @__PURE__ */ jsxs110("div", { className: "border rounded-xl overflow-hidden grow max-w-2xl", children: [
-    /* @__PURE__ */ jsxs110("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
-      /* @__PURE__ */ jsx127("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Tournaments" }),
-      /* @__PURE__ */ jsx127(
+  return /* @__PURE__ */ jsxs111("div", { className: "border rounded-xl overflow-hidden grow max-w-2xl", children: [
+    /* @__PURE__ */ jsxs111("div", { className: "flex gap-2 xs:gap-4 justify-between items-center py-3 px-4 border-b", children: [
+      /* @__PURE__ */ jsx128("h3", { className: "text-primary font-bold max-sm:text-xs", children: "Tournaments" }),
+      /* @__PURE__ */ jsx128(
         Cta_default,
         {
           element: "link",
@@ -13481,38 +14223,38 @@ function TournamentSummary({ tournaments }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs110("div", { className: "px-4 grid", children: [
-      /* @__PURE__ */ jsxs110(Aggregator, { className: "mt-4", children: [
-        /* @__PURE__ */ jsxs110(AggregatorItem, { children: [
-          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: tournaments.length }),
-            /* @__PURE__ */ jsx127("span", { className: "", children: "Tournaments Created" })
+    /* @__PURE__ */ jsxs111("div", { className: "px-4 grid", children: [
+      /* @__PURE__ */ jsxs111(Aggregator, { className: "mt-4", children: [
+        /* @__PURE__ */ jsxs111(AggregatorItem, { children: [
+          /* @__PURE__ */ jsx128("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx128(Svg, { src: icons.adminTournamentIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs111("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx128("span", { className: "text-primary font-satoshi-black", children: tournaments.length }),
+            /* @__PURE__ */ jsx128("span", { className: "", children: "Tournaments Created" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs110(AggregatorItem, { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx127("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx127(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
-          /* @__PURE__ */ jsxs110("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx127("span", { className: "text-primary font-satoshi-black", children: numberOfContests }),
-            /* @__PURE__ */ jsx127("span", { className: "", children: "Contests Created" })
+        /* @__PURE__ */ jsxs111(AggregatorItem, { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx128("span", { className: "bg-tertiary p-2 rounded-full border", children: /* @__PURE__ */ jsx128(Svg, { src: icons.adminContestIcon, className: "text-primary" }) }),
+          /* @__PURE__ */ jsxs111("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx128("span", { className: "text-primary font-satoshi-black", children: numberOfContests }),
+            /* @__PURE__ */ jsx128("span", { className: "", children: "Contests Created" })
           ] })
         ] })
       ] }),
-      tournaments.slice(0, 2).map((tournament) => /* @__PURE__ */ jsx127(TournamentCard, { tournament, className: "border-0 shadow-none bg-transparent rounded-none border-b last:border-b-0" }, tournament.id))
+      tournaments.slice(0, 2).map((tournament) => /* @__PURE__ */ jsx128(TournamentCard, { tournament, className: "border-0 shadow-none bg-transparent rounded-none border-b last:border-b-0" }, tournament.id))
     ] })
   ] });
 }
 
 // app/routes/admin.overview.tsx
-import { jsx as jsx128, jsxs as jsxs111 } from "react/jsx-runtime";
-async function loader49({ request }) {
+import { jsx as jsx129, jsxs as jsxs112 } from "react/jsx-runtime";
+async function loader50({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect37("/login");
+    return redirect38("/login");
   let { data: contests2 } = await contestRepo.getContests(), adminUsersquery = {
     has_admin_access: !0
   }, adminUsers3 = (await adminRepo.queryUsers(cookieHeader, adminUsersquery)).data?.items ?? [], { data: tournaments } = await tournamentRepo.getTournaments();
-  return json46({
+  return json47({
     adminUsers: adminUsers3,
     tournaments: tournaments ?? [],
     contests: contests2 ?? [],
@@ -13524,17 +14266,17 @@ async function loader49({ request }) {
   });
 }
 function Home() {
-  let { adminUsers: adminUsers3, tournaments, contests: contests2, transactions } = useLoaderData47();
-  return /* @__PURE__ */ jsxs111("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs111("h1", { className: "grid font-medium text-primary", children: [
-      /* @__PURE__ */ jsx128("span", { className: "text-xl sm:text-2xl font-satoshi-bold line-clamp-1", children: "Hello Admin" }),
-      /* @__PURE__ */ jsx128("span", { className: "line-clamp-1", children: "Welcome back to KOTMY \u{1F44B}" })
+  let { adminUsers: adminUsers3, tournaments, contests: contests2, transactions } = useLoaderData48();
+  return /* @__PURE__ */ jsxs112("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs112("h1", { className: "grid font-medium text-primary", children: [
+      /* @__PURE__ */ jsx129("span", { className: "text-xl sm:text-2xl font-satoshi-bold line-clamp-1", children: "Hello Admin" }),
+      /* @__PURE__ */ jsx129("span", { className: "line-clamp-1", children: "Welcome back to KOTMY \u{1F44B}" })
     ] }),
-    /* @__PURE__ */ jsxs111("section", { className: "my-6 grid sm:flex flex-wrap items-start gap-6", children: [
-      /* @__PURE__ */ jsx128(AdminSummary, { users: adminUsers3 }),
-      /* @__PURE__ */ jsx128(ArticleSummary, {}),
-      /* @__PURE__ */ jsx128(TournamentSummary, { tournaments }),
-      /* @__PURE__ */ jsx128(ContestSummary, { contests: contests2 })
+    /* @__PURE__ */ jsxs112("section", { className: "my-6 grid sm:flex flex-wrap items-start gap-6", children: [
+      /* @__PURE__ */ jsx129(AdminSummary, { users: adminUsers3 }),
+      /* @__PURE__ */ jsx129(ArticleSummary, {}),
+      /* @__PURE__ */ jsx129(TournamentSummary, { tournaments }),
+      /* @__PURE__ */ jsx129(ContestSummary, { contests: contests2 })
     ] })
   ] });
 }
@@ -13543,63 +14285,63 @@ function Home() {
 var user_affiliate_exports = {};
 __export(user_affiliate_exports, {
   default: () => AffilliateLeaderBoard2,
-  loader: () => loader50
+  loader: () => loader51
 });
-import { json as json47, redirect as redirect38 } from "@remix-run/node";
-import { useLoaderData as useLoaderData48, Form as Form35, useNavigation as useNavigation23 } from "@remix-run/react";
-import { jsx as jsx129, jsxs as jsxs112 } from "react/jsx-runtime";
-async function loader50({ request }) {
+import { json as json48, redirect as redirect39 } from "@remix-run/node";
+import { useLoaderData as useLoaderData49, Form as Form36, useNavigation as useNavigation24 } from "@remix-run/react";
+import { jsx as jsx130, jsxs as jsxs113 } from "react/jsx-runtime";
+async function loader51({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect38("/login");
+    return redirect39("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     v && (query[k] = v);
   let walletsResponse = await walletRepo.getUserWallets(cookieHeader);
   if (!walletsResponse.data)
-    return redirect38("/login");
+    return redirect39("/login");
   query.wallet_id || (query.wallet_id = walletsResponse.data[0]?.str_id);
   let referralBoardRes = await walletRepo.queryReferralBoard(cookieHeader, query);
-  return referralBoardRes.authRequired ? redirect38("/login") : json47({ wallets: walletsResponse.data, referralBoardRes: referralBoardRes.data, query });
+  return referralBoardRes.authRequired ? redirect39("/login") : json48({ wallets: walletsResponse.data, referralBoardRes: referralBoardRes.data, query });
 }
 function AffilliateLeaderBoard2() {
-  let { wallets, referralBoardRes, query } = useLoaderData48(), navigation = useNavigation23();
-  return console.log(referralBoardRes), /* @__PURE__ */ jsxs112("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsx129("p", { className: "font-semibold", children: "Affiliates leader board" }),
-    /* @__PURE__ */ jsx129("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx129(Form35, { method: "get", onSubmit: (e) => {
+  let { wallets, referralBoardRes, query } = useLoaderData49(), navigation = useNavigation24();
+  return console.log(referralBoardRes), /* @__PURE__ */ jsxs113("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsx130("p", { className: "font-semibold", children: "Affiliates leader board" }),
+    /* @__PURE__ */ jsx130("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx130(Form36, { method: "get", onSubmit: (e) => {
       try {
       } catch {
       }
-    }, className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs112("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
-      /* @__PURE__ */ jsxs112("label", { className: "flex flex-col text-xs text-gray-600", children: [
-        /* @__PURE__ */ jsx129("span", { className: "mb-1", children: "From" }),
-        /* @__PURE__ */ jsx129("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+    }, className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs113("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
+      /* @__PURE__ */ jsxs113("label", { className: "flex flex-col text-xs text-gray-600", children: [
+        /* @__PURE__ */ jsx130("span", { className: "mb-1", children: "From" }),
+        /* @__PURE__ */ jsx130("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
       ] }),
-      /* @__PURE__ */ jsxs112("label", { className: "flex flex-col text-xs text-gray-600", children: [
-        /* @__PURE__ */ jsx129("span", { className: "mb-1", children: "To" }),
-        /* @__PURE__ */ jsx129("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+      /* @__PURE__ */ jsxs113("label", { className: "flex flex-col text-xs text-gray-600", children: [
+        /* @__PURE__ */ jsx130("span", { className: "mb-1", children: "To" }),
+        /* @__PURE__ */ jsx130("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
       ] }),
-      /* @__PURE__ */ jsxs112("label", { className: "flex flex-col text-xs text-gray-600", children: [
-        /* @__PURE__ */ jsx129("span", { className: "mb-1", children: "Currency" }),
-        /* @__PURE__ */ jsx129("select", { id: "wallet_id", name: "wallet_id", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: wallets.map((wallet) => /* @__PURE__ */ jsx129("option", { value: wallet.str_id, children: wallet.wallet_currency }, wallet.str_id)) })
+      /* @__PURE__ */ jsxs113("label", { className: "flex flex-col text-xs text-gray-600", children: [
+        /* @__PURE__ */ jsx130("span", { className: "mb-1", children: "Currency" }),
+        /* @__PURE__ */ jsx130("select", { id: "wallet_id", name: "wallet_id", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: wallets.map((wallet) => /* @__PURE__ */ jsx130("option", { value: wallet.str_id, children: wallet.wallet_currency }, wallet.str_id)) })
       ] }),
-      /* @__PURE__ */ jsx129("div", { className: "flex justify-end", children: /* @__PURE__ */ jsx129("button", { type: "submit", disabled: navigation.state === "submitting", className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm", children: navigation.state === "submitting" ? "Searching..." : "Search" }) })
+      /* @__PURE__ */ jsx130("div", { className: "flex justify-end", children: /* @__PURE__ */ jsx130("button", { type: "submit", disabled: navigation.state === "submitting", className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm", children: navigation.state === "submitting" ? "Searching..." : "Search" }) })
     ] }) }) }),
-    /* @__PURE__ */ jsx129("div", { className: "sm:block w-full overflow-x-auto", children: /* @__PURE__ */ jsxs112("table", { className: "w-full table-auto", children: [
-      /* @__PURE__ */ jsx129("thead", { children: /* @__PURE__ */ jsxs112("tr", { className: "border-b border-secondary", children: [
-        /* @__PURE__ */ jsx129("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contestant Name" }),
-        /* @__PURE__ */ jsx129("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contestant Code" }),
-        /* @__PURE__ */ jsx129("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contest Name" }),
-        /* @__PURE__ */ jsx129("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Reward Earned" })
+    /* @__PURE__ */ jsx130("div", { className: "sm:block w-full overflow-x-auto", children: /* @__PURE__ */ jsxs113("table", { className: "w-full table-auto", children: [
+      /* @__PURE__ */ jsx130("thead", { children: /* @__PURE__ */ jsxs113("tr", { className: "border-b border-secondary", children: [
+        /* @__PURE__ */ jsx130("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contestant Name" }),
+        /* @__PURE__ */ jsx130("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contestant Code" }),
+        /* @__PURE__ */ jsx130("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Contest Name" }),
+        /* @__PURE__ */ jsx130("th", { className: "text-left capitalize font-satoshi-black p-3", children: "Reward Earned" })
       ] }) }),
-      /* @__PURE__ */ jsx129("tbody", { children: referralBoardRes?.items.map((referrerBoard, index) => /* @__PURE__ */ jsxs112("tr", { className: "border-b border-secondary", children: [
-        /* @__PURE__ */ jsx129("td", { className: "p-3", children: `${referrerBoard.contestant_biodata.first_name} ${referrerBoard.contestant_biodata.last_name}` }),
-        /* @__PURE__ */ jsx129("td", { className: "p-3", children: referrerBoard.contestant_deets[0]?.code }),
-        /* @__PURE__ */ jsx129("td", { className: "p-3", children: referrerBoard.current_contest.name }),
-        /* @__PURE__ */ jsx129("td", { className: "p-3", children: `${referralBoardRes.summary?.currency} ${referrerBoard.total_earning.toLocaleString()}` })
+      /* @__PURE__ */ jsx130("tbody", { children: referralBoardRes?.items.map((referrerBoard, index) => /* @__PURE__ */ jsxs113("tr", { className: "border-b border-secondary", children: [
+        /* @__PURE__ */ jsx130("td", { className: "p-3", children: `${referrerBoard.contestant_biodata.first_name} ${referrerBoard.contestant_biodata.last_name}` }),
+        /* @__PURE__ */ jsx130("td", { className: "p-3", children: referrerBoard.contestant_deets[0]?.code }),
+        /* @__PURE__ */ jsx130("td", { className: "p-3", children: referrerBoard.current_contest.name }),
+        /* @__PURE__ */ jsx130("td", { className: "p-3", children: `${referralBoardRes.summary?.currency} ${referrerBoard.total_earning.toLocaleString()}` })
       ] }, index)) })
     ] }) }),
-    /* @__PURE__ */ jsx129("div", { className: "hidden sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx129(Pagination, { lastKey: referralBoardRes?.last_key_id, pageSize: referralBoardRes?.items_per_page, firstKey: referralBoardRes?.first_key_id }) })
+    /* @__PURE__ */ jsx130("div", { className: "hidden sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx130(Pagination, { lastKey: referralBoardRes?.last_key_id, pageSize: referralBoardRes?.items_per_page, firstKey: referralBoardRes?.first_key_id }) })
   ] });
 }
 
@@ -13607,32 +14349,32 @@ function AffilliateLeaderBoard2() {
 var partners_home_exports = {};
 __export(partners_home_exports, {
   default: () => PartnerProducts2,
-  loader: () => loader51
+  loader: () => loader52
 });
-import { json as json48, redirect as redirect39 } from "@remix-run/node";
-import { useLoaderData as useLoaderData49, Form as Form36, useNavigation as useNavigation24 } from "@remix-run/react";
-import { jsx as jsx130, jsxs as jsxs113 } from "react/jsx-runtime";
-async function loader51({ request }) {
+import { json as json49, redirect as redirect40 } from "@remix-run/node";
+import { useLoaderData as useLoaderData50, Form as Form37, useNavigation as useNavigation25 } from "@remix-run/react";
+import { jsx as jsx131, jsxs as jsxs114 } from "react/jsx-runtime";
+async function loader52({ request }) {
   let headings = ["full_name", "email", "username", "roles", "access"], cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect39("/login");
+    return redirect40("/login");
   let url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerProducts(query, cookieHeader);
-  return pagedUsersRes.authRequired ? redirect39("/login") : (console.log(pagedUsersRes), json48({ data: pagedUsersRes.data, query }));
+  return pagedUsersRes.authRequired ? redirect40("/login") : (console.log(pagedUsersRes), json49({ data: pagedUsersRes.data, query }));
 }
 function PartnerProducts2() {
-  let { data, query } = useLoaderData49(), navigation = useNavigation24();
-  return console.log(data), /* @__PURE__ */ jsxs113("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs113("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
-      /* @__PURE__ */ jsx130("h1", { className: "text-2xl font-black text-primary", children: "Products" }),
-      /* @__PURE__ */ jsx130(Cta_default, { element: "link", to: "/partners/add", className: " gap-2 items-center rounded-lg px-3 py-2", children: "Add Product" })
+  let { data, query } = useLoaderData50(), navigation = useNavigation25();
+  return console.log(data), /* @__PURE__ */ jsxs114("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs114("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
+      /* @__PURE__ */ jsx131("h1", { className: "text-2xl font-black text-primary", children: "Products" }),
+      /* @__PURE__ */ jsx131(Cta_default, { element: "link", to: "/partners/add", className: " gap-2 items-center rounded-lg px-3 py-2", children: "Add Product" })
     ] }),
-    /* @__PURE__ */ jsx130("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx130(Form36, { method: "get", className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs113("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
-      /* @__PURE__ */ jsxs113("div", { children: [
-        /* @__PURE__ */ jsx130("label", { className: "block text-xs font-semibold mb-1", children: "Product Price" }),
-        /* @__PURE__ */ jsx130(
+    /* @__PURE__ */ jsx131("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx131(Form37, { method: "get", className: "w-full bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs114("div", { className: "grid grid-cols-1 sm:grid-cols-4 gap-3 items-end", children: [
+      /* @__PURE__ */ jsxs114("div", { children: [
+        /* @__PURE__ */ jsx131("label", { className: "block text-xs font-semibold mb-1", children: "Product Price" }),
+        /* @__PURE__ */ jsx131(
           "input",
           {
             type: "number",
@@ -13642,9 +14384,9 @@ function PartnerProducts2() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs113("div", { children: [
-        /* @__PURE__ */ jsx130("label", { className: "block text-xs font-semibold mb-1", children: "Name, Description or tag" }),
-        /* @__PURE__ */ jsx130(
+      /* @__PURE__ */ jsxs114("div", { children: [
+        /* @__PURE__ */ jsx131("label", { className: "block text-xs font-semibold mb-1", children: "Name, Description or tag" }),
+        /* @__PURE__ */ jsx131(
           "input",
           {
             type: "text",
@@ -13654,31 +14396,31 @@ function PartnerProducts2() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs113("div", { children: [
-        /* @__PURE__ */ jsx130("label", { className: "block text-xs font-semibold mb-1", children: "Status" }),
-        /* @__PURE__ */ jsxs113(
+      /* @__PURE__ */ jsxs114("div", { children: [
+        /* @__PURE__ */ jsx131("label", { className: "block text-xs font-semibold mb-1", children: "Status" }),
+        /* @__PURE__ */ jsxs114(
           "select",
           {
             name: "status",
             className: "w-full border rounded-lg px-3 py-2",
             children: [
-              /* @__PURE__ */ jsx130("option", { value: "available", children: "Available" }),
-              /* @__PURE__ */ jsx130("option", { value: "out_of_stock", children: "Out of Stock" }),
-              /* @__PURE__ */ jsx130("option", { value: "suspended", children: "Suspended" })
+              /* @__PURE__ */ jsx131("option", { value: "available", children: "Available" }),
+              /* @__PURE__ */ jsx131("option", { value: "out_of_stock", children: "Out of Stock" }),
+              /* @__PURE__ */ jsx131("option", { value: "suspended", children: "Suspended" })
             ]
           }
         )
       ] }),
-      /* @__PURE__ */ jsx130("div", { className: "sm:col-span-1 flex gap-2 mt-2 sm:mt-0", children: /* @__PURE__ */ jsx130("button", { type: "submit", className: "bg-[#4B4870] text-white px-4 py-2 rounded-lg font-semibold", children: "Search" }) })
+      /* @__PURE__ */ jsx131("div", { className: "sm:col-span-1 flex gap-2 mt-2 sm:mt-0", children: /* @__PURE__ */ jsx131("button", { type: "submit", className: "bg-[#4B4870] text-white px-4 py-2 rounded-lg font-semibold", children: "Search" }) })
     ] }) }) }),
-    /* @__PURE__ */ jsx130("div", { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8", children: data?.items && data.items.length > 0 ? data.items.map((product) => {
+    /* @__PURE__ */ jsx131("div", { className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8", children: data?.items && data.items.length > 0 ? data.items.map((product) => {
       let imgSrc = product.main_image_url && product.main_image_url !== "" ? product.main_image_url : no_image_default;
-      return /* @__PURE__ */ jsxs113(
+      return /* @__PURE__ */ jsxs114(
         "div",
         {
           className: "flex flex-col bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden h-full min-h-[340px]",
           children: [
-            /* @__PURE__ */ jsx130("div", { className: "h-40 w-full bg-gray-100 flex items-center justify-center overflow-hidden", children: /* @__PURE__ */ jsx130(
+            /* @__PURE__ */ jsx131("div", { className: "h-40 w-full bg-gray-100 flex items-center justify-center overflow-hidden", children: /* @__PURE__ */ jsx131(
               "img",
               {
                 src: imgSrc,
@@ -13687,32 +14429,32 @@ function PartnerProducts2() {
                 loading: "lazy"
               }
             ) }),
-            /* @__PURE__ */ jsxs113("div", { className: "flex flex-col flex-1 p-4 gap-2", children: [
-              /* @__PURE__ */ jsxs113("div", { className: "flex items-center justify-between gap-2", children: [
-                /* @__PURE__ */ jsx130("span", { className: "font-bold text-base text-primary line-clamp-1", children: product.name }),
-                /* @__PURE__ */ jsx130("span", { className: "text-xs px-2 py-1 rounded bg-gray-50 border border-gray-200 font-semibold capitalize", children: product.status.replace(/_/g, " ") })
+            /* @__PURE__ */ jsxs114("div", { className: "flex flex-col flex-1 p-4 gap-2", children: [
+              /* @__PURE__ */ jsxs114("div", { className: "flex items-center justify-between gap-2", children: [
+                /* @__PURE__ */ jsx131("span", { className: "font-bold text-base text-primary line-clamp-1", children: product.name }),
+                /* @__PURE__ */ jsx131("span", { className: "text-xs px-2 py-1 rounded bg-gray-50 border border-gray-200 font-semibold capitalize", children: product.status.replace(/_/g, " ") })
               ] }),
-              /* @__PURE__ */ jsx130("div", { className: "text-sm text-gray-500 line-clamp-2 mb-1", children: product.description }),
-              /* @__PURE__ */ jsxs113("div", { className: "flex items-center gap-2 text-lg font-bold text-accent", children: [
+              /* @__PURE__ */ jsx131("div", { className: "text-sm text-gray-500 line-clamp-2 mb-1", children: product.description }),
+              /* @__PURE__ */ jsxs114("div", { className: "flex items-center gap-2 text-lg font-bold text-accent", children: [
                 product.currency,
                 " ",
                 product.price_min,
-                product.price_max && product.price_max !== product.price_min ? /* @__PURE__ */ jsxs113("span", { className: "text-gray-400 font-normal text-base", children: [
+                product.price_max && product.price_max !== product.price_min ? /* @__PURE__ */ jsxs114("span", { className: "text-gray-400 font-normal text-base", children: [
                   "- ",
                   product.currency,
                   " ",
                   product.price_max
                 ] }) : null
               ] }),
-              /* @__PURE__ */ jsx130("div", { className: "flex flex-wrap gap-1 mt-1", children: product.tags && product.tags.length > 0 && product.tags.map((tag) => /* @__PURE__ */ jsx130("span", { className: "bg-indigo-50 text-indigo-600 text-xs px-2 py-0.5 rounded-full", children: tag }, tag)) }),
-              /* @__PURE__ */ jsxs113("div", { className: "mt-auto flex items-center justify-between pt-2", children: [
-                /* @__PURE__ */ jsx130("span", { className: "text-xs text-gray-400", children: product.category }),
-                /* @__PURE__ */ jsxs113("div", { className: "flex items-center gap-2", children: [
-                  product.sku && /* @__PURE__ */ jsxs113("span", { className: "text-xs text-gray-400", children: [
+              /* @__PURE__ */ jsx131("div", { className: "flex flex-wrap gap-1 mt-1", children: product.tags && product.tags.length > 0 && product.tags.map((tag) => /* @__PURE__ */ jsx131("span", { className: "bg-indigo-50 text-indigo-600 text-xs px-2 py-0.5 rounded-full", children: tag }, tag)) }),
+              /* @__PURE__ */ jsxs114("div", { className: "mt-auto flex items-center justify-between pt-2", children: [
+                /* @__PURE__ */ jsx131("span", { className: "text-xs text-gray-400", children: product.category }),
+                /* @__PURE__ */ jsxs114("div", { className: "flex items-center gap-2", children: [
+                  product.sku && /* @__PURE__ */ jsxs114("span", { className: "text-xs text-gray-400", children: [
                     "SKU: ",
                     product.sku
                   ] }),
-                  /* @__PURE__ */ jsx130(Cta_default, { element: "link", to: `/partners/product/update/${product._id}`, className: "px-3 py-1 rounded-md text-xs font-semibold border-secondary", variant: "outline", children: "Edit" })
+                  /* @__PURE__ */ jsx131(Cta_default, { element: "link", to: `/partners/product/update/${product._id}`, className: "px-3 py-1 rounded-md text-xs font-semibold border-secondary", variant: "outline", children: "Edit" })
                 ] })
               ] })
             ] })
@@ -13720,45 +14462,45 @@ function PartnerProducts2() {
         },
         product._id
       );
-    }) : /* @__PURE__ */ jsx130("div", { className: "col-span-full text-center text-gray-400 py-12", children: "No products found." }) }),
-    /* @__PURE__ */ jsx130("div", { className: " sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx130(Pagination, { lastKey: query?.last_key_id, pageSize: query?.items_per_page, firstKey: query?.first_key_id }) })
+    }) : /* @__PURE__ */ jsx131("div", { className: "col-span-full text-center text-gray-400 py-12", children: "No products found." }) }),
+    /* @__PURE__ */ jsx131("div", { className: " sm:flex justify-between items-center my-4", children: /* @__PURE__ */ jsx131(Pagination, { lastKey: query?.last_key_id, pageSize: query?.items_per_page, firstKey: query?.first_key_id }) })
   ] });
 }
 
 // app/routes/admin._index.tsx
 var admin_index_exports = {};
 __export(admin_index_exports, {
-  loader: () => loader52
+  loader: () => loader53
 });
-import { redirect as redirect40 } from "@remix-run/node";
-function loader52() {
-  return redirect40("/admin/overview");
+import { redirect as redirect41 } from "@remix-run/node";
+function loader53() {
+  return redirect41("/admin/overview");
 }
 
 // app/routes/partners.add.tsx
 var partners_add_exports = {};
 __export(partners_add_exports, {
-  action: () => action29,
+  action: () => action30,
   default: () => AddPartnerProduct,
-  loader: () => loader53
+  loader: () => loader54
 });
-import { json as json49, redirect as redirect41 } from "@remix-run/node";
-import { Form as Form37, useActionData as useActionData16, useLoaderData as useLoaderData50, useNavigate as useNavigate23, useNavigation as useNavigation25 } from "@remix-run/react";
-import { useEffect as useEffect32, useState as useState42 } from "react";
-import { jsx as jsx131, jsxs as jsxs114 } from "react/jsx-runtime";
-async function loader53({ request }) {
+import { json as json50, redirect as redirect42 } from "@remix-run/node";
+import { Form as Form38, useActionData as useActionData16, useLoaderData as useLoaderData51, useNavigate as useNavigate23, useNavigation as useNavigation26 } from "@remix-run/react";
+import { useEffect as useEffect33, useState as useState43 } from "react";
+import { jsx as jsx132, jsxs as jsxs115 } from "react/jsx-runtime";
+async function loader54({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect41("/login");
+    return redirect42("/login");
   let locationsRes = await partnerServer.getPartnerLocations({ page_size: 1e3 }, cookieHeader);
-  return locationsRes.authRequired ? redirect41("/login") : json49({
+  return locationsRes.authRequired ? redirect42("/login") : json50({
     locations: locationsRes.data?.items ?? []
   });
 }
-async function action29({ request }) {
+async function action30({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect41("/login");
+    return redirect42("/login");
   let formData = await request.formData(), dto = {
     name: formData.get("name"),
     description: formData.get("description"),
@@ -13775,8 +14517,8 @@ async function action29({ request }) {
   return await partnerServer.addPartnerProduct(dto, cookieHeader);
 }
 function AddPartnerProduct() {
-  let { locations } = useLoaderData50(), actionData = useActionData16(), isSubmitting = useNavigation25().state === "submitting", navigate = useNavigate23(), [tags, setTags] = useState42("");
-  return useEffect32(() => {
+  let { locations } = useLoaderData51(), actionData = useActionData16(), isSubmitting = useNavigation26().state === "submitting", navigate = useNavigate23(), [tags, setTags] = useState43("");
+  return useEffect33(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Add product failed",
@@ -13786,48 +14528,48 @@ function AddPartnerProduct() {
       title: "Product added",
       description: "Partner product was successfully added!"
     }), navigate("/partners/home"));
-  }, [actionData, navigate]), /* @__PURE__ */ jsxs114("main", { className: "w-full overflow-y-auto p-6 max-w-2xl mx-auto", children: [
-    /* @__PURE__ */ jsxs114("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
-      /* @__PURE__ */ jsx131(Cta_default, { element: "button", type: "button", onClick: () => navigate(-1), className: "hover:bg-[#F7F7F8] text-primary px-4 py-2 rounded-lg", variant: "outline", children: "Back" }),
-      /* @__PURE__ */ jsx131("h1", { className: "text-2xl font-black text-primary", children: "Add Partner Product" })
+  }, [actionData, navigate]), /* @__PURE__ */ jsxs115("main", { className: "w-full overflow-y-auto p-6 max-w-2xl mx-auto", children: [
+    /* @__PURE__ */ jsxs115("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
+      /* @__PURE__ */ jsx132(Cta_default, { element: "button", type: "button", onClick: () => navigate(-1), className: "hover:bg-[#F7F7F8] text-primary px-4 py-2 rounded-lg", variant: "outline", children: "Back" }),
+      /* @__PURE__ */ jsx132("h1", { className: "text-2xl font-black text-primary", children: "Add Partner Product" })
     ] }),
-    /* @__PURE__ */ jsxs114(Form37, { method: "post", encType: "multipart/form-data", className: "grid gap-4 text-sm bg-white p-6 rounded-xl border border-gray-100 shadow-sm", children: [
-      /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "Product Name", name: "name", id: "name", required: !0, placeholder: "Enter product name" }),
-      /* @__PURE__ */ jsx131(FormControl, { as: "textarea", labelText: "Description", name: "description", id: "description", required: !0, placeholder: "Enter product description" }),
-      /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "Category", name: "category", id: "category", placeholder: "e.g. Shoes" }),
-      /* @__PURE__ */ jsxs114("div", { className: "grid grid-cols-2 gap-4", children: [
-        /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "Price Min", name: "price_min", id: "price_min", type: "number", min: 0, required: !0, placeholder: "0" }),
-        /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "Price Max", name: "price_max", id: "price_max", type: "number", min: 0, required: !0, placeholder: "0" })
+    /* @__PURE__ */ jsxs115(Form38, { method: "post", encType: "multipart/form-data", className: "grid gap-4 text-sm bg-white p-6 rounded-xl border border-gray-100 shadow-sm", children: [
+      /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "Product Name", name: "name", id: "name", required: !0, placeholder: "Enter product name" }),
+      /* @__PURE__ */ jsx132(FormControl, { as: "textarea", labelText: "Description", name: "description", id: "description", required: !0, placeholder: "Enter product description" }),
+      /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "Category", name: "category", id: "category", placeholder: "e.g. Shoes" }),
+      /* @__PURE__ */ jsxs115("div", { className: "grid grid-cols-2 gap-4", children: [
+        /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "Price Min", name: "price_min", id: "price_min", type: "number", min: 0, required: !0, placeholder: "0" }),
+        /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "Price Max", name: "price_max", id: "price_max", type: "number", min: 0, required: !0, placeholder: "0" })
       ] }),
-      /* @__PURE__ */ jsxs114(Select2, { label: "Currency", id: "currency", name: "currency", defaultValue: "NGN", required: !0, children: [
-        /* @__PURE__ */ jsx131("option", { value: "NGN", children: "NGN" }),
-        /* @__PURE__ */ jsx131("option", { value: "USD", children: "USD" })
+      /* @__PURE__ */ jsxs115(Select2, { label: "Currency", id: "currency", name: "currency", defaultValue: "NGN", required: !0, children: [
+        /* @__PURE__ */ jsx132("option", { value: "NGN", children: "NGN" }),
+        /* @__PURE__ */ jsx132("option", { value: "USD", children: "USD" })
       ] }),
-      /* @__PURE__ */ jsxs114(Select2, { label: "Status", id: "status", name: "status", defaultValue: "available", required: !0, children: [
-        /* @__PURE__ */ jsx131("option", { value: "available", children: "Available" }),
-        /* @__PURE__ */ jsx131("option", { value: "out_of_stock", children: "Out of Stock" }),
-        /* @__PURE__ */ jsx131("option", { value: "suspended", children: "Suspended" })
+      /* @__PURE__ */ jsxs115(Select2, { label: "Status", id: "status", name: "status", defaultValue: "available", required: !0, children: [
+        /* @__PURE__ */ jsx132("option", { value: "available", children: "Available" }),
+        /* @__PURE__ */ jsx132("option", { value: "out_of_stock", children: "Out of Stock" }),
+        /* @__PURE__ */ jsx132("option", { value: "suspended", children: "Suspended" })
       ] }),
-      /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "SKU", name: "sku", id: "sku", placeholder: "Stock Keeping Unit" }),
-      /* @__PURE__ */ jsx131(FormControl, { as: "input", labelText: "Tags (comma separated)", name: "tags", id: "tags", value: tags, onChange: (e) => setTags(e.target.value), placeholder: "e.g. shoes, sports, men" }),
-      /* @__PURE__ */ jsxs114("label", { className: "block font-bold text-sm", children: [
+      /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "SKU", name: "sku", id: "sku", placeholder: "Stock Keeping Unit" }),
+      /* @__PURE__ */ jsx132(FormControl, { as: "input", labelText: "Tags (comma separated)", name: "tags", id: "tags", value: tags, onChange: (e) => setTags(e.target.value), placeholder: "e.g. shoes, sports, men" }),
+      /* @__PURE__ */ jsxs115("label", { className: "block font-bold text-sm", children: [
         "Locations",
-        /* @__PURE__ */ jsx131("div", { className: "mt-2 rounded-lg border border-secondary bg-white p-3", children: /* @__PURE__ */ jsx131(
+        /* @__PURE__ */ jsx132("div", { className: "mt-2 rounded-lg border border-secondary bg-white p-3", children: /* @__PURE__ */ jsx132(
           "select",
           {
             name: "locations",
             id: "locations",
             multiple: !0,
             className: "w-full min-h-36 rounded-md border border-gray-200 bg-transparent p-3 text-sm outline-none focus:border-accent",
-            children: locations.length > 0 ? locations.map((location) => /* @__PURE__ */ jsx131("option", { value: location.str_id, children: location.name }, location.str_id)) : /* @__PURE__ */ jsx131("option", { value: "", disabled: !0, children: "No locations available" })
+            children: locations.length > 0 ? locations.map((location) => /* @__PURE__ */ jsx132("option", { value: location.str_id, children: location.name }, location.str_id)) : /* @__PURE__ */ jsx132("option", { value: "", disabled: !0, children: "No locations available" })
           }
         ) }),
-        /* @__PURE__ */ jsx131("span", { className: "mt-1 block text-xs font-normal text-gray-500", children: "Hold Ctrl or Cmd to select multiple locations." })
+        /* @__PURE__ */ jsx132("span", { className: "mt-1 block text-xs font-normal text-gray-500", children: "Hold Ctrl or Cmd to select multiple locations." })
       ] }),
-      /* @__PURE__ */ jsx131("div", { children: /* @__PURE__ */ jsx131(DragnDrop, { name: "image", labelText: "Product Image", multiple: !1, required: !1 }) }),
-      /* @__PURE__ */ jsxs114("div", { className: "flex justify-end gap-4 mt-4", children: [
-        /* @__PURE__ */ jsx131(Cta_default, { element: "button", type: "reset", className: "px-4 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
-        /* @__PURE__ */ jsx131(Cta_default, { disabled: isSubmitting, element: "button", type: "submit", className: "px-4 py-2 rounded-lg font-medium", children: isSubmitting ? "Adding product..." : "Add Product" })
+      /* @__PURE__ */ jsx132("div", { children: /* @__PURE__ */ jsx132(DragnDrop, { name: "image", labelText: "Product Image", multiple: !1, required: !1 }) }),
+      /* @__PURE__ */ jsxs115("div", { className: "flex justify-end gap-4 mt-4", children: [
+        /* @__PURE__ */ jsx132(Cta_default, { element: "button", type: "reset", className: "px-4 py-2 rounded-lg font-medium border-secondary active:border-accent", variant: "outline", children: "Reset" }),
+        /* @__PURE__ */ jsx132(Cta_default, { disabled: isSubmitting, element: "button", type: "submit", className: "px-4 py-2 rounded-lg font-medium", children: isSubmitting ? "Adding product..." : "Add Product" })
       ] })
     ] })
   ] });
@@ -13836,28 +14578,28 @@ function AddPartnerProduct() {
 // app/routes/user.profile.tsx
 var user_profile_exports = {};
 __export(user_profile_exports, {
-  action: () => action30,
+  action: () => action31,
   default: () => UserProfilePage,
-  loader: () => loader54
+  loader: () => loader55
 });
-import { Form as Form38, useLoaderData as useLoaderData51, useActionData as useActionData17, useNavigate as useNavigate24 } from "@remix-run/react";
-import { json as json50, redirect as redirect42 } from "@remix-run/node";
-import { useEffect as useEffect33, useRef as useRef13, useState as useState43 } from "react";
-import { Fragment as Fragment14, jsx as jsx132, jsxs as jsxs115 } from "react/jsx-runtime";
-async function loader54({ request }) {
+import { Form as Form39, useLoaderData as useLoaderData52, useActionData as useActionData17, useNavigate as useNavigate24 } from "@remix-run/react";
+import { json as json51, redirect as redirect43 } from "@remix-run/node";
+import { useEffect as useEffect34, useRef as useRef14, useState as useState44 } from "react";
+import { Fragment as Fragment14, jsx as jsx133, jsxs as jsxs116 } from "react/jsx-runtime";
+async function loader55({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect42("/login");
+    return redirect43("/login");
   let { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
-  return authRequired ? redirect42("/login") : json50({ data, error });
+  return authRequired ? redirect43("/login") : json51({ data, error });
 }
-async function action30({ request }) {
+async function action31({ request }) {
   let cookieHeader = request.headers.get("Cookie"), formData = await request.formData(), updateData = authServer.prepareUpdateUserPayload(formData), { data, error } = await authServer.updateProfile(updateData, cookieHeader || "");
-  return json50({ data, error });
+  return json51({ data, error });
 }
 function useUserProfileController() {
-  let { toast: toast5 } = useToast(), loaderData = useLoaderData51(), actionData = useActionData17(), navigate = useNavigate24(), [profile, setProfile] = useState43(loaderData?.data?.user_profile || null), [email, setEmail] = useState43(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState43(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState43(profile?.image_url), fileInputRef = useRef13(null);
-  return useEffect33(() => {
+  let { toast: toast5 } = useToast(), loaderData = useLoaderData52(), actionData = useActionData17(), navigate = useNavigate24(), [profile, setProfile] = useState44(loaderData?.data?.user_profile || null), [email, setEmail] = useState44(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState44(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState44(profile?.image_url), fileInputRef = useRef14(null);
+  return useEffect34(() => {
     actionData?.error && toast5({
       variant: "destructive",
       title: "Update Failed",
@@ -13874,40 +14616,40 @@ function useUserProfileController() {
 }
 function UserProfilePage() {
   let { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController(), isLoading = !profile && !email;
-  return /* @__PURE__ */ jsx132("div", { className: "min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16", children: /* @__PURE__ */ jsxs115("div", { className: "max-w-2xl w-full px-4 sm:px-6 lg:px-8", children: [
-    /* @__PURE__ */ jsxs115("div", { className: "flex flex-col items-center mb-8", children: [
-      /* @__PURE__ */ jsx132("div", { className: "w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-200 mb-4", children: isLoading ? /* @__PURE__ */ jsx132("div", { className: "w-full h-full bg-gray-200 animate-pulse" }) : imagePreview ? /* @__PURE__ */ jsx132("img", { src: imagePreview, alt: "Profile", className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx132(Svg, { src: icons.avatarIcon, className: "w-full h-full" }) }),
-      isLoading ? /* @__PURE__ */ jsxs115(Fragment14, { children: [
-        /* @__PURE__ */ jsx132("div", { className: "h-8 w-40 bg-gray-200 rounded animate-pulse mb-2" }),
-        /* @__PURE__ */ jsx132("div", { className: "h-5 w-56 bg-gray-200 rounded animate-pulse" })
-      ] }) : /* @__PURE__ */ jsxs115(Fragment14, { children: [
-        /* @__PURE__ */ jsxs115("h1", { className: "text-3xl font-bold text-gray-900", children: [
+  return /* @__PURE__ */ jsx133("div", { className: "min-h-screen text-gray-900 bg-secondary flex flex-col items-center pt-24 pb-16", children: /* @__PURE__ */ jsxs116("div", { className: "max-w-2xl w-full px-4 sm:px-6 lg:px-8", children: [
+    /* @__PURE__ */ jsxs116("div", { className: "flex flex-col items-center mb-8", children: [
+      /* @__PURE__ */ jsx133("div", { className: "w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-200 mb-4", children: isLoading ? /* @__PURE__ */ jsx133("div", { className: "w-full h-full bg-gray-200 animate-pulse" }) : imagePreview ? /* @__PURE__ */ jsx133("img", { src: imagePreview, alt: "Profile", className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx133(Svg, { src: icons.avatarIcon, className: "w-full h-full" }) }),
+      isLoading ? /* @__PURE__ */ jsxs116(Fragment14, { children: [
+        /* @__PURE__ */ jsx133("div", { className: "h-8 w-40 bg-gray-200 rounded animate-pulse mb-2" }),
+        /* @__PURE__ */ jsx133("div", { className: "h-5 w-56 bg-gray-200 rounded animate-pulse" })
+      ] }) : /* @__PURE__ */ jsxs116(Fragment14, { children: [
+        /* @__PURE__ */ jsxs116("h1", { className: "text-3xl font-bold text-gray-900", children: [
           profile?.first_name,
           " ",
           profile?.last_name
         ] }),
-        /* @__PURE__ */ jsx132("p", { className: "text-lg text-gray-600", children: email })
+        /* @__PURE__ */ jsx133("p", { className: "text-lg text-gray-600", children: email })
       ] })
     ] }),
-    isLoading ? /* @__PURE__ */ jsxs115("div", { className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
-      /* @__PURE__ */ jsx132("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
-      /* @__PURE__ */ jsx132("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
-      /* @__PURE__ */ jsx132("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
-      /* @__PURE__ */ jsx132("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
-      /* @__PURE__ */ jsx132("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
-      /* @__PURE__ */ jsx132("div", { className: "h-12 bg-gray-200 rounded animate-pulse" })
-    ] }) : /* @__PURE__ */ jsxs115(Form38, { method: "POST", encType: "multipart/form-data", className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
-      /* @__PURE__ */ jsx132(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", defaultValue: profile?.first_name, icon: icons.avatarIcon, required: !0 }),
-      /* @__PURE__ */ jsx132(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 }),
-      /* @__PURE__ */ jsx132(FormControl, { as: "input", id: "email", name: "email", labelText: "Email", defaultValue: email, icon: icons.avatarIcon, required: !0, readOnly: !0 }),
-      /* @__PURE__ */ jsx132(FormControl, { as: "input", id: "status", name: "status", labelText: "Status", defaultValue: profile?.status, icon: icons.avatarIcon }),
-      /* @__PURE__ */ jsx132(FormControl, { as: "input", id: "", name: "", labelText: "Referral code", defaultValue: referralCode, icon: icons.lockIcon, required: !0, readOnly: !0 }),
-      /* @__PURE__ */ jsxs115("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
-        /* @__PURE__ */ jsx132(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
+    isLoading ? /* @__PURE__ */ jsxs116("div", { className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx133("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx133("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx133("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx133("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx133("div", { className: "h-10 bg-gray-200 rounded animate-pulse" }),
+      /* @__PURE__ */ jsx133("div", { className: "h-12 bg-gray-200 rounded animate-pulse" })
+    ] }) : /* @__PURE__ */ jsxs116(Form39, { method: "POST", encType: "multipart/form-data", className: "bg-white border rounded-3xl p-8 flex flex-col gap-6", children: [
+      /* @__PURE__ */ jsx133(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", defaultValue: profile?.first_name, icon: icons.avatarIcon, required: !0 }),
+      /* @__PURE__ */ jsx133(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 }),
+      /* @__PURE__ */ jsx133(FormControl, { as: "input", id: "email", name: "email", labelText: "Email", defaultValue: email, icon: icons.avatarIcon, required: !0, readOnly: !0 }),
+      /* @__PURE__ */ jsx133(FormControl, { as: "input", id: "status", name: "status", labelText: "Status", defaultValue: profile?.status, icon: icons.avatarIcon }),
+      /* @__PURE__ */ jsx133(FormControl, { as: "input", id: "", name: "", labelText: "Referral code", defaultValue: referralCode, icon: icons.lockIcon, required: !0, readOnly: !0 }),
+      /* @__PURE__ */ jsxs116("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+        /* @__PURE__ */ jsx133(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
         "Profile Image"
       ] }),
-      /* @__PURE__ */ jsx132(DragnDrop, { name: "image", labelText: "Upload Image", multiple: !1, required: !1 }),
-      /* @__PURE__ */ jsx132(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Update Profile" })
+      /* @__PURE__ */ jsx133(DragnDrop, { name: "image", labelText: "Upload Image", multiple: !1, required: !1 }),
+      /* @__PURE__ */ jsx133(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Update Profile" })
     ] })
   ] }) });
 }
@@ -13915,15 +14657,15 @@ function UserProfilePage() {
 // app/routes/user.orders.tsx
 var user_orders_exports = {};
 __export(user_orders_exports, {
-  action: () => action31,
+  action: () => action32,
   default: () => MarketplaceOrders2,
-  loader: () => loader55
+  loader: () => loader56
 });
-import { json as json51, redirect as redirect43 } from "@remix-run/node";
-import { Form as Form39, Link as Link27, useFetcher as useFetcher16, useLoaderData as useLoaderData52, useNavigation as useNavigation26, useRevalidator as useRevalidator2 } from "@remix-run/react";
-import { ArrowLeft as ArrowLeft5, PackageSearch as PackageSearch4, ShoppingBag as ShoppingBag3, Star } from "lucide-react";
-import { useEffect as useEffect34, useRef as useRef14, useState as useState44 } from "react";
-import { jsx as jsx133, jsxs as jsxs116 } from "react/jsx-runtime";
+import { json as json52, redirect as redirect44 } from "@remix-run/node";
+import { Form as Form40, Link as Link28, useFetcher as useFetcher17, useLoaderData as useLoaderData53, useNavigation as useNavigation27, useRevalidator as useRevalidator3 } from "@remix-run/react";
+import { ArrowLeft as ArrowLeft5, PackageSearch as PackageSearch5, ShoppingBag as ShoppingBag4, Star } from "lucide-react";
+import { useEffect as useEffect35, useRef as useRef15, useState as useState45 } from "react";
+import { jsx as jsx134, jsxs as jsxs117 } from "react/jsx-runtime";
 var orderStatusOptions3 = [
   { label: "All statuses", value: "" },
   { label: "Pending pre-payment", value: "PendingPrePayment" },
@@ -13933,7 +14675,8 @@ var orderStatusOptions3 = [
   { label: "Partially fulfilled", value: "PartiallyFulfilled" },
   { label: "Fully fulfilled", value: "FullyFulfilled" },
   { label: "Completed", value: "Completed" },
-  { label: "Cancelled", value: "Cancelled" }
+  { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" }
 ], orderProductStatusOptions3 = [
   { label: "All item statuses", value: "" },
   { label: "Pending", value: "Pending" },
@@ -13941,7 +14684,11 @@ var orderStatusOptions3 = [
   { label: "Cancelled", value: "Cancelled" },
   { label: "Fulfilled", value: "Fulfilled" },
   { label: "Returned", value: "Returned" },
-  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" }
+  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" }
 ];
 function buildCustomerOrdersQuery2(searchParams) {
   let query = {};
@@ -13982,10 +14729,10 @@ function emptyPaginatedOrders3(pageSize = 10) {
     first_key_id: null
   };
 }
-function formatMoney8(currency, value) {
+function formatMoney9(currency, value) {
   return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
-function formatDate6(value) {
+function formatDate7(value) {
   return new Intl.DateTimeFormat("en-NG", {
     dateStyle: "medium",
     timeStyle: "short"
@@ -13994,31 +14741,62 @@ function formatDate6(value) {
 function formatStatusLabel3(value) {
   return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
 }
-function getErrorMessage2(error, fallback) {
+function getErrorMessage3(error, fallback) {
   return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
 }
-function OrdersSkeleton3() {
-  return /* @__PURE__ */ jsx133("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs116("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsx133("div", { className: "h-4 w-28 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx133("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx133("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx133("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
+async function verifyOrderForMutation({
+  orderId,
+  orderItemId,
+  orderCode,
+  cookieHeader,
+  requirePrepaid
+}) {
+  let orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  if (orderRes.error || !orderRes.data)
+    return json52(
+      {
+        ok: !1,
+        error: getErrorMessage3(orderRes.error, "Unable to verify this order")
+      },
+      { status: 404 }
+    );
+  let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
+  return item ? item.status !== "Fulfilled" /* Fulfilled */ ? json52(
+    {
+      ok: !1,
+      error: `This order item cannot be processed from ${formatStatusLabel3(item.status)} status`
+    },
+    { status: 400 }
+  ) : requirePrepaid && order.payment_details?.payment_option !== "prepay" ? json52(
+    {
+      ok: !1,
+      error: "Disputes are only available for prepaid orders"
+    },
+    { status: 400 }
+  ) : order.order_code !== orderCode ? json52({ ok: !1, error: "The order code does not match this order" }, { status: 400 }) : { order, item } : json52({ ok: !1, error: "Order item not found" }, { status: 404 });
+}
+function OrdersSkeleton4() {
+  return /* @__PURE__ */ jsx134("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs117("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsx134("div", { className: "h-4 w-28 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx134("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx134("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx134("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
   ] }, index)) });
 }
 function FulfillmentConfirmDialog({
   order,
   item
 }) {
-  let fetcher = useFetcher16(), revalidator = useRevalidator2(), [open, setOpen] = useState44(!1), handledSuccessRef = useRef14(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
-  return useEffect34(() => {
+  let fetcher = useFetcher17(), revalidator = useRevalidator3(), [open, setOpen] = useState45(!1), handledSuccessRef = useRef15(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  return useEffect35(() => {
     fetcher.state === "submitting" && (handledSuccessRef.current = !1);
-  }, [fetcher.state]), useEffect34(() => {
+  }, [fetcher.state]), useEffect35(() => {
     !fetcher.data || !fetcher.data.ok || handledSuccessRef.current || (handledSuccessRef.current = !0, setOpen(!1), revalidator.revalidate(), toast({
       title: "Success",
       description: fetcher.data.message
     }));
-  }, [fetcher.data, revalidator]), /* @__PURE__ */ jsxs116(Dialog, { open, onOpenChange: setOpen, children: [
-    /* @__PURE__ */ jsx133(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx133(
+  }, [fetcher.data, revalidator]), /* @__PURE__ */ jsxs117(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsx134(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx134(
       "button",
       {
         type: "button",
@@ -14026,22 +14804,22 @@ function FulfillmentConfirmDialog({
         children: "Confirm Fulfillment"
       }
     ) }),
-    /* @__PURE__ */ jsxs116(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
-      /* @__PURE__ */ jsxs116(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
-        /* @__PURE__ */ jsx133(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Confirm order receipt" }),
-        /* @__PURE__ */ jsx133(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the order code below to confirm you have received this item. You can also leave an optional rating and remark." })
+    /* @__PURE__ */ jsxs117(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+      /* @__PURE__ */ jsxs117(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+        /* @__PURE__ */ jsx134(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Confirm order receipt" }),
+        /* @__PURE__ */ jsx134(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the order code below to confirm you have received this item. You can also leave an optional rating and remark." })
       ] }),
-      /* @__PURE__ */ jsxs116(fetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
-        /* @__PURE__ */ jsx133("input", { type: "hidden", name: "intent", value: "confirm_fulfillment" }),
-        /* @__PURE__ */ jsx133("input", { type: "hidden", name: "order_id", value: order._id }),
-        /* @__PURE__ */ jsx133("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
-        /* @__PURE__ */ jsxs116("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
-          /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
-          /* @__PURE__ */ jsx133("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code })
+      /* @__PURE__ */ jsxs117(fetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "intent", value: "confirm_fulfillment" }),
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "order_id", value: order._id }),
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
+        /* @__PURE__ */ jsxs117("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
+          /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
+          /* @__PURE__ */ jsx134("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code })
         ] }),
-        /* @__PURE__ */ jsxs116("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx133("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
-          /* @__PURE__ */ jsx133(
+        /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
+          /* @__PURE__ */ jsx134(
             "input",
             {
               name: "order_code",
@@ -14052,22 +14830,22 @@ function FulfillmentConfirmDialog({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs116("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsxs116("span", { className: "flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: [
-            /* @__PURE__ */ jsx133(Star, { className: "h-3.5 w-3.5" }),
+        /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsxs117("span", { className: "flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: [
+            /* @__PURE__ */ jsx134(Star, { className: "h-3.5 w-3.5" }),
             "Rating"
           ] }),
-          /* @__PURE__ */ jsxs116(
+          /* @__PURE__ */ jsxs117(
             "select",
             {
               name: "rating",
               defaultValue: "",
               className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950",
               children: [
-                /* @__PURE__ */ jsx133("option", { value: "", children: "Optional rating" }),
+                /* @__PURE__ */ jsx134("option", { value: "", children: "Optional rating" }),
                 Array.from({ length: 5 }).map((_, index) => {
                   let rating = index + 1;
-                  return /* @__PURE__ */ jsxs116("option", { value: rating, children: [
+                  return /* @__PURE__ */ jsxs117("option", { value: rating, children: [
                     rating,
                     " star",
                     rating > 1 ? "s" : ""
@@ -14077,9 +14855,9 @@ function FulfillmentConfirmDialog({
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs116("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx133("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
-          /* @__PURE__ */ jsx133(
+        /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
+          /* @__PURE__ */ jsx134(
             "textarea",
             {
               name: "remark",
@@ -14089,9 +14867,9 @@ function FulfillmentConfirmDialog({
             }
           )
         ] }),
-        errorMessage ? /* @__PURE__ */ jsx133("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
-        /* @__PURE__ */ jsxs116(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
-          /* @__PURE__ */ jsx133(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx133(
+        errorMessage ? /* @__PURE__ */ jsx134("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
+        /* @__PURE__ */ jsxs117(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+          /* @__PURE__ */ jsx134(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx134(
             "button",
             {
               type: "button",
@@ -14099,7 +14877,7 @@ function FulfillmentConfirmDialog({
               children: "Back"
             }
           ) }),
-          /* @__PURE__ */ jsx133(
+          /* @__PURE__ */ jsx134(
             "button",
             {
               type: "submit",
@@ -14113,104 +14891,195 @@ function FulfillmentConfirmDialog({
     ] })
   ] });
 }
+function DisputeFulfillmentDialog({
+  order,
+  item
+}) {
+  let fetcher = useFetcher17(), revalidator = useRevalidator3(), [open, setOpen] = useState45(!1), handledResponseRef = useRef15(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null, isPrepaid = order.payment_details?.payment_option === "prepay";
+  useEffect35(() => {
+    fetcher.state === "submitting" && (handledResponseRef.current = !1);
+  }, [fetcher.state]), useEffect35(() => {
+    if (!(!fetcher.data || handledResponseRef.current)) {
+      if (handledResponseRef.current = !0, fetcher.data.ok) {
+        setOpen(!1), revalidator.revalidate(), toast({
+          title: "Success",
+          description: fetcher.data.message
+        });
+        return;
+      }
+      toast({
+        variant: "destructive",
+        title: "Dispute failed",
+        description: fetcher.data.error
+      });
+    }
+  }, [fetcher.data, revalidator]);
+  let handleSubmit = (event) => {
+    let formData = new FormData(event.currentTarget);
+    String(formData.get("order_code") ?? "").trim() !== order.order_code && (event.preventDefault(), toast({
+      variant: "destructive",
+      title: "Order code mismatch",
+      description: "The order code you entered does not match this order."
+    }));
+  };
+  return isPrepaid ? /* @__PURE__ */ jsxs117(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsx134(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx134(
+      "button",
+      {
+        type: "button",
+        className: "inline-flex h-11 items-center justify-center rounded-full border border-rose-200 bg-white px-4 text-sm font-bold text-rose-700 transition hover:-translate-y-0.5 hover:border-rose-300 hover:bg-rose-50",
+        children: "Dispute Order"
+      }
+    ) }),
+    /* @__PURE__ */ jsxs117(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+      /* @__PURE__ */ jsxs117(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+        /* @__PURE__ */ jsx134(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Dispute order fulfillment" }),
+        /* @__PURE__ */ jsx134(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Use this if the order was not fulfilled as expected. Your report will be sent for admin review." })
+      ] }),
+      /* @__PURE__ */ jsxs117(fetcher.Form, { method: "post", className: "space-y-5 p-6", onSubmit: handleSubmit, children: [
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "intent", value: "dispute_fulfillment" }),
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "order_id", value: order._id }),
+        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
+        /* @__PURE__ */ jsxs117("div", { className: "rounded-2xl border border-rose-100 bg-rose-50 p-4", children: [
+          /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-rose-500", children: "Order code" }),
+          /* @__PURE__ */ jsx134("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code }),
+          /* @__PURE__ */ jsx134("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the exact order code to confirm this dispute request." })
+        ] }),
+        /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
+          /* @__PURE__ */ jsx134(
+            "input",
+            {
+              name: "order_code",
+              required: !0,
+              autoComplete: "off",
+              placeholder: "Enter the order code",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
+          /* @__PURE__ */ jsx134(
+            "textarea",
+            {
+              name: "remark",
+              required: !0,
+              rows: 4,
+              placeholder: "Explain what was not fulfilled as expected",
+              className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        errorMessage ? /* @__PURE__ */ jsx134("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
+        /* @__PURE__ */ jsxs117(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+          /* @__PURE__ */ jsx134(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx134(
+            "button",
+            {
+              type: "button",
+              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Back"
+            }
+          ) }),
+          /* @__PURE__ */ jsx134(
+            "button",
+            {
+              type: "submit",
+              disabled: isSubmitting,
+              className: "inline-flex h-11 items-center justify-center rounded-full bg-rose-600 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-rose-500 disabled:cursor-not-allowed disabled:opacity-70",
+              children: isSubmitting ? "Working..." : "Submit dispute"
+            }
+          )
+        ] })
+      ] })
+    ] })
+  ] }) : null;
+}
 function OrderItemRow3({
   order,
   item
 }) {
-  let hasRange = item.min_amount_total !== item.max_amount_total, isFulfilled = item.status === "Fulfilled" /* Fulfilled */, handleDispute = () => {
-    toast({
-      title: "Contact admin",
-      description: "Please contact admin for dispute resolution."
-    });
-  };
-  return /* @__PURE__ */ jsx133("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxs116("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-    /* @__PURE__ */ jsxs116("div", { children: [
-      /* @__PURE__ */ jsx133("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }),
-      /* @__PURE__ */ jsxs116("div", { className: "mt-1 text-xs text-slate-500", children: [
+  let hasRange = item.min_amount_total !== item.max_amount_total, isFulfilled = item.status === "Fulfilled" /* Fulfilled */, isPrepaid = order.payment_details?.payment_option === "prepay";
+  return /* @__PURE__ */ jsx134("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxs117("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+    /* @__PURE__ */ jsxs117("div", { children: [
+      /* @__PURE__ */ jsx134("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }),
+      /* @__PURE__ */ jsxs117("div", { className: "mt-1 text-xs text-slate-500", children: [
         "Qty ",
         item.quantity,
         " \xB7",
         " ",
-        hasRange ? `${formatMoney8(item.currency, item.min_amount_total)} - ${formatMoney8(item.currency, item.max_amount_total)}` : formatMoney8(item.currency, item.min_amount_total)
+        hasRange ? `${formatMoney9(item.currency, item.min_amount_total)} - ${formatMoney9(item.currency, item.max_amount_total)}` : formatMoney9(item.currency, item.min_amount_total)
       ] })
     ] }),
-    /* @__PURE__ */ jsxs116("div", { className: "flex flex-col items-start gap-3 sm:flex-row sm:items-center", children: [
-      /* @__PURE__ */ jsx133("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(item.status) }),
-      isFulfilled ? /* @__PURE__ */ jsxs116("div", { className: "flex flex-col gap-2 sm:flex-row", children: [
-        /* @__PURE__ */ jsx133(FulfillmentConfirmDialog, { order, item }),
-        /* @__PURE__ */ jsx133(
-          "button",
-          {
-            type: "button",
-            onClick: handleDispute,
-            className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-            children: "Dispute Order"
-          }
-        )
+    /* @__PURE__ */ jsxs117("div", { className: "flex flex-col items-start gap-3 sm:flex-row sm:items-center", children: [
+      /* @__PURE__ */ jsx134("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(item.status) }),
+      isFulfilled ? /* @__PURE__ */ jsxs117("div", { className: "flex flex-col gap-2 sm:flex-row", children: [
+        /* @__PURE__ */ jsx134(FulfillmentConfirmDialog, { order, item }),
+        isPrepaid ? /* @__PURE__ */ jsx134(DisputeFulfillmentDialog, { order, item }) : null
       ] }) : null
     ] })
   ] }) });
 }
 function OrderCard3({ order }) {
   let paymentLink = order.payment_details?.payment_link, isPrepaid = order.payment_details?.payment_option === "prepay";
-  return /* @__PURE__ */ jsxs116("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
-    /* @__PURE__ */ jsxs116("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-      /* @__PURE__ */ jsxs116("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxs116("div", { className: "flex flex-wrap items-center gap-2", children: [
-          /* @__PURE__ */ jsx133("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
-          /* @__PURE__ */ jsx133("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(order.status) }),
-          isPrepaid ? /* @__PURE__ */ jsx133("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }) : null
+  return /* @__PURE__ */ jsxs117("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
+    /* @__PURE__ */ jsxs117("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
+      /* @__PURE__ */ jsxs117("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxs117("div", { className: "flex flex-wrap items-center gap-2", children: [
+          /* @__PURE__ */ jsx134("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
+          /* @__PURE__ */ jsx134("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(order.status) }),
+          isPrepaid ? /* @__PURE__ */ jsx134("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }) : null
         ] }),
-        /* @__PURE__ */ jsxs116("div", { children: [
-          /* @__PURE__ */ jsx133("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }),
-          /* @__PURE__ */ jsxs116("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
+        /* @__PURE__ */ jsxs117("div", { children: [
+          /* @__PURE__ */ jsx134("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }),
+          /* @__PURE__ */ jsxs117("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
             order.business_contact_person_name,
             " \xB7 ",
             order.delivery_phone_number
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs116("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
-        /* @__PURE__ */ jsxs116("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }),
-          /* @__PURE__ */ jsx133("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate6(order.created_at) })
+      /* @__PURE__ */ jsxs117("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
+        /* @__PURE__ */ jsxs117("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }),
+          /* @__PURE__ */ jsx134("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate7(order.created_at) })
         ] }),
-        /* @__PURE__ */ jsxs116("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }),
-          /* @__PURE__ */ jsx133("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney8(order.currency, order.min_total_amount) : `${formatMoney8(order.currency, order.min_total_amount)} - ${formatMoney8(order.currency, order.max_total_amount)}` })
+        /* @__PURE__ */ jsxs117("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
+          /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }),
+          /* @__PURE__ */ jsx134("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney9(order.currency, order.min_total_amount) : `${formatMoney9(order.currency, order.min_total_amount)} - ${formatMoney9(order.currency, order.max_total_amount)}` })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs116("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
-      /* @__PURE__ */ jsxs116("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }),
-        /* @__PURE__ */ jsx133("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsx133(OrderItemRow3, { order, item }, item.order_item_id)) })
+    /* @__PURE__ */ jsxs117("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
+      /* @__PURE__ */ jsxs117("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }),
+        /* @__PURE__ */ jsx134("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsx134(OrderItemRow3, { order, item }, item.order_item_id)) })
       ] }),
-      /* @__PURE__ */ jsxs116("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }),
-        /* @__PURE__ */ jsxs116("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
-          /* @__PURE__ */ jsx133("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }),
-          /* @__PURE__ */ jsx133("div", { children: order.delivery_street }),
-          /* @__PURE__ */ jsxs116("div", { children: [
+      /* @__PURE__ */ jsxs117("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }),
+        /* @__PURE__ */ jsxs117("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
+          /* @__PURE__ */ jsx134("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }),
+          /* @__PURE__ */ jsx134("div", { children: order.delivery_street }),
+          /* @__PURE__ */ jsxs117("div", { children: [
             order.delivery_city,
             ", ",
             order.delivery_state,
             ", ",
             order.delivery_country
           ] }),
-          /* @__PURE__ */ jsxs116("div", { className: "mt-3", children: [
+          /* @__PURE__ */ jsxs117("div", { className: "mt-3", children: [
             "Payment option: ",
-            /* @__PURE__ */ jsx133("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option })
+            /* @__PURE__ */ jsx134("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option })
           ] }),
-          /* @__PURE__ */ jsxs116("div", { children: [
+          /* @__PURE__ */ jsxs117("div", { children: [
             "Payment status: ",
-            /* @__PURE__ */ jsx133("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status })
+            /* @__PURE__ */ jsx134("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status })
           ] }),
-          /* @__PURE__ */ jsxs116("div", { children: [
+          /* @__PURE__ */ jsxs117("div", { children: [
             "Reference: ",
-            /* @__PURE__ */ jsx133("span", { className: "font-semibold text-slate-900", children: order.payment_details?.reference })
+            /* @__PURE__ */ jsx134("span", { className: "font-semibold text-slate-900", children: order.payment_details?.reference })
           ] }),
-          paymentLink ? /* @__PURE__ */ jsx133(
+          paymentLink ? /* @__PURE__ */ jsx134(
             "a",
             {
               href: paymentLink,
@@ -14225,142 +15094,151 @@ function OrderCard3({ order }) {
     ] })
   ] });
 }
-async function loader55({ request }) {
+async function loader56({ request }) {
   let url = new URL(request.url), cookieHeader = request.headers.get("Cookie") ?? void 0, query = buildCustomerOrdersQuery2(url.searchParams), ordersRes = await partnerServer.getCustomerOrders(query, cookieHeader);
-  return ordersRes.error ? json51({
+  return ordersRes.error ? json52({
     orders: emptyPaginatedOrders3(query.page_size ?? 10),
     query,
     error: typeof ordersRes.error.detail == "string" ? ordersRes.error.detail : "Unable to load orders"
-  }) : json51({
+  }) : json52({
     orders: ordersRes.data ?? emptyPaginatedOrders3(query.page_size ?? 10),
     query
   });
 }
-async function action31({ request }) {
+async function action32({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "";
   if (!cookieHeader)
-    return redirect43("/login");
+    return redirect44("/login");
   let formData = await request.formData(), intent = String(formData.get("intent") ?? ""), orderId = String(formData.get("order_id") ?? "").trim(), orderItemId = String(formData.get("order_item_id") ?? "").trim(), orderCode = String(formData.get("order_code") ?? "").trim(), ratingValue = String(formData.get("rating") ?? "").trim(), remark = String(formData.get("remark") ?? "").trim();
-  if (intent !== "confirm_fulfillment")
-    return json51({ ok: !1, error: "Unsupported order action" }, { status: 400 });
+  if (intent !== "confirm_fulfillment" && intent !== "dispute_fulfillment")
+    return json52({ ok: !1, error: "Unsupported order action" }, { status: 400 });
   if (!orderId || !orderItemId)
-    return json51({ ok: !1, error: "Missing order details" }, { status: 400 });
+    return json52({ ok: !1, error: "Missing order details" }, { status: 400 });
   if (!orderCode)
-    return json51({ ok: !1, error: "Order code is required" }, { status: 400 });
-  let orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
-  if (orderRes.error || !orderRes.data)
-    return json51(
+    return json52({ ok: !1, error: "Order code is required" }, { status: 400 });
+  let verification = await verifyOrderForMutation({
+    orderId,
+    orderItemId,
+    orderCode,
+    cookieHeader,
+    requirePrepaid: intent === "dispute_fulfillment"
+  });
+  if (verification instanceof Response)
+    return verification;
+  let { order, item } = verification;
+  if (intent === "confirm_fulfillment") {
+    let payload2 = {
+      order_id: order._id,
+      order_code: order.order_code,
+      order_item_id: item.order_item_id
+    };
+    if (ratingValue) {
+      let rating = Number(ratingValue);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5)
+        return json52({ ok: !1, error: "Rating must be between 1 and 5" }, { status: 400 });
+      payload2.rating = rating;
+    }
+    remark && (payload2.remark = remark);
+    let mutationRes2 = await partnerServer.customerConfirmOrder(payload2, cookieHeader);
+    return mutationRes2.error ? json52(
       {
         ok: !1,
-        error: getErrorMessage2(orderRes.error, "Unable to verify this order")
-      },
-      { status: 404 }
-    );
-  let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
-  if (!item)
-    return json51({ ok: !1, error: "Order item not found" }, { status: 404 });
-  if (item.status !== "Fulfilled" /* Fulfilled */)
-    return json51(
-      {
-        ok: !1,
-        error: `This order item cannot be confirmed from ${formatStatusLabel3(item.status)} status`
+        error: getErrorMessage3(mutationRes2.error, "Unable to confirm this order item")
       },
       { status: 400 }
-    );
-  if (order.order_code !== orderCode)
-    return json51({ ok: !1, error: "The order code does not match this order" }, { status: 400 });
+    ) : json52({
+      ok: !0,
+      message: "Order fulfillment confirmed successfully",
+      order: mutationRes2.data ?? order
+    });
+  }
+  if (!remark)
+    return json52({ ok: !1, error: "Remark is required for dispute submission" }, { status: 400 });
   let payload = {
     order_id: order._id,
     order_code: order.order_code,
-    order_item_id: item.order_item_id
-  };
-  if (ratingValue) {
-    let rating = Number(ratingValue);
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5)
-      return json51({ ok: !1, error: "Rating must be between 1 and 5" }, { status: 400 });
-    payload.rating = rating;
-  }
-  remark && (payload.remark = remark);
-  let mutationRes = await partnerServer.customerConfirmOrder(payload, cookieHeader);
-  return mutationRes.error ? json51(
+    order_item_id: item.order_item_id,
+    remark
+  }, mutationRes = await partnerServer.customerDispute(payload, cookieHeader);
+  return mutationRes.error ? json52(
     {
       ok: !1,
-      error: getErrorMessage2(mutationRes.error, "Unable to confirm this order item")
+      error: getErrorMessage3(mutationRes.error, "Unable to submit this dispute")
     },
     { status: 400 }
-  ) : json51({
+  ) : json52({
     ok: !0,
-    message: "Order fulfillment confirmed successfully",
+    message: "Order dispute submitted successfully",
     order: mutationRes.data ?? order
   });
 }
 function MarketplaceOrders2() {
-  let { orders, query, error } = useLoaderData52(), isLoading = useNavigation26().state === "loading", hasOrders = orders.items.length > 0;
-  return /* @__PURE__ */ jsxs116("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxs116("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxs116("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-        /* @__PURE__ */ jsxs116("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxs116(
-            Link27,
+  let { orders, query, error } = useLoaderData53(), isLoading = useNavigation27().state === "loading", hasOrders = orders.items.length > 0;
+  return /* @__PURE__ */ jsxs117("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxs117("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxs117("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxs117("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsxs117(
+            Link28,
             {
               to: "/marketplace",
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
-                /* @__PURE__ */ jsx133(ArrowLeft5, { className: "h-4 w-4" }),
+                /* @__PURE__ */ jsx134(ArrowLeft5, { className: "h-4 w-4" }),
                 "Back to marketplace"
               ]
             }
           ),
-          /* @__PURE__ */ jsxs116("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsx133("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }),
-            /* @__PURE__ */ jsx133("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Track and search your marketplace orders." }),
-            /* @__PURE__ */ jsx133("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Use the filters below to narrow results by order status or item status." })
+          /* @__PURE__ */ jsxs117("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsx134("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }),
+            /* @__PURE__ */ jsx134("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Track and search your marketplace orders." }),
+            /* @__PURE__ */ jsx134("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Use the filters below to narrow results by order status or item status." })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs116("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-          /* @__PURE__ */ jsxs116("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }),
-            /* @__PURE__ */ jsx133("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items })
+        /* @__PURE__ */ jsxs117("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+          /* @__PURE__ */ jsxs117("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }),
+            /* @__PURE__ */ jsx134("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items })
           ] }),
-          /* @__PURE__ */ jsxs116("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }),
-            /* @__PURE__ */ jsx133("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page })
+          /* @__PURE__ */ jsxs117("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }),
+            /* @__PURE__ */ jsx134("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page })
           ] }),
-          /* @__PURE__ */ jsxs116("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx133("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }),
-            /* @__PURE__ */ jsx133("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page })
+          /* @__PURE__ */ jsxs117("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx134("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }),
+            /* @__PURE__ */ jsx134("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page })
           ] })
         ] })
       ] }),
-      error ? /* @__PURE__ */ jsx133("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
+      error ? /* @__PURE__ */ jsx134("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx133("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs116(Form39, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
-      /* @__PURE__ */ jsxs116("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx133("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
-        /* @__PURE__ */ jsx133(
+    /* @__PURE__ */ jsx134("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs117(Form40, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+      /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
+        /* @__PURE__ */ jsx134(
           "select",
           {
             name: "order_status",
             defaultValue: query.order_status ?? "",
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderStatusOptions3.map((option) => /* @__PURE__ */ jsx133("option", { value: option.value, children: option.label }, option.label))
+            children: orderStatusOptions3.map((option) => /* @__PURE__ */ jsx134("option", { value: option.value, children: option.label }, option.label))
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs116("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx133("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }),
-        /* @__PURE__ */ jsx133(
+      /* @__PURE__ */ jsxs117("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx134("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }),
+        /* @__PURE__ */ jsx134(
           "select",
           {
             name: "order_product_status",
             defaultValue: query.order_product_status ?? "",
             className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderProductStatusOptions3.map((option) => /* @__PURE__ */ jsx133("option", { value: option.value, children: option.label }, option.label))
+            children: orderProductStatusOptions3.map((option) => /* @__PURE__ */ jsx134("option", { value: option.value, children: option.label }, option.label))
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs116("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsx133(
+      /* @__PURE__ */ jsxs117("div", { className: "flex gap-3", children: [
+        /* @__PURE__ */ jsx134(
           "button",
           {
             type: "submit",
@@ -14368,8 +15246,8 @@ function MarketplaceOrders2() {
             children: "Search"
           }
         ),
-        /* @__PURE__ */ jsx133(
-          Link27,
+        /* @__PURE__ */ jsx134(
+          Link28,
           {
             to: "/marketplace/orders",
             className: "inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
@@ -14378,24 +15256,24 @@ function MarketplaceOrders2() {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs116("section", { className: "mt-8", children: [
-      /* @__PURE__ */ jsxs116("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
-        /* @__PURE__ */ jsxs116("div", { children: [
-          /* @__PURE__ */ jsx133("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }),
-          /* @__PURE__ */ jsx133("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" })
+    /* @__PURE__ */ jsxs117("section", { className: "mt-8", children: [
+      /* @__PURE__ */ jsxs117("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
+        /* @__PURE__ */ jsxs117("div", { children: [
+          /* @__PURE__ */ jsx134("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }),
+          /* @__PURE__ */ jsx134("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" })
         ] }),
-        /* @__PURE__ */ jsxs116("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
-          /* @__PURE__ */ jsx133(PackageSearch4, { className: "h-4 w-4" }),
+        /* @__PURE__ */ jsxs117("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
+          /* @__PURE__ */ jsx134(PackageSearch5, { className: "h-4 w-4" }),
           "Page ",
           orders.current_page
         ] })
       ] }),
-      isLoading ? /* @__PURE__ */ jsx133(OrdersSkeleton3, {}) : hasOrders ? /* @__PURE__ */ jsx133("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsx133(OrderCard3, { order }, order._id)) }) : /* @__PURE__ */ jsxs116("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsx133(ShoppingBag3, { className: "mx-auto h-10 w-10 text-slate-300" }),
-        /* @__PURE__ */ jsx133("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders yet" }),
-        /* @__PURE__ */ jsx133("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Once you place an order, it will appear here for tracking and payment follow-up." }),
-        /* @__PURE__ */ jsx133(
-          Link27,
+      isLoading ? /* @__PURE__ */ jsx134(OrdersSkeleton4, {}) : hasOrders ? /* @__PURE__ */ jsx134("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsx134(OrderCard3, { order }, order._id)) }) : /* @__PURE__ */ jsxs117("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
+        /* @__PURE__ */ jsx134(ShoppingBag4, { className: "mx-auto h-10 w-10 text-slate-300" }),
+        /* @__PURE__ */ jsx134("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders yet" }),
+        /* @__PURE__ */ jsx134("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Once you place an order, it will appear here for tracking and payment follow-up." }),
+        /* @__PURE__ */ jsx134(
+          Link28,
           {
             to: "/marketplace",
             className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
@@ -14404,25 +15282,25 @@ function MarketplaceOrders2() {
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx133("section", { className: "mt-8", children: /* @__PURE__ */ jsx133(Pagination, { lastKey: orders.last_key_id, firstKey: orders.first_key_id, pageSize: orders.items_per_page }) })
+    /* @__PURE__ */ jsx134("section", { className: "mt-8", children: /* @__PURE__ */ jsx134(Pagination, { lastKey: orders.last_key_id, firstKey: orders.first_key_id, pageSize: orders.items_per_page }) })
   ] });
 }
 
 // app/routes/user.wallet.tsx
 var user_wallet_exports = {};
 __export(user_wallet_exports, {
-  action: () => action32,
+  action: () => action33,
   default: () => WalletPage2,
-  loader: () => loader56
+  loader: () => loader57
 });
-import { json as json52, redirect as redirect44 } from "@remix-run/node";
-import { Link as Link28, useActionData as useActionData18, useLoaderData as useLoaderData53, useFetcher as useFetcher17 } from "@remix-run/react";
-import { useState as useState45, useMemo as useMemo8, useEffect as useEffect35 } from "react";
-import { jsx as jsx134, jsxs as jsxs117 } from "react/jsx-runtime";
-async function loader56({ request }) {
+import { json as json53, redirect as redirect45 } from "@remix-run/node";
+import { Link as Link29, useActionData as useActionData18, useLoaderData as useLoaderData54, useFetcher as useFetcher18 } from "@remix-run/react";
+import { useState as useState46, useMemo as useMemo9, useEffect as useEffect36 } from "react";
+import { jsx as jsx135, jsxs as jsxs118 } from "react/jsx-runtime";
+async function loader57({ request }) {
   let cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader)
-    return redirect44("/login");
+    return redirect45("/login");
   let url = new URL(request.url), page_size = Number(url.searchParams.get("page_size") ?? "10"), last_key_id = url.searchParams.get("last_key_id"), first_key_id = url.searchParams.get("first_key_id"), wallet_id_param = url.searchParams.get("wallet_id"), walletsResponse = await walletRepo.getUserWallets(cookieHeader), wallets = [];
   if (walletsResponse.data?.length)
     for (let _wallet of walletsResponse.data) {
@@ -14442,9 +15320,9 @@ async function loader56({ request }) {
       });
       pagedLedgers.data && wallets.push({ wallet: _wallet, pagedLedgers: pagedLedgers.data });
     }
-  return json52({ wallets });
+  return json53({ wallets });
 }
-async function action32({ request }) {
+async function action33({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), cleaned = {};
   formData.forEach((value, key) => {
     let v = (value ?? "").toString().trim();
@@ -14454,10 +15332,10 @@ async function action32({ request }) {
   cleaned.transaction_type && (query.transaction_type = cleaned.transaction_type), cleaned.status && (query.status = cleaned.status), cleaned.min_amount && (query.min_amount = Number(cleaned.min_amount)), cleaned.max_amount && (query.max_amount = Number(cleaned.max_amount)), cleaned.min_created_at && (query.min_created_at = cleaned.min_created_at), cleaned.max_created_at && (query.max_created_at = cleaned.max_created_at), cleaned.user_id && (query.user_id = cleaned.user_id), cleaned.wallet_id && (query.wallet_id = cleaned.wallet_id), cleaned.currency && (query.currency = cleaned.currency), cleaned.payment_method && (query.payment_method = cleaned.payment_method), cleaned.contest_code && (query.contest_code = cleaned.contest_code);
   let walletResp = await walletRepo.wallet_search(query, cookieHeader);
   if (walletResp.error)
-    return json52({ error: walletResp.error }, { status: 400 });
+    return json53({ error: walletResp.error }, { status: 400 });
   let ledgersResp = await walletRepo.getUserLedgersForWallet(cookieHeader, query);
   if (ledgersResp.error)
-    return json52({ error: ledgersResp.error }, { status: 400 });
+    return json53({ error: ledgersResp.error }, { status: 400 });
   let walletsResp = await walletRepo.getUserWallets(cookieHeader), wallets = [];
   if (walletsResp.data?.length) {
     let cleanedWallets = [];
@@ -14471,23 +15349,23 @@ async function action32({ request }) {
       }
     cleanedWallets.length && (wallets = cleanedWallets);
   }
-  return console.log("WALLET RESP", walletResp, wallets), json52({ wallets });
+  return console.log("WALLET RESP", walletResp, wallets), json53({ wallets });
 }
 function useWalletController2() {
-  let { wallets } = useLoaderData53(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState45(null), [activeWalletId, setActiveWalletId] = useState45(
+  let { wallets } = useLoaderData54(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState46(null), [activeWalletId, setActiveWalletId] = useState46(
     wallets.length > 0 ? wallets[0].wallet._id : null
   );
-  useEffect35(() => {
+  useEffect36(() => {
     let _user = getUserStoreManager();
     _user && setUser(_user);
   }, [getUserStoreManager]);
-  let activeData = useMemo8(() => wallets.find((w) => w.wallet._id === activeWalletId) || null, [activeWalletId, wallets]), formatCurrency = (amount, currency) => new Intl.NumberFormat("en-US", {
+  let activeData = useMemo9(() => wallets.find((w) => w.wallet._id === activeWalletId) || null, [activeWalletId, wallets]), formatCurrency = (amount, currency) => new Intl.NumberFormat("en-US", {
     style: "currency",
     currency
-  }).format(amount), [searchOpen, setSearchOpen] = useState45(!1), fetcher = useFetcher17(), isSubmitting = fetcher.state === "submitting", actionData = useActionData18(), [walletsState, setWalletsState] = useState45(wallets);
-  return useEffect35(() => {
+  }).format(amount), [searchOpen, setSearchOpen] = useState46(!1), fetcher = useFetcher18(), isSubmitting = fetcher.state === "submitting", actionData = useActionData18(), [walletsState, setWalletsState] = useState46(wallets);
+  return useEffect36(() => {
     (fetcher.data?.wallets ?? actionData?.wallets) || setWalletsState(wallets);
-  }, [wallets, fetcher.data, actionData]), useEffect35(() => {
+  }, [wallets, fetcher.data, actionData]), useEffect36(() => {
     let fw = fetcher.data?.wallets ?? actionData?.wallets;
     fw && Array.isArray(fw) && setWalletsState(fw);
   }, [fetcher.data, actionData]), {
@@ -14507,23 +15385,23 @@ function useWalletController2() {
 function WalletPage2() {
   let { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher } = useWalletController2();
   if (!activeData)
-    return /* @__PURE__ */ jsx134("div", { className: "p-8", children: "No wallets found." });
+    return /* @__PURE__ */ jsx135("div", { className: "p-8", children: "No wallets found." });
   let activeDataLocal = walletsState.find((w) => w.wallet._id === activeData?.wallet._id) ?? activeData, { wallet, pagedLedgers } = activeDataLocal;
-  return /* @__PURE__ */ jsxs117("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
-    /* @__PURE__ */ jsx134("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }),
-    /* @__PURE__ */ jsxs117("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
-      /* @__PURE__ */ jsxs117("div", { className: "flex items-center justify-between mb-4", children: [
-        /* @__PURE__ */ jsxs117("div", { className: "flex items-center gap-2 text-gray-500", children: [
-          /* @__PURE__ */ jsx134("span", { className: "text-sm", children: "Wallet balances" }),
-          /* @__PURE__ */ jsx134("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" })
+  return /* @__PURE__ */ jsxs118("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
+    /* @__PURE__ */ jsx135("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }),
+    /* @__PURE__ */ jsxs118("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
+      /* @__PURE__ */ jsxs118("div", { className: "flex items-center justify-between mb-4", children: [
+        /* @__PURE__ */ jsxs118("div", { className: "flex items-center gap-2 text-gray-500", children: [
+          /* @__PURE__ */ jsx135("span", { className: "text-sm", children: "Wallet balances" }),
+          /* @__PURE__ */ jsx135("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" })
         ] }),
-        /* @__PURE__ */ jsx134(
+        /* @__PURE__ */ jsx135(
           "select",
           {
             className: "border rounded-full px-4 py-2 bg-gray-50 text-sm font-medium outline-none cursor-pointer",
             value: wallet._id,
             onChange: (e) => setActiveWalletId(e.target.value),
-            children: walletsState.map((w) => /* @__PURE__ */ jsxs117("option", { value: w.wallet._id, children: [
+            children: walletsState.map((w) => /* @__PURE__ */ jsxs118("option", { value: w.wallet._id, children: [
               w.wallet.wallet_currency,
               " - ",
               w.wallet.account_number
@@ -14531,20 +15409,20 @@ function WalletPage2() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx134("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs117("div", { children: [
-        /* @__PURE__ */ jsx134("div", { className: "text-4xl font-bold mb-1", children: formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency) }),
-        /* @__PURE__ */ jsx134("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name })
+      /* @__PURE__ */ jsx135("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs118("div", { children: [
+        /* @__PURE__ */ jsx135("div", { className: "text-4xl font-bold mb-1", children: formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency) }),
+        /* @__PURE__ */ jsx135("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name })
       ] }) }),
-      /* @__PURE__ */ jsxs117("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
-        /* @__PURE__ */ jsx134(Link28, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ jsx134("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }) }),
-        user?.withdrawal_pin_set ? /* @__PURE__ */ jsx134(Link28, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ jsx134("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }) }) : /* @__PURE__ */ jsx134(Link28, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ jsx134("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }) }),
-        /* @__PURE__ */ jsx134("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" })
+      /* @__PURE__ */ jsxs118("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
+        /* @__PURE__ */ jsx135(Link29, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ jsx135("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }) }),
+        user?.withdrawal_pin_set ? /* @__PURE__ */ jsx135(Link29, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ jsx135("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }) }) : /* @__PURE__ */ jsx135(Link29, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ jsx135("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }) }),
+        /* @__PURE__ */ jsx135("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs117("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxs117("div", { className: "flex items-center justify-between mb-3", children: [
-        /* @__PURE__ */ jsx134("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }),
-        /* @__PURE__ */ jsxs117(
+    /* @__PURE__ */ jsxs118("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs118("div", { className: "flex items-center justify-between mb-3", children: [
+        /* @__PURE__ */ jsx135("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }),
+        /* @__PURE__ */ jsxs118(
           "button",
           {
             type: "button",
@@ -14552,8 +15430,8 @@ function WalletPage2() {
             className: "flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800",
             "aria-expanded": searchOpen,
             children: [
-              /* @__PURE__ */ jsx134("span", { children: searchOpen ? "Hide" : "Show" }),
-              /* @__PURE__ */ jsx134(
+              /* @__PURE__ */ jsx135("span", { children: searchOpen ? "Hide" : "Show" }),
+              /* @__PURE__ */ jsx135(
                 "svg",
                 {
                   className: `w-4 h-4 transition-transform ${searchOpen ? "rotate-180" : ""}`,
@@ -14561,75 +15439,75 @@ function WalletPage2() {
                   stroke: "currentColor",
                   viewBox: "0 0 24 24",
                   xmlns: "http://www.w3.org/2000/svg",
-                  children: /* @__PURE__ */ jsx134("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" })
+                  children: /* @__PURE__ */ jsx135("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" })
                 }
               )
             ]
           }
         )
       ] }),
-      /* @__PURE__ */ jsx134("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ jsx134("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs117(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Transaction type" }),
-          /* @__PURE__ */ jsxs117("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx134("option", { value: "", children: "All transaction types" }),
-            /* @__PURE__ */ jsx134("option", { value: "credit", children: "Credit" }),
-            /* @__PURE__ */ jsx134("option", { value: "debit", children: "Debit" })
+      /* @__PURE__ */ jsx135("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ jsx135("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs118(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Transaction type" }),
+          /* @__PURE__ */ jsxs118("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx135("option", { value: "", children: "All transaction types" }),
+            /* @__PURE__ */ jsx135("option", { value: "credit", children: "Credit" }),
+            /* @__PURE__ */ jsx135("option", { value: "debit", children: "Debit" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Status" }),
-          /* @__PURE__ */ jsxs117("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx134("option", { value: "", children: "Any status" }),
-            /* @__PURE__ */ jsx134("option", { value: "pending", children: "Pending" }),
-            /* @__PURE__ */ jsx134("option", { value: "completed", children: "Completed" }),
-            /* @__PURE__ */ jsx134("option", { value: "void", children: "Void" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Status" }),
+          /* @__PURE__ */ jsxs118("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx135("option", { value: "", children: "Any status" }),
+            /* @__PURE__ */ jsx135("option", { value: "pending", children: "Pending" }),
+            /* @__PURE__ */ jsx135("option", { value: "completed", children: "Completed" }),
+            /* @__PURE__ */ jsx135("option", { value: "void", children: "Void" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Min amount" }),
-          /* @__PURE__ */ jsx134("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Min amount" }),
+          /* @__PURE__ */ jsx135("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Max amount" }),
-          /* @__PURE__ */ jsx134("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Max amount" }),
+          /* @__PURE__ */ jsx135("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "From date" }),
-          /* @__PURE__ */ jsx134("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "From date" }),
+          /* @__PURE__ */ jsx135("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "To date" }),
-          /* @__PURE__ */ jsx134("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "To date" }),
+          /* @__PURE__ */ jsx135("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Payment method" }),
-          /* @__PURE__ */ jsxs117("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx134("option", { value: "", children: "Any payment method" }),
-            /* @__PURE__ */ jsx134("option", { value: "flutterwave", children: "Flutterwave" }),
-            /* @__PURE__ */ jsx134("option", { value: "bank", children: "Bank" }),
-            /* @__PURE__ */ jsx134("option", { value: "paystack", children: "Paystack" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Payment method" }),
+          /* @__PURE__ */ jsxs118("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx135("option", { value: "", children: "Any payment method" }),
+            /* @__PURE__ */ jsx135("option", { value: "flutterwave", children: "Flutterwave" }),
+            /* @__PURE__ */ jsx135("option", { value: "bank", children: "Bank" }),
+            /* @__PURE__ */ jsx135("option", { value: "paystack", children: "Paystack" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs117("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx134("span", { className: "mb-1", children: "Contest code" }),
-          /* @__PURE__ */ jsx134("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs118("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx135("span", { className: "mb-1", children: "Contest code" }),
+          /* @__PURE__ */ jsx135("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsx134("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
-        /* @__PURE__ */ jsx134("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ jsx134("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }) })
+        /* @__PURE__ */ jsx135("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
+        /* @__PURE__ */ jsx135("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ jsx135("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }) })
       ] }) }) })
     ] }),
-    /* @__PURE__ */ jsxs117("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxs117("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
-        /* @__PURE__ */ jsx134("span", { children: "\u{1F4C1}" }),
-        /* @__PURE__ */ jsxs117("h2", { className: "font-medium", children: [
+    /* @__PURE__ */ jsxs118("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs118("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
+        /* @__PURE__ */ jsx135("span", { children: "\u{1F4C1}" }),
+        /* @__PURE__ */ jsxs118("h2", { className: "font-medium", children: [
           "Recent wallet activity (",
           wallet.wallet_currency,
           ")"
         ] })
       ] }),
-      /* @__PURE__ */ jsxs117("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
-        /* @__PURE__ */ jsx134(
+      /* @__PURE__ */ jsxs118("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
+        /* @__PURE__ */ jsx135(
           MetricItem2,
           {
             label: "Net change this month",
@@ -14637,14 +15515,14 @@ function WalletPage2() {
             tooltip: !0
           }
         ),
-        /* @__PURE__ */ jsx134(
+        /* @__PURE__ */ jsx135(
           MetricItem2,
           {
             label: "Money in",
             value: formatCurrency(wallet.metrics.money_in, wallet.wallet_currency)
           }
         ),
-        /* @__PURE__ */ jsx134(
+        /* @__PURE__ */ jsx135(
           MetricItem2,
           {
             label: "Money out",
@@ -14652,53 +15530,53 @@ function WalletPage2() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx134("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs117("table", { className: "w-full text-left text-sm", children: [
-        /* @__PURE__ */ jsx134("thead", { children: /* @__PURE__ */ jsxs117("tr", { className: "text-gray-400 border-b", children: [
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "S/N" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Date" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Ref ID" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Narration" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Beneficiary name" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Type" }),
-          /* @__PURE__ */ jsx134("th", { className: "pb-4 font-medium", children: "Amount" })
+      /* @__PURE__ */ jsx135("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs118("table", { className: "w-full text-left text-sm", children: [
+        /* @__PURE__ */ jsx135("thead", { children: /* @__PURE__ */ jsxs118("tr", { className: "text-gray-400 border-b", children: [
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "S/N" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Date" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Ref ID" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Narration" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Beneficiary name" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Type" }),
+          /* @__PURE__ */ jsx135("th", { className: "pb-4 font-medium", children: "Amount" })
         ] }) }),
-        /* @__PURE__ */ jsx134("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxs117("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
-          /* @__PURE__ */ jsx134("td", { className: "py-4 text-gray-500", children: idx + 1 }),
-          /* @__PURE__ */ jsxs117("td", { className: "py-4 text-gray-900 leading-tight", children: [
+        /* @__PURE__ */ jsx135("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxs118("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
+          /* @__PURE__ */ jsx135("td", { className: "py-4 text-gray-500", children: idx + 1 }),
+          /* @__PURE__ */ jsxs118("td", { className: "py-4 text-gray-900 leading-tight", children: [
             new Date(item.completed_at || "").toLocaleDateString(),
-            /* @__PURE__ */ jsx134("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() })
+            /* @__PURE__ */ jsx135("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() })
           ] }),
-          /* @__PURE__ */ jsx134("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }),
-          /* @__PURE__ */ jsx134("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }),
-          /* @__PURE__ */ jsx134("td", { className: "py-4 text-gray-600 truncate", children: item.wallet_name }),
-          /* @__PURE__ */ jsx134("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }),
-          /* @__PURE__ */ jsx134("td", { className: "py-4", children: /* @__PURE__ */ jsxs117("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx134("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency(item.amount, item.currency) }),
-            /* @__PURE__ */ jsx134(StatusBadge2, { status: item.status })
+          /* @__PURE__ */ jsx135("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }),
+          /* @__PURE__ */ jsx135("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }),
+          /* @__PURE__ */ jsx135("td", { className: "py-4 text-gray-600 truncate", children: item.wallet_name }),
+          /* @__PURE__ */ jsx135("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }),
+          /* @__PURE__ */ jsx135("td", { className: "py-4", children: /* @__PURE__ */ jsxs118("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx135("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency(item.amount, item.currency) }),
+            /* @__PURE__ */ jsx135(StatusBadge2, { status: item.status })
           ] }) })
         ] }, item._id)) })
       ] }) }),
-      /* @__PURE__ */ jsxs117("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
-        /* @__PURE__ */ jsxs117("div", { children: [
+      /* @__PURE__ */ jsxs118("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
+        /* @__PURE__ */ jsxs118("div", { children: [
           "Showing ",
           pagedLedgers.items.length,
           " of ",
           pagedLedgers.total_items,
           " items"
         ] }),
-        /* @__PURE__ */ jsx134(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id })
+        /* @__PURE__ */ jsx135(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id })
       ] })
     ] })
   ] });
 }
 function MetricItem2({ label, value, tooltip = !1 }) {
-  return /* @__PURE__ */ jsxs117("div", { children: [
-    /* @__PURE__ */ jsxs117("div", { className: "text-xs text-gray-400 flex items-center gap-1 mb-1", children: [
+  return /* @__PURE__ */ jsxs118("div", { children: [
+    /* @__PURE__ */ jsxs118("div", { className: "text-xs text-gray-400 flex items-center gap-1 mb-1", children: [
       label,
       " ",
-      tooltip && /* @__PURE__ */ jsx134("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" })
+      tooltip && /* @__PURE__ */ jsx135("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" })
     ] }),
-    /* @__PURE__ */ jsx134("div", { className: "text-lg font-bold text-gray-800", children: value })
+    /* @__PURE__ */ jsx135("div", { className: "text-lg font-bold text-gray-800", children: value })
   ] });
 }
 function StatusBadge2({ status }) {
@@ -14711,7 +15589,7 @@ function StatusBadge2({ status }) {
     Failed: "\u26A0\uFE0F",
     Completed: "\u2713"
   };
-  return /* @__PURE__ */ jsxs117("span", { className: `px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 ${styles[status] || ""}`, children: [
+  return /* @__PURE__ */ jsxs118("span", { className: `px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 ${styles[status] || ""}`, children: [
     icons2[status],
     " ",
     status
@@ -14725,51 +15603,51 @@ __export(partners_exports, {
   default: () => PartnerLayout,
   meta: () => meta
 });
-import { Outlet as Outlet3, useLocation as useLocation11 } from "@remix-run/react";
-import { useEffect as useEffect38, useState as useState48 } from "react";
+import { Outlet as Outlet3, useLocation as useLocation12 } from "@remix-run/react";
+import { useEffect as useEffect39, useState as useState49 } from "react";
 
 // app/components/partner/PartnerPrimaryHeader.tsx
-import { Link as Link30 } from "@remix-run/react";
+import { Link as Link31 } from "@remix-run/react";
 
 // app/components/partner/PartnerToolBar.tsx
-import { Link as Link29, useNavigate as useNavigate25 } from "@remix-run/react";
-import { useEffect as useEffect36, useState as useState46 } from "react";
-import { jsx as jsx135, jsxs as jsxs118 } from "react/jsx-runtime";
+import { Link as Link30, useNavigate as useNavigate25 } from "@remix-run/react";
+import { useEffect as useEffect37, useState as useState47 } from "react";
+import { jsx as jsx136, jsxs as jsxs119 } from "react/jsx-runtime";
 function PartnerToolbar() {
-  let [user, setUser] = useState46(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate25();
-  useEffect36(() => {
+  let [user, setUser] = useState47(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate25();
+  useEffect37(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs118(
+  let mainComponent = /* @__PURE__ */ jsxs119(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs118("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx135("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx135("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs118("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx135("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-            /* @__PURE__ */ jsx135("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs119("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx136("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx136("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs119("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx136("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+            /* @__PURE__ */ jsx136("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
         ] }),
-        /* @__PURE__ */ jsx135(Svg, { src: icons.arrowDownIcon })
+        /* @__PURE__ */ jsx136(Svg, { src: icons.arrowDownIcon })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs118(
+  return /* @__PURE__ */ jsxs119(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs118(Link29, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx135(Svg, { src: icons.profileIcon }),
+        /* @__PURE__ */ jsxs119(Link30, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx136(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs118(Link29, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx135(Svg, { src: icons.signoutIcon }),
+        /* @__PURE__ */ jsxs119(Link30, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx136(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
       ]
@@ -14778,58 +15656,58 @@ function PartnerToolbar() {
 }
 
 // app/components/partner/PartnerPrimaryHeader.tsx
-import { jsx as jsx136, jsxs as jsxs119 } from "react/jsx-runtime";
+import { jsx as jsx137, jsxs as jsxs120 } from "react/jsx-runtime";
 function PartnerPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs119("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxs119("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx136(
+  return /* @__PURE__ */ jsxs120("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs120("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx137(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsx136(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+          children: /* @__PURE__ */ jsx137(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsxs119(Link30, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsx136(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+      /* @__PURE__ */ jsxs120(Link31, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx137(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-PARTNER"
       ] })
     ] }),
-    /* @__PURE__ */ jsx136(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
-    /* @__PURE__ */ jsx136(PartnerToolbar, {})
+    /* @__PURE__ */ jsx137(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx137(PartnerToolbar, {})
   ] });
 }
 
 // app/components/partner/PartnerMobileHeader.tsx
-import { Link as Link31 } from "@remix-run/react";
-import { jsx as jsx137, jsxs as jsxs120 } from "react/jsx-runtime";
+import { Link as Link32 } from "@remix-run/react";
+import { jsx as jsx138, jsxs as jsxs121 } from "react/jsx-runtime";
 function UserMobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs120("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxs120(Link31, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsx137(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+  return /* @__PURE__ */ jsxs121("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs121(Link32, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx138(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-PARTNER"
     ] }),
-    /* @__PURE__ */ jsx137(
+    /* @__PURE__ */ jsx138(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx137(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+        children: /* @__PURE__ */ jsx138(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
       }
     )
   ] });
 }
 
 // app/components/partner/PartnerMobileNavigation.tsx
-import { NavLink, useLocation as useLocation9, useNavigate as useNavigate26 } from "@remix-run/react";
+import { NavLink, useLocation as useLocation10, useNavigate as useNavigate26 } from "@remix-run/react";
 
 // app/components/reusables/Accordion.tsx
 import * as React13 from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { jsx as jsx138, jsxs as jsxs121 } from "react/jsx-runtime";
-var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx138(
+import { jsx as jsx139, jsxs as jsxs122 } from "react/jsx-runtime";
+var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx139(
   AccordionPrimitive.Item,
   {
     ref,
@@ -14838,7 +15716,7 @@ var Accordion = AccordionPrimitive.Root, AccordionItem = React13.forwardRef(({ c
   }
 ));
 AccordionItem.displayName = "AccordionItem";
-var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx138(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs121(
+var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx139(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs122(
   AccordionPrimitive.Trigger,
   {
     ref,
@@ -14849,25 +15727,25 @@ var AccordionTrigger = React13.forwardRef(({ className, children, ...props }, re
     ...props,
     children: [
       children,
-      /* @__PURE__ */ jsx138(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" })
+      /* @__PURE__ */ jsx139(Svg, { src: icons.arrowDownIcon, className: "shrink-0 transition-transform duration-200" })
     ]
   }
 ) }));
 AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
-var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx138(
+var AccordionContent = React13.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx139(
   AccordionPrimitive.Content,
   {
     ref,
     className: "overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
     ...props,
-    children: /* @__PURE__ */ jsx138("div", { className: cn("", className), children })
+    children: /* @__PURE__ */ jsx139("div", { className: cn("", className), children })
   }
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
 // app/components/partner/PartnerMobileNavigation.tsx
-import { useEffect as useEffect37, useRef as useRef15, useState as useState47 } from "react";
-import { jsx as jsx139, jsxs as jsxs122 } from "react/jsx-runtime";
+import { useEffect as useEffect38, useRef as useRef16, useState as useState48 } from "react";
+import { jsx as jsx140, jsxs as jsxs123 } from "react/jsx-runtime";
 var primaryNavs = [
   { label: "Manage Products", icon: icons.adminTournamentIcon, url: "/partners/home" },
   {
@@ -14885,62 +15763,62 @@ var primaryNavs = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function PartnerMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef15(null), [user, setUser] = useState47(null), navigate = useNavigate26(), { getUserStoreManager } = useUserManager(), location = useLocation9(), path = `${location.pathname}${location.search}${location.hash}`;
-  useEffect37(() => {
+  let mobileNav = useRef16(null), [user, setUser] = useState48(null), navigate = useNavigate26(), { getUserStoreManager } = useUserManager(), location = useLocation10(), path = `${location.pathname}${location.search}${location.hash}`;
+  useEffect38(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate(`/login?redirectTo=${encodeURIComponent(path)}`), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation9();
+  let { pathname } = useLocation10();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs122("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs123("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx139(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx140(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs122(
+  return /* @__PURE__ */ jsxs123(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs122("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsx139("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
-          /* @__PURE__ */ jsx139(
+        /* @__PURE__ */ jsxs123("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx140("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx140(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsx139(Svg, { src: icons.closeIcon })
+              children: /* @__PURE__ */ jsx140(Svg, { src: icons.closeIcon })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs122("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs122("header", { children: [
-            /* @__PURE__ */ jsxs122("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs122("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsx139("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx139("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs122("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsx139("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-                  /* @__PURE__ */ jsx139("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs123("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs123("header", { children: [
+            /* @__PURE__ */ jsxs123("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs123("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx140("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx140("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs123("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx140("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+                  /* @__PURE__ */ jsx140("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx139(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx139("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs122(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx139(
+              /* @__PURE__ */ jsx140(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx140("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs123(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx140(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs122("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx139(Svg, { src: navItem.icon }),
+                    children: /* @__PURE__ */ jsxs123("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx140(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
                   }
                 ),
-                /* @__PURE__ */ jsx139(AccordionContent, { children: /* @__PURE__ */ jsx139("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx139("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx139(
+                /* @__PURE__ */ jsx140(AccordionContent, { children: /* @__PURE__ */ jsx140("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx140("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx140(
                   NavLink,
                   {
                     to: subitem.url,
@@ -14949,46 +15827,46 @@ function PartnerMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx139("li", { children: /* @__PURE__ */ jsxs122(
+              ] }, navItem.label) : /* @__PURE__ */ jsx140("li", { children: /* @__PURE__ */ jsxs123(
                 NavLink,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsx139(Svg, { src: navItem.icon }),
+                    /* @__PURE__ */ jsx140(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx139("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx139("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx139("li", { children: /* @__PURE__ */ jsxs122(
+            /* @__PURE__ */ jsx140("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx140("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx140("li", { children: /* @__PURE__ */ jsxs123(
               NavLink,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsx139(Svg, { src: navItem.icon }),
+                  /* @__PURE__ */ jsx140(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs122("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs122("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsx139(Svg, { src: icons.themeIcon }),
+          /* @__PURE__ */ jsxs123("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs123("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx140(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs122(
+            /* @__PURE__ */ jsxs123(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsx139("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-                  /* @__PURE__ */ jsx139("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-                  /* @__PURE__ */ jsx139("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+                  /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
               }
             )
@@ -15000,9 +15878,9 @@ function PartnerMobileNavigation({ show, onClose }) {
 }
 
 // app/components/partner/PartnerNavigation.tsx
-import { NavLink as NavLink2, useLocation as useLocation10 } from "@remix-run/react";
+import { NavLink as NavLink2, useLocation as useLocation11 } from "@remix-run/react";
 import { Accordion as Accordion2, AccordionContent as AccordionContent2, AccordionItem as AccordionItem2, AccordionTrigger as AccordionTrigger2 } from "@radix-ui/react-accordion";
-import { jsx as jsx140, jsxs as jsxs123 } from "react/jsx-runtime";
+import { jsx as jsx141, jsxs as jsxs124 } from "react/jsx-runtime";
 var navs = [
   { label: "Manage Products", icon: icons.adminTournamentIcon, url: "/partners/home" }
 ], navsWSubs = [
@@ -15018,45 +15896,45 @@ var navs = [
   }
 ];
 function PartnerNavigation({ show }) {
-  let { pathname } = useLocation10();
+  let { pathname } = useLocation11();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs123("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs124("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx140(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx141(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs123("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxs123("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsx140("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx140("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx140("li", { children: /* @__PURE__ */ jsxs123(
+  return show ? /* @__PURE__ */ jsxs124("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs124("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx141("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx141("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx141("li", { children: /* @__PURE__ */ jsxs124(
         NavLink2,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsx140(Svg, { src: navItem.icon }),
+            /* @__PURE__ */ jsx141(Svg, { src: navItem.icon }),
             navItem.label
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx140(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs123(AccordionItem2, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs123(
+      /* @__PURE__ */ jsx141(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs124(AccordionItem2, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs124(
           AccordionTrigger2,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs123("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsx140(Svg, { src: item.icon }),
+              /* @__PURE__ */ jsxs124("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx141(Svg, { src: item.icon }),
                 item.label
               ] }),
-              /* @__PURE__ */ jsx140(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
+              /* @__PURE__ */ jsx141(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
           }
         ),
-        /* @__PURE__ */ jsx140(AccordionContent2, { children: /* @__PURE__ */ jsx140("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx140("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx140(
+        /* @__PURE__ */ jsx141(AccordionContent2, { children: /* @__PURE__ */ jsx141("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx141("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx141(
           NavLink2,
           {
             to: subitem.url,
@@ -15066,20 +15944,20 @@ function PartnerNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs123("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs123("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsx140(Svg, { src: icons.themeIcon }),
+    /* @__PURE__ */ jsxs124("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs124("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx141(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs123(
+      /* @__PURE__ */ jsxs124(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-            /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-            /* @__PURE__ */ jsx140("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+            /* @__PURE__ */ jsx141("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx141("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx141("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
         }
       )
@@ -15088,41 +15966,41 @@ function PartnerNavigation({ show }) {
 }
 
 // app/routes/partners.tsx
-import { jsx as jsx141, jsxs as jsxs124 } from "react/jsx-runtime";
+import { jsx as jsx142, jsxs as jsxs125 } from "react/jsx-runtime";
 var meta = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout({ children }) {
-  let [showNav, setShowNav] = useState48(!1);
-  return useEffect38(() => {
+  let [showNav, setShowNav] = useState49(!1);
+  return useEffect39(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs124("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsx141(PartnerPrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs125("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx142(PartnerPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx141(UserMobileHeader, { toggleNav: () => {
+    /* @__PURE__ */ jsx142(UserMobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx141(PartnerMobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx142(PartnerMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs124("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsx141(PartnerNavigation, { show: showNav }),
-      /* @__PURE__ */ jsx141("div", { className: "flex-grow overflow-y-auto", children })
+    /* @__PURE__ */ jsxs125("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx142(PartnerNavigation, { show: showNav }),
+      /* @__PURE__ */ jsx142("div", { className: "flex-grow overflow-y-auto", children })
     ] })
   ] });
 }
 function PartnerLayout() {
-  return /* @__PURE__ */ jsx141(Layout, { children: /* @__PURE__ */ jsx141(Outlet3, {}) });
+  return /* @__PURE__ */ jsx142(Layout, { children: /* @__PURE__ */ jsx142(Outlet3, {}) });
 }
 function ErrorBoundary2() {
-  let { pathname } = useLocation11();
-  return /* @__PURE__ */ jsx141(Layout, { children: /* @__PURE__ */ jsxs124("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsx141("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
-    /* @__PURE__ */ jsx141("p", { children: "Apologies, something went wrong on our end. Please try again." }),
-    /* @__PURE__ */ jsx141(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
-    /* @__PURE__ */ jsx141(Cta_default, { element: "link", to: "/partner/overview", className: "px-4 py-1 rounded-md", children: "Back to Partner Home" })
+  let { pathname } = useLocation12();
+  return /* @__PURE__ */ jsx142(Layout, { children: /* @__PURE__ */ jsxs125("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx142("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx142("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx142(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx142(Cta_default, { element: "link", to: "/partner/overview", className: "px-4 py-1 rounded-md", children: "Back to Partner Home" })
   ] }) });
 }
 
@@ -15135,88 +16013,88 @@ __export(public_exports, {
 import { Outlet as Outlet4 } from "@remix-run/react";
 
 // app/components/public/Footer.tsx
-import { Link as Link32 } from "@remix-run/react";
-import { jsx as jsx142, jsxs as jsxs125 } from "react/jsx-runtime";
+import { Link as Link33 } from "@remix-run/react";
+import { jsx as jsx143, jsxs as jsxs126 } from "react/jsx-runtime";
 function Footer() {
-  return /* @__PURE__ */ jsx142("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs125("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
-    /* @__PURE__ */ jsx142("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs125("ul", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx142("li", { children: /* @__PURE__ */ jsx142(Link32, { to: "/contests", children: "Contests" }) }),
-      /* @__PURE__ */ jsx142("li", { children: /* @__PURE__ */ jsx142(Link32, { to: "/#contact", children: "Contact" }) }),
-      /* @__PURE__ */ jsx142("li", { children: /* @__PURE__ */ jsx142(Link32, { to: "/winners", children: "Winners" }) }),
-      /* @__PURE__ */ jsx142("li", { children: /* @__PURE__ */ jsx142(Link32, { to: "/results", children: "Results" }) })
+  return /* @__PURE__ */ jsx143("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs126("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
+    /* @__PURE__ */ jsx143("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs126("ul", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsx143(Link33, { to: "/contests", children: "Contests" }) }),
+      /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsx143(Link33, { to: "/#contact", children: "Contact" }) }),
+      /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsx143(Link33, { to: "/winners", children: "Winners" }) }),
+      /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsx143(Link33, { to: "/results", children: "Results" }) })
     ] }) }),
-    /* @__PURE__ */ jsx142("span", { children: "Privacy Policy" }),
-    /* @__PURE__ */ jsx142("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" })
+    /* @__PURE__ */ jsx143("span", { children: "Privacy Policy" }),
+    /* @__PURE__ */ jsx143("span", { className: "md:order-first", children: "KOTMY \xA9 2023  All rights reserved" })
   ] }) });
 }
 
 // app/components/public/Navigation.tsx
-import { useEffect as useEffect40, useState as useState50 } from "react";
-import { Link as Link34, NavLink as NavLink4, useLocation as useLocation13 } from "@remix-run/react";
+import { useEffect as useEffect41, useState as useState51 } from "react";
+import { Link as Link35, NavLink as NavLink4, useLocation as useLocation14 } from "@remix-run/react";
 
 // app/components/public/MobileNavigation.tsx
-import { Link as Link33, NavLink as NavLink3, useLocation as useLocation12 } from "@remix-run/react";
-import { useEffect as useEffect39, useRef as useRef16, useState as useState49 } from "react";
-import { jsx as jsx143, jsxs as jsxs126 } from "react/jsx-runtime";
+import { Link as Link34, NavLink as NavLink3, useLocation as useLocation13 } from "@remix-run/react";
+import { useEffect as useEffect40, useRef as useRef17, useState as useState50 } from "react";
+import { jsx as jsx144, jsxs as jsxs127 } from "react/jsx-runtime";
 function MobileNavigation({ show, onClose }) {
-  let { pathname } = useLocation12(), [user, setUser] = useState49(null), mobileNav = useRef16(null);
+  let { pathname } = useLocation13(), [user, setUser] = useState50(null), mobileNav = useRef17(null);
   mobileNav.current?.style.setProperty("--left", "0%");
   let { getUserStoreManager } = useUserManager();
-  return useEffect39(() => {
+  return useEffect40(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs126(
+  }, []), /* @__PURE__ */ jsxs127(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "sm:hidden fixed top-0 left-0 bg-primary w-full h-dvh z-10 flex flex-col justify-between mobileNav data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left",
       children: [
-        /* @__PURE__ */ jsxs126("header", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs126("div", { className: "flex justify-between items-center", children: [
-            /* @__PURE__ */ jsx143(Link33, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx143(Svg, { src: icons.logoIcon, width: 37, height: 36 }) }),
-            /* @__PURE__ */ jsx143("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx143(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
+        /* @__PURE__ */ jsxs127("header", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs127("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsx144(Link34, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx144(Svg, { src: icons.logoIcon, width: 37, height: 36 }) }),
+            /* @__PURE__ */ jsx144("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx144(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
           ] }),
-          /* @__PURE__ */ jsxs126("nav", { className: "", children: [
-            /* @__PURE__ */ jsxs126("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsxs126(NavLink3, { onClick: onClose, to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/partner/account") ? /* @__PURE__ */ jsx143(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+          /* @__PURE__ */ jsxs127("nav", { className: "", children: [
+            /* @__PURE__ */ jsxs127("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink3, { onClick: onClose, to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/partner/account") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Partner"
               ] }) }),
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsxs126(NavLink3, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/contests") ? /* @__PURE__ */ jsx143(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink3, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/contests") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Contests"
               ] }) }),
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsxs126(NavLink3, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/winners") ? /* @__PURE__ */ jsx143(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink3, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/winners") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Winners"
               ] }) }),
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsxs126(NavLink3, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/results") ? /* @__PURE__ */ jsx143(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink3, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/results") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Results"
               ] }) }),
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsxs126(NavLink3, { onClick: onClose, to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-                pathname.includes("/marketplace") ? /* @__PURE__ */ jsx143(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink3, { onClick: onClose, to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+                pathname.includes("/marketplace") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Shop"
               ] }) }),
-              /* @__PURE__ */ jsx143("li", { children: /* @__PURE__ */ jsx143(NavLink3, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
+              /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsx144(NavLink3, { onClick: onClose, to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
             ] }),
-            /* @__PURE__ */ jsx143(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
+            /* @__PURE__ */ jsx144(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs126("aside", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs126("div", { className: "mb-12", children: [
-            /* @__PURE__ */ jsx143("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
-            /* @__PURE__ */ jsxs126("span", { className: "flex gap-4", children: [
-              /* @__PURE__ */ jsx143(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx143(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx143(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
-              /* @__PURE__ */ jsx143(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
+        /* @__PURE__ */ jsxs127("aside", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs127("div", { className: "mb-12", children: [
+            /* @__PURE__ */ jsx144("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
+            /* @__PURE__ */ jsxs127("span", { className: "flex gap-4", children: [
+              /* @__PURE__ */ jsx144(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx144(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx144(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
+              /* @__PURE__ */ jsx144(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs126("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
-            /* @__PURE__ */ jsx143("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
-            /* @__PURE__ */ jsx143("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
+          /* @__PURE__ */ jsxs127("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
+            /* @__PURE__ */ jsx144("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
+            /* @__PURE__ */ jsx144("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
           ] })
         ] })
       ]
@@ -15225,41 +16103,41 @@ function MobileNavigation({ show, onClose }) {
 }
 
 // app/components/public/Navigation.tsx
-import { jsx as jsx144, jsxs as jsxs127 } from "react/jsx-runtime";
+import { jsx as jsx145, jsxs as jsxs128 } from "react/jsx-runtime";
 function Navigation() {
-  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState50(!1), { pathname } = useLocation13(), [user, setUser] = useState50(null);
-  return useEffect40(() => {
+  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState51(!1), { pathname } = useLocation14(), [user, setUser] = useState51(null);
+  return useEffect41(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs127("header", { className: "flex justify-between items-center wrapper py-5", children: [
-    /* @__PURE__ */ jsx144(Link34, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx144(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsxs127("nav", { className: "hidden md:flex gap-16 items-center", children: [
-      /* @__PURE__ */ jsxs127("ul", { className: "flex gap-6 text-xl font-bold", children: [
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink4, { to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/partner/account") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+  }, []), /* @__PURE__ */ jsxs128("header", { className: "flex justify-between items-center wrapper py-5", children: [
+    /* @__PURE__ */ jsx145(Link35, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx145(Svg, { src: icons.logoIcon, className: "w-9 h-9 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsxs128("nav", { className: "hidden md:flex gap-16 items-center", children: [
+      /* @__PURE__ */ jsxs128("ul", { className: "flex gap-6 text-xl font-bold", children: [
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsxs128(NavLink4, { to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/partner/account") ? /* @__PURE__ */ jsx145(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Partner"
         ] }) }),
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink4, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/contests") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsxs128(NavLink4, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/contests") ? /* @__PURE__ */ jsx145(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Contests"
         ] }) }),
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink4, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/winners") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsxs128(NavLink4, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/winners") ? /* @__PURE__ */ jsx145(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Winners"
         ] }) }),
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink4, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/results") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsxs128(NavLink4, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/results") ? /* @__PURE__ */ jsx145(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Results"
         ] }) }),
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsxs127(NavLink4, { to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
-          pathname.includes("/marketplace") ? /* @__PURE__ */ jsx144(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsxs128(NavLink4, { to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          pathname.includes("/marketplace") ? /* @__PURE__ */ jsx145(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Shop"
         ] }) }),
-        /* @__PURE__ */ jsx144("li", { children: /* @__PURE__ */ jsx144(NavLink4, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
+        /* @__PURE__ */ jsx145("li", { children: /* @__PURE__ */ jsx145(NavLink4, { to: "/login", className: "", children: user ? "My Profile" : "Sign In" }) })
       ] }),
-      /* @__PURE__ */ jsx144(Button, { element: "a", href: "/signup", children: "Join Now" })
+      /* @__PURE__ */ jsx145(Button, { element: "a", href: "/signup", children: "Join Now" })
     ] }),
-    /* @__PURE__ */ jsx144(
+    /* @__PURE__ */ jsx145(
       "button",
       {
         onClick: () => {
@@ -15267,26 +16145,26 @@ function Navigation() {
         },
         title: "hamburger",
         className: "sm:hidden flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx144(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 })
+        children: /* @__PURE__ */ jsx145(Svg, { src: icons.hamburgerIcon, width: 40, height: 24 })
       }
     ),
-    /* @__PURE__ */ jsx144(MobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx145(MobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav })
   ] });
 }
 
 // app/routes/_public.tsx
-import { jsx as jsx145, jsxs as jsxs128 } from "react/jsx-runtime";
+import { jsx as jsx146, jsxs as jsxs129 } from "react/jsx-runtime";
 var meta2 = () => [
   { title: "Kid of the Month & Year" },
   { name: "description", content: "Welcome to the best contest platform for children of all ages!" }
 ];
 function Index() {
-  return /* @__PURE__ */ jsxs128("div", { className: "min-h-screen bg-primary flex flex-col", children: [
-    /* @__PURE__ */ jsx145(Navigation, {}),
-    /* @__PURE__ */ jsx145(Outlet4, {}),
-    /* @__PURE__ */ jsx145(Footer, {})
+  return /* @__PURE__ */ jsxs129("div", { className: "min-h-screen bg-primary flex flex-col", children: [
+    /* @__PURE__ */ jsx146(Navigation, {}),
+    /* @__PURE__ */ jsx146(Outlet4, {}),
+    /* @__PURE__ */ jsx146(Footer, {})
   ] });
 }
 
@@ -15295,21 +16173,21 @@ var logout_exports = {};
 __export(logout_exports, {
   default: () => Logout
 });
-import { Link as Link35, useSearchParams as useSearchParams4 } from "@remix-run/react";
-import { useEffect as useEffect41 } from "react";
-import { jsx as jsx146, jsxs as jsxs129 } from "react/jsx-runtime";
+import { Link as Link36, useSearchParams as useSearchParams4 } from "@remix-run/react";
+import { useEffect as useEffect42 } from "react";
+import { jsx as jsx147, jsxs as jsxs130 } from "react/jsx-runtime";
 function useLogoutController() {
   let [searchQuery] = useSearchParams4(), { deleteUserStoreManager } = useUserManager();
-  useEffect41(() => {
+  useEffect42(() => {
     deleteUserStoreManager();
   }, []);
 }
 function Logout() {
-  return useLogoutController(), /* @__PURE__ */ jsxs129("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx146(Link35, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx146(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }) }),
-    /* @__PURE__ */ jsxs129("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
-      /* @__PURE__ */ jsx146("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
-      /* @__PURE__ */ jsx146(Link35, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
+  return useLogoutController(), /* @__PURE__ */ jsxs130("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx147(Link36, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx147(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16 cursor-pointer" }) }),
+    /* @__PURE__ */ jsxs130("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
+      /* @__PURE__ */ jsx147("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
+      /* @__PURE__ */ jsx147(Link36, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
     ] })
   ] });
 }
@@ -15317,32 +16195,32 @@ function Logout() {
 // app/routes/signup.tsx
 var signup_exports = {};
 __export(signup_exports, {
-  action: () => action33,
+  action: () => action34,
   default: () => Signup,
-  loader: () => loader57
+  loader: () => loader58
 });
-import { Form as Form41, Link as Link36, useActionData as useActionData19, useNavigate as useNavigate27, useSearchParams as useSearchParams5 } from "@remix-run/react";
-import { json as json53 } from "@remix-run/node";
-import { useEffect as useEffect42 } from "react";
-import { jsx as jsx147, jsxs as jsxs130 } from "react/jsx-runtime";
-async function loader57({ request }) {
+import { Form as Form42, Link as Link37, useActionData as useActionData19, useNavigate as useNavigate27, useSearchParams as useSearchParams5 } from "@remix-run/react";
+import { json as json54 } from "@remix-run/node";
+import { useEffect as useEffect43 } from "react";
+import { jsx as jsx148, jsxs as jsxs131 } from "react/jsx-runtime";
+async function loader58({ request }) {
   return null;
 }
-async function action33({ request }) {
+async function action34({ request }) {
   let formData = await request.formData(), signupData = authServer.prepareUserSignupPayload(formData), { error, data, headers } = await authServer.signup(signupData), responseHeaders = {};
-  return error ? { error: error.detail?.toString() || "An error occurred during login.", data: null } : headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json53({ data, error: null }, {
+  return error ? { error: error.detail?.toString() || "An error occurred during login.", data: null } : headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json54({ data, error: null }, {
     headers: responseHeaders
-  })) : json53({ error, data, headers });
+  })) : json54({ error, data, headers });
 }
 function useSignupController() {
   let actionData = useActionData19(), [searchQuery] = useSearchParams5(), { setUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate27();
-  return useEffect42(() => {
+  return useEffect43(() => {
     actionData?.error && (toast5({
       variant: "destructive",
       title: "Sign Up Failed",
       description: actionData.error
     }), actionData.error = "");
-  }, [actionData?.error]), useEffect42(() => {
+  }, [actionData?.error]), useEffect43(() => {
     if (actionData?.data) {
       setUserStoreManager(actionData.data, !0), navigate(searchQuery.get("redirectTo") || "/user/profile");
       return;
@@ -15351,29 +16229,29 @@ function useSignupController() {
 }
 function Signup() {
   let { actionData } = useSignupController();
-  return /* @__PURE__ */ jsxs130("main", { className: "bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx147(Link36, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx147(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsx147("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs130(Form41, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsx147("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx147("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx147("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
-      /* @__PURE__ */ jsx147("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
-      /* @__PURE__ */ jsx147("hr", {}),
-      /* @__PURE__ */ jsxs130("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs131("main", { className: "bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx148(Link37, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx148(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx148("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs131(Form42, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx148("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx148("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx148("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx148("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
+      /* @__PURE__ */ jsx148("hr", {}),
+      /* @__PURE__ */ jsxs131("p", { className: "text-center text-sm mt-2", children: [
         "Already have an account? ",
-        /* @__PURE__ */ jsx147(Link36, { to: "/login", className: "text-primary underline", children: "Login" })
+        /* @__PURE__ */ jsx148(Link37, { to: "/login", className: "text-primary underline", children: "Login" })
       ] }),
-      /* @__PURE__ */ jsxs130("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsx147(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx147(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx147(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
-        /* @__PURE__ */ jsx147(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }),
-        /* @__PURE__ */ jsx147(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
-        /* @__PURE__ */ jsxs130("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
-          /* @__PURE__ */ jsx147(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
+      /* @__PURE__ */ jsxs131("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx148(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx148(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx148(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
+        /* @__PURE__ */ jsx148(FormControl, { as: "input", id: "password", name: "password", placeholder: "Enter your password", labelText: "Password", type: "password", icon: icons.lockIcon, required: !0 }),
+        /* @__PURE__ */ jsx148(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
+        /* @__PURE__ */ jsxs131("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+          /* @__PURE__ */ jsx148(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
           "Profile Image"
         ] }),
-        /* @__PURE__ */ jsx147(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
+        /* @__PURE__ */ jsx148(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
       ] }),
-      /* @__PURE__ */ jsx147(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" })
+      /* @__PURE__ */ jsx148(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Sign Up" })
     ] }) })
   ] });
 }
@@ -15385,13 +16263,13 @@ __export(admin_exports, {
   default: () => AdminLayout,
   meta: () => meta3
 });
-import { Outlet as Outlet5, useLocation as useLocation16 } from "@remix-run/react";
-import { useEffect as useEffect45, useState as useState53 } from "react";
+import { Outlet as Outlet5, useLocation as useLocation17 } from "@remix-run/react";
+import { useEffect as useEffect46, useState as useState54 } from "react";
 
 // app/components/admin/AdminMobileNavigation.tsx
-import { NavLink as NavLink5, useLocation as useLocation14 } from "@remix-run/react";
-import { useEffect as useEffect43, useRef as useRef17, useState as useState51 } from "react";
-import { jsx as jsx148, jsxs as jsxs131 } from "react/jsx-runtime";
+import { NavLink as NavLink5, useLocation as useLocation15 } from "@remix-run/react";
+import { useEffect as useEffect44, useRef as useRef18, useState as useState52 } from "react";
+import { jsx as jsx149, jsxs as jsxs132 } from "react/jsx-runtime";
 var primaryNavs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts", acceptedRoles: ["manage user" /* manage user */] },
@@ -15415,7 +16293,8 @@ var primaryNavs2 = [
     acceptedRoles: [],
     subitems: [
       { label: "Show Partners", url: "partners", acceptedRoles: [] },
-      { label: "Partners Settlements", url: "partners/settlements", acceptedRoles: [] }
+      { label: "Partners Settlements", url: "partners/settlements", acceptedRoles: [] },
+      { label: "Partners Orders", url: "partners/orders", acceptedRoles: [] }
     ]
   }
 ], secondaryNavs2 = [
@@ -15423,65 +16302,65 @@ var primaryNavs2 = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function AdminMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef17(null);
-  useEffect43(() => {
+  let mobileNav = useRef18(null);
+  useEffect44(() => {
     mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation14();
+  let { pathname } = useLocation15();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState51(null);
-  useEffect43(() => {
+  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState52(null);
+  useEffect44(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
-  let mainComponent = /* @__PURE__ */ jsxs131("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs132("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx148(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx149(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs131(
+  return /* @__PURE__ */ jsxs132(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs131("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsx148("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
-          /* @__PURE__ */ jsx148(
+        /* @__PURE__ */ jsxs132("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx149("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx149(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsx148(Svg, { src: icons.closeIcon })
+              children: /* @__PURE__ */ jsx149(Svg, { src: icons.closeIcon })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs131("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs131("header", { children: [
-            /* @__PURE__ */ jsxs131("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs131("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsx148("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx148("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs131("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsx148("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-                  /* @__PURE__ */ jsx148("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs132("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs132("header", { children: [
+            /* @__PURE__ */ jsxs132("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs132("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx149("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx149("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs132("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx149("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+                  /* @__PURE__ */ jsx149("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx148(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx148("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs131(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx148(
+              /* @__PURE__ */ jsx149(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx149("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs132(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx149(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs131("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx148(Svg, { src: navItem.icon }),
+                    children: /* @__PURE__ */ jsxs132("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx149(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
                   }
                 ),
-                /* @__PURE__ */ jsx148(AccordionContent, { children: /* @__PURE__ */ jsx148("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx148("li", { className: `py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]${hasAcceptedRole(user, subitem.acceptedRoles ?? []) ? "" : " hidden "}`, children: /* @__PURE__ */ jsx148(
+                /* @__PURE__ */ jsx149(AccordionContent, { children: /* @__PURE__ */ jsx149("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx149("li", { className: `py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]${hasAcceptedRole(user, subitem.acceptedRoles ?? []) ? "" : " hidden "}`, children: /* @__PURE__ */ jsx149(
                   NavLink5,
                   {
                     to: subitem.url,
@@ -15490,46 +16369,46 @@ function AdminMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx148("li", { children: /* @__PURE__ */ jsxs131(
+              ] }, navItem.label) : /* @__PURE__ */ jsx149("li", { children: /* @__PURE__ */ jsxs132(
                 NavLink5,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}${hasAcceptedRole(user, navItem.acceptedRoles ?? []) ? "" : " hidden "}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsx148(Svg, { src: navItem.icon }),
+                    /* @__PURE__ */ jsx149(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx148("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx148("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx148("li", { children: /* @__PURE__ */ jsxs131(
+            /* @__PURE__ */ jsx149("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx149("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx149("li", { children: /* @__PURE__ */ jsxs132(
               NavLink5,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsx148(Svg, { src: navItem.icon }),
+                  /* @__PURE__ */ jsx149(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs131("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs131("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsx148(Svg, { src: icons.themeIcon }),
+          /* @__PURE__ */ jsxs132("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs132("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx149(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs131(
+            /* @__PURE__ */ jsxs132(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsx148("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-                  /* @__PURE__ */ jsx148("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-                  /* @__PURE__ */ jsx148("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+                  /* @__PURE__ */ jsx149("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx149("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx149("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
               }
             )
@@ -15541,31 +16420,31 @@ function AdminMobileNavigation({ show, onClose }) {
 }
 
 // app/components/admin/MobileHeader.tsx
-import { Link as Link37 } from "@remix-run/react";
-import { jsx as jsx149, jsxs as jsxs132 } from "react/jsx-runtime";
+import { Link as Link38 } from "@remix-run/react";
+import { jsx as jsx150, jsxs as jsxs133 } from "react/jsx-runtime";
 function MobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs132("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxs132(Link37, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsx149(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+  return /* @__PURE__ */ jsxs133("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs133(Link38, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx150(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-ADMIN"
     ] }),
-    /* @__PURE__ */ jsx149(
+    /* @__PURE__ */ jsx150(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx149(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+        children: /* @__PURE__ */ jsx150(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
       }
     )
   ] });
 }
 
 // app/components/admin/AdminNav.tsx
-import { NavLink as NavLink6, useLocation as useLocation15 } from "@remix-run/react";
+import { NavLink as NavLink6, useLocation as useLocation16 } from "@remix-run/react";
 import { Accordion as Accordion3, AccordionContent as AccordionContent3, AccordionItem as AccordionItem3, AccordionTrigger as AccordionTrigger3 } from "@radix-ui/react-accordion";
-import { useEffect as useEffect44, useState as useState52 } from "react";
-import { jsx as jsx150, jsxs as jsxs133 } from "react/jsx-runtime";
+import { useEffect as useEffect45, useState as useState53 } from "react";
+import { jsx as jsx151, jsxs as jsxs134 } from "react/jsx-runtime";
 var navs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts", acceptedRoles: ["manage user" /* manage user */] },
@@ -15589,54 +16468,55 @@ var navs2 = [
     acceptedRoles: [],
     subitems: [
       { label: "Show Partners", url: "partners", acceptedRoles: [] },
-      { label: "Partners Settlements", url: "partners/settlements", acceptedRoles: [] }
+      { label: "Partners Settlements", url: "partners/settlements", acceptedRoles: [] },
+      { label: "Partners Orders", url: "partners/orders", acceptedRoles: [] }
     ]
   }
 ];
 function AdminNavigation({ show }) {
-  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState52(null), userRolesSet = new Set(userRoles);
-  useEffect44(() => {
+  let { getUserStoreManager, hasAcceptedRole } = useUserManager(), userRoles = getUserStoreManager()?.roles.map((r) => r.toLowerCase()) ?? [], [user, setUser] = useState53(null), userRolesSet = new Set(userRoles);
+  useEffect45(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
-  let { pathname } = useLocation15();
+  let { pathname } = useLocation16();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs133("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs134("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx150(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx151(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs133("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
-    /* @__PURE__ */ jsxs133("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsx150("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx150("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx150("li", { children: /* @__PURE__ */ jsxs133(
+  return show ? /* @__PURE__ */ jsxs134("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]", children: [
+    /* @__PURE__ */ jsxs134("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx151("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx151("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx151("li", { children: /* @__PURE__ */ jsxs134(
         NavLink6,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${hasAcceptedRole(user, navItem.acceptedRoles ?? []) ? "" : " hidden "}`,
           children: [
-            /* @__PURE__ */ jsx150(Svg, { src: navItem.icon }),
+            /* @__PURE__ */ jsx151(Svg, { src: navItem.icon }),
             navItem.label
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx150(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs133(AccordionItem3, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs133(
+      /* @__PURE__ */ jsx151(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs134(AccordionItem3, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs134(
           AccordionTrigger3,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs133("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsx150(Svg, { src: item.icon }),
+              /* @__PURE__ */ jsxs134("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx151(Svg, { src: item.icon }),
                 item.label
               ] }),
-              /* @__PURE__ */ jsx150(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
+              /* @__PURE__ */ jsx151(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
           }
         ),
-        /* @__PURE__ */ jsx150(AccordionContent3, { children: /* @__PURE__ */ jsx150("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx150("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx150(
+        /* @__PURE__ */ jsx151(AccordionContent3, { children: /* @__PURE__ */ jsx151("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx151("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx151(
           NavLink6,
           {
             to: subitem.url,
@@ -15646,20 +16526,20 @@ function AdminNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs133("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs133("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsx150(Svg, { src: icons.themeIcon }),
+    /* @__PURE__ */ jsxs134("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs134("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx151(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs133(
+      /* @__PURE__ */ jsxs134(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsx150("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-            /* @__PURE__ */ jsx150("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-            /* @__PURE__ */ jsx150("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+            /* @__PURE__ */ jsx151("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx151("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx151("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
         }
       )
@@ -15668,41 +16548,41 @@ function AdminNavigation({ show }) {
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { Link as Link39 } from "@remix-run/react";
+import { Link as Link40 } from "@remix-run/react";
 
 // app/components/admin/AdminToolbar.tsx
-import { Link as Link38 } from "@remix-run/react";
-import { jsx as jsx151, jsxs as jsxs134 } from "react/jsx-runtime";
+import { Link as Link39 } from "@remix-run/react";
+import { jsx as jsx152, jsxs as jsxs135 } from "react/jsx-runtime";
 function AdminToolbar() {
-  let mainComponent = /* @__PURE__ */ jsxs134(
+  let mainComponent = /* @__PURE__ */ jsxs135(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs134("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx151("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx151("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs134("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx151("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
-            /* @__PURE__ */ jsx151("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
+        /* @__PURE__ */ jsxs135("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx152("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx152("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs135("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx152("span", { className: "block text-sm font-satoshi-bold", children: "Admin" }),
+            /* @__PURE__ */ jsx152("span", { className: "block text-xs font-satoshi-medium", children: "admin@kotmy.com" })
           ] })
         ] }),
-        /* @__PURE__ */ jsx151(Svg, { src: icons.arrowDownIcon })
+        /* @__PURE__ */ jsx152(Svg, { src: icons.arrowDownIcon })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs134(
+  return /* @__PURE__ */ jsxs135(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs134(Link38, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx151(Svg, { src: icons.profileIcon }),
+        /* @__PURE__ */ jsxs135(Link39, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx152(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs134(Link38, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx151(Svg, { src: icons.signoutIcon }),
+        /* @__PURE__ */ jsxs135(Link39, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx152(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
       ]
@@ -15711,83 +16591,83 @@ function AdminToolbar() {
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { jsx as jsx152, jsxs as jsxs135 } from "react/jsx-runtime";
+import { jsx as jsx153, jsxs as jsxs136 } from "react/jsx-runtime";
 function PrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs135("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxs135("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx152(
+  return /* @__PURE__ */ jsxs136("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs136("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx153(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsx152(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+          children: /* @__PURE__ */ jsx153(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsxs135(Link39, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsx152(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+      /* @__PURE__ */ jsxs136(Link40, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx153(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-ADMIN"
       ] })
     ] }),
-    /* @__PURE__ */ jsx152(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
-    /* @__PURE__ */ jsx152(AdminToolbar, {})
+    /* @__PURE__ */ jsx153(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx153(AdminToolbar, {})
   ] });
 }
 
 // app/routes/admin.tsx
-import { jsx as jsx153, jsxs as jsxs136 } from "react/jsx-runtime";
+import { jsx as jsx154, jsxs as jsxs137 } from "react/jsx-runtime";
 var meta3 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout2({ children }) {
-  let [showNav, setShowNav] = useState53(!1);
-  return useEffect45(() => {
+  let [showNav, setShowNav] = useState54(!1);
+  return useEffect46(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs136("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsx153(PrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs137("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx154(PrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx153(MobileHeader, { toggleNav: () => {
+    /* @__PURE__ */ jsx154(MobileHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx153(AdminMobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx154(AdminMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs136("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsx153(AdminNavigation, { show: showNav }),
+    /* @__PURE__ */ jsxs137("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx154(AdminNavigation, { show: showNav }),
       children
     ] })
   ] });
 }
 function AdminLayout() {
-  return /* @__PURE__ */ jsx153(Layout2, { children: /* @__PURE__ */ jsx153(Outlet5, {}) });
+  return /* @__PURE__ */ jsx154(Layout2, { children: /* @__PURE__ */ jsx154(Outlet5, {}) });
 }
 function ErrorBoundary3() {
-  let { pathname } = useLocation16();
-  return /* @__PURE__ */ jsx153(Layout2, { children: /* @__PURE__ */ jsxs136("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsx153("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
-    /* @__PURE__ */ jsx153("p", { children: "Apologies, something went wrong on our end. Please try again." }),
-    /* @__PURE__ */ jsx153(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
-    /* @__PURE__ */ jsx153(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" })
+  let { pathname } = useLocation17();
+  return /* @__PURE__ */ jsx154(Layout2, { children: /* @__PURE__ */ jsxs137("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx154("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx154("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx154(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx154(Cta_default, { element: "link", to: "/admin/overview", className: "px-4 py-1 rounded-md", children: "Back to Admin Home" })
   ] }) });
 }
 
 // app/routes/login.tsx
 var login_exports = {};
 __export(login_exports, {
-  action: () => action34,
+  action: () => action35,
   default: () => Login,
-  loader: () => loader58
+  loader: () => loader59
 });
-import { Form as Form42, Link as Link40, useActionData as useActionData20, useNavigate as useNavigate28, useSearchParams as useSearchParams6 } from "@remix-run/react";
-import { json as json54 } from "@remix-run/node";
-import { useEffect as useEffect46 } from "react";
-import { jsx as jsx154, jsxs as jsxs137 } from "react/jsx-runtime";
-async function loader58({ request }) {
+import { Form as Form43, Link as Link41, useActionData as useActionData20, useNavigate as useNavigate28, useSearchParams as useSearchParams6 } from "@remix-run/react";
+import { json as json55 } from "@remix-run/node";
+import { useEffect as useEffect47 } from "react";
+import { jsx as jsx155, jsxs as jsxs138 } from "react/jsx-runtime";
+async function loader59({ request }) {
   return null;
 }
-async function action34({ request }) {
+async function action35({ request }) {
   let searchQuery = new URL(request.url).searchParams, formData = await request.formData(), loginDto = {
     email: formData.get("email"),
     password: formData.get("password")
@@ -15795,22 +16675,22 @@ async function action34({ request }) {
   if (error)
     return { error: error.detail?.toString() || "An error occurred during login.", data: null };
   let responseHeaders = {};
-  return headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json54({ data, error: null }, {
+  return headers?.["Set-Cookie"] ? (responseHeaders = { "Set-Cookie": headers?.["Set-Cookie"] }, json55({ data, error: null }, {
     headers: responseHeaders
-  })) : json54({ data, error: null });
+  })) : json55({ data, error: null });
 }
 function useLoginController() {
   let actionData = useActionData20(), [searchQuery] = useSearchParams6(), { setUserStoreManager, getUserStoreManager } = useUserManager(), { toast: toast5 } = useToast(), navigate = useNavigate28();
-  return useEffect46(() => {
+  return useEffect47(() => {
     let user = getUserStoreManager(), requireNewLogin = searchQuery.get("requireNewLogin") || null;
     user && !requireNewLogin && navigate(searchQuery.get("redirectTo") || "/user/profile");
-  }, []), useEffect46(() => {
+  }, []), useEffect47(() => {
     actionData?.error && (toast5({
       variant: "destructive",
       title: "Login Failed",
       description: actionData.error
     }), actionData.error = "");
-  }, [actionData?.error]), useEffect46(() => {
+  }, [actionData?.error]), useEffect47(() => {
     if (actionData?.data) {
       setUserStoreManager(actionData.data, !0), navigate(searchQuery.get("redirectTo") || "/user/profile");
       return;
@@ -15819,18 +16699,18 @@ function useLoginController() {
 }
 function Login() {
   let { actionData } = useLoginController();
-  return /* @__PURE__ */ jsxs137("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx154(Link40, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx154(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
-    /* @__PURE__ */ jsx154("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs137(Form42, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
-      /* @__PURE__ */ jsx154("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx154("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx154("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
-      /* @__PURE__ */ jsx154("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
-      /* @__PURE__ */ jsx154("hr", {}),
-      /* @__PURE__ */ jsxs137("p", { className: "text-center text-sm mt-2", children: [
+  return /* @__PURE__ */ jsxs138("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx155(Link41, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx155(Svg, { src: icons.logoIcon, className: "w-14 h-14 sm:w-16 sm:h-16" }) }),
+    /* @__PURE__ */ jsx155("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs138(Form43, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsx155("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx155("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx155("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
+      /* @__PURE__ */ jsx155("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
+      /* @__PURE__ */ jsx155("hr", {}),
+      /* @__PURE__ */ jsxs138("p", { className: "text-center text-sm mt-2", children: [
         "Don't have an account yet? ",
-        /* @__PURE__ */ jsx154(Link40, { to: "/signup", className: "text-primary underline", children: "Register" })
+        /* @__PURE__ */ jsx155(Link41, { to: "/signup", className: "text-primary underline", children: "Register" })
       ] }),
-      /* @__PURE__ */ jsxs137("div", { className: "my-2 flex flex-col gap-3", children: [
-        /* @__PURE__ */ jsx154(
+      /* @__PURE__ */ jsxs138("div", { className: "my-2 flex flex-col gap-3", children: [
+        /* @__PURE__ */ jsx155(
           FormControl,
           {
             as: "input",
@@ -15842,7 +16722,7 @@ function Login() {
             required: !0
           }
         ),
-        /* @__PURE__ */ jsx154(
+        /* @__PURE__ */ jsx155(
           FormControl,
           {
             as: "input",
@@ -15856,7 +16736,7 @@ function Login() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx154(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
+      /* @__PURE__ */ jsx155(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
     ] }) })
   ] });
 }
@@ -15868,51 +16748,51 @@ __export(user_exports, {
   default: () => UserLayout,
   meta: () => meta4
 });
-import { Outlet as Outlet6, useLocation as useLocation19 } from "@remix-run/react";
-import { useEffect as useEffect49, useState as useState56 } from "react";
+import { Outlet as Outlet6, useLocation as useLocation20 } from "@remix-run/react";
+import { useEffect as useEffect50, useState as useState57 } from "react";
 
 // app/components/user/UserPrimaryHeader.tsx
-import { Link as Link42 } from "@remix-run/react";
+import { Link as Link43 } from "@remix-run/react";
 
 // app/components/user/UserToolBar.tsx
-import { Link as Link41, useNavigate as useNavigate29 } from "@remix-run/react";
-import { useEffect as useEffect47, useState as useState54 } from "react";
-import { jsx as jsx155, jsxs as jsxs138 } from "react/jsx-runtime";
+import { Link as Link42, useNavigate as useNavigate29 } from "@remix-run/react";
+import { useEffect as useEffect48, useState as useState55 } from "react";
+import { jsx as jsx156, jsxs as jsxs139 } from "react/jsx-runtime";
 function UserToolbar() {
-  let [user, setUser] = useState54(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate29();
-  useEffect47(() => {
+  let [user, setUser] = useState55(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate29();
+  useEffect48(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs138(
+  let mainComponent = /* @__PURE__ */ jsxs139(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs138("div", { className: "flex gap-3 items-center", children: [
-          /* @__PURE__ */ jsx155("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx155("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs138("span", { className: "grid", children: [
-            /* @__PURE__ */ jsx155("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-            /* @__PURE__ */ jsx155("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs139("div", { className: "flex gap-3 items-center", children: [
+          /* @__PURE__ */ jsx156("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx156("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+          /* @__PURE__ */ jsxs139("span", { className: "grid", children: [
+            /* @__PURE__ */ jsx156("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+            /* @__PURE__ */ jsx156("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
         ] }),
-        /* @__PURE__ */ jsx155(Svg, { src: icons.arrowDownIcon })
+        /* @__PURE__ */ jsx156(Svg, { src: icons.arrowDownIcon })
       ]
     }
   );
-  return /* @__PURE__ */ jsxs138(
+  return /* @__PURE__ */ jsxs139(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs138(Link41, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx155(Svg, { src: icons.profileIcon }),
+        /* @__PURE__ */ jsxs139(Link42, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx156(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs138(Link41, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
-          /* @__PURE__ */ jsx155(Svg, { src: icons.signoutIcon }),
+        /* @__PURE__ */ jsxs139(Link42, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+          /* @__PURE__ */ jsx156(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
       ]
@@ -15921,54 +16801,54 @@ function UserToolbar() {
 }
 
 // app/components/user/UserPrimaryHeader.tsx
-import { jsx as jsx156, jsxs as jsxs139 } from "react/jsx-runtime";
+import { jsx as jsx157, jsxs as jsxs140 } from "react/jsx-runtime";
 function UserPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs139("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
-    /* @__PURE__ */ jsxs139("div", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx156(
+  return /* @__PURE__ */ jsxs140("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-secondary border-b", children: [
+    /* @__PURE__ */ jsxs140("div", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx157(
         "button",
         {
           onClick: toggleNav,
           title: "Toggle Menu",
           className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-          children: /* @__PURE__ */ jsx156(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
+          children: /* @__PURE__ */ jsx157(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsxs139(Link42, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
-        /* @__PURE__ */ jsx156(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+      /* @__PURE__ */ jsxs140(Link43, { to: "/", className: "text-accent flex items-center gap-6 whitespace-nowrap font-satoshi-black", children: [
+        /* @__PURE__ */ jsx157(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
         "KOTMY-USER"
       ] })
     ] }),
-    /* @__PURE__ */ jsx156(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
-    /* @__PURE__ */ jsx156(UserToolbar, {})
+    /* @__PURE__ */ jsx157(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
+    /* @__PURE__ */ jsx157(UserToolbar, {})
   ] });
 }
 
 // app/components/user/UserMobileHeader.tsx
-import { Link as Link43 } from "@remix-run/react";
-import { jsx as jsx157, jsxs as jsxs140 } from "react/jsx-runtime";
+import { Link as Link44 } from "@remix-run/react";
+import { jsx as jsx158, jsxs as jsxs141 } from "react/jsx-runtime";
 function UserMobileHeader2({ toggleNav }) {
-  return /* @__PURE__ */ jsxs140("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsxs140(Link43, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
-      /* @__PURE__ */ jsx157(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
+  return /* @__PURE__ */ jsxs141("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsxs141(Link44, { to: "/", className: "text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black", children: [
+      /* @__PURE__ */ jsx158(Svg, { src: icons.logoIcon, width: 37, height: 36 }),
       "KOTMY-USER"
     ] }),
-    /* @__PURE__ */ jsx157(
+    /* @__PURE__ */ jsx158(
       "button",
       {
         onClick: toggleNav,
         title: "open Menu",
         className: "ml-auto flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-        children: /* @__PURE__ */ jsx157(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
+        children: /* @__PURE__ */ jsx158(Svg, { src: icons.adminHamburgerIcon, width: 30, height: 24 })
       }
     )
   ] });
 }
 
 // app/components/user/UserMobileNavigation.tsx
-import { NavLink as NavLink7, useLocation as useLocation17, useNavigate as useNavigate30 } from "@remix-run/react";
-import { useEffect as useEffect48, useRef as useRef18, useState as useState55 } from "react";
-import { jsx as jsx158, jsxs as jsxs141 } from "react/jsx-runtime";
+import { NavLink as NavLink7, useLocation as useLocation18, useNavigate as useNavigate30 } from "@remix-run/react";
+import { useEffect as useEffect49, useRef as useRef19, useState as useState56 } from "react";
+import { jsx as jsx159, jsxs as jsxs142 } from "react/jsx-runtime";
 var primaryNavs3 = [
   { label: "Contests", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -15991,62 +16871,62 @@ var primaryNavs3 = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function UserMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef18(null), [user, setUser] = useState55(null), navigate = useNavigate30(), { getUserStoreManager } = useUserManager();
-  useEffect48(() => {
+  let mobileNav = useRef19(null), [user, setUser] = useState56(null), navigate = useNavigate30(), { getUserStoreManager } = useUserManager();
+  useEffect49(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation17();
+  let { pathname } = useLocation18();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs141("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs142("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx158(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx159(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs141(
+  return /* @__PURE__ */ jsxs142(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs141("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
-          /* @__PURE__ */ jsx158("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
-          /* @__PURE__ */ jsx158(
+        /* @__PURE__ */ jsxs142("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+          /* @__PURE__ */ jsx159("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
+          /* @__PURE__ */ jsx159(
             "button",
             {
               onClick: onClose,
               title: "open Menu",
               className: "flex items-center justify-center rounded p-2 px-1 hover:outline outline-primary",
-              children: /* @__PURE__ */ jsx158(Svg, { src: icons.closeIcon })
+              children: /* @__PURE__ */ jsx159(Svg, { src: icons.closeIcon })
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs141("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs141("header", { children: [
-            /* @__PURE__ */ jsxs141("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs141("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
-                /* @__PURE__ */ jsx158("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx158("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs141("span", { className: "grid", children: [
-                  /* @__PURE__ */ jsx158("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
-                  /* @__PURE__ */ jsx158("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
+        /* @__PURE__ */ jsxs142("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs142("header", { children: [
+            /* @__PURE__ */ jsxs142("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs142("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+                /* @__PURE__ */ jsx159("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx159("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
+                /* @__PURE__ */ jsxs142("span", { className: "grid", children: [
+                  /* @__PURE__ */ jsx159("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
+                  /* @__PURE__ */ jsx159("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx158(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx158("ul", { className: "grid gap-2 font-bold", children: primaryNavs3.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs141(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx158(
+              /* @__PURE__ */ jsx159(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx159("ul", { className: "grid gap-2 font-bold", children: primaryNavs3.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs142(AccordionItem, { value: navItem.label, className: "group", children: [
+                /* @__PURE__ */ jsx159(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs141("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx158(Svg, { src: navItem.icon }),
+                    children: /* @__PURE__ */ jsxs142("span", { className: "flex gap-3 items-center", children: [
+                      /* @__PURE__ */ jsx159(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
                   }
                 ),
-                /* @__PURE__ */ jsx158(AccordionContent, { children: /* @__PURE__ */ jsx158("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx158("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx158(
+                /* @__PURE__ */ jsx159(AccordionContent, { children: /* @__PURE__ */ jsx159("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx159("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx159(
                   NavLink7,
                   {
                     to: subitem.url,
@@ -16055,46 +16935,46 @@ function UserMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx158("li", { children: /* @__PURE__ */ jsxs141(
+              ] }, navItem.label) : /* @__PURE__ */ jsx159("li", { children: /* @__PURE__ */ jsxs142(
                 NavLink7,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
                   to: navItem.url,
                   onClick: onClose,
                   children: [
-                    /* @__PURE__ */ jsx158(Svg, { src: navItem.icon }),
+                    /* @__PURE__ */ jsx159(Svg, { src: navItem.icon }),
                     navItem.label
                   ]
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx158("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx158("ul", { className: "grid font-bold", children: secondaryNavs3.map((navItem) => /* @__PURE__ */ jsx158("li", { children: /* @__PURE__ */ jsxs141(
+            /* @__PURE__ */ jsx159("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx159("ul", { className: "grid font-bold", children: secondaryNavs3.map((navItem) => /* @__PURE__ */ jsx159("li", { children: /* @__PURE__ */ jsxs142(
               NavLink7,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
                 to: navItem.url,
                 onClick: onClose,
                 children: [
-                  /* @__PURE__ */ jsx158(Svg, { src: navItem.icon }),
+                  /* @__PURE__ */ jsx159(Svg, { src: navItem.icon }),
                   navItem.label
                 ]
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs141("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs141("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
-              /* @__PURE__ */ jsx158(Svg, { src: icons.themeIcon }),
+          /* @__PURE__ */ jsxs142("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs142("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+              /* @__PURE__ */ jsx159(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs141(
+            /* @__PURE__ */ jsxs142(
               Toggletip,
               {
                 mainComponent,
                 childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border text-sm whitespace-nowrap",
                 children: [
-                  /* @__PURE__ */ jsx158("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-                  /* @__PURE__ */ jsx158("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-                  /* @__PURE__ */ jsx158("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+                  /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+                  /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+                  /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
                 ]
               }
             )
@@ -16106,9 +16986,9 @@ function UserMobileNavigation({ show, onClose }) {
 }
 
 // app/components/user/UserNavigation.tsx
-import { NavLink as NavLink8, useLocation as useLocation18 } from "@remix-run/react";
+import { NavLink as NavLink8, useLocation as useLocation19 } from "@remix-run/react";
 import { Accordion as Accordion4, AccordionContent as AccordionContent4, AccordionItem as AccordionItem4, AccordionTrigger as AccordionTrigger4 } from "@radix-ui/react-accordion";
-import { jsx as jsx159, jsxs as jsxs142 } from "react/jsx-runtime";
+import { jsx as jsx160, jsxs as jsxs143 } from "react/jsx-runtime";
 var navs3 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
   { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
@@ -16129,45 +17009,45 @@ var navs3 = [
   }
 ];
 function UserNavigation({ show }) {
-  let { pathname } = useLocation18();
+  let { pathname } = useLocation19();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs142("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs143("div", { className: "flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
-    /* @__PURE__ */ jsx159(Svg, { src: icons.arrowDownIcon })
+    /* @__PURE__ */ jsx160(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs142("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxs142("nav", { className: "py-6", children: [
-      /* @__PURE__ */ jsx159("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx159("ul", { className: "grid gap-2 font-bold", children: navs3.map((navItem) => /* @__PURE__ */ jsx159("li", { children: /* @__PURE__ */ jsxs142(
+  return show ? /* @__PURE__ */ jsxs143("header", { className: "bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs143("nav", { className: "py-6", children: [
+      /* @__PURE__ */ jsx160("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
+      /* @__PURE__ */ jsx160("ul", { className: "grid gap-2 font-bold", children: navs3.map((navItem) => /* @__PURE__ */ jsx160("li", { children: /* @__PURE__ */ jsxs143(
         NavLink8,
         {
           to: navItem.url,
           className: ({ isActive }) => `${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF]`,
           children: [
-            /* @__PURE__ */ jsx159(Svg, { src: navItem.icon }),
+            /* @__PURE__ */ jsx160(Svg, { src: navItem.icon }),
             navItem.label
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx159(Accordion4, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs3.map((item) => /* @__PURE__ */ jsxs142(AccordionItem4, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs142(
+      /* @__PURE__ */ jsx160(Accordion4, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs3.map((item) => /* @__PURE__ */ jsxs143(AccordionItem4, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs143(
           AccordionTrigger4,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
               "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs142("span", { className: "flex gap-3 items-center", children: [
-                /* @__PURE__ */ jsx159(Svg, { src: item.icon }),
+              /* @__PURE__ */ jsxs143("span", { className: "flex gap-3 items-center", children: [
+                /* @__PURE__ */ jsx160(Svg, { src: item.icon }),
                 item.label
               ] }),
-              /* @__PURE__ */ jsx159(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
+              /* @__PURE__ */ jsx160(Svg, { src: icons.arrowDownIcon, className: "group-[[data-state=open]]:rotate-180 transition-transform duration-200" })
             ]
           }
         ),
-        /* @__PURE__ */ jsx159(AccordionContent4, { children: /* @__PURE__ */ jsx159("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx159("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx159(
+        /* @__PURE__ */ jsx160(AccordionContent4, { children: /* @__PURE__ */ jsx160("ul", { className: "list-disc list-inside p-3", children: item.subitems.map((subitem) => /* @__PURE__ */ jsx160("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx160(
           NavLink8,
           {
             to: subitem.url,
@@ -16177,20 +17057,20 @@ function UserNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs142("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs142("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
-        /* @__PURE__ */ jsx159(Svg, { src: icons.themeIcon }),
+    /* @__PURE__ */ jsxs143("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs143("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+        /* @__PURE__ */ jsx160(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs142(
+      /* @__PURE__ */ jsxs143(
         Toggletip,
         {
           mainComponent,
           childContainerClass: "bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
           children: [
-            /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
-            /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
-            /* @__PURE__ */ jsx159("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
+            /* @__PURE__ */ jsx160("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "System default" }),
+            /* @__PURE__ */ jsx160("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Light" }),
+            /* @__PURE__ */ jsx160("span", { className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: "Dark" })
           ]
         }
       )
@@ -16199,46 +17079,46 @@ function UserNavigation({ show }) {
 }
 
 // app/routes/user.tsx
-import { jsx as jsx160, jsxs as jsxs143 } from "react/jsx-runtime";
+import { jsx as jsx161, jsxs as jsxs144 } from "react/jsx-runtime";
 var meta4 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
 ];
 function Layout3({ children }) {
-  let [showNav, setShowNav] = useState56(!1);
-  return useEffect49(() => {
+  let [showNav, setShowNav] = useState57(!1);
+  return useEffect50(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs143("div", { className: "bg-tertiary text-admin-pry", children: [
-    /* @__PURE__ */ jsx160(UserPrimaryHeader, { toggleNav: () => {
+  }, []), /* @__PURE__ */ jsxs144("div", { className: "bg-tertiary text-admin-pry", children: [
+    /* @__PURE__ */ jsx161(UserPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx160(UserMobileHeader2, { toggleNav: () => {
+    /* @__PURE__ */ jsx161(UserMobileHeader2, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
-    /* @__PURE__ */ jsx160(UserMobileNavigation, { onClose: () => {
+    /* @__PURE__ */ jsx161(UserMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs143("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
-      /* @__PURE__ */ jsx160(UserNavigation, { show: showNav }),
-      /* @__PURE__ */ jsx160("div", { className: "flex-grow overflow-y-auto", children })
+    /* @__PURE__ */ jsxs144("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+      /* @__PURE__ */ jsx161(UserNavigation, { show: showNav }),
+      /* @__PURE__ */ jsx161("div", { className: "flex-grow overflow-y-auto", children })
     ] })
   ] });
 }
 function UserLayout() {
-  return /* @__PURE__ */ jsx160(Layout3, { children: /* @__PURE__ */ jsx160(Outlet6, {}) });
+  return /* @__PURE__ */ jsx161(Layout3, { children: /* @__PURE__ */ jsx161(Outlet6, {}) });
 }
 function ErrorBoundary4() {
-  let { pathname } = useLocation19();
-  return /* @__PURE__ */ jsx160(Layout3, { children: /* @__PURE__ */ jsxs143("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
-    /* @__PURE__ */ jsx160("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
-    /* @__PURE__ */ jsx160("p", { children: "Apologies, something went wrong on our end. Please try again." }),
-    /* @__PURE__ */ jsx160(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
-    /* @__PURE__ */ jsx160(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" })
+  let { pathname } = useLocation20();
+  return /* @__PURE__ */ jsx161(Layout3, { children: /* @__PURE__ */ jsxs144("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+    /* @__PURE__ */ jsx161("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
+    /* @__PURE__ */ jsx161("p", { children: "Apologies, something went wrong on our end. Please try again." }),
+    /* @__PURE__ */ jsx161(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
+    /* @__PURE__ */ jsx161(Cta_default, { element: "link", to: "/user/overview", className: "px-4 py-1 rounded-md", children: "Back to User Home" })
   ] }) });
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-7JHJ52MF.js", imports: ["/build/_shared/chunk-6GE3AYG6.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-65VUQ2UJ.js", imports: ["/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-RZVBB6NA.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-LOXYQBEG.js", imports: ["/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-IFEDBLTX.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-D6KSUJPI.js", "/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-FDVS4VFT.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-RZV3O37N.js", imports: ["/build/_shared/chunk-D6KSUJPI.js", "/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-TJHRNW25.js", imports: ["/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-IQI3BAXA.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-6EVEHN46.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-JIABQBHE.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-ACJQIJJH.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-JIZLVH4Y.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-VAFCSIL7.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-CUZMKZVL.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-P526RMFI.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-A35YFKTJ.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-77BQ5KES.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-YDCJHVOQ.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-TUSLEZDM.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-FIZV52JM.js", imports: ["/build/_shared/chunk-NMLFXIYF.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-Z2QCZLZR.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-FYH3YGB6.js", imports: ["/build/_shared/chunk-NMLFXIYF.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-PTF3EAVT.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-HKGBWP7F.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-N343OSER.js", imports: ["/build/_shared/chunk-4U2X6FWV.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-X7BTTGKT.js", imports: ["/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-GXNCVZV3.js", imports: ["/build/_shared/chunk-4U2X6FWV.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-M22KH3GF.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-MU47XHEG.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-O2I2UYJS.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-I46O6PP5.js", imports: ["/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-GZBPYZI4.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-F3GQXI2Y.js", imports: ["/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-AK5TPLDL.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-Z6CJ54F5.js", imports: ["/build/_shared/chunk-MU47XHEG.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-WTVSYSXW.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-6EYAUZ5O.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-4FS4ZUK5.js", imports: ["/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-BIQQDNOK.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-E4TWEUN4.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-P6LDRV5D.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-QHBZ3EVJ.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-EGVBXHF6.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-WVEYKA5G.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-LWII4TJO.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-MEFVCG63.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-JITXLBZM.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-TKSP2RR7.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-2IXGMFWD.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-7E5TQJYL.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-2B4G7FSR.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-6LUOYBNP.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-SXFGS5GG.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-ZUGVTSF2.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-ETXXNHTG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-ZIKCCJOX.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-LY5T62NC.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-LWMTCT4V.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-62SXLI7N.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-AFH2HVTN.js", imports: ["/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-C3ETETJQ.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-6YKNI2M6.js", imports: ["/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-K3RCLN7W.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-DLRZ355H.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-6T7VEFHQ.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4Q6S7VHI.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-QVDKXHEZ.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-K3IB7Z5S.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "fa55e048", hmr: void 0, url: "/build/manifest-FA55E048.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-7JHJ52MF.js", imports: ["/build/_shared/chunk-6GE3AYG6.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-FRROBCQW.js", imports: ["/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-RZVBB6NA.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-LOXYQBEG.js", imports: ["/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-IFEDBLTX.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-D6KSUJPI.js", "/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-FDVS4VFT.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-RZV3O37N.js", imports: ["/build/_shared/chunk-D6KSUJPI.js", "/build/_shared/chunk-AVP2ZDAJ.js", "/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-TJHRNW25.js", imports: ["/build/_shared/chunk-EQMLEPK7.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-IQI3BAXA.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-L3BZDK2M.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-6EVEHN46.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-JIABQBHE.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-FFHPE5PE.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-35XRC6PA.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-7LL5HP45.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-WFNXLKS6.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-P526RMFI.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-A35YFKTJ.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-77BQ5KES.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-YDCJHVOQ.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-DCW5J6RE.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-FIZV52JM.js", imports: ["/build/_shared/chunk-NMLFXIYF.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-Z2QCZLZR.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-FYH3YGB6.js", imports: ["/build/_shared/chunk-NMLFXIYF.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-PTF3EAVT.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-HKGBWP7F.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-N343OSER.js", imports: ["/build/_shared/chunk-4U2X6FWV.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-X7BTTGKT.js", imports: ["/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-GXNCVZV3.js", imports: ["/build/_shared/chunk-4U2X6FWV.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-TZO6O53N.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-M22KH3GF.js", imports: ["/build/_shared/chunk-F4WHN5NH.js", "/build/_shared/chunk-MU47XHEG.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-O2I2UYJS.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-I46O6PP5.js", imports: ["/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-GRRYQGEX.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-OBUO6SVW.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-F3GQXI2Y.js", imports: ["/build/_shared/chunk-4QV2ENKY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-AK5TPLDL.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-Z6CJ54F5.js", imports: ["/build/_shared/chunk-MU47XHEG.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-WTVSYSXW.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-UC4NQBKM.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-6EYAUZ5O.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-4FS4ZUK5.js", imports: ["/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-BIQQDNOK.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-E4TWEUN4.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-J5RDGROX.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-XVMOG6SQ.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-P6LDRV5D.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-QHBZ3EVJ.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-EGVBXHF6.js", imports: ["/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-WVEYKA5G.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-LWII4TJO.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-MEFVCG63.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-JITXLBZM.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-TKSP2RR7.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-R5R6GHJZ.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-V453MOH2.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-2B4G7FSR.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-IJILMAWS.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-SXFGS5GG.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-ZUGVTSF2.js", imports: ["/build/_shared/chunk-3UQ2FNOM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-QX2A73K4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-4RTL43HX.js", "/build/_shared/chunk-4TZ2OPOB.js", "/build/_shared/chunk-NNNROOR6.js", "/build/_shared/chunk-L3BZDK2M.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-ETXXNHTG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-ZIKCCJOX.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-LY5T62NC.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-LWMTCT4V.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-62SXLI7N.js", imports: ["/build/_shared/chunk-YXZKSM4Q.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-AFH2HVTN.js", imports: ["/build/_shared/chunk-JE5WQPN4.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-ZAXASDEZ.js", "/build/_shared/chunk-SKY2ASDP.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-7CX53PJY.js", "/build/_shared/chunk-FSDD3PGD.js", "/build/_shared/chunk-HF5OH3SC.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-C3ETETJQ.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-MW5DU5CX.js", imports: ["/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-MSFHOKMW.js", "/build/_shared/chunk-UPCAZPW3.js", "/build/_shared/chunk-YO56BA4Q.js", "/build/_shared/chunk-EZVRASZO.js", "/build/_shared/chunk-GKITT5IV.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-K3RCLN7W.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-DLRZ355H.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-WJF7FR4I.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-AMFBLDSY.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-U46ZWPSB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-QVDKXHEZ.js", imports: ["/build/_shared/chunk-IUCVY5JD.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-K3IB7Z5S.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-MIH4J4ZK.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "e4d0def0", hmr: void 0, url: "/build/manifest-E4D0DEF0.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
@@ -16569,6 +17449,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: !0,
     caseSensitive: void 0,
     module: admin_partners_index_exports
+  },
+  "routes/admin.partners.orders": {
+    id: "routes/admin.partners.orders",
+    parentId: "routes/admin",
+    path: "partners/orders",
+    index: void 0,
+    caseSensitive: void 0,
+    module: admin_partners_orders_exports
   },
   "routes/admin.tournaments.add": {
     id: "routes/admin.tournaments.add",

@@ -276,6 +276,14 @@ export class ApiEndPoints {
         return `/v2/api/partner/business/orders`
     }
 
+    static get adminPartnerOrders(){
+        return `/v2/api/admin/orders`
+    }
+
+    static get adminResolveOrderDispute() {
+        return `/v2/api/admin/orders/resolve-dispute`
+    }
+
     static getPartnerOrderById(orderId: string) {
         return `/v2/api/partner/business/order/${orderId}`;
     }
@@ -290,6 +298,10 @@ export class ApiEndPoints {
 
     static get confirmPartnerOrderFulfillment() {
         return `/v2/api/partner/orders/confirm-fulfillment`;
+    }
+
+    static get disputePartnerOrderFulfillment() {
+        return `/v2/api/partner/orders/dispute-fulfillment`;
     }
 
     static get getPartnerProducts(){

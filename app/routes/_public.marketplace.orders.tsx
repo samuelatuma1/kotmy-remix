@@ -27,6 +27,7 @@ const orderStatusOptions: Array<{ label: string; value: string }> = [
   { label: "Fully fulfilled", value: "FullyFulfilled" },
   { label: "Completed", value: "Completed" },
   { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" },
 ];
 
 const orderProductStatusOptions: Array<{ label: string; value: string }> = [
@@ -37,6 +38,10 @@ const orderProductStatusOptions: Array<{ label: string; value: string }> = [
   { label: "Fulfilled", value: "Fulfilled" },
   { label: "Returned", value: "Returned" },
   { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" },
 ];
 
 function buildCustomerOrdersQuery(searchParams: URLSearchParams): CustomerOrdersQuery {

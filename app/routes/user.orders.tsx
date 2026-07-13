@@ -1,7 +1,7 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } from "@remix-run/react";
 import { ArrowLeft, PackageSearch, ShoppingBag, Star } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Pagination from "~/components/reusables/Pagination";
 import {
   Dialog,
@@ -18,6 +18,7 @@ import { partnerServer } from "~/services/partner/partner.server";
 import type {
   CustomerOrdersQuery,
   ICustomerConfirmOrder,
+  ICustomerDisputeOrderFulfilledDTO,
   OrderItem,
   OrderResponse,
   OrderStatus,
@@ -52,6 +53,7 @@ const orderStatusOptions: Array<{ label: string; value: string }> = [
   { label: "Fully fulfilled", value: "FullyFulfilled" },
   { label: "Completed", value: "Completed" },
   { label: "Cancelled", value: "Cancelled" },
+  { label: "Disputed", value: "IsDisputed" },
 ];
 
 const orderProductStatusOptions: Array<{ label: string; value: string }> = [
@@ -62,6 +64,10 @@ const orderProductStatusOptions: Array<{ label: string; value: string }> = [
   { label: "Fulfilled", value: "Fulfilled" },
   { label: "Returned", value: "Returned" },
   { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
+  { label: "Disputed", value: "Disputed" },
+  { label: "Refund triggered", value: "RefundTriggered" },
+  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
+  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" },
 ];
 
 function buildCustomerOrdersQuery(searchParams: URLSearchParams): CustomerOrdersQuery {
@@ -140,6 +146,64 @@ function getErrorMessage(error: unknown, fallback: string) {
     return error.detail;
   }
   return fallback;
+}
+
+async function verifyOrderForMutation({
+  orderId,
+  orderItemId,
+  orderCode,
+  cookieHeader,
+  requirePrepaid,
+}: {
+  orderId: string;
+  orderItemId: string;
+  orderCode: string;
+  cookieHeader: string;
+  requirePrepaid: boolean;
+}): Promise<{ order: OrderResponse; item: OrderItem } | Response> {
+  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  if (orderRes.error || !orderRes.data) {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: getErrorMessage(orderRes.error, "Unable to verify this order"),
+      },
+      { status: 404 }
+    );
+  }
+
+  const order = orderRes.data;
+  const item = order.orders.find(entry => entry.order_item_id === orderItemId);
+
+  if (!item) {
+    return json<OrderMutationResponse>({ ok: false, error: "Order item not found" }, { status: 404 });
+  }
+
+  if (item.status !== OrderProductStatus.Fulfilled) {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: `This order item cannot be processed from ${formatStatusLabel(item.status)} status`,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (requirePrepaid && order.payment_details?.payment_option !== "prepay") {
+    return json<OrderMutationResponse>(
+      {
+        ok: false,
+        error: "Disputes are only available for prepaid orders",
+      },
+      { status: 400 }
+    );
+  }
+
+  if (order.order_code !== orderCode) {
+    return json<OrderMutationResponse>({ ok: false, error: "The order code does not match this order" }, { status: 400 });
+  }
+
+  return { order, item };
 }
 
 function OrdersSkeleton() {
@@ -289,6 +353,149 @@ function FulfillmentConfirmDialog({
   );
 }
 
+function DisputeFulfillmentDialog({
+  order,
+  item,
+}: {
+  order: OrderResponse;
+  item: OrderItem;
+}) {
+  const fetcher = useFetcher<OrderMutationResponse>();
+  const revalidator = useRevalidator();
+  const [open, setOpen] = useState(false);
+  const handledResponseRef = useRef(false);
+  const isSubmitting = fetcher.state !== "idle";
+  const errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  const isPrepaid = order.payment_details?.payment_option === "prepay";
+
+  useEffect(() => {
+    if (fetcher.state === "submitting") {
+      handledResponseRef.current = false;
+    }
+  }, [fetcher.state]);
+
+  useEffect(() => {
+    if (!fetcher.data || handledResponseRef.current) return;
+
+    handledResponseRef.current = true;
+
+    if (fetcher.data.ok) {
+      setOpen(false);
+      revalidator.revalidate();
+      showToast({
+        title: "Success",
+        description: fetcher.data.message,
+      });
+      return;
+    }
+
+    showToast({
+      variant: "destructive",
+      title: "Dispute failed",
+      description: fetcher.data.error,
+    });
+  }, [fetcher.data, revalidator]);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(event.currentTarget);
+    const submittedCode = String(formData.get("order_code") ?? "").trim();
+
+    if (submittedCode !== order.order_code) {
+      event.preventDefault();
+      showToast({
+        variant: "destructive",
+        title: "Order code mismatch",
+        description: "The order code you entered does not match this order.",
+      });
+    }
+  };
+
+  if (!isPrepaid) {
+    return null;
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex h-11 items-center justify-center rounded-full border border-rose-200 bg-white px-4 text-sm font-bold text-rose-700 transition hover:-translate-y-0.5 hover:border-rose-300 hover:bg-rose-50"
+        >
+          Dispute Order
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+        <DialogHeader className="border-b border-slate-100 p-6 text-left">
+          <DialogTitle className="text-2xl font-black text-slate-950">Dispute order fulfillment</DialogTitle>
+          <DialogDescription className="mt-2 text-sm leading-6 text-slate-600">
+            Use this if the order was not fulfilled as expected. Your report will be sent for admin review.
+          </DialogDescription>
+        </DialogHeader>
+
+        <fetcher.Form method="post" className="space-y-5 p-6" onSubmit={handleSubmit}>
+          <input type="hidden" name="intent" value="dispute_fulfillment" />
+          <input type="hidden" name="order_id" value={order._id} />
+          <input type="hidden" name="order_item_id" value={item.order_item_id} />
+
+          <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-500">Order code</div>
+            <div className="mt-1 text-sm font-semibold text-slate-900">{order.order_code}</div>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Type the exact order code to confirm this dispute request.
+            </p>
+          </div>
+
+          <label className="grid gap-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Confirm order code</span>
+            <input
+              name="order_code"
+              required
+              autoComplete="off"
+              placeholder="Enter the order code"
+              className="h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Remark</span>
+            <textarea
+              name="remark"
+              required
+              rows={4}
+              placeholder="Explain what was not fulfilled as expected"
+              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            />
+          </label>
+
+          {errorMessage ? (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {errorMessage}
+            </div>
+          ) : null}
+
+          <DialogFooter className="gap-3 border-t border-slate-100 pt-5 sm:justify-end">
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
+              >
+                Back
+              </button>
+            </DialogClose>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex h-11 items-center justify-center rounded-full bg-rose-600 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-rose-500 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? "Working..." : "Submit dispute"}
+            </button>
+          </DialogFooter>
+        </fetcher.Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function OrderItemRow({
   order,
   item,
@@ -298,13 +505,7 @@ function OrderItemRow({
 }) {
   const hasRange = item.min_amount_total !== item.max_amount_total;
   const isFulfilled = item.status === OrderProductStatus.Fulfilled;
-
-  const handleDispute = () => {
-    showToast({
-      title: "Contact admin",
-      description: "Please contact admin for dispute resolution.",
-    });
-  };
+  const isPrepaid = order.payment_details?.payment_option === "prepay";
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -327,13 +528,7 @@ function OrderItemRow({
           {isFulfilled ? (
             <div className="flex flex-col gap-2 sm:flex-row">
               <FulfillmentConfirmDialog order={order} item={item} />
-              <button
-                type="button"
-                onClick={handleDispute}
-                className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
-              >
-                Dispute Order
-              </button>
+              {isPrepaid ? <DisputeFulfillmentDialog order={order} item={item} /> : null}
             </div>
           ) : null}
         </div>
@@ -462,7 +657,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const ratingValue = String(formData.get("rating") ?? "").trim();
   const remark = String(formData.get("remark") ?? "").trim();
 
-  if (intent !== "confirm_fulfillment") {
+  if (intent !== "confirm_fulfillment" && intent !== "dispute_fulfillment") {
     return json<OrderMutationResponse>({ ok: false, error: "Unsupported order action" }, { status: 400 });
   }
 
@@ -474,63 +669,76 @@ export async function action({ request }: ActionFunctionArgs) {
     return json<OrderMutationResponse>({ ok: false, error: "Order code is required" }, { status: 400 });
   }
 
-  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
-  if (orderRes.error || !orderRes.data) {
-    return json<OrderMutationResponse>(
-      {
-        ok: false,
-        error: getErrorMessage(orderRes.error, "Unable to verify this order"),
-      },
-      { status: 404 }
-    );
+  const verification = await verifyOrderForMutation({
+    orderId,
+    orderItemId,
+    orderCode,
+    cookieHeader,
+    requirePrepaid: intent === "dispute_fulfillment",
+  });
+
+  if (verification instanceof Response) {
+    return verification;
   }
 
-  const order = orderRes.data;
-  const item = order.orders.find(entry => entry.order_item_id === orderItemId);
+  const { order, item } = verification;
 
-  if (!item) {
-    return json<OrderMutationResponse>({ ok: false, error: "Order item not found" }, { status: 404 });
+  if (intent === "confirm_fulfillment") {
+    const payload: ICustomerConfirmOrder = {
+      order_id: order._id,
+      order_code: order.order_code,
+      order_item_id: item.order_item_id,
+    };
+
+    if (ratingValue) {
+      const rating = Number(ratingValue);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        return json<OrderMutationResponse>({ ok: false, error: "Rating must be between 1 and 5" }, { status: 400 });
+      }
+      payload.rating = rating;
+    }
+
+    if (remark) {
+      payload.remark = remark;
+    }
+
+    const mutationRes = await partnerServer.customerConfirmOrder(payload, cookieHeader);
+
+    if (mutationRes.error) {
+      return json<OrderMutationResponse>(
+        {
+          ok: false,
+          error: getErrorMessage(mutationRes.error, "Unable to confirm this order item"),
+        },
+        { status: 400 }
+      );
+    }
+
+    return json<OrderMutationResponse>({
+      ok: true,
+      message: "Order fulfillment confirmed successfully",
+      order: mutationRes.data ?? order,
+    });
   }
 
-  if (item.status !== OrderProductStatus.Fulfilled) {
-    return json<OrderMutationResponse>(
-      {
-        ok: false,
-        error: `This order item cannot be confirmed from ${formatStatusLabel(item.status)} status`,
-      },
-      { status: 400 }
-    );
+  if (!remark) {
+    return json<OrderMutationResponse>({ ok: false, error: "Remark is required for dispute submission" }, { status: 400 });
   }
 
-  if (order.order_code !== orderCode) {
-    return json<OrderMutationResponse>({ ok: false, error: "The order code does not match this order" }, { status: 400 });
-  }
-
-  const payload: ICustomerConfirmOrder = {
+  const payload: ICustomerDisputeOrderFulfilledDTO = {
     order_id: order._id,
     order_code: order.order_code,
     order_item_id: item.order_item_id,
+    remark,
   };
 
-  if (ratingValue) {
-    const rating = Number(ratingValue);
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return json<OrderMutationResponse>({ ok: false, error: "Rating must be between 1 and 5" }, { status: 400 });
-    }
-    payload.rating = rating;
-  }
-
-  if (remark) {
-    payload.remark = remark;
-  }
-
-  const mutationRes = await partnerServer.customerConfirmOrder(payload, cookieHeader);
+  const mutationRes = await partnerServer.customerDispute(payload, cookieHeader);
 
   if (mutationRes.error) {
     return json<OrderMutationResponse>(
       {
         ok: false,
-        error: getErrorMessage(mutationRes.error, "Unable to confirm this order item"),
+        error: getErrorMessage(mutationRes.error, "Unable to submit this dispute"),
       },
       { status: 400 }
     );
@@ -538,7 +746,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   return json<OrderMutationResponse>({
     ok: true,
-    message: "Order fulfillment confirmed successfully",
+    message: "Order dispute submitted successfully",
     order: mutationRes.data ?? order,
   });
 }

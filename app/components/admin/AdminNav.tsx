@@ -28,7 +28,8 @@ const navsWSubs = [
     {
         label: 'Partners', icon: icons.adminFinanceIcon, acceptedRoles: [], subitems: [
             { label: 'Show Partners', url: 'partners', acceptedRoles: [] },
-            { label: 'Partners Settlements', url: 'partners/settlements', acceptedRoles: [] }
+            { label: 'Partners Settlements', url: 'partners/settlements', acceptedRoles: [] },
+            { label: 'Partners Orders', url: 'partners/orders', acceptedRoles: [] }
         ]
     },
 ]

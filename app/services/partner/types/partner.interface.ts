@@ -347,7 +347,10 @@ export interface PlaceOrderDTO {
   payment_option: PaymentOptionKey;
   prepay_redirect_url?: string;
 }
-
+export interface OrderStatusHistory{
+  status: OrderStatus
+  updated_at: string | Date // json date 
+}
 export interface OrderItem {
   product_id: string;
   product_name: string;
@@ -375,6 +378,10 @@ export interface OrderItem {
   customer_confirmed_at?: string | null;
   customer_rating?: number | null;
   customer_remark?: string | null;
+  partner_remark?: string | null;
+  admin_remark?: string | null
+  status_history: OrderStatusHistory[]
+  
 }
 
 export interface OrderPaymentDetails {
@@ -394,6 +401,7 @@ export enum OrderStatus {
   FullyFulfilled = "FullyFulfilled",
   Completed = "Completed",
   Cancelled = "Cancelled",
+  IsDisputed = "IsDisputed"
 }
 
 export enum OrderProductStatus {
@@ -403,6 +411,10 @@ export enum OrderProductStatus {
   Fulfilled = "Fulfilled",
   Returned = "Returned",
   FulfillmentConfirmedByCustomer = "FulfillmentConfirmedByCustomer",
+  Disputed = "Disputed",
+  RefundTriggered = "RefundTriggered",
+  ReturnedAndRefunded = "ReturnedAndRefunded",
+  FulfillmentConfirmedByAdmin = "FulfillmentConfirmedByAdmin"
 }
 
 export interface OrderResponse {
@@ -453,6 +465,13 @@ export interface BusinessSearchOrderDTO extends IBasePaginationQuery {
   order_code?: string;
   delivery_phone_number?: string;
   order_id?: string
+}
+export interface AdminSearchOrderDTO extends IBasePaginationQuery {
+  order_status?: OrderStatus;
+  order_product_status?: OrderProductStatus;
+  order_code?: string;
+  order_id?: string;
+  order_item_id?: string
 }
 
 export interface IOrderData {
@@ -546,4 +565,29 @@ export interface ISettlementPaymentWalletResponse {
   payment_option: SettlementPaymentOption;
   status: string; 
   message: string;
+}
+
+export interface ICustomerDisputeOrderFulfilledDTO {
+  order_id: string;
+  /**
+   * Used to confirm the order is not disputed in error
+   */
+  order_code: string;
+  order_item_id: string;
+  remark: string;
+}
+
+export enum OrderRefundType{
+  wallet = "wallet",
+  customer_bank = "customer_bank"
+
+}
+export interface IAdminResolveOrderDispute{
+    order_id: string
+    order_code: string 
+    order_item_id: string
+    updated_order_item_status: OrderProductStatus // = Field(..., description = f"Must be one of {OrderProductStatus.FulfillmentConfirmedByAdmin.value} or {OrderProductStatus.ReturnedAndRefunded.value}")
+    refund_amount?: number
+    refund_type?: OrderRefundType
+    remark: string
 }
