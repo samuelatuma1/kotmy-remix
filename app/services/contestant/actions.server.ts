@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node"
 
 import { getFingerprint, setToast } from "~/lib/session.server"
 import { contestantRepo } from "./contestant.server"
-import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto } from "./types/contestant.interface"
+import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 
 
 export class ContestantServer{
@@ -21,9 +21,9 @@ export async function editContestant(payload: { dto: FormData, contestantId: str
         return json(null, { headers })
     }
     const { headers } = await setToast({ request, toast: `error::${error.detail ?? "Could not update the contestant"}::${Date.now()}` })
-    dto.entries().forEach(entry => {
+    for (const entry of dto.entries()) {
         console.log(entry)
-    })
+    }
     return json(error, { headers })
 }
 
@@ -95,6 +95,53 @@ export async function voteContestant(formData: FormData, request: Request) {
     }
     const { headers } = await setToast({ request, headers: fingerprintHeaders, toast: `success::Your vote has been registered::${Date.now()}` })
     return json(null, { headers })
+}
+
+export async function voteContestantWithGivaahCredits(formData: FormData, request: Request) {
+    const cookieHeader = request.headers.get("Cookie");
+    if (!cookieHeader) {
+        return json({ errorCode: "LOGIN_REQUIRED" }, { status: 401 });
+    }
+    const givaahCreditsToUse = Number(formData.get("givaah_credits_to_use") ?? 0);
+    const dto: IVoteContestantWithGivaahCredits = {
+        contestant_id: formData.get("contestant_id") as string,
+        givaah_credits_to_use: Number.isFinite(givaahCreditsToUse) ? Math.trunc(givaahCreditsToUse) : 0,
+    }
+
+    if (!dto.contestant_id) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please select a contestant to vote for::${Date.now()}`
+        });
+        return json({ error: "Please select a contestant to vote for" }, { headers, status: 400 });
+    }
+
+    if (dto.givaah_credits_to_use < 1) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please enter at least 1 Givaah credit to vote with::${Date.now()}`
+        });
+        return json({ error: "Please enter at least 1 Givaah credit to vote with" }, { headers, status: 400 });
+    }
+
+    const { data, error, authRequired } = await contestantRepo.voteForContestantWithGivaah(dto, cookieHeader)
+    if (authRequired) {
+        return json({ errorCode: "LOGIN_REQUIRED" }, { status: 401 });
+    }
+
+    if (error) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::${error.detail ?? "We're sorry, but there seems to be an issue with this action. Please try again later."}::${Date.now()}`
+        })
+        return json(error, { headers, status: 400 })
+    }
+
+    const { headers } = await setToast({
+        request,
+        toast: `success::${dto.givaah_credits_to_use} Givaah credits used successfully::${Date.now()}`
+    })
+    return json({ data, givaah_credits_to_use: dto.givaah_credits_to_use }, { headers })
 }
 
 export async function callTallyWebhook(tx_ref: string) {

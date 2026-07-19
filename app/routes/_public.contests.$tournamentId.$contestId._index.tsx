@@ -1,18 +1,18 @@
-import { LoaderFunctionArgs, json, redirect } from "@remix-run/node"
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node"
 import { useRouteLoaderData } from "@remix-run/react"
 
-import { getTallyLink, registerContestant, voteContestant } from "~/services/contestant/actions.server"
+import { getTallyLink, registerContestant, voteContestant, voteContestantWithGivaahCredits } from "~/services/contestant/actions.server"
 import { setToast } from "~/lib/session.server"
 import OngoingContest from "~/components/public/contests/OngoingContest"
 import RegisteringContest from "~/components/public/contests/RegisteringContest"
 import { StageContestantsLoader } from "./_public.contests.$tournamentId.$contestId"
 
 
-export async function action({ request }: LoaderFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
-    const intent = formData.get("intent") as "register" | "tally_vote" | "kotmy_vote"
+    const intent = formData.get("intent") as "register" | "tally_vote" | "kotmy_vote" | "givaah_vote"
     if (intent === "register"){
-        const cookieHeader = request.headers.get("Cookie");
+          const cookieHeader = request.headers.get("Cookie");
           console.log({cookieHeader})
           if (!cookieHeader) {
             // User is not signed in
@@ -24,6 +24,7 @@ export async function action({ request }: LoaderFunctionArgs) {
     }
     if (intent === "tally_vote") return await getTallyLink(formData, request)
     if (intent === "kotmy_vote") return await voteContestant(formData, request)
+    if (intent === "givaah_vote") return await voteContestantWithGivaahCredits(formData, request)
     const { headers } = await setToast({ request, toast: `error::This action is not yet supported::${Date.now()}` })
     return json(null, { headers })
 }

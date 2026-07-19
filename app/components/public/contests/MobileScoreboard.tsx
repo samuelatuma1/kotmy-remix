@@ -12,6 +12,7 @@ import { toast } from '~/components/reusables/use-toast'
 import { UserAtom } from '~/lib/store/atoms/token'
 import { useUserManager } from '~/lib/store/store_managers/tokenManager'
 import Button from '~/components/reusables/Button'
+import GivaahVoteDialog from './GivaahVoteDialog'
 
 export default function MobileScoreboard({ contestants, socialMediaType }: { contestants: IContestant[], socialMediaType: Social }) {
     const fetcher = useFetcher()
@@ -97,7 +98,7 @@ export default function MobileScoreboard({ contestants, socialMediaType }: { con
                             />
                         )}
                         <TallyVoteDialog contestant={contestant} />
-                        <VoteLink type={'givaah'} url={'.'} count={numberSlang(contestant.vote.givaah)} />
+                        <GivaahVoteDialog contestant={contestant} />
                     </div>
                 </article>
             ))}

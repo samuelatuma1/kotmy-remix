@@ -4,10 +4,8 @@ import SocialLink from './SocialLink'
 import { Social } from '~/services/contest/types/contest.interface'
 import TallyVoteDialog from './TallyVoteDialog'
 import { Link } from '@remix-run/react'
-import { socials } from '~/lib/data/socials'
 import { useState } from 'react'
-import VoteLink from './VoteLink'
-import { numberSlang } from '~/lib/numbers.utils'
+import GivaahVoteDialog from './GivaahVoteDialog'
 
 
 interface ContestantStatisticsCardProps {
@@ -129,7 +127,7 @@ export default function ContestantCard({ contestant, socialMedia }: { contestant
                     <TallyVoteDialog contestant={contestant}>
                         <SocialLink type='tally' className='w-full' />
                     </TallyVoteDialog>
-                    <VoteLink type='givaah' url='.' count={numberSlang(contestant.vote.givaah)} />
+                    <GivaahVoteDialog contestant={contestant} />
                 </div>
             </div>
         </article>
