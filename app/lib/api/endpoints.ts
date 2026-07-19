@@ -338,4 +338,8 @@ export class ApiEndPoints {
     static get settlementsWalletPayment() {
         return `/v2/api/partner/settlements/wallet-payment`
     }
+
+    static get voteContestantWGivaahCredits() {
+        return `/v2/api/contestant/givaah_vote`
+    }
 }

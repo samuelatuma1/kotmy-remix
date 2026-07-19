@@ -125,8 +125,8 @@ export default function ScoreboardTable({ contestants, socialMediaType, show_bon
                                 />
                             )}
                             <TallyVoteDialog contestant={contestant} />
-                            <SocialLink type='givaah' url='.' />
-                            
+                            <VoteLink type='givaah' url='.' count={numberSlang(contestant.vote.givaah)} />
+
                         </td>
                         {show_bonus && (
                             <>

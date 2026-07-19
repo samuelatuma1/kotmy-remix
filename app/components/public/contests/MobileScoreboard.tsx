@@ -97,7 +97,7 @@ export default function MobileScoreboard({ contestants, socialMediaType }: { con
                             />
                         )}
                         <TallyVoteDialog contestant={contestant} />
-                        {/* <VoteLink type={'givaah'} url={'.'} count={numberSlang(contestant.vote.givaah)} /> */}
+                        <VoteLink type={'givaah'} url={'.'} count={numberSlang(contestant.vote.givaah)} />
                     </div>
                 </article>
             ))}

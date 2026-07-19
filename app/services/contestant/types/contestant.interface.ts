@@ -72,6 +72,10 @@ export interface ILeanContestant {
     judge: number;
     givaah: number;
     bonus: number;
+    social_media_bonus: number;
+    tally_bonus: number;
+    judge_bonus: number;
+    givaah_bonus: number;
   };
   social_media_url: string;
   code: string;
@@ -167,4 +171,9 @@ export interface EnrichedContestant{
   stageSocialMedia: Social,
   info: string,
   is_evicted: boolean
+}
+
+export interface IVoteContestantWithGivaahCredits{
+    contestant_id: string
+    givaah_credits_to_use: number
 }

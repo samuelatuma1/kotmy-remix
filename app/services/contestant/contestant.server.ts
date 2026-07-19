@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
-import { IContestant, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto } from "./types/contestant.interface"
+import { IContestant, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
@@ -89,6 +89,19 @@ export class ContestantRepository implements IContestantRepository {
             method: "GET",
             url: ApiEndPoints.userContestantDeets(contestantId),
             
+        }, cookies)
+
+        console.log({data, error})
+        if(data) return {data}
+        return { error, authRequired }
+    }
+
+    async voteForContestantWithGivaah(voteDetails: IVoteContestantWithGivaahCredits, cookies: string){
+        
+        const { data, error,authRequired } = await ApiCall.call<ILeanContestant, unknown>({
+            method: MethodsEnum.POST,
+            url: ApiEndPoints.voteContestantWGivaahCredits,
+            data: voteDetails
         }, cookies)
 
         console.log({data, error})
