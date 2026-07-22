@@ -177,3 +177,10 @@ export interface IVoteContestantWithGivaahCredits{
     contestant_id: string
     givaah_credits_to_use: number
 }
+
+interface IVoteContestantFromWalletPayload {
+  contestant_id: string;
+  wallet_id: string;
+  remark: string;
+  number_of_votes: number;
+}
