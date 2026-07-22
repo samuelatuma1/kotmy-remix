@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/toggle.css"],
+  "sourcesContent": [".toggle-checkbox:checked {\n    @apply: bg-blue-500;\n  }\n  \n  .toggle-checkbox:checked + .toggle-label {\n    @apply: bg-blue-500;\n  }\n  "],
+  "mappings": ";AAAA;AACI;;AAGF;AACE;;",
+  "names": []
+}

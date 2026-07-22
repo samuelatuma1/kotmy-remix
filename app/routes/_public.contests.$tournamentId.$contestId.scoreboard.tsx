@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, json } from "@remix-run/node"
 import { Link, useRouteLoaderData, useSearchParams } from "@remix-run/react"
 
-import { getTallyLink, voteContestant, voteContestantWithGivaahCredits } from "~/services/contestant/actions.server"
+import { getTallyLink, voteContestant, voteContestantFromWallet, voteContestantWithGivaahCredits } from "~/services/contestant/actions.server"
 import { setToast } from "~/lib/session.server"
 import ContestTimer from "~/components/public/contests/ContestTimer"
 import FormControl from "~/components/reusables/FormControl"
@@ -14,10 +14,11 @@ import { StageContestantsLoader } from "./_public.contests.$tournamentId.$contes
 import { IStageWContestant } from "~/services/contest/types/contest.interface"
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
-    const intent = formData.get('intent') as 'tally_vote'
+    const intent = formData.get('intent') as 'tally_vote' | 'kotmy_vote' | 'givaah_vote' | 'wallet_vote'
     if (intent === 'tally_vote') return await getTallyLink(formData, request)
     if (intent === "kotmy_vote") return await voteContestant(formData, request)
     if (intent === "givaah_vote") return await voteContestantWithGivaahCredits(formData, request)
+    if (intent === "wallet_vote") return await voteContestantFromWallet(formData, request)
     const { headers } = await setToast({ request, toast: `error::This action is not yet supported::${Date.now()}` })
     return json(null, { headers })
 }

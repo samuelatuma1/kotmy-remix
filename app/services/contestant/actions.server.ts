@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node"
 
 import { getFingerprint, setToast } from "~/lib/session.server"
 import { contestantRepo } from "./contestant.server"
-import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
+import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 
 
 export class ContestantServer{
@@ -142,6 +142,85 @@ export async function voteContestantWithGivaahCredits(formData: FormData, reques
         toast: `success::${dto.givaah_credits_to_use} Givaah credits used successfully::${Date.now()}`
     })
     return json({ data, givaah_credits_to_use: dto.givaah_credits_to_use }, { headers })
+}
+
+export async function voteContestantFromWallet(formData: FormData, request: Request) {
+    const cookieHeader = request.headers.get("Cookie");
+    if (!cookieHeader) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please sign in to vote from your wallet::${Date.now()}`
+        });
+        return json({ errorCode: "LOGIN_REQUIRED" }, { headers, status: 401 });
+    }
+
+    const contestantId = formData.get("contestant_id") as string;
+    const walletId = formData.get("wallet_id") as string;
+    const remark = String(formData.get("remark") ?? "").trim();
+    const parsedVotes = Number(formData.get("number_of_votes") ?? 0);
+    const numberOfVotes = Number.isFinite(parsedVotes) ? Math.trunc(parsedVotes) : 0;
+
+    if (!contestantId) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please select a contestant to vote for::${Date.now()}`
+        });
+        return json({ error: "Please select a contestant to vote for" }, { headers, status: 400 });
+    }
+
+    if (!walletId) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::We could not find a matching wallet for this vote::${Date.now()}`
+        });
+        return json({ error: "We could not find a matching wallet for this vote" }, { headers, status: 400 });
+    }
+
+    if (!remark) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please enter a remark for this wallet vote::${Date.now()}`
+        });
+        return json({ error: "Please enter a remark for this wallet vote" }, { headers, status: 400 });
+    }
+
+    if (numberOfVotes < 1) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please enter at least 1 vote::${Date.now()}`
+        });
+        return json({ error: "Please enter at least 1 vote" }, { headers, status: 400 });
+    }
+
+    const dto: IVoteContestantFromWalletPayload = {
+        contestant_id: contestantId,
+        wallet_id: walletId,
+        remark,
+        number_of_votes: numberOfVotes,
+    };
+
+    const { data, error, authRequired } = await contestantRepo.voteFromWallet(dto, cookieHeader);
+    if (authRequired) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::Please sign in to vote from your wallet::${Date.now()}`
+        });
+        return json({ errorCode: "LOGIN_REQUIRED" }, { headers, status: 401 });
+    }
+
+    if (error) {
+        const { headers } = await setToast({
+            request,
+            toast: `error::${error.detail ?? "We're sorry, but there seems to be an issue with this action. Please try again later."}::${Date.now()}`
+        });
+        return json(error, { headers, status: 400 });
+    }
+
+    const { headers } = await setToast({
+        request,
+        toast: `success::Your vote has been purchased successfully from your wallet::${Date.now()}`
+    });
+    return json({ data, number_of_votes: numberOfVotes }, { headers });
 }
 
 export async function callTallyWebhook(tx_ref: string) {

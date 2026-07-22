@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../app/assets/images/index.ts"],
+  "sourcesContent": ["// REMIX HMR BEGIN\nimport * as __hmr__ from \"remix:hmr\";\nif (import.meta) {\nimport.meta.hot = __hmr__.createHotContext(\n//@ts-expect-error\n\"app/assets/images/index.ts\"\n);\nimport.meta.hot.lastModified = \"1757765166855.6697\";\n}\n// REMIX HMR END\n\nimport bgPattern from './bg-pattern.png'\r\nimport birthdayPresent from './birthday_present.png'\r\nimport contestImage1 from './contest_image_1.png'\r\nimport contestImage2 from './contest_image_2.png'\r\nimport hero1 from './hero-1.jpg'\r\nimport hero2 from './hero-2.jpg'\r\nimport hero3 from './hero-3.jpg'\r\nimport hero4 from './hero-4.jpg'\r\nimport hero5 from './hero-5.jpg'\r\nimport sponsorLogo from './sponsor_logo.png'\r\nimport underline from './underline.png'\r\nimport adminAvatar from './admin-avatar.svg'\r\nimport noImage from './no-image.webp'\r\n\r\nexport {\r\n    hero1, hero2, hero3, hero4, hero5,\r\n    sponsorLogo,  birthdayPresent, underline,\r\n    contestImage1, contestImage2, bgPattern,\r\n    adminAvatar, noImage\r\n}"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAEA,IAAI,aAAa;AACjB,cAAY,MAAc;AAAA;AAAA,IAE1B;AAAA,EACA;AACA,cAAY,IAAI,eAAe;AAC/B;",
+  "names": []
+}

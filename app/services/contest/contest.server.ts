@@ -5,6 +5,7 @@ import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IConte
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json, redirect } from "@remix-run/node"
+import { IVoteContestantFromWalletPayload } from "../contestant/types/contestant.interface"
 
 // let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
 
@@ -182,6 +183,7 @@ export class ContestRepository implements IContestRepository {
         if (data) return { data: data.map(contest => dtoToContest(contest) as IContestWStage) }
         return { error, authRequired }
     }
+
 }
 export const contestRepo = new ContestRepository()
 
@@ -296,6 +298,7 @@ export async function toggleRegistration(formData: FormData, request: Request) {
     const { headers } = await setToast({ request, toast: `success::The contest has been updated::${Date.now()}` })
     return json(data, { headers })
 }
+
 
 export function prepareStageDto(formData: FormData) {
     return {

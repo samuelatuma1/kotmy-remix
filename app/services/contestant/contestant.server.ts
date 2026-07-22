@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
-import { IContestant, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
+import { IContestant, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
@@ -136,6 +136,15 @@ export class ContestantRepository implements IContestantRepository {
         })
 
         return {data, error}
+    }
+
+    
+    async voteFromWallet(payload: IVoteContestantFromWalletPayload, cookie: string): Promise<TFetcherResponse<IContestant>> {
+        return await ApiCall.call({
+            method: MethodsEnum.POST,
+            url: ApiEndPoints.voteFromWallet,
+            data: payload
+        }, cookie)
     }
 }
 

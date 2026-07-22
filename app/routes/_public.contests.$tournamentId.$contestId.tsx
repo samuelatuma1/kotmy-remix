@@ -4,6 +4,19 @@ import { Outlet } from "@remix-run/react"
 import { contestRepo } from "~/services/contest/contest.server"
 import { getFingerprint, setToast } from "~/lib/session.server"
 import { callTallyWebhook } from "~/services/contestant/actions.server"
+import { walletRepo } from "~/services/wallet/wallet.server"
+
+type WalletVoteContext = {
+    authRequired: boolean
+    wallet: {
+        _id: string
+        wallet_currency: string
+        withdrawable_balance: number
+    } | null
+    stageCurrency: string | null
+    pricePerVote: number
+    error: string | null
+}
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     const { tournamentId, contestId } = params
@@ -31,7 +44,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
     const { data: contest, error } = await contestRepo.getContestById(contestId)
     if (error) return redirect(`/contests/${tournamentId}`)
-    if (contest.status === 'registering') return json({ contest, stage: null, baseUrl: process.env._BASE_URL })
+    if (contest.status === 'registering') {
+        return json({ contest, stage: null, baseUrl: process.env._BASE_URL, walletVoteContext: null })
+    }
 
     const stageQ = url.searchParams.get("stage")
     const stageId = (stageQ
@@ -40,8 +55,48 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     ) ?? contest.stages.find(stage => stage.stage == 1)?._id
     const { fingerprint, headers } = await getFingerprint({ request })
     const stage = stageId ? (await contestRepo.getContestantsInStage(stageId, { fingerprint })).data ?? null : null
+    let walletVoteContext: WalletVoteContext | null = null
+    const cookieHeader = request.headers.get("Cookie") ?? ""
+    const stageCurrency = stage?.rates.vote_currency ?? null
+    const pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0
 
-    return json({ contest, stage, baseUrl: process.env._BASE_URL }, { headers })
+    if (cookieHeader && stageCurrency) {
+        const walletsResponse = await walletRepo.getUserWallets(cookieHeader)
+        if (walletsResponse.data) {
+            const matchingWallet = walletsResponse.data.find(wallet => wallet.wallet_currency === stageCurrency) ?? null
+            walletVoteContext = {
+                authRequired: false,
+                wallet: matchingWallet
+                    ? {
+                        _id: matchingWallet._id,
+                        wallet_currency: matchingWallet.wallet_currency,
+                        withdrawable_balance: matchingWallet.withdrawable_balance,
+                    }
+                    : null,
+                stageCurrency,
+                pricePerVote,
+                error: matchingWallet ? null : `No wallet found for ${stageCurrency}`
+            }
+        } else {
+            walletVoteContext = {
+                authRequired: Boolean(walletsResponse.authRequired),
+                wallet: null,
+                stageCurrency,
+                pricePerVote,
+                error: walletsResponse.error?.detail?.toString() ?? null,
+            }
+        }
+    } else {
+        walletVoteContext = {
+            authRequired: !cookieHeader,
+            wallet: null,
+            stageCurrency,
+            pricePerVote,
+            error: stageCurrency ? null : "Wallet voting is unavailable for this stage",
+        }
+    }
+
+    return json({ contest, stage, baseUrl: process.env._BASE_URL, walletVoteContext }, { headers })
 }
 export type StageContestantsLoader = typeof loader
 

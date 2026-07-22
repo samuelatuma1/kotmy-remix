@@ -350,4 +350,8 @@ export class ApiEndPoints {
     static get getPartnerOrdersLeaderboard(){
         return `/v2/api/partner/orders/leaderboard`
     }
+
+    static get voteFromWallet() {
+        return `/v2/api/payment/vote-from-wallet`
+    }
 }

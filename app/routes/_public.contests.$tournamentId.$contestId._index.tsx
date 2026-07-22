@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node"
 import { useRouteLoaderData } from "@remix-run/react"
 
-import { getTallyLink, registerContestant, voteContestant, voteContestantWithGivaahCredits } from "~/services/contestant/actions.server"
+import { getTallyLink, registerContestant, voteContestant, voteContestantFromWallet, voteContestantWithGivaahCredits } from "~/services/contestant/actions.server"
 import { setToast } from "~/lib/session.server"
 import OngoingContest from "~/components/public/contests/OngoingContest"
 import RegisteringContest from "~/components/public/contests/RegisteringContest"
@@ -25,6 +25,7 @@ export async function action({ request }: ActionFunctionArgs) {
     if (intent === "tally_vote") return await getTallyLink(formData, request)
     if (intent === "kotmy_vote") return await voteContestant(formData, request)
     if (intent === "givaah_vote") return await voteContestantWithGivaahCredits(formData, request)
+    if (intent === "wallet_vote") return await voteContestantFromWallet(formData, request)
     const { headers } = await setToast({ request, toast: `error::This action is not yet supported::${Date.now()}` })
     return json(null, { headers })
 }
