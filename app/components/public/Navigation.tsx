@@ -39,6 +39,7 @@ export default function Navigation() {
                                             {pathname.includes('/marketplace') ? <Svg src={icons.activeDotIcon} width={'.5em'} /> : null} Shop
                                         </NavLink></li>
                     {/* <li><NavLink to="/#contact" className=''>Contact</NavLink></li> */}
+                    <li><NavLink to="/leaderboard/orders" className=''>Leaderboard</NavLink></li>
                     <li><NavLink to="/login" className=''>{user ? 'My Profile' : 'Sign In'}</NavLink></li>
                     
                 </ul>

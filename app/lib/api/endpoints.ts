@@ -342,4 +342,12 @@ export class ApiEndPoints {
     static get voteContestantWGivaahCredits() {
         return `/v2/api/contestant/givaah_vote`
     }
+
+    static get getGeneralOrdersLeaderboard(){
+        return `/v2/api/partner/orders/leaderboard/general`
+    }
+
+    static get getPartnerOrdersLeaderboard(){
+        return `/v2/api/partner/orders/leaderboard`
+    }
 }

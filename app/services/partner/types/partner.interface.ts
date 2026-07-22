@@ -591,3 +591,28 @@ export interface IAdminResolveOrderDispute{
     refund_type?: OrderRefundType
     remark: string
 }
+
+ export interface IGeneralOrdersLeaderboardSearch extends IBasePaginationQuery {
+    order_item_fulfilled_at_end_date?: string;   // ISO 8601 date string (e.g., "2026-07-21T22:24:35Z")
+    order_item_fulfilled_at_start_date?: string; // ISO 8601 date string
+    business_name?: string | null;
+    // business_id?: string | null;
+    // currency?: WalletCurrency;
+}
+
+
+export interface GeneralOrdersLeaderboardSearchResponse {
+  user_full_name?: string | null;
+  business_name?: string | null;
+  percent_share?: number | null; // Defaults to 0 on the backend
+  position: number;
+}
+
+export interface PartnerOrdersLeaderboardSearchResponse {
+  user_full_name?: string | null;
+  business_name?: string | null;
+  amount?: number | null; // Defaults to 0 on the backend
+  position: number;
+  currency: WalletCurrency | string;
+}
+

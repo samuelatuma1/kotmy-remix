@@ -34,6 +34,9 @@ import {
   PartnerSettlement,
   PlaceOrderDTO,
   AdminSearchOrderDTO,
+  IGeneralOrdersLeaderboardSearch,
+  GeneralOrdersLeaderboardSearchResponse,
+  PartnerOrdersLeaderboardSearchResponse,
 } from "./types/partner.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
@@ -459,6 +462,32 @@ export class PartnerServer {
       url: ApiEndPoints.disputePartnerOrderFulfillment,
       method: "PATCH",
       data: dto,
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getGeneralOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<GeneralOrdersLeaderboardSearchResponse>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.getGeneralOrdersLeaderboard}?${params}` : ApiEndPoints.getGeneralOrdersLeaderboard;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<GeneralOrdersLeaderboardSearchResponse>, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  async getPartnerOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerOrdersLeaderboardSearchResponse>>> {
+    const params = this.buildQueryString(query);
+    const url = params ? `${ApiEndPoints.getPartnerOrdersLeaderboard}?${params}` : ApiEndPoints.getPartnerOrdersLeaderboard;
+
+    const { data, error } = await ApiCall.call<IPaginatedResponse<PartnerOrdersLeaderboardSearchResponse>, unknown>({
+      url,
+      method: "GET",
     }, cookies);
 
     if (error) return { error };
