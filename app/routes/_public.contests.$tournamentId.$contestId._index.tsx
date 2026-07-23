@@ -33,6 +33,8 @@ export type RegisterAction = typeof action
 
 export default function ContestPage() {
     const stageContestants = useRouteLoaderData<StageContestantsLoader>("routes/_public.contests.$tournamentId.$contestId")
+    console.log("----stageContestants-----")
+    console.log({stageContestants})
     if (!stageContestants) throw new Error("Could not load stage contestants")
     const { contest, stage } = stageContestants
     return (

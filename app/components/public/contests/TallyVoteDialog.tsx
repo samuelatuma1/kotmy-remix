@@ -1,4 +1,4 @@
-import { Form, useFetcher, useLocation, useNavigate, useRouteLoaderData } from "@remix-run/react"
+import { Form, useFetcher, useLocation, useMatches, useNavigate } from "@remix-run/react"
 import { useEffect, useRef, useState } from "react"
 
 import { cn } from "~/lib/utils"
@@ -26,7 +26,6 @@ import {
 import Svg from "~/components/reusables/Svg"
 import VoteLink from "./VoteLink"
 import { IContestant } from "~/services/contestant/types/contestant.interface"
-import { StageContestantsLoader } from "~/routes/_public.contests.$tournamentId.$contestId"
 import { useUserManager } from "~/lib/store/store_managers/tokenManager"
 import { UserAtom } from "~/lib/store/atoms/token"
 import Button from "~/components/reusables/Button"
@@ -53,6 +52,14 @@ type WalletVoteActionData = {
     errorCode?: "LOGIN_REQUIRED"
 }
 
+function hasWalletVoteContext(data: unknown): data is { walletVoteContext?: WalletVoteContext | null } {
+    return Boolean(data) && typeof data === "object" && data !== null && "walletVoteContext" in data
+}
+
+function hasBaseUrl(data: unknown): data is { baseUrl?: string | null } {
+    return Boolean(data) && typeof data === "object" && data !== null && "baseUrl" in data
+}
+
 function formatAmount(value: number) {
     return new Intl.NumberFormat("en-NG", {
         maximumFractionDigits: 0,
@@ -60,7 +67,7 @@ function formatAmount(value: number) {
 }
 
 export default function TallyVoteDialog({ contestant, disabled, children }: { contestant: IContestant, disabled?: boolean, children?: React.ReactNode }) {
-    const stageContestants = useRouteLoaderData<StageContestantsLoader>("routes/_public.contests.$tournamentId.$contestId")
+    const matches = useMatches()
     const formRef = useRef<HTMLFormElement>(null)
     const walletFetcher = useFetcher<WalletVoteActionData>()
     const { getUserStoreManager } = useUserManager()
@@ -72,11 +79,34 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
     const [voteQuantity, setVoteQuantity] = useState("1")
     const [remark, setRemark] = useState("")
 
-    const redirectUrl = `${stageContestants?.baseUrl}${pathname}${search}`
+    const walletVoteContext = matches.reduce<WalletVoteContext | null>((currentContext, match) => {
+        if (currentContext) {
+            return currentContext
+        }
+
+        if (!hasWalletVoteContext(match.data)) {
+            return null
+        }
+
+        return match.data.walletVoteContext ?? null
+    }, null)
+
+    const baseUrl = matches.reduce<string | null>((currentBaseUrl, match) => {
+        if (currentBaseUrl) {
+            return currentBaseUrl
+        }
+
+        if (!hasBaseUrl(match.data)) {
+            return null
+        }
+
+        return match.data.baseUrl ?? null
+    }, null)
+
+    const redirectUrl = `${baseUrl ?? ""}${pathname}${search}`
     const currentPageUrl = `${pathname}${search}${hash}`
-    const walletVoteContext = stageContestants?.walletVoteContext as WalletVoteContext | null | undefined
-    const stageCurrency = walletVoteContext?.stageCurrency ?? stageContestants?.stage?.rates.vote_currency ?? null
-    const pricePerVote = walletVoteContext?.pricePerVote ?? stageContestants?.stage?.rates.price_per_vote ?? stageContestants?.stage?.price_per_vote ?? 0
+    const stageCurrency = walletVoteContext?.stageCurrency ?? null
+    const pricePerVote = walletVoteContext?.pricePerVote ?? 0
     const parsedVotes = Number(voteQuantity)
     const validVoteQuantity = Number.isFinite(parsedVotes) ? Math.trunc(parsedVotes) : 0
     const payableAmount = validVoteQuantity > 0 ? pricePerVote * validVoteQuantity : 0

@@ -6,21 +6,77 @@ import React, { useEffect, useState } from 'react';
 import ContestantCard, { ContestantStatisticsCard } from '~/components/public/contests/ContestantCard';
 import { toast } from '~/components/reusables/use-toast';
 import { contestantHelper } from '~/lib/helpers/contestant.helper';
-import { getFingerprint } from '~/lib/session.server';
 import { contestantRepo } from '~/services/contestant/contestant.server';
+import { walletRepo } from '~/services/wallet/wallet.server';
 import { EnrichedContestant } from '~/services/contestant/types/contestant.interface';
 import { action as registerAction, RegisterAction } from './_public.contests.$tournamentId.$contestId._index';
 // ... (loader and useContestContestantController remain the same) ...
 // type RegisterAction = typeof action
+
+type WalletVoteContext = {
+  authRequired: boolean;
+  wallet: {
+    _id: string;
+    wallet_currency: string;
+    withdrawable_balance: number;
+  } | null;
+  stageCurrency: string | null;
+  pricePerVote: number;
+  error: string | null;
+};
+
 export async function loader({ request }: LoaderFunctionArgs) {
   // call contestant server to get contestant data
   const url = new URL(request.url)
-  const { fingerprint } = await getFingerprint({ request })
   const contestantCode = url.searchParams.get('contestantCode') ?? ""
   const stageId = url.searchParams.get('stageId') ?? ""
   const {data, error} = await contestantRepo.getContestantDetailsForContest(contestantCode, stageId)
+  const stage = data?.stages.find((currentStage) => currentStage._id === stageId)
+    ?? data?.stages.find((currentStage) => currentStage.active)
+    ?? data?.stages.find((currentStage) => currentStage.stage === 1)
+    ?? null
+  const stageCurrency = stage?.rates.vote_currency ?? null
+  const pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0
+  let walletVoteContext: WalletVoteContext | null = null
+  const cookieHeader = request.headers.get("Cookie") ?? ""
 
-  return {data, error, url: request.url}
+  if (cookieHeader && stageCurrency) {
+    const walletsResponse = await walletRepo.getUserWallets(cookieHeader)
+    if (walletsResponse.data) {
+      const matchingWallet = walletsResponse.data.find((wallet) => wallet.wallet_currency === stageCurrency) ?? null
+      walletVoteContext = {
+        authRequired: false,
+        wallet: matchingWallet
+          ? {
+              _id: matchingWallet._id,
+              wallet_currency: matchingWallet.wallet_currency,
+              withdrawable_balance: matchingWallet.withdrawable_balance,
+            }
+          : null,
+        stageCurrency,
+        pricePerVote,
+        error: matchingWallet ? null : `No wallet found for ${stageCurrency}`,
+      }
+    } else {
+      walletVoteContext = {
+        authRequired: Boolean(walletsResponse.authRequired),
+        wallet: null,
+        stageCurrency,
+        pricePerVote,
+        error: walletsResponse.error?.detail?.toString() ?? null,
+      }
+    }
+  } else {
+    walletVoteContext = {
+      authRequired: !cookieHeader,
+      wallet: null,
+      stageCurrency,
+      pricePerVote,
+      error: stageCurrency ? null : "Wallet voting is unavailable for this stage",
+    }
+  }
+
+  return {data, error, url: request.url, baseUrl: process.env._BASE_URL, walletVoteContext}
 }
 
 export { registerAction as action };
@@ -72,7 +128,7 @@ export function useContestContestantController(){
 export default function ContestContestant() {
   const {enrichedContestants, contestantDetailsForActiveStage, handleCopy, whatsappUrl} = useContestContestantController();
   const profileContestant = contestantDetailsForActiveStage || enrichedContestants[0]; // Use active or first available
-
+  console.log({profileContestant, enrichedContestants, contestantDetailsForActiveStage})
   if (!profileContestant) {
     return (
         <div className="min-h-screen flex items-center justify-center ">
@@ -80,13 +136,14 @@ export default function ContestContestant() {
         </div>
     );
   }
+  console.log({profileContestant})
 
   const { originalContestantData, stageSocialMedia, fullName, info, stage, is_evicted } = profileContestant;
 
   return (
     
     <div className="min-h-screen text-gray-900">
-      
+
       {/* ------------------- HERO PROFILE SECTION ------------------- */}
       <header className=" pt-24 pb-16 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
