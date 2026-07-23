@@ -34,7 +34,6 @@ import Button from "~/components/reusables/Button"
 type VoteMode = "start" | "provider" | "wallet"
 
 type WalletVoteContext = {
-    authRequired: boolean
     wallet: {
         _id: string
         wallet_currency: string
@@ -89,7 +88,6 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
     const isWalletSubmitting = walletFetcher.state !== "idle"
     const isWalletSubmitDisabled =
         !user ||
-        walletVoteContext?.authRequired ||
         !hasWallet ||
         !remark.trim() ||
         validVoteQuantity < 1 ||
@@ -210,7 +208,7 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
                 <h3 className="text-xl font-black text-slate-950">Sign In Required</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                    You need to be signed in to vote from your wallet. Sign in now or return to the start menu to choose a different payment method.
+                    You need to be signed in to vote from your wallet.
                 </p>
             </div>
 
@@ -248,7 +246,7 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
                 </p>
             </div>
 
-            {walletVoteContext?.authRequired ? renderUnauthenticatedWalletView() : !hasWallet ? (
+            {!user ? renderUnauthenticatedWalletView() : !hasWallet ? (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
                     <h3 className="text-lg font-black text-amber-950">Wallet not available</h3>
                     <p className="mt-2 text-sm leading-6 text-amber-900">
