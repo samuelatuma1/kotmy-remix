@@ -89,7 +89,6 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
     const isWalletSubmitDisabled =
         !user ||
         !hasWallet ||
-        !remark.trim() ||
         validVoteQuantity < 1 ||
         payableAmount < 1 ||
         !hasSufficientBalance ||
@@ -322,7 +321,6 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
                             name="remark"
                             labelText="Remark"
                             labelClassNames="text-left"
-                            required
                             value={remark}
                             onChange={(event) => setRemark(event.currentTarget.value)}
                             placeholder="Tell us why you're voting"

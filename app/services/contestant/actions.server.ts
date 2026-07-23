@@ -176,14 +176,6 @@ export async function voteContestantFromWallet(formData: FormData, request: Requ
         return json({ error: "We could not find a matching wallet for this vote" }, { headers, status: 400 });
     }
 
-    if (!remark) {
-        const { headers } = await setToast({
-            request,
-            toast: `error::Please enter a remark for this wallet vote::${Date.now()}`
-        });
-        return json({ error: "Please enter a remark for this wallet vote" }, { headers, status: 400 });
-    }
-
     if (numberOfVotes < 1) {
         const { headers } = await setToast({
             request,
