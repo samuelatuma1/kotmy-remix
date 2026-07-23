@@ -234,7 +234,7 @@ export default function TallyVoteDialog({ contestant, disabled, children }: { co
     )
 
     const renderWalletFlow = () => (
-        <div className="space-y-5 p-6">
+        <div className="max-h-[calc(100dvh-2rem)] overflow-y-auto space-y-5 p-6">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Contestant</p>
                 <p className="mt-2 text-xl font-black text-slate-950">
