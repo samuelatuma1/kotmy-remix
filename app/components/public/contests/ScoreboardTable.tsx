@@ -64,7 +64,7 @@ export default function ScoreboardTable({ contestants, socialMediaType, show_bon
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">name</th>
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell">progress</th>
                     <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell">grade</th>
-                    <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">votes (SM, tally, givaah)</th>
+                    <th className="text-left uppercase text-sm font-satoshi-bold px-6 py-3">votes (SM, Prize back, givaah)</th>
 
                     {show_bonus && (
                         <>

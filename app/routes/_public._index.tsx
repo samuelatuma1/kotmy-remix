@@ -81,7 +81,7 @@ export default function LandingPage() {
 
             <section className='py-8 md:py-16 wrapper flex flex-col items-center'>
                 <div className="mb-6 sm:mb-16">
-                    <h2 className='font-satoshi-black text-2xl'>Why KOTMY?</h2>
+                    <h2 className='font-satoshi-black text-2xl'>Why Kidmonth?</h2>
                     <img className="object-fill w-[159px] h-5" src={underline} alt="underline" />
                 </div>
                 <div className="grid gap-6 lg:gap-12 sm:grid-cols-2 max-w-5xl">
