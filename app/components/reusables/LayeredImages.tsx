@@ -3,7 +3,7 @@ import { noImage } from "~/assets/images"
 export default function LayeredImages({ images, length = 5 }: { images: (string | null | { image: string | null })[], length?: number }) {
     const remaining = images.length - length
     const lastLayer = remaining > 0
-        ? <div className="w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-tertiary text-accent font-semibold text-sm">+{remaining}</div>
+        ? <div className="w-8 aspect-square inline-flex justify-center items-center -ml-2 rounded-full ring-2 ring-white bg-secondary text-brand-pink font-semibold text-sm">+{remaining}</div>
         : null
     return (
         <div>

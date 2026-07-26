@@ -36,7 +36,7 @@ export default function PageTransitionProgressBar() {
       <div
         ref={ref}
         className={cn(
-          'h-full bg-gradient-to-r from-accent to-primary transition-all duration-500 ease-in-out',
+          'h-full bg-gradient-to-r from-brand-pink to-brand-gold transition-all duration-500 ease-in-out',
           navigation.state === 'idle' && hasAnimationCompleted && 'w-0 opacity-0 transition-none',
           navigation.state === 'submitting' && 'w-4/12',
           navigation.state === 'loading' && 'w-10/12',

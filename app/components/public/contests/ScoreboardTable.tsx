@@ -80,10 +80,10 @@ export default function ScoreboardTable({ contestants, socialMediaType, show_bon
                 {contestants.map((contestant) => (
                     <tr key={contestant._id} className="border-b border-secondary">
                         <td className="px-6 py-3">{contestant.result.position}</td>
-                        <td className="px-6 py-3 font-satoshi-medium max-w-[300px] truncate uppercase">
+                        <td className="px-6 py-3 font-satoshi-medium max-w-[300px]  trunc_ uppercase">
                             <div className="flex items-center gap-2">
                                 <img src={contestant.image_url || noImage} alt="person smiling" width={48} className='rounded-full aspect-square object-cover' />
-                                <div className="truncate uppercase grow">
+                                <div className=" trunc_ uppercase grow">
                                     {`${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`}
                                     <dl className="lg:hidden">
                                         <dt className="sr-only">progress</dt>

@@ -44,7 +44,7 @@ function Document({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="font-satoshi text-primary">
+      <body className="font-satoshi bg-white text-primary">
         <PageTransitionProgressBar />
         {children}
         <ScrollRestoration />
@@ -97,11 +97,11 @@ export function ErrorBoundary() {
   const errorMessage = error instanceof Error ? error.message : null
   return (
     <Document>
-      <section className="h-dvh p-5 grid gap-5 place-content-center text-center">
-        <h1 className="text-xl font-bold text-red-500">{heading}</h1>
+      <section className="h-dvh bg-white p-5 grid gap-5 place-content-center text-center">
+        <h1 className="text-xl font-bold text-brand-pink">{heading}</h1>
         <p>{message}</p>
         {errorMessage && (
-          <div className="border-4 border-red-500 p-10">
+          <div className="border-4 border-brand-pink p-10">
             <p>Error message: {errorMessage}</p>
           </div>
         )}

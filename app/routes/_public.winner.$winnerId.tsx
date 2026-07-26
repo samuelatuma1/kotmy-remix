@@ -1,6 +1,5 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import _default from "node_modules/chart.js/dist/core/core.defaults";
 import { contestRepo } from "~/services/contest/contest.server";
 
 
@@ -19,38 +18,82 @@ export default function WinnerDetailsPage() {
     `We Are Thrilled To Announce The Triumphant Winner Of Our Recent '${winner?.contest_name}'! Let's Take A Moment To Applaud The Outstanding Creativity And Talent That Graced Our Contest.`;
 
   return (
-    <div className="min-h-screen bg-[#EFEFFF] flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto bg-transparent">
-        
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
-          
-          <div className="w-full aspect-[3/4] overflow-hidden rounded-2xl shadow-xl order-2 md:order-1">
-            <img
-              src={winner?.image_url}
-              alt={winner?.full_name}
-              className="w-full h-full object-cover"
-            />
-          </div>
-         
-          <div className="space-y-4 md:space-y-6 order-1 md:order-2">
-            <h1 className="text-3xl sm:text-4xl lg:text-4xl font-extrabold text-[#5B50FB] leading-tight">
-              {winner?.contest_name} Winner
-            </h1>
-            <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-              {description}
-            </p>
-            <p className="text-lg sm:text-xl font-bold text-gray-900">
-              Grand Winner:{" "}
-              <span className="text-gray-900">{winner?.full_name}</span> (
-              {winner?.contest_name})
-            </p>
-            <p className="text-sm italic text-gray-600 pt-2">
-                Winner's Note: "{winner?.remark}"
-            </p>
-          </div>
+    <main className="min-h-screen w-full overflow-x-hidden bg-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <section className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
+            <div className="aspect-[3/4] w-full bg-secondary">
+              <img
+                src={winner?.image_url}
+                alt={winner?.full_name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </section>
+
+          <section className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
+            <div className="border-b border-brand-grey bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
+                Winner Spotlight
+              </p>
+              <h1 className="mt-4 text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
+                {winner?.contest_name} Winner
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/80 sm:text-base">
+                {description}
+              </p>
+            </div>
+
+            <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <InfoTile label="Grand Winner" value={winner?.full_name || "Unknown"} />
+                <InfoTile label="Contest" value={winner?.contest_name || "Unknown"} />
+              </div>
+
+              <div className="rounded-[1.5rem] border border-brand-grey bg-secondary p-5 sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-slate">
+                  Winner&apos;s Note
+                </p>
+                <p className="mt-3 text-sm leading-7 text-brand-charcoal sm:text-base">
+                  {winner?.remark}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <PillStat label="Visibility" value="Featured" />
+                <PillStat label="Style" value="Premium" />
+                <PillStat label="Palette" value="White First" />
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+    </main>
   );
+}
+
+function InfoTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[1.5rem] border border-brand-grey bg-white px-4 py-4 shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-slate">
+        {label}
+      </p>
+      <p className="mt-2 truncate text-sm font-semibold text-brand-navy">
+        {value}
+      </p>
+    </div>
+  )
+}
+
+function PillStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-full border border-brand-grey bg-white px-4 py-3 text-center shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-semibold text-brand-navy">
+        {value}
+      </p>
+    </div>
+  )
 }

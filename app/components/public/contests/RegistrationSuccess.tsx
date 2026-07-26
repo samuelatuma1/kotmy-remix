@@ -35,7 +35,7 @@ export default function RegistrationSuccess({ contestant, contest }: { contestan
                     </p>
                     <p className="min-w-0">
                         <span className="block font-satoshi-bold">Email Address</span>
-                        <span className="block truncate ...">{contestant.contestant_biodata.email}</span>
+                        <span className="block  trunc_ ...">{contestant.contestant_biodata.email}</span>
                     </p>
                     <p className="">
                         <span className="block font-satoshi-bold">State of Residence</span>

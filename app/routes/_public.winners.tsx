@@ -21,22 +21,45 @@ const WinnerCard: React.FC<WinnerCardProps> = ({
   contest_name,
   remark,
   full_name,
-  id
+  id,
 }) => (
-  <Link to={`/winner/${id}`} className="block transition-shadow">
-  <article>
-    <img
-      src={image_url}
-      alt={full_name}
-      className="w-full aspect-[3/4] rounded-lg object-cover"
-    />
-    <div className="pt-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-        {contest_name}
-      </p>
-      <h3 className="mt-1 text-lg font-bold text-gray-900">{full_name}</h3>
-    </div>
-  </article>
+  <Link
+    to={`/winner/${id}`}
+    className="group block h-full overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_16px_45px_rgba(14,42,77,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(14,42,77,0.12)]"
+  >
+    <article className="flex h-full flex-col">
+      <div className="relative aspect-[3/4] overflow-hidden bg-secondary">
+        <img
+          src={image_url}
+          alt={full_name}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+        />
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-navy/85 via-brand-navy/30 to-transparent p-4">
+          <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+            Winner
+          </span>
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-slate">
+          {contest_name}
+        </p>
+        <h3 className="text-xl font-black tracking-tight text-brand-navy">
+          {full_name}
+        </h3>
+        <p className="line-clamp-3 text-sm leading-6 text-brand-charcoal">
+          {remark}
+        </p>
+        <div className="mt-auto flex items-center justify-between border-t border-brand-grey pt-4">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-slate">
+            View story
+          </span>
+          <span className="text-sm font-semibold text-brand-pink transition group-hover:translate-x-0.5">
+            Open profile
+          </span>
+        </div>
+      </div>
+    </article>
   </Link>
 );
 
@@ -83,32 +106,61 @@ export default function Winners() {
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <header className="bg-[#817EFB] overflow-hidden rounded-3xl py-8 md:py-12 lg:py-16 px-5">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-              Meet Our Talented Contest Winners
-            </h1>
-            <p className="mt-4 text-base md:text-lg text-purple-100">
-              A Glimpse of the Extraordinary Creations That Stole the Show
-            </p>
-            <div className="mt-8 relative max-w-lg mx-auto">
-              <input
-                type="text"
-                placeholder="Search by keyword or name"
-                value={searchWinners}
-                onChange={(e) => setSearchWinners(e.target.value)}
-                className="w-full rounded-2xl py-3 px-6 pr-12 text-gray-900 shadow-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
-              />
-              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-auto">
-                <SearchIcon className="h-5 w-5 text-gray-400" />
+    <main className="min-h-screen w-full overflow-x-hidden bg-white">
+      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+        <header className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
+          <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
+                Winners Gallery
+              </p>
+              <h1 className="mt-4 max-w-2xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
+                Meet our talented contest winners
+              </h1>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
+                A clean showcase of the extraordinary creations that rose to the top across KidMonth contests.
+              </p>
+            </div>
+
+            <div className="flex items-center p-6 sm:p-8 lg:p-10">
+              <div className="w-full rounded-[1.75rem] border border-brand-grey bg-secondary p-4 shadow-[0_10px_30px_rgba(14,42,77,0.05)] sm:p-5">
+                <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.22em] text-brand-slate">
+                  Search winners
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search by keyword or name"
+                    value={searchWinners}
+                    onChange={(e) => setSearchWinners(e.target.value)}
+                    className="w-full rounded-2xl border border-brand-grey bg-white py-3.5 pl-5 pr-12 text-sm text-brand-navy outline-none transition placeholder:text-brand-slate focus:border-brand-pink sm:text-base"
+                  />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                    <SearchIcon className="h-5 w-5 text-brand-slate" />
+                  </div>
+                </div>
+                
               </div>
             </div>
           </div>
         </header>
-        <main className="py-12 md:py-16">
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+
+        <main className="py-8 sm:py-10 lg:py-14">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-slate">
+                Featured winners
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-brand-navy">
+                Celebrating standout performances
+              </h2>
+            </div>
+            <div className="hidden rounded-full border border-brand-grey bg-white px-4 py-2 text-sm font-semibold text-brand-charcoal sm:block">
+              {winnersFiltered.length} results
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {winnersFiltered.map((winner, idx) => (
               <WinnerCard
                 key={winner.contestant_code || idx}
@@ -120,16 +172,16 @@ export default function Winners() {
               />
             ))}
           </div>
-          <div className="mt-12 md:mt-16 text-center">
+          <div className="mt-10 flex justify-center sm:mt-14">
             <button
               type="button"
-              className="inline-flex items-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center rounded-full border border-brand-grey bg-white px-8 py-3 text-sm font-semibold text-brand-navy shadow-[0_10px_30px_rgba(14,42,77,0.06)] transition hover:-translate-y-0.5 hover:border-brand-pink hover:text-brand-pink"
             >
               See more
             </button>
           </div>
         </main>
       </div>
-    </div>
+    </main>
   );
 }

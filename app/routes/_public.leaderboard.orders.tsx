@@ -124,11 +124,11 @@ function LeaderboardRow({ entry }: { entry: GeneralOrdersLeaderboardSearchRespon
         <PositionBadge position={entry.position} />
 
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-black text-slate-950 truncate">
+          <h3 className="text-lg font-black text-slate-950  trunc_">
             {entry.user_full_name || "Unknown"}
           </h3>
           {entry.business_name ? (
-            <p className="text-sm text-slate-500 truncate">{entry.business_name}</p>
+            <p className="text-sm text-slate-500  trunc_">{entry.business_name}</p>
           ) : null}
         </div>
 

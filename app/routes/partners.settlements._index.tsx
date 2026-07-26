@@ -241,11 +241,11 @@ function SettlementCard({
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl bg-slate-50 px-4 py-3">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Settlement id</div>
-          <div className="mt-1 truncate text-sm font-semibold text-slate-900">{settlement._id}</div>
+          <div className="mt-1  trunc_ text-sm font-semibold text-slate-900">{settlement._id}</div>
         </div>
         <div className="rounded-2xl bg-slate-50 px-4 py-3">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Business</div>
-          <div className="mt-1 truncate text-sm font-semibold text-slate-900">
+          <div className="mt-1  trunc_ text-sm font-semibold text-slate-900">
             {settlement.business?.legal_business_name ?? "Unknown business"}
           </div>
         </div>
@@ -263,7 +263,7 @@ function SettlementCard({
         </div>
         <div className="rounded-2xl bg-slate-50 px-4 py-3">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Order Code</div>
-          <div className="mt-1 truncate text-sm font-semibold text-slate-900">{settlement.order_code}</div>
+          <div className="mt-1  trunc_ text-sm font-semibold text-slate-900">{settlement.order_code}</div>
         </div>
       </div>
     </article>

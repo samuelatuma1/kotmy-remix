@@ -406,7 +406,7 @@ export default function WalletPage() {
                   </td>
                   <td className="py-4 text-gray-600 font-mono text-xs">{item.payment_ref}</td>
                   <td className="py-4 text-gray-600 max-w-xs">{item.description}</td>
-                  <td className="py-4 text-gray-600 truncate">{item.wallet_name}</td>
+                  <td className="py-4 text-gray-600  trunc_">{item.wallet_name}</td>
                   <td className="py-4 uppercase text-xs font-semibold">{item.entry_type}</td>
                   <td className="py-4">
                     <div className="flex items-center gap-2">

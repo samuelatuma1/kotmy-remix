@@ -14,16 +14,24 @@ export default function Results() {
   return (
     <main className='grow'>
       <header className="wrapper my-16">
-        <h1 className='text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl'>
+        <h1 className='text-accent text-2xl lg:text-4xl lg:leading-snug font-satoshi-bold max-w-3xl text-brand-charcoal'>
           Congratulating the Extraordinary Talents That Stole the Spotlight!
         </h1>
       </header>
 
-      <section className='wrapper'>
-        <div className="p-2 rounded-full bg-secondary flex w-fit">
-          <span className="whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium bg-accent text-white">All Contests</span>
-          <span className="whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium">Ongoing Contests</span>
-          <span className="whitespace-nowrap text-xs sm:text-base p-3 sm:px-6 sm:py-4 rounded-full font-satoshi-medium">Completed Contests</span>
+      <section className="w-full max-w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-full overflow-x-auto">
+          <div className="inline-flex min-w-max rounded-full bg-secondary p-2">
+            <span className="whitespace-nowrap rounded-full bg-accent p-3 text-xs font-satoshi-medium text-white sm:px-6 sm:py-4 sm:text-base">
+              All Contests
+            </span>
+            <span className="whitespace-nowrap rounded-full p-3 text-xs font-satoshi-medium sm:px-6 sm:py-4 sm:text-base">
+              Ongoing Contests
+            </span>
+            <span className="whitespace-nowrap rounded-full p-3 text-xs font-satoshi-medium sm:px-6 sm:py-4 sm:text-base">
+              Completed Contests
+            </span>
+          </div>
         </div>
       </section>
 

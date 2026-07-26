@@ -46,18 +46,18 @@ export default function AdminNavigation({ show }: { show: boolean }) {
     const { pathname } = useLocation()
     function isSublinkActive(url: string) { return new RegExp(url, 'i').test(pathname) }
     const mainComponent = (
-        <div className="flex justify-between items-center border  rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary">
+        <div className="flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink">
             System default
             <Svg src={icons.arrowDownIcon} />
         </div>)
     return (show
-        ? <header className='bg-secondary border-r hidden sm:flex flex-col justify-between min-w-[280px]'>
+        ? <header className='bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px]'>
             <nav className='py-6'>
                 <span className='inline-block mb-2 px-6 py-3 font-satoshi-bold'>Navigation Menu</span>
                 <ul className='grid gap-2 font-bold'>
                     {navs.map(navItem => (
                         <li key={navItem.label}><NavLink to={navItem.url}
-                            className={  ({ isActive }) => `${isActive ? 'text-accent bg-[#EEF0FF] border-accent' : 'border-transparent'} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ` +  `${!hasAcceptedRole(user, (navItem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }
+                            className={  ({ isActive }) => `${isActive ? 'text-brand-pink bg-secondary border-brand-pink' : 'border-transparent text-brand-charcoal'} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-secondary ` +  `${!hasAcceptedRole(user, (navItem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }
                         >
                             <Svg src={navItem.icon} />{navItem.label}
                         </NavLink></li>
@@ -67,8 +67,8 @@ export default function AdminNavigation({ show }: { show: boolean }) {
                     {navsWSubs.map(item => (
                         <AccordionItem value={item.label} key={item.label} className='group'>
                             <AccordionTrigger
-                                className={cn('border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-[#EEF0FF]', {
-                                    'text-accent bg-[#EEF0FF] border-accent': isSublinkActive(item.label)
+                                className={cn('border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-secondary', {
+                                    'text-brand-pink bg-secondary border-brand-pink': isSublinkActive(item.label)
                                 })}>
                                 <span className="flex gap-3 items-center">
                                     <Svg src={item.icon} />
@@ -79,7 +79,7 @@ export default function AdminNavigation({ show }: { show: boolean }) {
                             <AccordionContent>
                                 <ul className='list-disc list-inside p-3'>
                                     {item.subitems.map(subitem => (
-                                        <li key={subitem.label} className='py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'>
+                                        <li key={subitem.label} className='py-2 px-6 hover:bg-secondary rounded-lg has-[.active]:font-semibold has-[.active]:bg-secondary'>
                                             <NavLink to={subitem.url}
                                                 className={({ isActive }) => `${isActive ? 'active' : ''}` +  `${!hasAcceptedRole(user, (subitem.acceptedRoles ?? []) as unknown as [] ) ? " hidden " : ""}` }>
                                                 {subitem.label}
@@ -99,10 +99,10 @@ export default function AdminNavigation({ show }: { show: boolean }) {
                     Theme
                 </span>
                 <Toggletip mainComponent={mainComponent}
-                    childContainerClass="bottom-[110%] left-0 bg-tertiary p-2 border  text-xs whitespace-nowrap">
-                    <span className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>System default</span>
-                    <span className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>Light</span>
-                    <span className='p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium'>Dark</span>
+                    childContainerClass="bottom-[110%] left-0 bg-white p-2 border border-brand-grey text-xs whitespace-nowrap">
+                    <span className='p-2 flex items-center gap-2 hover:bg-secondary rounded-lg font-satoshi-medium'>System default</span>
+                    <span className='p-2 flex items-center gap-2 hover:bg-secondary rounded-lg font-satoshi-medium'>Light</span>
+                    <span className='p-2 flex items-center gap-2 hover:bg-secondary rounded-lg font-satoshi-medium'>Dark</span>
                 </Toggletip>
             </aside>
         </header >
