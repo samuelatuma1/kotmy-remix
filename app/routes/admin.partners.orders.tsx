@@ -853,7 +853,7 @@ export default function AdminPartnerOrdersPage() {
       </section>
 
       <section className="mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
-        <Form method="get" className="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end">
+        <Form method="get" className="grid gap-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
           <input type="hidden" name="page_size" value={orders.items_per_page} />
 
           <label className="grid gap-2">

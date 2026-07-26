@@ -216,7 +216,8 @@ function OrderCard({ order }: { order: OrderResponse }) {
               Payment status: <span className="font-semibold text-slate-900">{order.payment_details?.status}</span>
             </div>
             <div>
-              Reference: <span className="font-semibold text-slate-900">{order.payment_details?.reference}</span>
+              Reference: <br/>
+              <span className="font-semibold text-slate-900 break-all">{order.payment_details?.reference}</span>
             </div>
             {paymentLink ? (
               <a
