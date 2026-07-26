@@ -20,7 +20,7 @@ export default function WinnerDetailsPage() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-white">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <section className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
             <div className="aspect-[3/4] w-full bg-secondary">
               <img
@@ -31,21 +31,21 @@ export default function WinnerDetailsPage() {
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
+          <section className="min-w-0 overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
             <div className="border-b border-brand-grey bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
                 Winner Spotlight
               </p>
-              <h1 className="mt-4 text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
+              <h1 className="mt-4 break-words text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
                 {winner?.contest_name} Winner
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/80 sm:text-base">
+              <p className="mt-4 max-w-2xl break-words text-sm leading-7 text-white/80 sm:text-base">
                 {description}
               </p>
             </div>
 
             <div className="space-y-6 px-6 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid min-w-0 gap-4 sm:grid-cols-2">
                 <InfoTile label="Grand Winner" value={winner?.full_name || "Unknown"} />
                 <InfoTile label="Contest" value={winner?.contest_name || "Unknown"} />
               </div>
@@ -74,7 +74,7 @@ export default function WinnerDetailsPage() {
 
 function InfoTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-brand-grey bg-white px-4 py-4 shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
+    <div className="min-w-0 rounded-[1.5rem] border border-brand-grey bg-white px-4 py-4 shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-slate">
         {label}
       </p>
@@ -87,7 +87,7 @@ function InfoTile({ label, value }: { label: string; value: string }) {
 
 function PillStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-full border border-brand-grey bg-white px-4 py-3 text-center shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
+    <div className="min-w-0 rounded-full border border-brand-grey bg-white px-4 py-3 text-center shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
       <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate">
         {label}
       </p>

@@ -1,16 +1,42 @@
-import { json } from '@remix-run/node'
+import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import Button from '~/components/reusables/Button'
 import ContestCard from '~/components/reusables/ContestCard'
-import { getContests } from '~/lib/data/contest.server'
+import Pagination from '~/components/reusables/Pagination'
+import { contestRepo } from '~/services/contest/contest.server'
 
-export async function loader() {
-  const contests = await getContests({ where: { status: 'completed' } })
-  return json({ contests })
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url)
+  const page_size = Number(url.searchParams.get('page_size') ?? '20')
+  const last_key_id = url.searchParams.get('last_key_id')
+  const first_key_id = url.searchParams.get('first_key_id')
+  const direction = url.searchParams.get('direction')
+
+  const { data: contests, error } = await contestRepo.userGetContests({
+    page_size,
+    last_key_id: last_key_id ?? undefined,
+    first_key_id: first_key_id ?? undefined,
+    direction: direction === 'previous' ? 'previous' : 'next',
+  })
+
+  console.log({contests})
+
+  return json({
+    contests: contests ?? {
+      current_page: 1,
+      total_pages: 1,
+      total_items: 0,
+      items_per_page: page_size,
+      items: [],
+      last_key_id: null,
+      first_key_id: null,
+    },
+    error,
+  })
 }
 
 export default function Results() {
   const { contests } = useLoaderData<typeof loader>()
+  console.log(contests)
   return (
     <main className='grow'>
       <header className="wrapper my-16">
@@ -36,13 +62,17 @@ export default function Results() {
       </section>
 
       <section className='wrapper my-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center'>
-        {contests.map(contest => (
-          <ContestCard key={contest.id} contest={contest} to={`/results/${contest.id}`} withTag withCategory />
+        {contests.items.map(contest => (
+          <ContestCard key={contest.id} contest={contest} to={`/results/${contest.contest_unique_id}`} withTag withCategory />
         ))}
       </section>
 
-      <div className="wrapper my-20 flex justify-center">
-        <Button element="button" variant="outline">See more results</Button>
+      <div className="wrapper my-20">
+        <Pagination
+          lastKey={contests.last_key_id}
+          firstKey={contests.first_key_id}
+          pageSize={contests.items_per_page}
+        />
       </div>
     </main>
   )

@@ -146,7 +146,13 @@ export async function action({ request }: ActionFunctionArgs) {
     };
 
     if (payment_option === PaymentOptionKey.prepay) {
-      payload.prepay_redirect_url = new URL("/marketplace/orders", request.url).toString();
+      if(cookieHeader){
+        payload.prepay_redirect_url = new URL("/user/orders", request.url).toString();
+      }
+      else{
+        payload.prepay_redirect_url = new URL("/marketplace/orders", request.url).toString();
+
+      }
     }
 
     const ordersRes = await partnerServer.placeOrder(payload, cookieHeader);

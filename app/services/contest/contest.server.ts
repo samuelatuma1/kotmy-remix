@@ -1,11 +1,12 @@
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
+import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, IUserContestQuery, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json, redirect } from "@remix-run/node"
 import { IVoteContestantFromWalletPayload } from "../contestant/types/contestant.interface"
+import { IPaginatedResponse } from "../common/types/paginated_data"
 
 // let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
 
@@ -181,6 +182,31 @@ export class ContestRepository implements IContestRepository {
         }, token)
 
         if (data) return { data: data.map(contest => dtoToContest(contest) as IContestWStage) }
+        return { error, authRequired }
+    }
+
+    async userGetContests(query: IUserContestQuery | null = null): Promise<TFetcherResponse<IPaginatedResponse<IContestWStage>>> {
+        let url = `/v2/api/contest/search_contests`;
+        if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
+                if (value !== null && value !== undefined && value !== '') {
+                    acc[key] = String(value);
+                }
+                return acc;
+            }, {} as Record<string, string>));
+            const queryString = params.toString();
+            if (queryString) url = `${url}?${queryString}`;
+        }
+
+        const { data, error, authRequired } = await ApiCall.call<IPaginatedResponse<IContestWStage>, unknown>({
+            url,
+            method: MethodsEnum.GET
+            // headers: { Authorization: `Bearer ${token}` 
+            })
+
+        console.log({data, error})
+
+        if (data) return { data }
         return { error, authRequired }
     }
 

@@ -250,6 +250,24 @@ export interface IContestQuery {
   status?: ContestStatus | null;
 }
 
+export interface IUserContestQuery {
+  name?: string;
+  tournament_unique_id?: string;
+  contest_unique_id?: string;
+  uploaded_by?: string;
+  page_size?: number;
+  last_key_id?: string | null;
+  first_key_id?: string | null;
+  direction?: "next" | "previous";
+  
+  // Datetimes are typically serialized as ISO strings in API responses/requests,
+  // but you can accept Date objects depending on your HTTP client setup.
+  min_created_at?: string | Date;
+  max_created_at?: string | Date;
+  
+  status?: ContestStatus;
+}
+
 export interface IContestRepository {
     getContests(): Promise<TFetcherResponse<IContest[]>>
     getContestById(contestId: string): Promise<TFetcherResponse<IContest>>

@@ -109,8 +109,8 @@ export default function Winners() {
     <main className="min-h-screen w-full overflow-x-hidden bg-white">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <header className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
-          <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          <div className="grid min-w-0 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="min-w-0 bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
                 Winners Gallery
               </p>
@@ -122,8 +122,8 @@ export default function Winners() {
               </p>
             </div>
 
-            <div className="flex items-center p-6 sm:p-8 lg:p-10">
-              <div className="w-full rounded-[1.75rem] border border-brand-grey bg-secondary p-4 shadow-[0_10px_30px_rgba(14,42,77,0.05)] sm:p-5">
+            <div className="flex min-w-0 items-center p-6 sm:p-8 lg:p-10">
+              <div className="min-w-0 w-full rounded-[1.75rem] border border-brand-grey bg-secondary p-4 shadow-[0_10px_30px_rgba(14,42,77,0.05)] sm:p-5">
                 <label className="mb-3 block text-xs font-semibold uppercase tracking-[0.22em] text-brand-slate">
                   Search winners
                 </label>
@@ -146,8 +146,8 @@ export default function Winners() {
         </header>
 
         <main className="py-8 sm:py-10 lg:py-14">
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <div>
+          <div className="mb-6 flex min-w-0 items-center justify-between gap-4">
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-slate">
                 Featured winners
               </p>
@@ -160,7 +160,7 @@ export default function Winners() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
+          <div className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8">
             {winnersFiltered.map((winner, idx) => (
               <WinnerCard
                 key={winner.contestant_code || idx}
