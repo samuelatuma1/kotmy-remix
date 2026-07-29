@@ -64,6 +64,7 @@ export default class AuthServer {
         signupData.append("last_name", formData.get("last_name") as string);
         signupData.append("email", formData.get("email") as string);
         signupData.append("password", formData.get("password") as string);
+        signupData.append("terms_acknowledged", String(formData.get("terms_acknowledged") === "on"));
         if (formData.get("status")) {
             signupData.append("status", formData.get("status") as string);
         }
