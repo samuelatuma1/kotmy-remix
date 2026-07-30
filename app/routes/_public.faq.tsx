@@ -1,110 +1,448 @@
+import React from "react";
+
 const faqSections = [
   {
-    id: "general",
-    title: "General Questions",
+    id: "account",
+    title: "Account & Getting Started",
     items: [
       {
-        question: "What is KidMonth?",
+        question: "How do I create an account?",
         answer:
-          "KidMonth is a platform for contests, marketplace services, scheduled gift orders, voting, and related child-focused features.",
+          "Visit kidmonth.com or Download the KidMonth app, register as a Parent/Guardian, Partner and/or Affiliate, verify your details.",
       },
       {
-        question: "Who can use the platform?",
+        question: "Can my child create their own account?",
         answer:
-          "Adults may register and manage accounts for themselves or on behalf of a child where they are a parent or guardian.",
+          "No. Only a Parent or Guardian can create and manage a child's account.",
       },
       {
-        question: "How do I get started?",
+        question: "Can I register more than one child?",
         answer:
-          "Create an account, complete your details, and follow the prompts for the service you want to use.",
+          "Yes. Multiple children can be managed under one Parent/Guardian account. Click on contest and register for the contest you are interested in.",
+      },
+      {
+        question: "I forgot my password. What should I do?",
+        answer:
+          "Tap Forgot Password on the login page and follow the instructions to reset your password.",
+      },
+      {
+        question: "How do I change my phone number or email address?",
+        answer:
+          "Go to Account Settings and update your information. Some changes may require verification.",
+      },
+      {
+        question: "How do I update my child's details?",
+        answer:
+          "Go to the child's profile and select Edit Profile. Certain changes may require additional verification.",
+      },
+      {
+        question: "Is there an age limit?",
+        answer:
+          "Yes. Children must be between 0 and 16 years old to participate in KidMonth contests unless a specific contest states otherwise.",
+      },
+      {
+        question: "Why do I need to verify my account?",
+        answer:
+          "Verification helps protect children, prevent fraud, and ensure contest fairness.",
       },
     ],
   },
   {
-    id: "accounts",
-    title: "Accounts & Access",
+    id: "givaah",
+    title: "Givaah Shop",
     items: [
       {
-        question: "Can I edit my account details later?",
+        question: "What is Givaah?",
         answer:
-          "Yes. You can update supported profile details from your account settings when those options are available.",
+          "Givaah is KidMonth's marketplace where families can purchase products from approved Partner Vendors while earning voting credits.",
       },
       {
-        question: "What if I cannot access my account?",
+        question: "How do I place an order?",
         answer:
-          "Use the login and account recovery options provided in the app or contact support for help.",
+          "Click on Givaah Shop, browse products, add them to your cart, complete checkout, and track your order from the Orders page.",
       },
       {
-        question: "Can one adult manage a child account?",
+        question: "My order hasn't arrived. What should I do?",
         answer:
-          "Yes. A parent or guardian can create and manage a child profile and is responsible for the account activity.",
-      },
-    ],
-  },
-  {
-    id: "payments",
-    title: "Payments & Orders",
-    items: [
-      {
-        question: "Are purchases refundable?",
-        answer:
-          "Refunds depend on the service and the rules that apply to that service. Some purchases are final once confirmed.",
+          "Check your order status first. If delivery is overdue, contact the vendor through the app. If the issue remains unresolved, contact KidMonth Support.",
       },
       {
-        question: "How do scheduled gift orders work?",
+        question: "Can I cancel an order?",
         answer:
-          "Scheduled gift orders let you place an order ahead of time, with the relevant pricing and order terms set at confirmation.",
+          "Regular orders may not be cancelled once voting credits has been assigned. Once a Scheduled Gift Order is confirmed, it cannot be cancelled.",
       },
       {
-        question: "How are vouchers used?",
+        question: "Can I get a refund?",
         answer:
-          "Vouchers can be redeemed according to the platform rules and the redemption window stated at purchase or issue time.",
+          "Refunds are subject to the applicable Refund Policy. Scheduled Gift Orders are non-refundable once confirmed.",
+      },
+      {
+        question: "I accidentally scheduled a gift order. Can it be reversed?",
+        answer:
+          "No. Scheduled Gift Orders are final because associated voting credits are issued immediately.",
+      },
+      {
+        question: "What is a voucher?",
+        answer:
+          "A voucher is store credit that can be used on Givaah. Vouchers expire 90 days after issuance unless otherwise stated.",
+      },
+      {
+        question: "Can expired vouchers be restored?",
+        answer:
+          "No. Expired vouchers cannot be renewed or refunded.",
+      },
+      {
+        question: "Can I pay vendors outside KidMonth?",
+        answer:
+          "Yes. Payments can be made through the KidMonth platform or physically to the Partner. However, confirm you have gotten the voting credits when making physical payments once you have received your order, confirm it.",
       },
     ],
   },
   {
     id: "contests",
-    title: "Contests & Voting",
+    title: "Contests & Talent Discovery",
     items: [
       {
-        question: "How do contests work?",
+        question: "How do I enter my child into a contest?",
         answer:
-          "Contests are hosted on the platform and may include registration, voting, judging, and prize stages depending on the event.",
+          "Open your child's profile, tap Enter Contest, select an available contest, and complete the submission process.",
       },
       {
-        question: "Can I vote for a contestant?",
+        question: "Can my child join multiple contests?",
         answer:
-          "Yes. Voting options depend on the active contest and the credits or payment options available at the time.",
+          "Yes, where permitted by the contest rules.",
       },
       {
-        question: "Where can I find contest rules?",
+        question: "How are winners selected?",
         answer:
-          "Contest rules are provided on the contest page and in the platform terms where applicable.",
+          "Contest winners are determined using a weighted leaderboard based on each contest's published voting formula.",
+      },
+      {
+        question: "Where can I see my child's ranking?",
+        answer:
+          "Live rankings are available on the contestant dashboard.",
+      },
+      {
+        question: "Why was my child evicted despite having votes?",
+        answer:
+          "Each stage has a minimum progression requirement. Contestants who fail to meet that requirement may be eliminated.",
+      },
+      {
+        question: "How can I improve my child's position on the leaderboard?",
+        answer:
+          "Encourage supporters to vote consistently throughout the contest rather than waiting until the deadline.",
+      },
+      {
+        question: "Can contest decisions be appealed?",
+        answer:
+          "Yes. If you believe an error occurred, contact Support. All reviews are conducted using the official Contest Rules.",
       },
     ],
   },
   {
-    id: "support",
-    title: "Support",
+    id: "voting",
+    title: "Voting",
     items: [
       {
-        question: "How do I get help?",
+        question: "How can I vote?",
         answer:
-          "You can contact support through the email address shown on the legal pages or the contact details provided in the app.",
+          "KidMonth currently supports: Free Voting, Givaah Voting Credits, and Prizeback Voting.",
       },
       {
-        question: "Where can I read the legal pages?",
+        question: "Do all votes carry the same value?",
         answer:
-          "The Terms and Conditions and Privacy Policy are available from the public legal pages and footer links.",
+          "No. Each contest specifies how different vote types contribute to the final leaderboard.",
       },
       {
-        question: "Is my information protected?",
+        question: "Can I vote more than once?",
         answer:
-          "KidMonth uses technical and organisational safeguards to protect user information and follows the stated privacy policy.",
+          "Yes, subject to the rules and limits of each voting method.",
+      },
+      {
+        question: "Can I vote for my own child?",
+        answer:
+          "Yes.",
+      },
+      {
+        question: "Can I change or remove my vote?",
+        answer:
+          "No. Votes cannot be reversed once submitted.",
+      },
+      {
+        question: "Can I get a refund for paid votes?",
+        answer:
+          "No. Paid votes are final.",
       },
     ],
   },
-] as const;
+  {
+    id: "wallet",
+    title: "Wallet, Payments & VTU",
+    items: [
+      {
+        question: "Does KidMonth have a wallet?",
+        answer:
+          "Yes. Every account includes a wallet for supported transactions.",
+      },
+      {
+        question: "How do I fund my wallet?",
+        answer:
+          "Open the Wallet section and select Fund Wallet.",
+      },
+      {
+        question: "Can I withdraw money?",
+        answer:
+          "Yes. Withdrawal only applies to earnings and not the funded transaction in your wallet.",
+      },
+      {
+        question: "Can I buy airtime and data?",
+        answer:
+          "Yes. KidMonth supports VTU services for major Nigerian networks.",
+      },
+      {
+        question: "My wallet payment failed. What should I do?",
+        answer:
+          "Check your transaction history first. If the issue persists, contact Support with your transaction reference.",
+      },
+      {
+        question: "My airtime or data purchase failed but I was charged.",
+        answer:
+          "Most failed transactions are automatically reversed. If no reversal occurs within the expected period, contact Support.",
+      },
+    ],
+  },
+  {
+    id: "prizeback",
+    title: "Prizeback Earnings",
+    items: [
+      {
+        question: "What is Prizeback?",
+        answer:
+          "Prizeback allows supporters to cast paid votes while 50% of the payment becomes earnings for the contestant.",
+      },
+      {
+        question: "When are Prizeback earnings paid?",
+        answer:
+          "Eligible earnings are paid weekly once the minimum payout threshold of NGN 10,000 has been reached.",
+      },
+      {
+        question: "What happens if I have less than NGN 10,000?",
+        answer:
+          "Your earnings remain in your balance and roll over until you reach the minimum payout amount.",
+      },
+    ],
+  },
+  {
+    id: "affiliates",
+    title: "Affiliates & Referrals",
+    items: [
+      {
+        question: "Who can become a KidMonth Affiliate?",
+        answer:
+          "Anyone can become a KidMonth Affiliate. Every registered user receives a unique Affiliate referral code that can be shared with others.",
+      },
+      {
+        question: "Do I have to use an Affiliate referral code when signing up?",
+        answer:
+          "No. Adding a referral code during registration is optional. However, if someone referred you to KidMonth, you should enter their referral code during sign-up so they receive credit for your registration.",
+      },
+      {
+        question: "How do I refer people?",
+        answer:
+          "Simply share your unique referral code with new Users and Partners and encourage them to enter your referral code when creating their account.",
+      },
+      {
+        question: "How do Affiliates earn?",
+        answer:
+          "Affiliates earn: NGN 500 for every referred User who reaches NGN 10,000 in qualifying purchases (excluding VTU); NGN 1,000 for every referred Partner who reaches NGN 20,000 in qualifying sales; 0.5% ongoing commission on qualifying purchases made by referred Users (excluding VTU); and 0.5% ongoing commission on qualifying sales generated by referred Partners.",
+      },
+      {
+        question: "Is there a limit to how much I can earn?",
+        answer:
+          "No. There is no limit to your Affiliate earnings. The more active your referral network becomes, the more you can earn.",
+      },
+      {
+        question: "What is the Affiliate Ladder?",
+        answer:
+          "The Affiliate Ladder is KidMonth's performance and rewards program for Affiliates, offering additional recognition and incentives as you grow.",
+      },
+      {
+        question: "Why haven't I received my commission yet?",
+        answer:
+          "Commissions are paid only after your referred User or Partner meets the required qualifying purchase or sales threshold in accordance with the Affiliate Policy.",
+      },
+    ],
+  },
+  {
+    id: "vendors",
+    title: "Vendors & Business Partners",
+    items: [
+      {
+        question: "How do I become a Partner Vendor?",
+        answer:
+          "Complete the Partner Vendor application within the app or on the KidMonth website.",
+      },
+      {
+        question: "How do vendors receive payments?",
+        answer:
+          "Payments are processed according to the Vendor Agreement after successful order completion.",
+      },
+      {
+        question: "Can businesses advertise on KidMonth?",
+        answer:
+          "Yes. Businesses may advertise subject to KidMonth's Advertising Policy.",
+      },
+    ],
+  },
+  {
+    id: "badges",
+    title: "Badges & Achievements",
+    items: [
+      {
+        question: "How do I earn badges?",
+        answer:
+          "Badges are earned through platform participation, achievements, subscriptions, and special activities.",
+      },
+      {
+        question: "Can badges expire?",
+        answer:
+          "Some promotional badges may expire, while achievement badges remain permanently.",
+      },
+    ],
+  },
+  {
+    id: "notifications",
+    title: "Notifications",
+    items: [
+      {
+        question: "Why am I not receiving notifications?",
+        answer:
+          "Ensure notifications are enabled in both your phone settings and the KidMonth app.",
+      },
+      {
+        question: "Can I choose which notifications I receive?",
+        answer:
+          "Yes. Notification preferences can be managed in Settings.",
+      },
+    ],
+  },
+  {
+    id: "technical",
+    title: "Technical Support",
+    items: [
+      {
+        question: "The app keeps crashing. What should I do?",
+        answer:
+          "Update to the latest version, restart your device, and try again.",
+      },
+      {
+        question: "The app is slow or not loading.",
+        answer:
+          "Check your internet connection and ensure you're using the latest version.",
+      },
+      {
+        question: "Why can't I upload photos or videos?",
+        answer:
+          "Check your internet connection, file size, and supported formats.",
+      },
+    ],
+  },
+  {
+    id: "subscriptions",
+    title: "Subscriptions",
+    items: [
+      {
+        question: "Does KidMonth offer subscriptions?",
+        answer:
+          "Yes. Certain premium features, badges, or services may require an active subscription.",
+      },
+      {
+        question: "Can I cancel my subscription?",
+        answer:
+          "Yes. Subscription management follows the rules of your payment platform.",
+      },
+    ],
+  },
+  {
+    id: "safety",
+    title: "Safety & Privacy",
+    items: [
+      {
+        question: "Is my child's information safe?",
+        answer:
+          "Yes. KidMonth follows the Nigeria Data Protection Act (NDPA), applicable international privacy standards, and industry security practices to protect user information.",
+      },
+      {
+        question: "Who can see my child's profile?",
+        answer:
+          "Only information necessary for participation is publicly displayed. Sensitive personal information remains protected.",
+      },
+      {
+        question: "Can I delete my child's account?",
+        answer:
+          "Yes. Contact Support to request account deletion in accordance with applicable data protection laws.",
+      },
+      {
+        question: "How do I report abuse or inappropriate behaviour?",
+        answer:
+          "Contact Support immediately via email - kidmonthyearltd@gmail.com.",
+      },
+      {
+        question: "Does KidMonth verify contestants?",
+        answer:
+          "Where necessary, KidMonth may request identity or age verification to maintain platform integrity.",
+      },
+    ],
+  },
+  {
+    id: "policies",
+    title: "Policies & Legal",
+    items: [
+      {
+        question: "Where can I read the Terms & Conditions?",
+        answer:
+          "The latest Terms & Conditions are available in the app and on the KidMonth website.",
+      },
+      {
+        question: "Where can I read the Privacy Policy?",
+        answer:
+          "The Privacy Policy is available within the app and on the website.",
+      },
+      {
+        question: "Which document takes priority if information differs?",
+        answer:
+          "The official Terms & Conditions, Privacy Policy, Contest Rules, and other legal policies always take precedence over this FAQ.",
+      },
+    ],
+  },
+  {
+    id: "contact",
+    title: "Contact Support",
+    items: [
+      {
+        question: "How do I contact KidMonth Support?",
+        answer:
+          "You can reach us through: Email: kidmonthyearltd@gmail.com; WhatsApp: +234 813 583 7259.",
+      },
+      {
+        question: "What information should I include when contacting Support?",
+        answer:
+          "When contacting Support, please include: your registered email and phone number, Contest ID (if applicable), Order number (if applicable), Transaction reference (if applicable), and a brief description of the issue. This helps us resolve your request more quickly.",
+      },
+    ],
+  },
+  {
+    id: "disclaimer",
+    title: "Disclaimer",
+    items: [
+      {
+        question: "What is the status of this FAQ?",
+        answer:
+          "This FAQ is intended as a general guide to using KidMonth. In the event of any inconsistency between this document and KidMonth's official Terms & Conditions, Privacy Policy, Contest Rules, Vendor Policy, Affiliate Policy, or any other official legal document, the official legal documents shall prevail.",
+      },
+    ],
+  },
+];
 
 const quickFacts = [
   { label: "Help topics", value: "Accounts, payments, contests" },
@@ -135,20 +473,45 @@ function SectionCard({
   title: string;
   items: readonly { question: string; answer: string }[];
 }) {
-  return (
-    <section id={id} className="scroll-m-24 rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="mb-5">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.28em] text-accent">Section</p>
-        <h2 className="text-2xl font-black tracking-tight text-primary sm:text-3xl">{title}</h2>
-      </div>
+  const [isOpen, setIsOpen] = React.useState(true);
 
-      <div className="grid gap-4">
-        {items.map((item) => (
-          <div key={item.question} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5">
-            <h3 className="text-sm font-bold text-primary sm:text-base">{item.question}</h3>
-            <p className="mt-2 text-sm leading-7 text-slate-700">{item.answer}</p>
-          </div>
-        ))}
+  return (
+    <section id={id} className="scroll-m-24 rounded-[1.75rem] border border-slate-200 bg-white shadow-sm">
+      <button
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="flex w-full items-center justify-between gap-4 p-6 text-left sm:p-8"
+        aria-expanded={isOpen}
+        aria-controls={`${id}-content`}
+      >
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.28em] text-accent">Section</p>
+          <h2 className="text-2xl font-black tracking-tight text-primary sm:text-3xl">{title}</h2>
+        </div>
+        <svg
+          className={`h-5 w-5 shrink-0 text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      <div
+        id={`${id}-content`}
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-[20000px] opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <div className="grid gap-4 px-6 pb-6 sm:px-8 sm:pb-8">
+          {items.map((item) => (
+            <div key={item.question} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:px-5">
+              <h3 className="text-sm font-bold text-primary sm:text-base">{item.question}</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-700">{item.answer}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -199,7 +562,7 @@ export default function FaqPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Help centre</p>
               <h1 className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-5xl">Frequently Asked Questions</h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
-                Find quick answers to common questions about accounts, payments, contests, and support on KidMonth.
+                Find quick answers below. Use Ctrl + F (or your browser's search feature) to quickly locate your topic.
               </p>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
