@@ -596,31 +596,7 @@ export default function TermsAndConditions() {
 
       <div className="wrapper relative py-8 sm:py-12 lg:py-16">
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
-          <article className="space-y-6">
-            <header className="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Legal documentation</p>
-              <h1 className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-5xl">Terms, agreements, and rules</h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
-                This document governs all use of the KidMonth platform, including the Givaah marketplace, all contest and voting mechanics, Partner listings, and Affiliate participation. By accessing or using any KidMonth service, you agree to be bound by the terms set out herein.
-              </p>
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {quickFacts.map((fact) => (
-                  <div key={fact.label} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                    <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{fact.label}</span>
-                    <span className="mt-2 block text-sm font-semibold text-primary">{fact.value}</span>
-                  </div>
-                ))}
-              </div>
-            </header>
-
-            {termsSections.map(ts =>
-              <SectionCard key={ts.id} id={ts.id} title={ts.title} body={ts.body} items={ts.items} />
-            )}
-
-          </article>
-
-          <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start lg:order-2">
             <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
               <div className="border-b border-slate-200 px-6 py-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Document guide</p>
@@ -632,6 +608,14 @@ export default function TermsAndConditions() {
                   <a
                     key={section.id}
                     href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(section.id);
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "start" });
+                        window.history.pushState(null, "", `#${section.id}`);
+                      }
+                    }}
                     className="group flex items-center justify-between rounded-2xl border border-transparent bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-200 hover:bg-white hover:shadow-sm"
                   >
                     <span>{section.title}</span>
@@ -665,6 +649,30 @@ export default function TermsAndConditions() {
               </div>
             </div>
           </aside>
+
+          <article className="space-y-6 lg:order-1">
+            <header className="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Legal documentation</p>
+              <h1 className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-5xl">Terms, agreements, and rules</h1>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
+                This document governs all use of the KidMonth platform, including the Givaah marketplace, all contest and voting mechanics, Partner listings, and Affiliate participation. By accessing or using any KidMonth service, you agree to be bound by the terms set out herein.
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {quickFacts.map((fact) => (
+                  <div key={fact.label} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                    <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{fact.label}</span>
+                    <span className="mt-2 block text-sm font-semibold text-primary">{fact.value}</span>
+                  </div>
+                ))}
+              </div>
+            </header>
+
+            {termsSections.map(ts =>
+              <SectionCard key={ts.id} id={ts.id} title={ts.title} body={ts.body} items={ts.items} />
+            )}
+
+          </article>
         </div>
       </div>
     </main>

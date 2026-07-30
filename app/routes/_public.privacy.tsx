@@ -364,39 +364,7 @@ export default function PrivacyPolicy() {
 
       <div className="wrapper relative py-8 sm:py-12 lg:py-16">
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
-          <article className="space-y-6">
-            <header className="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Legal documentation</p>
-              <h1 className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-5xl">Privacy Policy</h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
-                This page explains how KidMonth collects, uses, shares, stores, and protects personal information across the platform.
-              </p>
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {quickFacts.map((fact) => (
-                  <div key={fact.label} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
-                    <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{fact.label}</span>
-                    <span className="mt-2 block text-sm font-semibold text-primary">{fact.value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
-                  href="/faq"
-                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:shadow-sm"
-                >
-                  View FAQ
-                </a>
-              </div>
-            </header>
-
-            {privacySections.map((section) => (
-              <SectionCard key={section.id} id={section.id} title={section.title} body={section.body} items={section.items} />
-            ))}
-          </article>
-
-          <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+          <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start lg:order-2">
             <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
               <div className="border-b border-slate-200 px-6 py-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Document guide</p>
@@ -408,6 +376,14 @@ export default function PrivacyPolicy() {
                   <a
                     key={section.id}
                     href={`#${section.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(section.id);
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "start" });
+                        window.history.pushState(null, "", `#${section.id}`);
+                      }
+                    }}
                     className="group flex items-center justify-between rounded-2xl border border-transparent bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-200 hover:bg-white hover:shadow-sm"
                   >
                     <span>{section.title}</span>
@@ -441,6 +417,38 @@ export default function PrivacyPolicy() {
               </div>
             </div>
           </aside>
+
+          <article className="space-y-6 lg:order-1">
+            <header className="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">Legal documentation</p>
+              <h1 className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-5xl">Privacy Policy</h1>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-700 sm:text-base">
+                This page explains how KidMonth collects, uses, shares, stores, and protects personal information across the platform.
+              </p>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {quickFacts.map((fact) => (
+                  <div key={fact.label} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
+                    <span className="block text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{fact.label}</span>
+                    <span className="mt-2 block text-sm font-semibold text-primary">{fact.value}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="/faq"
+                  className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:shadow-sm"
+                >
+                  View FAQ
+                </a>
+              </div>
+            </header>
+
+            {privacySections.map((section) => (
+              <SectionCard key={section.id} id={section.id} title={section.title} body={section.body} items={section.items} />
+            ))}
+          </article>
         </div>
       </div>
     </main>
