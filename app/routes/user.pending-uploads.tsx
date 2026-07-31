@@ -126,7 +126,7 @@ export default function UserPendingsUpload(){
                 Pending uploads
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-6 text-white/75 sm:text-base">
-                Your next submissions are waiting here. Open a card to continue where you left off.
+                Please, we are expecting your uploads for the following stages
               </p>
             </div>
           </div>
