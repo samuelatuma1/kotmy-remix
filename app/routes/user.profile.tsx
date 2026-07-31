@@ -85,7 +85,7 @@ export default function UserProfilePage() {
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <div className="grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]">
           <section className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
-            <div className="bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8">
+            <div className="bg-gradient-to-br from-brand-navy via-brand-navy to-brand-navy px-6 py-8 text-white sm:px-8">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/80">Account</p>
               <h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">Profile settings</h1>
               <p className="mt-3 max-w-sm text-sm leading-6 text-white/80">

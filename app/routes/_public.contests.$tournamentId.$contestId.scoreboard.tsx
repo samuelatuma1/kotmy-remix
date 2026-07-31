@@ -77,7 +77,10 @@ export default function Scoreboard() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <Link to={`/results/${contest!.id}`} className="w-fit text-accent font-bold hover:underline underline-offset-4">See result table</Link>
+                        <div className="flex flex-wrap gap-4">
+                            <Link to={`/results/${contest!.id}`} className="w-fit text-accent font-bold hover:underline underline-offset-4">See result table</Link>
+                            <Link to={`/contests/${contest!.tournament_unique_id}/${contest!.id}`} className="w-fit text-accent font-bold hover:underline underline-offset-4">See contestants</Link>
+                        </div>
                     </div>
                     <ScoreboardTable contestants={stage?.contestants ?? []} socialMediaType={stage?.rates.social_media.type ?? 'kotmy'} show_bonus={stage?.enable_bonus ?? false} />
                     <MobileScoreboard contestants={stage?.contestants ?? []} socialMediaType={stage?.rates.social_media.type ?? 'kotmy'} />

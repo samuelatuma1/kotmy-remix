@@ -110,7 +110,7 @@ export default function Winners() {
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         <header className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
           <div className="grid min-w-0 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="min-w-0 bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+            <div className="min-w-0 bg-gradient-to-br from-brand-navy via-brand-navy to-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
                 Winners Gallery
               </p>

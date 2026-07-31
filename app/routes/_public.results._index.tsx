@@ -39,7 +39,7 @@ export default function Results() {
       <header className="wrapper my-10 sm:my-14">
         <div className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="relative overflow-hidden bg-gradient-to-br from-brand-navy via-brand-navy to-brand-pink px-6 py-10 text-white sm:px-8 sm:py-12 lg:px-10 lg:py-14">
+            <div className="relative overflow-hidden bg-gradient-to-br from-brand-navy via-brand-navy to-brand-navy px-6 py-10 text-white sm:px-8 sm:py-12 lg:px-10 lg:py-14">
               <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_55%)]" />
               <p className="relative text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
                 Results
@@ -64,10 +64,7 @@ export default function Results() {
                 </div>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <HeroStat label="Contests" value={String(contests.items.length)} />
-                  <HeroStat label="Mode" value="White-first" />
-                  <HeroStat label="Rankings" value="Celebrated" />
-                  <HeroStat label="Style" value="Premium" />
+                 
                 </div>
               </div>
             </div>

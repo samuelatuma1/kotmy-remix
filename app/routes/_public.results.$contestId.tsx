@@ -1,8 +1,7 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react"
+import { Link, useLoaderData } from "@remix-run/react"
 import Pagination from "~/components/reusables/Pagination"
 import Select from "~/components/reusables/Select"
-import StatusTag from "~/components/reusables/StatusTag"
 import { getFinalResultForContest } from "~/services/contest/contest.server"
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -32,41 +31,16 @@ export default function ContestResult() {
         <main className="min-h-screen w-full overflow-x-hidden bg-white">
             <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
                 <header className="overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]">
-                    <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                        <div className="bg-black px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-                            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/65">
-                                Results Summary
-                            </p>
-                            <h1 className="mt-4 max-w-3xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
-                                {contest.name} result table
-                            </h1>
-                            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
-                                Leaderboard view for the final outcome, category breakdowns, and ranking details.
-                            </p>
-                        </div>
-
-                        <div className="flex items-center p-6 sm:p-8 lg:p-10">
-                            <div className="w-full rounded-[1.75rem] border border-brand-grey bg-secondary p-5 shadow-[0_10px_30px_rgba(14,42,77,0.05)] sm:p-6">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-slate">
-                                            Current status
-                                        </p>
-                                        <h2 className="mt-2 text-2xl font-black tracking-tight text-brand-navy">
-                                            Contest details
-                                        </h2>
-                                    </div>
-                                    <StatusTag status={contest.status} color={color} />
-                                </div>
-
-                                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                    <SummaryStat label="Categories" value={contest.categories.join(", ")} />
-                                    <SummaryStat label="Stages" value={String(contest.no_of_stages ?? 0)} />
-                                    <SummaryStat label="Duration" value="From May 23 to June 20" />
-                                    <SummaryStat label="Prizes" value={contest.prizes} />
-                                </div>
-                            </div>
-                        </div>
+                    <div className="bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+                        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/65">
+                            Results
+                        </p>
+                        <h1 className="mt-4 max-w-3xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl">
+                            {contest.name} result table
+                        </h1>
+                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
+                            Final ranking and stage details are shown below.
+                        </p>
                     </div>
                 </header>
 
@@ -78,7 +52,7 @@ export default function ContestResult() {
                                     Table controls
                                 </p>
                                 <h2 className="mt-2 text-2xl font-black tracking-tight text-brand-navy">
-                                    Final ranking and stage filters
+                                    Rankings
                                 </h2>
                             </div>
 
@@ -86,9 +60,12 @@ export default function ContestResult() {
                                 <div className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-charcoal">
                                     SMV: Social media votes
                                 </div>
-                                <div className="rounded-full border border-brand-grey bg-white px-4 py-2 text-xs font-semibold text-brand-slate">
-                                    White-first layout
-                                </div>
+                                <Link
+                                    to={`/contests/${contest.tournament_unique_id}/${contest.contest_unique_id}/scoreboard`}
+                                    className="w-fit text-sm font-bold text-accent transition hover:underline underline-offset-4"
+                                >
+                                    Back to scoreboard
+                                </Link>
                             </div>
                         </div>
 
@@ -147,18 +124,5 @@ export default function ContestResult() {
                 </section>
             </div>
         </main>
-    )
-}
-
-function SummaryStat({ label, value }: { label: string; value: string }) {
-    return (
-        <div className="rounded-[1.25rem] border border-brand-grey bg-white px-4 py-4 shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate">
-                {label}
-            </p>
-            <p className="mt-2 break-words text-sm font-semibold text-brand-navy">
-                {value}
-            </p>
-        </div>
     )
 }

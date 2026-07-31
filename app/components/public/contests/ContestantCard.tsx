@@ -99,7 +99,7 @@ export default function ContestantCard({ contestant, socialMedia }: { contestant
     console.log({contestant})
     return (
         
-        <article className='border-2 border-primary rounded-3xl overflow-hidden'>
+        <article className='border-2 border-secondary rounded-3xl overflow-hidden'>
             <Link to={`/contest/contestant/${contestant._id}?stageId=${contestant.stage_id}&contestantCode=${contestant.code}`}>
                 <img src={contestant.image_url || noImage} alt="person smiling" className='w-full h-80 object-cover object-top' />
             </Link>
