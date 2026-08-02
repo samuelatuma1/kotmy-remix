@@ -104,7 +104,7 @@ export default function Accounts() {
                                 })}
                                 <td className="p-3">
                                     <div className="flex gap-4 items-center">
-                                        <RoundCta icon={icons.editIcon} element="link" to={user._id} className="border-[#262626] bg-[#F7F7F8] text-primary" />
+                                        <RoundCta icon={icons.editIcon} element="link" to={`/admin/accounts/${user._id}`} className="border-[#262626] bg-[#F7F7F8] text-primary" />
                                         <RoundCta icon={icons.trashIcon} className="border-red-500 bg-red-50 text-red-500" />
                                     </div>
                                 </td>
