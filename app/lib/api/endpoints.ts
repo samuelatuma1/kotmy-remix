@@ -115,6 +115,14 @@ export class ApiEndPoints {
         return "/v2/api/users/signin"
     }
 
+    static get forgotPassword() {
+        return '/v2/api/users/forgot_password'
+    }
+
+    static get resetPassword() {
+        return '/v2/api/users/reset_password'
+    }
+
     static get userPendingUploads(){
         return `v2/api/contestant/pending_uploads`
     }

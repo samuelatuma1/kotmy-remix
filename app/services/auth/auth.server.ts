@@ -1,5 +1,5 @@
 import { ApiCall } from "~/lib/api/fetcher";
-import { ILoginDTO, ILoginResponseDTO } from "./types/auth.dtos";
+import { IForgotPasswordDTO, ILoginDTO, ILoginResponseDTO, IResetPasswordDTO } from "./types/auth.dtos";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 
 
@@ -16,6 +16,29 @@ export default class AuthServer {
         if(!headers){
             headers = {'Set-Cookie': data?.token ?? ''}
         }
+        return { data, error: null, headers }
+    }
+
+    async forgotPassword(forgotPasswordDTO: IForgotPasswordDTO) {
+        let  { data, error, headers }  = await ApiCall.call<string, unknown>({
+                    url: ApiEndPoints.forgotPassword,
+                    method: "POST",
+                    data: forgotPasswordDTO
+                })
+
+        
+        if (error) return { error: error, data: null, headers }
+        return { data, error: null, headers }
+    }
+
+    async resetPassword(resetPasswordDTO: IResetPasswordDTO) {
+        let  { data, error, headers }  = await ApiCall.call<string, unknown>({
+                    url: ApiEndPoints.resetPassword,
+                    method: "POST",
+                    data: resetPasswordDTO
+                })
+
+        if (error) return { error: error, data: null, headers }
         return { data, error: null, headers }
     }
 

@@ -3,6 +3,17 @@ export interface ILoginDTO {
     password: string
 }
 
+export interface IForgotPasswordDTO {
+    email: string
+    redirect_link: string
+}
+
+export interface IResetPasswordDTO {
+    email: string
+    token: string
+    password: string
+    confirm_password: string
+}
 
 export interface UserProfile {
     first_name: string 

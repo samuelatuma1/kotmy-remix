@@ -113,6 +113,10 @@ export default function Login() {
                     <FormControl as="input" id="password" name="password" placeholder="Enter your password"
                         labelText="Password" type="password" icon={icons.lockIcon} required />
                 </div>
+                <div className="flex items-center justify-between gap-3 text-sm">
+                    <Link to="/forgotpassword" className="text-primary underline">Forgot Password?</Link>
+                    <Link to="/signup" className="text-primary underline sm:hidden">Register</Link>
+                </div>
                 <Cta element="button" type="submit" className="rounded-lg p-3">Login</Cta>
             </Form>
         </section>
