@@ -16,7 +16,7 @@ export default function AutoplayCarousel({ children, containerClass = '', trackC
         const containerWidth = container.current?.offsetWidth ?? 0
         const trackWidth = track.current?.offsetWidth ?? 0
         const soln = Math.min(Math.ceil(containerWidth / trackWidth))
-        container.current?.style.setProperty('--timing', `${slideDuration ?? soln * 3}s`)
+        container.current?.style.setProperty('--timing', `${slideDuration ?? soln * 18}s`)
         console.log({soln, containerWidth, trackWidth})
         setFillAmount(soln)
     }, [])

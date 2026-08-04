@@ -2,50 +2,80 @@ import ContactForm from '~/components/public/landingpage/ContactForm'
 import WhyCard from '~/components/public/landingpage/WhyCard'
 import Button from '~/components/reusables/Button'
 import Svg from '~/components/reusables/Svg'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '~/components/reusables/Accordion'
 import { icons } from '~/assets/icons'
 import { whyUsData } from '~/lib/data/landingPage.data'
-import SponsorsSlider from '~/components/public/landingpage/SponsorsSlider'
 import ContestantSlider from '~/components/public/ContestantSlider'
 import {
     birthdayPresent, hero1, hero2,
     hero3, hero4, hero5, underline
 } from '~/assets/images'
+import SponsorsSlider from '~/components/public/landingpage/SponsorsSlider'
  
 
 export default function LandingPage() {
+    const trustBadges = [
+        'Safe & Secure Platform',
+        'Transparent Competition Process',
+        'Verified Rewards',
+        'Family-Focused Experience',
+    ]
+
+    const faqItems = [
+        {
+            question: 'Who can participate in KidMonth competitions?',
+            answer: 'Children and families looking to join KidMonth contests, talent experiences and related opportunities can participate through the platform.',
+        },
+        {
+            question: 'What age groups are eligible?',
+            answer: 'KidMonth is open to children aged 0-16 years.',
+        },
+        {
+            question: 'Is registration free?',
+            answer: 'Yes. Registration is free, making it easy for families to get started and explore opportunities on KidMonth.',
+        },
+    ]
+
     return (
         <main className='snap-y'>
             <section className='wrapper flex flex-col md:flex-row gap-16 xl:gap-24 md:items-center py-8 md:py-16'>
                 <div className='flex flex-col gap-6 sm:gap-8'>
-                    <h1 className='font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug whitespace-nowrap'>
-                        Capturing Moments
+                    <h1 className='font-black text-4xl sm:text-5xl xl:text-[64px] leading-tight sm:leading-snug'>
+                        Discover. Celebrate. Reward.
                         <br />
-                        Creating <span className='text-accent'>Memories.</span>
+                        Every Child Deserves Their <span className='text-accent'>Moment.</span>
                     </h1>
-                    <p className='text-xl'>Join our monthly/yearly photo contests open to kids, both male and female aged 0-14 years and discover a world of imagination and inspiration.</p>
+                    <p className='text-xl'>KidMonth is Nigeria&apos;s leading platform celebrating children&apos;s talents, creativity and achievements through exciting competitions, rewarding experiences, talent development and our growing family marketplace. Open to children aged 0-16 years.</p>
                     <div className='flex gap-4 flex-wrap'>
-                        <Button element='a' href={'/signup'} className='w-full sm:w-auto'>Join Now</Button>
-                        <Button element='a' href='/contests' className='w-full sm:w-auto' variant='outline'>Explore Contests</Button>
+                        <Button element='a' href={'/signup'} className='w-full sm:w-auto'>Register Free</Button>
+                        <Button element='a' href='/contests' className='w-full sm:w-auto' variant='outline'>Explore Competitions</Button>
                     </div>
                 </div>
                 <div className='grid grid-cols-3 gap-8 xl:gap-9 w-full'>
                     <div className='flex flex-col gap-8 xl:gap-9'>
-                        <img className='aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full' src={hero1} alt="kid smiling" />
-                        <img className='aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero2} alt="kid smiling" />
+                        <img className='aspect-3/7 object-cover rounded-full outline-dashed outline-offset-4 w-full' src={hero1} alt="competition winner smiling" />
+                        <img className='aspect-3/4 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero2} alt="child receiving a prize" />
                     </div>
                     <div className='flex flex-col gap-8 xl:gap-9 justify-center'>
-                        <img className='aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero3} alt="kid smiling" />
-                        <img className='aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero4} alt="kid smiling" />
+                        <img className='aspect-square rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero3} alt="talent academy participant" />
+                        <img className='aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero4} alt="birthday celebration moment" />
                     </div>
                     <div className='flex flex-col justify-center'>
-                        <img className='aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero5} alt="kid smiling" />
+                        <img className='aspect-3/7 rounded-full outline-dashed outline-offset-4 object-cover w-full' src={hero5} alt="family celebration photo" />
                     </div>
                 </div>
             </section>
-
+            
             <section className='wrapper py-8 md:py-16'>
-                <h2 className='font-bold text-xl mb-4'>Who supports us</h2>
-                <SponsorsSlider />
+                
+                <h2 className='font-bold text-xl mb-4'>Why Parents Trust KidMonth</h2>
+                <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+                    {trustBadges.map(badge => (
+                        <div key={badge} className='rounded-2xl border  bg-secondary px-5 py-6 font-semibold text-primary shadow-sm'>
+                            {badge}
+                        </div>
+                    ))}
+                </div>
             </section>
 
             <section className='py-8 md:py-16'>
@@ -56,9 +86,9 @@ export default function LandingPage() {
                             <img className="object-cover object-center" src={underline} alt="underline" width={100} />
                         </div>
                         <h2 className='text-2xl sm:text-3xl font-black mb-6 leading-snug'>
-                            Crafting <span className="text-accent">Unforgettable</span> Moments for Every Child's Special Day.
+                            Creating <span className="text-accent">Opportunities</span> Where Every Child Can Shine.
                         </h2>
-                        <p className='font-medium'>To create uniquely memorable and exciting kid's birthdays, we strive to be entertaining, transparent, innovative, creative, exciting, efficient, and reliable in every aspect of our service.</p>
+                        <p className='font-medium'>KidMonth exists to discover, celebrate and reward children by creating exciting opportunities that build confidence, encourage creativity and bring families together through competitions, talent development and memorable experiences.</p>
                     </div>
                     <div className="wrapper">
                         <img className="object-cover object-center w-full" src={birthdayPresent} alt="wrapped gift" />
@@ -99,17 +129,40 @@ export default function LandingPage() {
                 <div className='sm:wrapper bg-[#817EFB] bg-pattern bg-cover bg-left text-secondary md:px-24 py-16 md:py-28 flex flex-col md:flex-row justify-between items-center gap-16 sm:rounded-3xl'>
                     <div className="wrapper">
                         <h2 className='text-2xl sm:text-[40px] font-satoshi-black mb-6 leading-snug'>
-                            Refer A Friend And Earn Rewards
+                            Invite Families. Earn Rewards.
                         </h2>
                         <p className='font-satoshi-medium mb-8'>
-                            Lorem ipsum dolor sit amet consectetur.
-                            Velit egestas auctor in amet dis sed sit egestas.
-                            Viverra morbi eget consectetur accumsan integer.
-                            Mi et etiam amet est egestas tellus quis.
+                            Join the KidMonth Affiliate Program and earn commissions by referring parents, contestants and businesses to the KidMonth ecosystem. The more families you introduce, the more you earn.
                         </p>
-                        <span className='inline-block bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap'>COMING SOON</span>
+                        <div className='flex flex-wrap gap-4'>
+                            <Button element='a' href='/signup' variant={'none'} useDefault={false} className='bg-[#E7E7E7] text-primary py-4 px-8 text-lg rounded-md font-black whitespace-nowrap'>Become an Affiliate</Button>
+                            <Button element='a' href='/faq' variant='none' useDefault={false} className='whitespace-nowrap'>Learn More</Button>
+                        </div>
                     </div>
                     <div className="wrapper bg-[#E7E7E7] rounded-3xl w-full aspect-square">
+                    </div>
+                </div>
+            </section>
+
+            <section className='py-8 md:py-16'>
+                <div className='wrapper'>
+                    <div className='mb-6 sm:mb-10'>
+                        <h2 className='font-satoshi-black text-2xl sm:text-[40px] mb-3'>Frequently Asked Questions</h2>
+                        <img className='object-fill w-[220px] h-5' src={underline} alt='underline' />
+                    </div>
+                    <div className='max-w-4xl mx-auto'>
+                        <Accordion type='single' collapsible className='w-full'>
+                            {faqItems.map(item => (
+                                <AccordionItem key={item.question} value={item.question} className='border-b border-primary/10'>
+                                    <AccordionTrigger className='text-left py-5 text-lg font-semibold'>
+                                        {item.question}
+                                    </AccordionTrigger>
+                                    <AccordionContent className='pb-5 text-primary/80'>
+                                        {item.answer}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
                     </div>
                 </div>
             </section>

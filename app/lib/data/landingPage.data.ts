@@ -5,24 +5,24 @@ export const whyUsData = [
         icon: icons.noteIcon,
         bg: 'bg-[#12457A]',
         title: 'Free Registration',
-        subtext: 'Unlock the thrill of creative expression by registering for our exclusive yearly and monthly contests.'
+        subtext: 'Register your child in minutes and gain access to exciting competitions, rewards and family experiences.'
     },
     {
         icon: icons.galleryIcon,
         bg: 'bg-[#EA5A47]',
-        title: 'Monthly Campaigns',
-        subtext: "Successfully organized two annual and twenty-five monthly campaigns."
+        title: 'Monthly Competitions',
+        subtext: 'Participate in exciting monthly competitions where children showcase their talents, creativity and confidence.'
     },
     {
         icon: icons.cakeIcon,
         bg: 'bg-[#CE8800]',
-        title: 'Memorable Birthdays',
-        subtext: "To make kids' birthdays unique, memorable, exciting and entertaining."
+        title: 'Talent Development',
+        subtext: 'Through the KidMonth Talent Academy, children learn, grow and develop skills that prepare them for future opportunities.'
     },
     {
         icon: icons.trophyIcon,
         bg: 'bg-[#09AD8A]',
-        title: 'Exciting Contests',
-        subtext: "To be entertaining, transparent, innovative, creative, exciting, effective and reliable."
+        title: 'Real Rewards',
+        subtext: 'Win cash prizes, gifts, recognition and exclusive opportunities while creating unforgettable family memories.'
     },
 ]

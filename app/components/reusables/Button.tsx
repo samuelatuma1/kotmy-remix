@@ -7,15 +7,17 @@ export default function Button<El extends keyof JSX.IntrinsicElements>({
     className,
     variant = 'solid',
     kind = 'primary',
+    useDefault = true,
     ...props
 }: {
     element: El;
-    variant?: 'solid' | 'outline',
+    variant?: 'solid' | 'outline' | 'none',
     kind?: 'primary' | 'danger'
+    useDefault?: boolean
 } & React.ComponentProps<El>) {
     const Comp = element as string;
     return (
-        <Comp {...props} className={cn(`py-4 px-8 text-lg border border-brand-pink rounded-md font-black whitespace-nowrap leading-4 text-center ${className}`, {
+        <Comp {...props} className={cn(`py-4 px-8 text-lg border ${useDefault ? 'border-brand-pink' : ''} rounded-md font-black whitespace-nowrap leading-4 text-center ${className}`, {
             'bg-brand-pink text-white hover:bg-brand-pink/90': variant === 'solid',
             'text-brand-pink border-2': variant === 'outline',
             'border-red-400': kind === 'danger',
