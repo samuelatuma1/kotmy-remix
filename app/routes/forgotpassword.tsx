@@ -49,6 +49,7 @@ export default function ForgotPassword() {
   const navigation = useNavigation();
   const { toast: pushToast } = useToast();
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
 
   const redirectLink = useMemo(() => {
     const origin = baseUrl.replace(/\/$/, "");
@@ -69,6 +70,7 @@ export default function ForgotPassword() {
 
     if (actionData?.message) {
       setEmail("");
+      setMessage(actionData.message);
       pushToast({
         title: "Email sent",
         description: actionData.message,
@@ -101,7 +103,11 @@ export default function ForgotPassword() {
               onChange={(event) => setEmail(event.currentTarget.value)}
               required
             />
-
+            {
+              message && (
+                <p className="text-sm text-black-600">{message}</p>
+              )
+            }
             <Cta
               element="button"
               type="submit"
