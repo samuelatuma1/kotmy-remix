@@ -68,6 +68,7 @@ export default function ForgotPassword() {
     }
 
     if (actionData?.message) {
+      setEmail("");
       pushToast({
         title: "Email sent",
         description: actionData.message,
