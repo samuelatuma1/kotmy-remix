@@ -1,0 +1,1 @@
+import{j as o}from"/build/_shared/chunk-A76ISM3U.js";import{a as r}from"/build/_shared/chunk-GDLBX7ER.js";import{c as u}from"/build/_shared/chunk-Q3IECNXJ.js";var a=u(r(),1);var s=a["useId".toString()]||(()=>{}),n=0;function d(t){let[e,f]=a.useState(s());return o(()=>{t||f($=>$??String(n++))},[t]),t||(e?`radix-${e}`:"")}export{d as a};
