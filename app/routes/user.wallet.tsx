@@ -7,6 +7,7 @@ import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { ILedgerEntry, IUserLedgersQuery, IWallet } from "~/services/wallet/types/wallet.interface";
 import { walletRepo } from "~/services/wallet/wallet.server";
 import Pagination from "~/components/reusables/Pagination";
+import { requireAuth } from "~/lib/session.server";
 
 // Type for the combined data structure from loader
 type WalletWithLedger = {
@@ -15,8 +16,7 @@ type WalletWithLedger = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
 
   // parse pagination/search params from URL
   const url = new URL(request.url);
@@ -25,14 +25,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const first_key_id = url.searchParams.get('first_key_id');
   const wallet_id_param = url.searchParams.get('wallet_id');
 
-  const walletsResponse = await walletRepo.getUserWallets(cookieHeader);
+  const walletsResponse = await walletRepo.getUserWallets(request);
   let wallets: WalletWithLedger[] = [];
 
   if (walletsResponse.data?.length) {
     for (const _wallet of walletsResponse.data) {
       // If a wallet_id is supplied via URL and matches this wallet, use the supplied pagination params
       if (wallet_id_param && wallet_id_param === _wallet._id) {
-        const pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, {
+        const pagedLedgers = await walletRepo.getUserLedgersForWallet(request, {
           wallet_id: _wallet._id,
           page_size: page_size,
           last_key_id: last_key_id ?? undefined,
@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       }
 
       // default fetch for other wallets (first page)
-      const pagedLedgers = await walletRepo.getUserLedgersForWallet(cookieHeader, {
+      const pagedLedgers = await walletRepo.getUserLedgersForWallet(request, {
         wallet_id: _wallet._id,
         page_size: 10,
       });
@@ -83,19 +83,19 @@ export async function action({ request }: ActionFunctionArgs) {
     if(cleaned.contest_code) query.contest_code = cleaned.contest_code as any
 
     // call wallet_search
-    const walletResp = await walletRepo.wallet_search(query, cookieHeader);
+    const walletResp = await walletRepo.wallet_search(query, request);
     if (walletResp.error) {
       return json({ error: walletResp.error }, { status: 400 });
     }
 
     // fetch ledgers for wallet using same query
-    const ledgersResp = await walletRepo.getUserLedgersForWallet(cookieHeader, query);
+    const ledgersResp = await walletRepo.getUserLedgersForWallet(request, query);
     if (ledgersResp.error) {
       return json({ error: ledgersResp.error }, { status: 400 });
     }
 
     // rebuild wallets list: get all wallets again and replace/update the matched wallet
-    const walletsResp = await walletRepo.getUserWallets(cookieHeader);
+    const walletsResp = await walletRepo.getUserWallets(request);
     let wallets: WalletWithLedger[] = [];
     if (walletsResp.data?.length) {
       let cleanedWallets: WalletWithLedger[] = []
@@ -107,7 +107,7 @@ export async function action({ request }: ActionFunctionArgs) {
           
           cleanedWallets.push({ wallet: updatedWallet, pagedLedgers: ledgersResp.data });
         } else {
-          const paged = await walletRepo.getUserLedgersForWallet(cookieHeader, { wallet_id: _wallet._id, page_size: 10 });
+          const paged = await walletRepo.getUserLedgersForWallet(request, { wallet_id: _wallet._id, page_size: 10 });
           cleanedWallets.push({ wallet: _wallet, pagedLedgers: paged.data ?? { items: [], total_items: 0, items_per_page: 10 } as any });
         }
       }

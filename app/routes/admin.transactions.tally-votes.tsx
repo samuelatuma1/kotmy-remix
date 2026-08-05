@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node"
 import { useLoaderData, useFetcher, useActionData } from "@remix-run/react"
-import { setToast } from "~/lib/session.server"
+import { requireAuth, setToast } from "~/lib/session.server"
 import { adminRepo } from '~/services/admin/admin.server';
 import { ICreateBankTransaction } from '~/services/admin/types/admin.interface';
 
@@ -25,11 +25,7 @@ import { toast } from "~/components/reusables/use-toast"
 
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-     if (!cookieHeader) {
-      // User is not signed in
-      return redirect("/login"); 
-    }
+    const validateAuth = await requireAuth(request);
     // parse query params
     const url = new URL(request.url);
     const query: any = {};
@@ -37,8 +33,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
         query[k] = v;
     }
 
-    const [res, ongoingContests] = await Promise.all([adminRepo.getPayments(cookieHeader, query), contestRepo.query_contest({status: 'ongoing'}, cookieHeader)])
-    // const res = await adminRepo.getPayments(cookieHeader, query);
+    const [res, ongoingContests] = await Promise.all([adminRepo.getPayments(request, query), contestRepo.query_contest({status: 'ongoing'}, request)])
+    // const res = await adminRepo.getPayments(request, query);
     // if (res.data) {
     //     return json({ tranasctions: res.data.items, last_key_id: res.data.last_key_id });
     // }
@@ -68,7 +64,7 @@ export async function action({ request }: ActionFunctionArgs) {
         bank_ref: (formData.get('bank_ref') as string) ?? `BANKTXN_${Date.now()}`
     };
 
-    const { data, error, authRequired } = await adminRepo.createBankTransaction(cookieHeader, payload);
+    const { data, error, authRequired } = await adminRepo.createBankTransaction(request, payload);
     return json({error, data, authRequired})
     // if (authRequired) return redirect('/login');
     // if (error) {
@@ -238,7 +234,7 @@ const columns: ColumnDef<TallyTransaction>[] = [
         ),
         cell: ({getValue}) => {
             const customer = getValue<TallyTransaction['customer']>()
-            return customer.email
+            return customer?.email
         }
     }, {
         accessorKey: 'contestant_code',

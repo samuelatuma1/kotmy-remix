@@ -33,9 +33,9 @@ export interface ITournament {
 export interface ITournamentRepository {
     getTournaments(): Promise<TFetcherResponse<ITournament[]>>
     getTournamentById(tournamentId: string): Promise<TFetcherResponse<ITournament>>
-    createTournament(dto: FormData, token: string): Promise<TFetcherResponse<ITournament>>
-    updateTournament(payload: { id: string; dto: FormData; }, cookie: string): Promise<TFetcherResponse<ITournament>>
-    deleteTournament(tournamentId: string, token: string): Promise<TFetcherResponse<null>>
+    createTournament(dto: FormData, token: string | Request): Promise<TFetcherResponse<ITournament>>
+    updateTournament(payload: { id: string; dto: FormData; }, cookie: string | Request): Promise<TFetcherResponse<ITournament>>
+    deleteTournament(tournamentId: string, token: string | Request): Promise<TFetcherResponse<null>>
 }
 
 export function dtoToTournament(tournament: ITournamentDto): ITournament {

@@ -11,6 +11,7 @@ import { useRef } from 'react';
 import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
 import { toast } from "~/components/reusables/use-toast";
 import { authServer } from "~/services/auth/auth.server";
+import { requireAuth } from "~/lib/session.server";
 var tokenRequested = false;
 export async function action({ request }: ActionFunctionArgs) {
     const cookieHeader = request.headers.get("Cookie") ?? "";
@@ -25,16 +26,16 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     console.log({'_DATA_': withdrawalPinDto})
 
-    const {data, error, authRequired} = await walletRepo.createWithdrawalPin(withdrawalPinDto, cookieHeader)
+    const {data, error, authRequired} = await walletRepo.createWithdrawalPin(withdrawalPinDto, request)
     console.log({ data, error, authRequired })
     return json({ data, error, authRequired });
         
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    console.log("SEtting")
-  const cookieHeader = request.headers.get("Cookie");
-  const { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
+  console.log("SEtting")
+  const validateAuth = await requireAuth(request);
+  const { data, error, authRequired } = await authServer.getMe(request);
   if (authRequired) {
       // User is not authenticated
       return redirect("/login"); 
@@ -46,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return redirect("/user/wallet")
     }
     if(!tokenRequested){
-        const d = await walletRepo.requestWithdrawalToken(cookieHeader ?? "");
+        const d = await walletRepo.requestWithdrawalToken(request);
         if(!d.data){
          return redirect("/user/wallet")
          }

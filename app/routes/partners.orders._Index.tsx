@@ -282,7 +282,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const cookieHeader = request.headers.get("Cookie") ?? "";
   const query = buildPartnerOrdersQuery(url.searchParams);
-  const ordersRes = await partnerServer.getPartnerOrders(query, cookieHeader);
+  const ordersRes = await partnerServer.getPartnerOrders(query, request);
 
   if (ordersRes.error) {
     return json<PartnerOrdersLoaderData>({

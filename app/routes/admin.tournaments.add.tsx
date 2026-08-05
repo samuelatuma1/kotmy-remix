@@ -3,15 +3,15 @@ import { useNavigate } from '@remix-run/react'
 import { icons } from '~/assets/icons'
 import CreateTournamentForm from '~/components/admin/tournament/CreateTournamentForm'
 import RoundCta from '~/components/reusables/RoundCta'
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import { prepareTournamentDto, tournamentRepo } from '~/services/tournament/tournament.server'
 
 export async function action({ request }: ActionFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-        if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+         ; 
     const formData = await request.formData()
     const payload = prepareTournamentDto(formData)
-    const { error } = await tournamentRepo.createTournament(payload, cookieHeader);
+    const { error } = await tournamentRepo.createTournament(payload, request);
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` })
         return json(error, { headers })

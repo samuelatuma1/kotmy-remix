@@ -6,18 +6,19 @@ import Cta from "~/components/reusables/Cta"
 import Pagination from "~/components/reusables/Pagination"
 import Svg from "~/components/reusables/Svg"
 import { adminUsers } from "~/lib/data/admin"
+import { requireAuth } from "~/lib/session.server"
 import { partnerServer } from "~/services/partner/partner.server"
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+     ; 
     // get paged users
     const url = new URL(request.url);
     const query: any = {};
     for (const [k, v] of url.searchParams.entries()) {
         query[k] = v;
     }
-    const pagedUsersRes = await partnerServer.getPartnerLocations(query, cookieHeader)
+    const pagedUsersRes = await partnerServer.getPartnerLocations(query, request)
     if(pagedUsersRes.authRequired){
       return redirect("/login");
     }

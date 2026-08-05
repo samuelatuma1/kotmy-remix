@@ -19,7 +19,7 @@ export class ContestantRepository implements IContestantRepository {
         console.log("Tally webhook called. Response:", JSON.stringify(res))
         return res
     }
-    async editContestantAdmin(payload: { dto: FormData, contestantId: string }, token: string): Promise<TFetcherResponse<IContestant>> {
+    async editContestantAdmin(payload: { dto: FormData, contestantId: string }, token: string | Request): Promise<TFetcherResponse<IContestant>> {
         return await ApiCall.call({
             method: MethodsEnum.PUT,
             url: ApiEndPoints.editContestant(payload.contestantId),
@@ -36,7 +36,7 @@ export class ContestantRepository implements IContestantRepository {
             data: dto
         })
     }
-    async registerContestant(payload: { contestId: string, dto: FormData}, cookies: string): Promise<TFetcherResponse<IContestant>> {
+    async registerContestant(payload: { contestId: string, dto: FormData}, cookies: string | Request): Promise<TFetcherResponse<IContestant>> {
         console.log("Cookies2", cookies)
         return await ApiCall.call({
             method: MethodsEnum.POST,
@@ -45,7 +45,7 @@ export class ContestantRepository implements IContestantRepository {
             data: payload.dto
         }, cookies)
     }
-    async toggleEvictContestants(dto: IToggleEvictContestantDTO, token: string): Promise<TFetcherResponse<void>> {
+    async toggleEvictContestants(dto: IToggleEvictContestantDTO, token: string | Request): Promise<TFetcherResponse<void>> {
         return await ApiCall.call({
             method: MethodsEnum.PATCH,
             url: ApiEndPoints.toggleEvictContestants,
@@ -53,7 +53,7 @@ export class ContestantRepository implements IContestantRepository {
             data: dto
         }, token)
     }
-    async voteContestant(payload: { dto: IVoteContestantDto; stageId: string; /*fingerprint: string*/ }, cookies: string): Promise<TFetcherResponse<ILeanContestant>> {
+    async voteContestant(payload: { dto: IVoteContestantDto; stageId: string; /*fingerprint: string*/ }, cookies: string | Request): Promise<TFetcherResponse<ILeanContestant>> {
         return await ApiCall.call({
             method: MethodsEnum.POST,
             url: ApiEndPoints.voteContestant(payload.stageId),
@@ -68,7 +68,7 @@ export class ContestantRepository implements IContestantRepository {
         })
     }
 
-    async getPendingUploads(cookies: string){
+    async getPendingUploads(cookies: string | Request){
             const { data, error,authRequired } = await ApiCall.call<IContestWStageWContestant[], unknown>({
                 method: "GET",
                 url: ApiEndPoints.userPendingUploads,
@@ -81,7 +81,7 @@ export class ContestantRepository implements IContestantRepository {
         }
     
     
-    async getContestantDetailsWithContest(contestantId: string, cookies: string){
+    async getContestantDetailsWithContest(contestantId: string, cookies: string | Request){
         if(!contestantId){
             return {error: {detail: "Please input a valid contestant id"}}
         }
@@ -96,7 +96,7 @@ export class ContestantRepository implements IContestantRepository {
         return { error, authRequired }
     }
 
-    async voteForContestantWithGivaah(voteDetails: IVoteContestantWithGivaahCredits, cookies: string){
+    async voteForContestantWithGivaah(voteDetails: IVoteContestantWithGivaahCredits, cookies: string | Request){
         
         const { data, error,authRequired } = await ApiCall.call<ILeanContestant, unknown>({
             method: MethodsEnum.POST,
@@ -109,7 +109,7 @@ export class ContestantRepository implements IContestantRepository {
         return { error, authRequired }
     }
 
-    async updateUserContestant(payload: {contestantId: string, formData: FormData, editContestantDTO?: IEditContestantDTO}, cookies?: string){
+    async updateUserContestant(payload: {contestantId: string, formData: FormData, editContestantDTO?: IEditContestantDTO}, cookies?: string | Request){
         const media = payload.formData.get('media')
         if (!(media instanceof File) || media.size === 0) {
         payload.formData.delete('media');
@@ -139,7 +139,7 @@ export class ContestantRepository implements IContestantRepository {
     }
 
     
-    async voteFromWallet(payload: IVoteContestantFromWalletPayload, cookie: string): Promise<TFetcherResponse<IContestant>> {
+    async voteFromWallet(payload: IVoteContestantFromWalletPayload, cookie: string | Request): Promise<TFetcherResponse<IContestant>> {
         return await ApiCall.call({
             method: MethodsEnum.POST,
             url: ApiEndPoints.voteFromWallet,

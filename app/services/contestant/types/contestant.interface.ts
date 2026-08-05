@@ -140,7 +140,7 @@ export interface IContestantRepository {
   registerContestant(payload: {
     contestId: string;
     dto: FormData;
-  }, cookies: string): Promise<TFetcherResponse<IContestant>>;
+  }, cookies: string | Request): Promise<TFetcherResponse<IContestant>>;
   toggleEvictContestants(
     dto: IToggleEvictContestantDTO,
     token: string
@@ -149,7 +149,7 @@ export interface IContestantRepository {
     dto: IVoteContestantDto;
     stageId: string;
     // fingerprint: string;
-  }, cookies: string): Promise<TFetcherResponse<ILeanContestant>>;
+  }, cookies: string | Request): Promise<TFetcherResponse<ILeanContestant>>;
   getContestantViaHash(hash: string): Promise<TFetcherResponse<IContestWStageWContestant>>;
 }
 

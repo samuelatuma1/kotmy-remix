@@ -14,16 +14,12 @@ import { nigerianStates } from "~/lib/data/states"
 import { IContest, IContestWStageWContestant, IStageWContestant } from "~/services/contest/types/contest.interface"
 import { IContestant, IEditContestantDTO } from "~/services/contestant/types/contestant.interface"
 import { userServer } from "~/services/user/userserver"
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader ({request, params}: LoaderFunctionArgs){
-    const cookieHeader = request.headers.get("Cookie") ?? "";
-    console.log({cookieHeader})
-    if (!cookieHeader) {
-    // User is not signed in
-      redirect("/login"); 
-    }
+    const validateAuth = await requireAuth(request);
     const contestantId = params.contestantId ?? "";
-    const {error, data, authRequired} = await userServer.getContestantDetails(contestantId, cookieHeader);
+    const {error, data, authRequired} = await userServer.getContestantDetails(contestantId, request);
 
     if(authRequired){
         redirect("/login")
@@ -49,7 +45,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     const contestantId = formData.get("contestantId")?.toString() ?? ""
 
-    const {error, authRequired, data}  = await userServer.updateUserContestant({contestantId, formData, editContestantDTO}, cookieHeader)
+    const {error, authRequired, data}  = await userServer.updateUserContestant({contestantId, formData, editContestantDTO}, request)
     if(authRequired){
         redirect("/login")
     }

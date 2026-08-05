@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
 import ContestRegistrationsTable from "~/components/admin/transactions/ContestRegistrationsTable"
 import { setToast } from "~/lib/session.server"
-import { RegistrationTableData } from "~/lib/types/transaction.interface"
+import { RegistrationTableData } from "~/services/admin/types/admin.interface"
 
 export async function loader({ }: LoaderFunctionArgs) {
   const tranasctions: RegistrationTableData[] = [{

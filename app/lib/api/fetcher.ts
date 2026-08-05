@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios"
 import { TFetcherResponse, TValidationError } from "./types/fetcher.interface"
+import { getAuthSessionToken } from "~/lib/session.server"
 
 export class ApiCall {
     static _proxy = process.env._API_URL
@@ -21,16 +22,20 @@ export class ApiCall {
     }
 
     static async call<TResponseDTO, TRequestDTO, TErrorDTO = { detail: string | TValidationError[] }>(
-        callConfig: AxiosRequestConfig<TRequestDTO>, cookieHeader?: string
+        callConfig: AxiosRequestConfig<TRequestDTO>,
+        authContext?: string | Request
     ): Promise<TFetcherResponse<TResponseDTO, TErrorDTO>> {
         try {
-            
-            
             const configWithCookies = { ...callConfig, headers: { ...callConfig.headers ?? {} } };
-
-            // 2. Add the Cookie header if provided
-            if (cookieHeader) {
-                configWithCookies.headers['Cookie'] = cookieHeader; // <-- SENDING IT BACK
+            
+            if (typeof authContext === "string") {
+                configWithCookies.headers["Cookie"] = authContext;
+            } else if (authContext) {
+                const token = await getAuthSessionToken(authContext);
+                if (token) {
+                    
+                    configWithCookies.headers["Authorization"] = `Bearer ${token}`;
+                }
             }
 
             console.log("--------------------------------")

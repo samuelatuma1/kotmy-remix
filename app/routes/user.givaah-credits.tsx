@@ -50,7 +50,7 @@ function CreditsSkeleton() {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const url = new URL(request.url);
   const query = buildQuery(url.searchParams);
@@ -59,7 +59,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ? "Please enter both phone and order code to search credits."
       : null;
 
-  const creditsRes = await userServer.getGivaahCredits(validationError ? undefined : query ?? undefined, cookieHeader);
+  const creditsRes = await userServer.getGivaahCredits(validationError ? undefined : query ?? undefined, request);
 
   if (creditsRes.error) {
     return json<GivaahCreditsLoaderData>({

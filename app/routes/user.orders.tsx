@@ -152,16 +152,16 @@ async function verifyOrderForMutation({
   orderId,
   orderItemId,
   orderCode,
-  cookieHeader,
+  request,
   requirePrepaid,
 }: {
   orderId: string;
   orderItemId: string;
   orderCode: string;
-  cookieHeader: string;
+  request: Request;
   requirePrepaid: boolean;
 }): Promise<{ order: OrderResponse; item: OrderItem } | Response> {
-  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  const orderRes = await partnerServer.getOrderById(orderId, request);
   if (orderRes.error || !orderRes.data) {
     return json<OrderMutationResponse>(
       {
@@ -627,9 +627,8 @@ function OrderCard({ order }: { order: OrderResponse }) {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const cookieHeader = request.headers.get("Cookie") ?? undefined;
   const query = buildCustomerOrdersQuery(url.searchParams);
-  const ordersRes = await partnerServer.getCustomerOrders(query, cookieHeader);
+  const ordersRes = await partnerServer.getCustomerOrders(query, request);
 
   if (ordersRes.error) {
     return json<OrdersLoaderData>({
@@ -646,9 +645,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
-
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "");
   const orderId = String(formData.get("order_id") ?? "").trim();
@@ -673,7 +669,7 @@ export async function action({ request }: ActionFunctionArgs) {
     orderId,
     orderItemId,
     orderCode,
-    cookieHeader,
+    request,
     requirePrepaid: intent === "dispute_fulfillment",
   });
 
@@ -702,7 +698,7 @@ export async function action({ request }: ActionFunctionArgs) {
       payload.remark = remark;
     }
 
-    const mutationRes = await partnerServer.customerConfirmOrder(payload, cookieHeader);
+    const mutationRes = await partnerServer.customerConfirmOrder(payload, request);
 
     if (mutationRes.error) {
       return json<OrderMutationResponse>(
@@ -732,7 +728,7 @@ export async function action({ request }: ActionFunctionArgs) {
     remark,
   };
 
-  const mutationRes = await partnerServer.customerDispute(payload, cookieHeader);
+  const mutationRes = await partnerServer.customerDispute(payload, request);
 
   if (mutationRes.error) {
     return json<OrderMutationResponse>(

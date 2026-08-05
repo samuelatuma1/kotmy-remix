@@ -76,7 +76,7 @@ function buildLoaderData(data: ICartDeliveryAndPaymentOptions | undefined, error
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? undefined;
-  const checkoutRes = await partnerServer.getCartDeliveryAndPaymentOptions(cookieHeader);
+  const checkoutRes = await partnerServer.getCartDeliveryAndPaymentOptions(request);
 
   if (checkoutRes.error) {
     return json<CheckoutLoaderData>(
@@ -103,7 +103,7 @@ export async function action({ request }: ActionFunctionArgs) {
       return json<CheckoutActionData>({ error: "Delivery address is required" }, { status: 400 });
     }
 
-    const detailsRes = await partnerServer.createDeliveryDetails(payload, cookieHeader);
+    const detailsRes = await partnerServer.createDeliveryDetails(payload, request);
 
     if (detailsRes.error) {
       return json<CheckoutActionData>(
@@ -146,7 +146,7 @@ export async function action({ request }: ActionFunctionArgs) {
     };
 
     if (payment_option === PaymentOptionKey.prepay) {
-      if(cookieHeader){
+      if(request){
         payload.prepay_redirect_url = new URL("/user/orders", request.url).toString();
       }
       else{
@@ -155,7 +155,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
     }
 
-    const ordersRes = await partnerServer.placeOrder(payload, cookieHeader);
+    const ordersRes = await partnerServer.placeOrder(payload, request);
 
     if (ordersRes.error) {
       return json<CheckoutActionData>(

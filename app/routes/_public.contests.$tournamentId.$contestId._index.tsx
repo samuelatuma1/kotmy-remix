@@ -20,7 +20,7 @@ export async function action({ request }: ActionFunctionArgs) {
             return redirect(`/login?redirectTo=${url.pathname}`); 
           }
           
-        return await registerContestant(formData, request, cookieHeader)
+        return await registerContestant(formData, request, request)
     }
     if (intent === "tally_vote") return await getTallyLink(formData, request)
     if (intent === "kotmy_vote") return await voteContestant(formData, request)

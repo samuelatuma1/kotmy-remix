@@ -57,8 +57,9 @@ export default class AuthServer {
 
     }
 
-    async getMe(cookie: string) {
-        console.log({cookie, d: "updating profile"})
+    async getMe(cookie: string | Request | Request) {
+        console.log({cookie, ddgfdfdfdf: "updating profile"})
+        console.log(typeof cookie)
 
         let { data, error, headers, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
             url: ApiEndPoints.me,
@@ -67,7 +68,7 @@ export default class AuthServer {
         return { data, error, headers, authRequired };
     }
 
-    async updateProfile(formData: FormData, cookie: string) {
+    async updateProfile(formData: FormData, cookie: Request | string) {
         for(var pair of formData.entries()) {
             console.log(pair[0]+ ', ' + pair[1]); 
         }

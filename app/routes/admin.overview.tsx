@@ -6,19 +6,20 @@ import ContestSummary from "~/components/admin/ContestSummary"
 import TournamentSummary from "~/components/admin/TournamentSummary"
 import TransactionSummary from "~/components/admin/TransactionSummary"
 import { adminUsers } from "~/lib/data/admin"
+import { requireAuth } from "~/lib/session.server"
 import { adminRepo } from "~/services/admin/admin.server"
 import { IUserQueryDTO } from "~/services/admin/types/admin.interface"
 import { contestRepo } from "~/services/contest/contest.server"
 import { tournamentRepo } from "~/services/tournament/tournament.server"
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-        if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+         ; 
     const { data: contests } = await contestRepo.getContests()
     const adminUsersquery: IUserQueryDTO = {
         has_admin_access: true
     }
-    const pagedAdminUsersRes = await adminRepo.queryUsers(cookieHeader, adminUsersquery)
+    const pagedAdminUsersRes = await adminRepo.queryUsers(request, adminUsersquery)
     const adminUsers = pagedAdminUsersRes.data?.items ?? []
     const { data: tournaments } = await tournamentRepo.getTournaments()
     return json({

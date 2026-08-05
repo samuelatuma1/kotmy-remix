@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import { tournamentRepo } from '~/services/tournament/tournament.server'
 import { contestRepo, prepareContestPayload } from '~/services/contest/contest.server'
 import CreateContestForm from '~/components/admin/tournament/CreateContestForm'
@@ -15,9 +15,8 @@ export async function loader({ }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
     const payload = prepareContestPayload(await request.formData())
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
-    const { data, error } = await contestRepo.createContest(payload, cookieHeader)
+    const validateAuth = await requireAuth(request);;
+    const { data, error } = await contestRepo.createContest(payload, request)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::A new contest has been created::${Date.now()}` })
         return redirect('/admin/contests', { headers })

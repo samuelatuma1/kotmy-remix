@@ -11,19 +11,15 @@ import { useToast } from "~/components/reusables/use-toast";
 import Svg from "~/components/reusables/Svg";
 import { icons } from "~/assets/icons";
 import { IAddAccountDetailsRequest, ICurrencyBanks, IGetWithdrawalCharge, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IWallet, IWalletAccount, IWithdrawalChargeResponse } from "~/services/wallet/types/wallet.interface";
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader ({request, params}: LoaderFunctionArgs){
-    const cookieHeader = request.headers.get("Cookie") ?? "";
-    console.log({cookieHeader})
-    if (!cookieHeader) {
-    // User is not signed in
-      redirect("/login"); 
-    }
+    const validateAuth = await requireAuth(request);
     const walletid = params.walletid;
     if(!walletid){
       return redirect("/user/wallet")
     }
-    const [wallet, withdrawalAccounts] = await Promise.all([walletRepo.getUserWalletById(walletid, cookieHeader), walletRepo.getWalletWithdrawalAccounts(walletid, cookieHeader)])
+    const [wallet, withdrawalAccounts] = await Promise.all([walletRepo.getUserWalletById(walletid, request), walletRepo.getWalletWithdrawalAccounts(walletid, request)])
      if(wallet.authRequired){
         redirect("/login")
     }
@@ -32,7 +28,7 @@ export async function loader ({request, params}: LoaderFunctionArgs){
     }
     const walletAccount = wallet.data;
   
-    const walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, cookieHeader)
+    const walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, request)
 
 
     
@@ -59,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
         withdrawal_pin: "",
         accepted_charges: 1
       }
-      var withdrawalChargesResponse = await walletRepo.getWithdrawalCharges(chargeDTO, cookieHeader)
+      var withdrawalChargesResponse = await walletRepo.getWithdrawalCharges(chargeDTO, request)
       
       return json({...withdrawalChargesResponse, intent})
     case "requestWithdrawal":
@@ -71,7 +67,7 @@ export async function action({ request }: ActionFunctionArgs) {
             narration: formData.get("narration") as string || "Withdrawal",
             accepted_charges: 1
         }
-        var withdrawalResponse = await walletRepo.requestWithdrawal(withdrawalDTO, cookieHeader)
+        var withdrawalResponse = await walletRepo.requestWithdrawal(withdrawalDTO, request)
         return json({...withdrawalResponse, intent})
   }
   // Logic for adding a recipient would go here

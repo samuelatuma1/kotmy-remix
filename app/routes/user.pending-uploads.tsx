@@ -7,17 +7,13 @@ import { toast } from "~/components/reusables/use-toast";
 import { EnrichedContestant } from "~/services/contestant/types/contestant.interface";
 import { noImage } from "~/assets/images";
 import { contestantHelper } from "~/lib/helpers/contestant.helper";
+import { requireAuth } from "~/lib/session.server";
 
 
 export async function loader({request}: LoaderFunctionArgs){
 
-  const cookieHeader = request.headers.get("Cookie");
-  console.log({cookieHeader})
-  if (!cookieHeader) {
-    // User is not signed in
-    return redirect("/login"); 
-  }
-  const {data, error, authRequired} = await userServer.getPendingUploads(cookieHeader)
+  const validateAuth = await requireAuth(request);
+  const {data, error, authRequired} = await userServer.getPendingUploads(request)
   console.log({data, error})
 
   if(authRequired){

@@ -81,7 +81,7 @@ function buildUpdateProductDto(formData: FormData): IUpdatePartnerProductDTO {
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const productId = params.productId;
   if (!productId) {
@@ -89,8 +89,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   const [productRes, locationsRes] = await Promise.all([
-    partnerServer.getPartnerProductById(productId, cookieHeader),
-    partnerServer.getPartnerLocations({ page_size: 1000 }, cookieHeader),
+    partnerServer.getPartnerProductById(productId, request),
+    partnerServer.getPartnerLocations({ page_size: 1000 }, request),
   ]);
 
   if (productRes.authRequired || locationsRes.authRequired) {
@@ -125,7 +125,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const productId = params.productId;
   if (!productId) {
@@ -134,7 +134,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const formData = await request.formData();
   const dto = buildUpdateProductDto(formData);
-  return await partnerServer.updatePartnerProduct(productId, dto, cookieHeader);
+  return await partnerServer.updatePartnerProduct(productId, dto, request);
 }
 
 export default function UpdatePartnerProduct() {

@@ -3,7 +3,7 @@ import { useLoaderData, useNavigate } from '@remix-run/react'
 import { icons } from '~/assets/icons'
 import EditTournamentForm from '~/components/admin/tournament/EditTournamentForm'
 import RoundCta from '~/components/reusables/RoundCta'
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import { prepareTournamentDto, tournamentRepo } from '~/services/tournament/tournament.server'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -22,9 +22,9 @@ export async function action({ request }: ActionFunctionArgs) {
     console.log("###############")
    console.log(Object.fromEntries(payload.entries()))
     ///
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
-    const { data, error } = await tournamentRepo.updateTournament({ id: formData.get('tournamentId') as string, dto: payload }, cookieHeader)
+    const validateAuth = await requireAuth(request);;
+     ; 
+    const { data, error } = await tournamentRepo.updateTournament({ id: formData.get('tournamentId') as string, dto: payload }, request)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The tournament has been updated::${Date.now()}` })
         return redirect('/admin/tournaments', { headers })

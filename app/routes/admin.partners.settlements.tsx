@@ -3,7 +3,7 @@ import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/re
 import { ChevronRight, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Pagination from "~/components/reusables/Pagination";
-import { setToast } from "~/lib/session.server";
+import { requireAuth, setToast } from "~/lib/session.server";
 import { partnerServer } from "~/services/partner/partner.server";
 import {
   PartnerPendingSettlementEnum,
@@ -491,11 +491,10 @@ function PaymentModal({
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
 
   const query = buildSettlementsQuery(new URL(request.url).searchParams);
-  const settlementsRes = await partnerServer.adminSearchPartnerSettlements(query, cookieHeader);
+  const settlementsRes = await partnerServer.adminSearchPartnerSettlements(query, request);
 
   if (settlementsRes.authRequired) {
     return redirect("/login");
@@ -517,7 +516,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const formData = await request.formData();
   const settlementIdsRaw = String(formData.get("settlement_ids") ?? "").trim();
@@ -554,7 +553,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (paymentOption === SettlementPaymentOption.provider) {
     payload.redirect_url = new URL("/partners/settlements/payments", request.url).toString();
-    const response = await partnerServer.settlementsProviderPayment(payload, cookieHeader);
+    const response = await partnerServer.settlementsProviderPayment(payload, request);
 
     if (response.error) {
       const { headers } = await setToast({
@@ -577,7 +576,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect(paymentLink, { headers });
   }
 
-  const response = await partnerServer.settlementsWalletPayment(payload, cookieHeader);
+  const response = await partnerServer.settlementsWalletPayment(payload, request);
   const failedStatus = String(response.data?.status ?? "").toLowerCase();
 
   if (response.error || failedStatus.includes("fail") || failedStatus.includes("error")) {

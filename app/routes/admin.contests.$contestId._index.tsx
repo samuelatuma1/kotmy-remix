@@ -1,7 +1,7 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from '@remix-run/node'
 import { useLoaderData, useNavigate } from '@remix-run/react'
 
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import { contestRepo, prepareContestPayload } from '~/services/contest/contest.server'
 import { tournamentRepo } from '~/services/tournament/tournament.server'
 import EditContestForm from '~/components/admin/tournament/EditContestForm'
@@ -22,10 +22,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
     const intent = formData.get('intent')
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);
+    
     if (intent) {
-        const { error } = await contestRepo.deleteStage({ stageId: formData.get('intent') as string }, cookieHeader)
+        const { error } = await contestRepo.deleteStage({ stageId: formData.get('intent') as string }, request)
         if (error) {
             console.log(JSON.stringify(error))
             const { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` })
@@ -35,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     const payload = prepareContestPayload(formData)
 
-    const { data, error } = await contestRepo.updateContest({ contestId: formData.get('contestId') as string, dto: payload }, cookieHeader)
+    const { data, error } = await contestRepo.updateContest({ contestId: formData.get('contestId') as string, dto: payload }, request)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contest has been updated::${Date.now()}` })
         return redirect('/admin/contests', { headers })

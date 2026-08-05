@@ -1,10 +1,22 @@
 import { adminAvatar } from '~/assets/images'
 import Svg from '../reusables/Svg'
 import { icons } from '~/assets/icons'
-import { Link } from '@remix-run/react'
+import { Link, useNavigate } from '@remix-run/react'
 import Toggletip from '../reusables/ToggleTip'
+import { useEffect, useState } from 'react'
+import { UserAtom } from '~/lib/store/atoms/token'
+import { useUserManager } from '~/lib/store/store_managers/tokenManager'
 
 export default function AdminToolbar() {
+    const [user, setUser] = useState<UserAtom | null>(null);
+        const { getUserStoreManager } = useUserManager();
+        const navigate = useNavigate();
+        useEffect(() => {
+                const currentUser = getUserStoreManager();
+                if(!currentUser) navigate('/login');
+                if(!currentUser?.is_staff) navigate('/login');
+                setUser(currentUser);
+    }, [])
     const mainComponent = (
         <div tabIndex={0}
             className='relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]'>
@@ -13,8 +25,8 @@ export default function AdminToolbar() {
                     <img src={adminAvatar} alt="cartoon head" width={24} height={24} />
                 </span>
                 <span className="grid">
-                    <span className='block text-sm font-satoshi-bold'>Admin</span>
-                    <span className='block text-xs font-satoshi-medium'>admin@kotmy.com</span>
+                    <span className='block text-sm font-satoshi-bold'>{user?.fullName}</span>
+                    <span className='block text-xs font-satoshi-medium'>{user?.email}</span>
                 </span>
             </div>
             <Svg src={icons.arrowDownIcon} />

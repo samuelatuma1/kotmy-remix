@@ -8,12 +8,13 @@ import Cta from "~/components/reusables/Cta";
 import FormControl from "~/components/reusables/FormControl";
 import Select from "~/components/reusables/Select";
 import DragnDrop from "~/components/public/contests/DragnDrop";
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
+   ;
 
-  const locationsRes = await partnerServer.getPartnerLocations({ page_size: 1000 }, cookieHeader);
+  const locationsRes = await partnerServer.getPartnerLocations({ page_size: 1000 }, request);
   if (locationsRes.authRequired) return redirect("/login");
 
   return json({
@@ -22,8 +23,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
+   ;
   const formData = await request.formData();
   const dto: ICreatePartnerProductDTO = {
     name: formData.get("name") as string,
@@ -38,7 +39,7 @@ export async function action({ request }: ActionFunctionArgs) {
     locations: formData.getAll("locations").map(location => location.toString()),
     image: formData.get("image") ? (formData.get("image") as File).size === 0 ? null : formData.get("image") as File : null,
   };
-  const response = await partnerServer.addPartnerProduct(dto, cookieHeader);
+  const response = await partnerServer.addPartnerProduct(dto, request);
   return response;
 }
 

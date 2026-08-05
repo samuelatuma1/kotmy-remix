@@ -3,6 +3,7 @@ import { useLoaderData, useNavigation, Form } from "@remix-run/react";
 import { useState } from "react";
 import Cta from "~/components/reusables/Cta";
 import Pagination from "~/components/reusables/Pagination";
+import { requireAuth } from "~/lib/session.server";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { partnerServer } from "~/services/partner/partner.server";
 import type { Business, BusinessQuery } from "~/services/partner/types/partner.interface";
@@ -14,14 +15,14 @@ const statusColors: Record<string, string> = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return json({ redirect: "/login" }, { status: 302 });
+  const validateAuth = await requireAuth(request);
+  if (!validateAuth) return json({ redirect: "/login" }, { status: 302 });
   const url = new URL(request.url);
   const query: BusinessQuery = {};
   for (const [k, v] of url.searchParams.entries()) {
     if (v) query[k as keyof BusinessQuery] = v as any;
   }
-  const partnersRes = await partnerServer.searchPartners(query, cookieHeader);
+  const partnersRes = await partnerServer.searchPartners(query, request);
   return json({ partnersRes: partnersRes.data ?? { items: [], items_per_page: 20 }, query });
 }
 export default function PartnersIndex() {

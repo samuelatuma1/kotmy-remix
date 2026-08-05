@@ -34,6 +34,7 @@ import type {
   OrderStatus,
 } from "~/services/partner/types/partner.interface";
 import type { IPaginatedResponse } from "~/services/common/types/paginated_data";
+import { requireAuth } from "~/lib/session.server";
 
 type AdminOrdersLoaderData = {
   orders: IPaginatedResponse<OrderResponse>;
@@ -651,12 +652,12 @@ function OrderList({
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
+   ;
 
   const url = new URL(request.url);
   const query = buildAdminOrdersQuery(url.searchParams);
-  const ordersRes = await partnerServer.getAdminOrders(query, cookieHeader);
+  const ordersRes = await partnerServer.getAdminOrders(query, request);
 
   if (ordersRes.error) {
     return json<AdminOrdersLoaderData>({
@@ -673,8 +674,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
 
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "");
@@ -716,7 +716,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  const orderRes = await partnerServer.getOrderById(orderId, request);
   if (orderRes.error || !orderRes.data) {
     return json<AdminOrderMutationResponse>(
       { ok: false, error: getErrorMessage(orderRes.error, "Unable to verify this order") },
@@ -755,7 +755,7 @@ export async function action({ request }: ActionFunctionArgs) {
       remark,
     };
 
-    const response = await partnerServer.adminResolveDispute(payload, cookieHeader);
+    const response = await partnerServer.adminResolveDispute(payload, request);
     if (response.error || !response.data) {
       return json<AdminOrderMutationResponse>(
         { ok: false, error: getErrorMessage(response.error, "Unable to resolve dispute") },
@@ -778,7 +778,7 @@ export async function action({ request }: ActionFunctionArgs) {
     remark,
   };
 
-  const response = await partnerServer.adminResolveDispute(payload, cookieHeader);
+  const response = await partnerServer.adminResolveDispute(payload, request);
   if (response.error || !response.data) {
     return json<AdminOrderMutationResponse>(
       { ok: false, error: getErrorMessage(response.error, "Unable to resolve dispute") },
@@ -925,7 +925,7 @@ export default function AdminPartnerOrdersPage() {
               Search
             </button>
             <Link
-              to="/admin/partner/orders"
+              to="/admin/partners/orders"
               className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
             >
               Reset
@@ -960,7 +960,7 @@ export default function AdminPartnerOrdersPage() {
               Try a different order code, item id, or status combination.
             </p>
             <Link
-              to="/admin/partner/orders"
+              to="/admin/partners/orders"
               className="mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
             >
               Clear filters

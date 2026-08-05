@@ -61,7 +61,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     const pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0
 
     if (cookieHeader && stageCurrency) {
-        const walletsResponse = await walletRepo.getUserWallets(cookieHeader)
+        const walletsResponse = await walletRepo.getUserWallets(request)
         if (walletsResponse.data) {
             const matchingWallet = walletsResponse.data.find(wallet => wallet.wallet_currency === stageCurrency) ?? null
             walletVoteContext = {

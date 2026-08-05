@@ -23,7 +23,7 @@ class TournamentRepository implements ITournamentRepository {
         if (error || !tournament) return { error: error ?? { detail: 'Tournament was not found' } }
         return { data: dtoToTournament(tournament) }
     }
-    async createTournament(dto: FormData, token: string): Promise<TFetcherResponse<ITournament>> {
+    async createTournament(dto: FormData, token: string | Request): Promise<TFetcherResponse<ITournament>> {
         const { data: tournament, error } = await ApiCall.call<ITournamentDto, unknown>({
             method: MethodsEnum.POST,
             url: ApiEndPoints.createTournament,
@@ -36,7 +36,7 @@ class TournamentRepository implements ITournamentRepository {
         if (error) return { error }
         return { data: dtoToTournament(tournament) }
     }
-    async updateTournament({ id, dto}: { id: string; dto: FormData }, cookie: string): Promise<TFetcherResponse<ITournament>> {
+    async updateTournament({ id, dto}: { id: string; dto: FormData }, cookie: string | Request): Promise<TFetcherResponse<ITournament>> {
         const { data: tournament, error } = await ApiCall.call<ITournamentDto | null, unknown>({
             url: ApiEndPoints.updateTournament(id),
             method: MethodsEnum.PUT,
@@ -48,7 +48,7 @@ class TournamentRepository implements ITournamentRepository {
         if (error || !tournament) return { error: error ?? { detail: 'Tournament was not found' } }
         return { data: dtoToTournament(tournament) }
     }
-    async deleteTournament(tournamentId: string, token: string): Promise<TFetcherResponse<null>> {
+    async deleteTournament(tournamentId: string, token: string | Request): Promise<TFetcherResponse<null>> {
         return await ApiCall.call({
             url: ApiEndPoints.deleteTournament(tournamentId),
             method: MethodsEnum.DELETE,

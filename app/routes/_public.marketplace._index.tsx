@@ -132,7 +132,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const intent = url.searchParams.get("intent");
 
   if (intent === "cart") {
-    const cartRes = await partnerServer.getCart(cookieHeader);
+    const cartRes = await partnerServer.getCart(request);
 
     if (cartRes.error) {
       return json<MarketplaceLoaderData>({
@@ -173,7 +173,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const cookieHeader = request.headers.get("Cookie") ?? undefined;
   const payload = buildCartPayload(formData);
-  const cartRes = await partnerServer.upsertCartItems(payload, cookieHeader);
+  const cartRes = await partnerServer.upsertCartItems(payload, request);
 
   if (cartRes.error) {
     return json<MarketplaceActionData>(

@@ -10,7 +10,7 @@ import { IGetPaymentsDTO, TallyTransaction, ICreateBankTransaction, ICreateAdmin
 
 
 export class AdminRepository {
-  async getPayments(cookies: string, query: IGetPaymentsDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<TallyTransaction>>> {
+  async getPayments(cookies: string | Request, query: IGetPaymentsDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<TallyTransaction>>> {
     let url = ApiEndPoints.adminPayments;
     if (query) {
       const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
@@ -30,7 +30,7 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async createBankTransaction(cookies: string, dto: ICreateBankTransaction): Promise<TFetcherResponse<TallyTransaction>> {
+  async createBankTransaction(cookies: string | Request, dto: ICreateBankTransaction): Promise<TFetcherResponse<TallyTransaction>> {
     const url = ApiEndPoints.createBankPayment;
     const { data, error, authRequired } = await ApiCall.call<TallyTransaction, unknown>({
       method: "POST",
@@ -42,7 +42,7 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async getAllRoles(cookies: string): Promise<TFetcherResponse<{[key: string]: string[]}>>{
+  async getAllRoles(cookies: string | Request): Promise<TFetcherResponse<{[key: string]: string[]}>>{
     const url = ApiEndPoints.getAllRoles;
     const { data, error, authRequired } = await ApiCall.call<{[key: string]: string[]}, unknown>({
       method: "GET",
@@ -53,7 +53,7 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async createAdminUser(cookies: string, dto: ICreateAdminUser ):  Promise<TFetcherResponse<ILoginResponseDTO>>{
+  async createAdminUser(cookies: string | Request, dto: ICreateAdminUser ):  Promise<TFetcherResponse<ILoginResponseDTO>>{
     const url = ApiEndPoints.createAdminUser
     const { data, error, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
       method: "POST",
@@ -66,7 +66,7 @@ export class AdminRepository {
 
   }
 
-  async updateAdminUser(cookies: string, userId: string, dto: IUpdateAdminUser ):  Promise<TFetcherResponse<ILoginResponseDTO>>{
+  async updateAdminUser(cookies: string | Request, userId: string, dto: IUpdateAdminUser ):  Promise<TFetcherResponse<ILoginResponseDTO>>{
     const url = ApiEndPoints.updateUser(userId)
     const { data, error, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
       method: "PATCH",
@@ -78,7 +78,7 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async getAdminUser(cookies: string, userId: string){
+  async getAdminUser(cookies: string | Request, userId: string){
     const url = ApiEndPoints.getUserById(userId)
     const { data, error, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
       method: "GET",
@@ -89,7 +89,7 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async queryUsers(cookies: string, query: IUserQueryDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<ILoginResponseDTO>>>{
+  async queryUsers(cookies: string | Request, query: IUserQueryDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<ILoginResponseDTO>>>{
       let url = ApiEndPoints.pagedUsers;
       if (query) {
         const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {

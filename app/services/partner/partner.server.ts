@@ -76,7 +76,7 @@ export class PartnerServer {
     return { data, error: undefined };
   }
 
-  async searchPartners(query: BusinessQuery, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<Business>>> {
+  async searchPartners(query: BusinessQuery, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<Business>>> {
     const params = this.buildQueryString(query);
     const url = `${ApiEndPoints.partnerSearch}?${params}`;
     const { data, error } = await ApiCall.call<IPaginatedResponse<Business>, unknown>({
@@ -87,7 +87,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getBusinessDetails(businessId: string, cookies: string): Promise<TFetcherResponse<Business>> {
+  async getBusinessDetails(businessId: string, cookies: string | Request): Promise<TFetcherResponse<Business>> {
     const { data, error } = await ApiCall.call<Business, unknown>({
       url: ApiEndPoints.getPartnerBusinessDetails(businessId),
       method: "GET",
@@ -97,7 +97,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async updateBusinessStatus(dto: IUpdateBusinessStatus, cookies: string): Promise<TFetcherResponse<Business>> {
+  async updateBusinessStatus(dto: IUpdateBusinessStatus, cookies: string | Request): Promise<TFetcherResponse<Business>> {
     const { data, error } = await ApiCall.call<Business, IUpdateBusinessStatus>({
       url: ApiEndPoints.updatePartnerBusinessStatus,
       method: "PATCH",
@@ -111,7 +111,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async addBusinessOwner(dto: IBusinessOwnerModel, cookies: string): Promise<TFetcherResponse<Business>> {
+  async addBusinessOwner(dto: IBusinessOwnerModel, cookies: string | Request): Promise<TFetcherResponse<Business>> {
     const { data, error } = await ApiCall.call<Business, IBusinessOwnerModel>({
       url: ApiEndPoints.addBusinessOwner,
       method: "PATCH",
@@ -124,8 +124,8 @@ export class PartnerServer {
 
   async addPartnerProduct(
     dto: ICreatePartnerProductDTO,
-    cookie: string
-  ): Promise<TFetcherResponse<PartnerProductResponse>> {
+    cookie: string | Request
+  ) {
     const formData = new FormData();
     formData.append("name", dto.name);
     formData.append("description", dto.description);
@@ -153,7 +153,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerProductById(productId: string, cookies: string): Promise<TFetcherResponse<PartnerProductResponse>> {
+  async getPartnerProductById(productId: string, cookies: string | Request): Promise<TFetcherResponse<PartnerProductResponse>> {
     const { data, error } = await ApiCall.call<PartnerProductResponse, unknown>({
       url: ApiEndPoints.getPartnerProductById(productId),
       method: "GET",
@@ -166,7 +166,7 @@ export class PartnerServer {
   async updatePartnerProduct(
     productId: string,
     dto: IUpdatePartnerProductDTO,
-    cookie: string
+    cookie: string | Request
   ): Promise<TFetcherResponse<PartnerProductResponse>> {
     const formData = new FormData();
     this.appendIfPresent(formData, "name", dto.name);
@@ -196,7 +196,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+  async getPartnerProducts(query: IQueryPartnerProduct, cookies?: string | Request): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
     const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getPartnerProducts}?${params}`;
@@ -210,7 +210,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getMarketplaceProducts(query: IQueryPartnerProduct, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
+  async getMarketplaceProducts(query: IQueryPartnerProduct, cookies?: string | Request): Promise<TFetcherResponse<IPaginatedResponse<PartnerProduct>>> {
     const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getMarketplaceProducts}?${params}`;
@@ -224,7 +224,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getCart(cookies?: string): Promise<TFetcherResponse<Cart | null>> {
+  async getCart(cookies?: string | Request): Promise<TFetcherResponse<Cart | null>> {
     const { data, error } = await ApiCall.call<Cart, unknown>({
       url: ApiEndPoints.getPartnerCartItems,
       method: "GET",
@@ -240,7 +240,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async upsertCartItems(dto: IUpsertCartItemsDTO, cookies?: string): Promise<TFetcherResponse<Cart>> {
+  async upsertCartItems(dto: IUpsertCartItemsDTO, cookies?: string | Request): Promise<TFetcherResponse<Cart>> {
     const { data, error } = await ApiCall.call<Cart, IUpsertCartItemsDTO>({
       url: ApiEndPoints.getPartnerCartItems,
       method: "POST",
@@ -251,7 +251,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerLocations(query: IQueryPartnerLocations, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerLocation>>> {
+  async getPartnerLocations(query: IQueryPartnerLocations, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<PartnerLocation>>> {
     const params = this.buildQueryString(query);
 
     const url = `${ApiEndPoints.getPartnerLocations}?${params}`;
@@ -265,7 +265,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getCartDeliveryAndPaymentOptions(cookies?: string): Promise<TFetcherResponse<ICartDeliveryAndPaymentOptions>> {
+  async getCartDeliveryAndPaymentOptions(cookies?: string | Request): Promise<TFetcherResponse<ICartDeliveryAndPaymentOptions>> {
     const { data, error } = await ApiCall.call<ICartDeliveryAndPaymentOptions, unknown>({
       url: ApiEndPoints.getPartnerCartDelivery,
       method: "GET",
@@ -277,7 +277,7 @@ export class PartnerServer {
 
   async searchPartnerSettlements(
     query: ISearchPartnerSettlementDTO,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<IPaginatedResponse<IPartnerSettlement>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.searchPartnerSettlements}?${params}` : ApiEndPoints.searchPartnerSettlements;
@@ -294,7 +294,7 @@ export class PartnerServer {
   //
   async adminSearchPartnerSettlements(
     query: ISearchPartnerSettlementDTO,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<IPaginatedResponse<IPartnerSettlement>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.adminSearchPartnerSettlements}?${params}` : ApiEndPoints.adminSearchPartnerSettlements;
@@ -310,7 +310,7 @@ export class PartnerServer {
 
   async settlementsProviderPayment(
     dto: ISettlementPayment,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<ISettlementPaymentProviderResponse>> {
     const { data, error } = await ApiCall.call<ISettlementPaymentProviderResponse, ISettlementPayment>({
       url: ApiEndPoints.settlementsProviderPayment,
@@ -324,7 +324,7 @@ export class PartnerServer {
 
   async settlementsWalletPayment(
     dto: ISettlementPayment,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<ISettlementPaymentWalletResponse>> {
     const { data, error } = await ApiCall.call<ISettlementPaymentWalletResponse, ISettlementPayment>({
       url: ApiEndPoints.settlementsWalletPayment,
@@ -336,7 +336,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async createDeliveryDetails(dto: CreateDeliveryDetails, cookies?: string): Promise<TFetcherResponse<DeliveryDetails>> {
+  async createDeliveryDetails(dto: CreateDeliveryDetails, cookies?: string | Request): Promise<TFetcherResponse<DeliveryDetails>> {
     const { data, error } = await ApiCall.call<DeliveryDetails, CreateDeliveryDetails>({
       url: ApiEndPoints.createPartnerDeliveryDetails,
       method: "POST",
@@ -347,7 +347,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async placeOrder(dto: PlaceOrderDTO, cookies?: string): Promise<TFetcherResponse<OrderResponse[]>> {
+  async placeOrder(dto: PlaceOrderDTO, cookies?: string | Request): Promise<TFetcherResponse<OrderResponse[]>> {
     const { data, error } = await ApiCall.call<OrderResponse[], PlaceOrderDTO>({
       url: ApiEndPoints.placePartnerOrders,
       method: "POST",
@@ -358,7 +358,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getCustomerOrders(query: CustomerOrdersQuery, cookies?: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+  async getCustomerOrders(query: CustomerOrdersQuery, cookies?: string | Request): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.getCustomerOrders}?${params}` : ApiEndPoints.getCustomerOrders;
 
@@ -371,7 +371,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerOrders(query: BusinessSearchOrderDTO, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+  async getPartnerOrders(query: BusinessSearchOrderDTO, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.getPartnerOrders}?${params}` : ApiEndPoints.getPartnerOrders;
     
@@ -384,7 +384,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getAdminOrders(query: AdminSearchOrderDTO, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
+  async getAdminOrders(query: AdminSearchOrderDTO, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<OrderResponse>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.adminPartnerOrders}?${params}` : ApiEndPoints.adminPartnerOrders;
     
@@ -397,7 +397,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async adminResolveDispute(dto: IAdminResolveOrderDispute, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+  async adminResolveDispute(dto: IAdminResolveOrderDispute, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, IAdminResolveOrderDispute>({
       url: ApiEndPoints.adminResolveOrderDispute,
       method: "PATCH",
@@ -408,7 +408,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getOrderById(orderId: string, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+  async getOrderById(orderId: string, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, unknown>({
       url: ApiEndPoints.getPartnerOrderById(orderId),
       method: "GET",
@@ -418,7 +418,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async fulfillOrder(dto: IOrderData, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+  async fulfillOrder(dto: IOrderData, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
       url: ApiEndPoints.fulfillPartnerOrder,
       method: "PATCH",
@@ -429,7 +429,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async cancelOrder(dto: IOrderData, cookies: string): Promise<TFetcherResponse<OrderResponse>> {
+  async cancelOrder(dto: IOrderData, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
       url: ApiEndPoints.cancelPartnerOrder,
       method: "PATCH",
@@ -442,7 +442,7 @@ export class PartnerServer {
 
   async customerConfirmOrder(
     dto: ICustomerConfirmOrder,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, ICustomerConfirmOrder>({
       url: ApiEndPoints.confirmPartnerOrderFulfillment,
@@ -456,7 +456,7 @@ export class PartnerServer {
 
   async customerDispute(
     dto: ICustomerDisputeOrderFulfilledDTO,
-    cookies: string
+    cookies: string | Request
   ): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, ICustomerDisputeOrderFulfilledDTO>({
       url: ApiEndPoints.disputePartnerOrderFulfillment,
@@ -468,7 +468,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getGeneralOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<GeneralOrdersLeaderboardSearchResponse>>> {
+  async getGeneralOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<GeneralOrdersLeaderboardSearchResponse>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.getGeneralOrdersLeaderboard}?${params}` : ApiEndPoints.getGeneralOrdersLeaderboard;
 
@@ -481,7 +481,7 @@ export class PartnerServer {
     return { data };
   }
 
-  async getPartnerOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string): Promise<TFetcherResponse<IPaginatedResponse<PartnerOrdersLeaderboardSearchResponse>>> {
+  async getPartnerOrdersLeaderboard(query: IGeneralOrdersLeaderboardSearch, cookies: string | Request): Promise<TFetcherResponse<IPaginatedResponse<PartnerOrdersLeaderboardSearchResponse>>> {
     const params = this.buildQueryString(query);
     const url = params ? `${ApiEndPoints.getPartnerOrdersLeaderboard}?${params}` : ApiEndPoints.getPartnerOrdersLeaderboard;
 

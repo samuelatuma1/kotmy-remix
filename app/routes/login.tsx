@@ -7,7 +7,7 @@ import Svg from "~/components/reusables/Svg"
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node"
 import { ILoginDTO } from "~/services/auth/types/auth.dtos"
 import { authServer } from "~/services/auth/auth.server"
-import { setToast } from "~/lib/session.server"
+import { setAuthSession } from "~/lib/session.server"
 import { toast, useToast } from "~/components/reusables/use-toast"
 import { Toast } from "~/components/reusables/toast"
 import { useEffect } from "react"
@@ -28,23 +28,19 @@ export async function action({request}:ActionFunctionArgs) {
         password: formData.get("password") as string
     }
 
-    const {error, data, headers} = await authServer.login(loginDto)
+    const {error, data} = await authServer.login(loginDto)
     if(error){
         return { error: error.detail?.toString() || "An error occurred during login.", data: null};
     }
 
-
-    let responseHeaders : Record<string, string> = {};
-    if(headers?.['Set-Cookie']){
-        console.log("Set-Cookie header found:", headers['Set-Cookie']);
-        const setCookieHeader = headers?.['Set-Cookie'];
-        responseHeaders = { "Set-Cookie": setCookieHeader }
-        return json({ data, error: null }, { 
-            headers: responseHeaders 
-         });
+    if (!data?.token) {
+        return json({ error: "Login succeeded but no token was returned.", data: null }, { status: 500 });
     }
 
-    return json({ data, error: null })
+    const { headers } = await setAuthSession(request, data.token);
+    return json({ data, error: null }, {
+        headers
+    })
     
 }
 
@@ -80,7 +76,9 @@ function useLoginController(){
 
     useEffect(() => {
         // save user to store
+       
         if(actionData?.data){
+            console.log("Login successful, saving user to store", actionData.data);
             setUserStoreManager(actionData.data, true);
             navigate(searchQuery.get("redirectTo") || '/user/profile' );
             return;

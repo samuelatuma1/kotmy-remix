@@ -9,14 +9,11 @@ import Cta from "~/components/reusables/Cta";
 import FormControl from "~/components/reusables/FormControl";
 import { icons } from "~/assets/icons";
 import DragnDrop from "~/components/public/contests/DragnDrop";
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) {
-      // User is not signed in
-      return redirect("/login"); 
-    }
-  const { data, error, authRequired } = await authServer.getMe(cookieHeader || "");
+  const validateAuth = await requireAuth(request);
+  const { data, error, authRequired } = await authServer.getMe(request);
     if (authRequired) {
       // User is authenticated
       return redirect("/login"); 
@@ -30,7 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
   
   const updateData = authServer.prepareUpdateUserPayload(formData)
 
-  const { data, error } = await authServer.updateProfile(updateData, cookieHeader || "");
+  const { data, error } = await authServer.updateProfile(updateData, request);
   return json({ data, error });
 }
 

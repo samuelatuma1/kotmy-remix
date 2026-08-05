@@ -7,7 +7,7 @@ import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 
 
 export interface IUserServer {
-    getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string): Promise<TFetcherResponse<UserCreditResponse>>;
+    getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string | Request): Promise<TFetcherResponse<UserCreditResponse>>;
 
 }
 export class UserServer implements IUserServer {
@@ -29,12 +29,12 @@ export class UserServer implements IUserServer {
         ).toString();
     }
 
-    async getPendingUploads(cookies: string){
+    async getPendingUploads(cookies: string | Request){
         return await this.contestantServer.getPendingUploads(cookies)
         
     }
 
-    async getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string): Promise<TFetcherResponse<UserCreditResponse>> {
+    async getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string | Request): Promise<TFetcherResponse<UserCreditResponse>> {
         const queryString = this.buildQueryString(query);
         const url = queryString ? `${ApiEndPoints.getGivaahCredits}?${queryString}` : ApiEndPoints.getGivaahCredits;
 
@@ -47,11 +47,11 @@ export class UserServer implements IUserServer {
         return { error, authRequired };
     }
 
-    async getContestantDetails(contestantId: string, cookies: string){
+    async getContestantDetails(contestantId: string, cookies: string | Request){
         return await this.contestantServer.getContestantDetailsWithContest(contestantId, cookies)
     }
 
-    async updateUserContestant(payload: {contestantId: string, formData: FormData, editContestantDTO?: IEditContestantDTO}, cookies?: string){
+    async updateUserContestant(payload: {contestantId: string, formData: FormData, editContestantDTO?: IEditContestantDTO}, cookies?: string | Request){
        const {error, authRequired, data} = await this.contestantServer.updateUserContestant(payload, cookies)
 
        return {error, authRequired, data};

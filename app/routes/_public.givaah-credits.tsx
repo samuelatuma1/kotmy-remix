@@ -9,7 +9,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return json({ authRequired: true, credits: null, error: null }, { status: 401 });
   }
 
-  const creditsRes = await userServer.getGivaahCredits(undefined, cookieHeader);
+  const creditsRes = await userServer.getGivaahCredits(undefined, request);
 
   if (creditsRes.authRequired) {
     return json({ authRequired: true, credits: null, error: null }, { status: 401 });

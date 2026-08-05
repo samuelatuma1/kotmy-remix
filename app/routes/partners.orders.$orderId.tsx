@@ -292,14 +292,14 @@ function OrderItemCard({ order, item }: { order: OrderResponse; item: OrderItem 
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const orderId = params.orderId;
   if (!orderId) {
     return json<OrderDetailLoaderData>({ order: null, error: "Missing order id" }, { status: 400 });
   }
 
-  const { data, error } = await partnerServer.getOrderById(orderId, cookieHeader);
+  const { data, error } = await partnerServer.getOrderById(orderId, request);
 
   if (error) {
     return json<OrderDetailLoaderData>(
@@ -316,7 +316,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 export async function action({ params, request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+   ;
 
   const orderId = params.orderId;
   if (!orderId) {
@@ -340,7 +340,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     return json<OrderMutationResponse>({ ok: false, error: "Missing order item id" }, { status: 400 });
   }
 
-  const orderRes = await partnerServer.getOrderById(orderId, cookieHeader);
+  const orderRes = await partnerServer.getOrderById(orderId, request);
   if (orderRes.error || !orderRes.data) {
     return json<OrderMutationResponse>(
       {
@@ -376,8 +376,8 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   const mutationRes =
     intent === "fulfill"
-      ? await partnerServer.fulfillOrder(payload, cookieHeader)
-      : await partnerServer.cancelOrder(payload, cookieHeader);
+      ? await partnerServer.fulfillOrder(payload, request)
+      : await partnerServer.cancelOrder(payload, request);
 
   if (mutationRes.error) {
     return json<OrderMutationResponse>(

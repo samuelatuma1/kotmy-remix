@@ -3,10 +3,11 @@ import { walletRepo } from "~/services/wallet/wallet.server";
 import { useLoaderData, Form, useNavigation } from "@remix-run/react"
 import FormControl from "~/components/reusables/FormControl"
 import Pagination from "~/components/reusables/Pagination"
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+     ; 
     // get paged users
     const url = new URL(request.url);
     const query: any = {};
@@ -20,7 +21,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     
     
 
-    const walletsResponse = await walletRepo.getOrganizationWallets(cookieHeader);
+    const walletsResponse = await walletRepo.getOrganizationWallets(request);
     if(!walletsResponse.data){
          return redirect("/login"); 
     }
@@ -28,7 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     if(!query.wallet_id){
         query.currency = walletsResponse.data[0]?.wallet_currency
     }
-    const referralBoardRes = await walletRepo.queryAdminAffiliateBoard(cookieHeader, query)
+    const referralBoardRes = await walletRepo.queryAdminAffiliateBoard(request, query)
     if(referralBoardRes.authRequired){
       return redirect("/login"); 
     }

@@ -7,7 +7,7 @@ import Cta from '~/components/reusables/Cta'
 import PermissionsFormControl from '~/components/admin/PermissionsFormControl'
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from '@remix-run/node'
 import { adminUsers, permissions } from '~/lib/data/admin'
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import RolesFormControl from '~/components/admin/RolesFormControl'
 import { adminRepo } from '~/services/admin/admin.server'
 import { IUpdateAdminDto, IUpdateAdminUser } from '~/services/admin/types/admin.interface'
@@ -16,14 +16,12 @@ import { useEffect } from 'react'
 import { toast } from '~/components/reusables/use-toast'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-   const cookieHeader = request.headers.get("Cookie");
-    if (!cookieHeader) return redirect("/login");
-    
-    const rolesResponse = await adminRepo.getAllRoles(cookieHeader);
+    const validateAuth = await requireAuth(request);;
+    const rolesResponse = await adminRepo.getAllRoles(request);
     if(rolesResponse.authRequired) return redirect("/login");
 
     const userId = params.userId ?? ""
-    const user = await adminRepo.getAdminUser(cookieHeader, userId);
+    const user = await adminRepo.getAdminUser(request, userId);
 
 
 
@@ -37,7 +35,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 export async function action({ params, request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) return redirect("/login");
+   ;
   const formData = await request.formData()
 
   const userId = params.userId ?? ""
@@ -53,7 +51,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
         roles: formData.getAll('role') as string[] ?? []
     }
   
-    const response = await adminRepo.updateAdminUser(cookieHeader, userId, dto);
+    const response = await adminRepo.updateAdminUser(request, userId, dto);
 
 
   console.log(...formData, dto)

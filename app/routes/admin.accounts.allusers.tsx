@@ -9,12 +9,13 @@ import RoundCta from "~/components/reusables/RoundCta"
 import Svg from "~/components/reusables/Svg"
 import ToggleBtn from "~/components/reusables/ToggleBtn"
 import { adminUsers } from "~/lib/data/admin"
+import { requireAuth } from "~/lib/session.server"
 import { adminRepo } from "~/services/admin/admin.server"
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const headings = ['full_name', 'email', 'username', 'roles', 'access'] satisfies (keyof typeof adminUsers[number])[]
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+
     // get paged users
     const url = new URL(request.url);
     const query: any = {};
@@ -23,7 +24,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     if(Object.keys(query).length === 0){
     }
-    const pagedUsersRes = await adminRepo.queryUsers(cookieHeader, query)
+    const pagedUsersRes = await adminRepo.queryUsers(request, query)
     if(pagedUsersRes.authRequired){
       return redirect("/login"); 
     }

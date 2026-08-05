@@ -13,12 +13,12 @@ import { ILoginResponseDTO } from '~/services/auth/types/auth.dtos'
 import { useEffect } from 'react'
 import { toast } from '~/components/reusables/use-toast'
 import { ICreateAdminUser } from '~/services/admin/types/admin.interface'
+import { requireAuth } from '~/lib/session.server'
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);;
   
-  const rolesResponse = await adminRepo.getAllRoles(cookieHeader);
+  const rolesResponse = await adminRepo.getAllRoles(request);
   if(rolesResponse.authRequired) return redirect("/login");
 
   return { roles: rolesResponse.data, permissions }
@@ -27,7 +27,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const cookieHeader = request.headers.get("Cookie");
-  if (!cookieHeader) return redirect("/login");
+   ;
   //
   
   let dto: ICreateAdminUser = {
@@ -42,7 +42,7 @@ export async function action({ request }: ActionFunctionArgs) {
       roles: formData.getAll('role') as string[] ?? []
   }
 
-  const response = await adminRepo.createAdminUser(cookieHeader, dto);
+  const response = await adminRepo.createAdminUser(request, dto);
   // console.log(dto, response)
   // console.log(...formData)
   // console.log(formData.getAll('permission'))

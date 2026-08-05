@@ -5,7 +5,7 @@ import Cta from "~/components/reusables/Cta";
 import FormControl from "~/components/reusables/FormControl";
 import RoundCta from "~/components/reusables/RoundCta";
 import Select from "~/components/reusables/Select";
-import { setToast } from "~/lib/session.server";
+import { requireAuth, setToast } from "~/lib/session.server";
 import { partnerServer } from "~/services/partner/partner.server";
 import type { Business, BusinessStatus, IBusinessOwnerModel, IUpdateBusinessStatus } from "~/services/partner/types/partner.interface";
 
@@ -40,8 +40,7 @@ function parseReferralPercentage(value: FormDataEntryValue | null): number | nul
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
 
   const id = params.id ?? "";
   if (!id) {
@@ -49,7 +48,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     return redirect("/admin/partners", { headers });
   }
 
-  const response = await partnerServer.getBusinessDetails(id, cookieHeader);
+  const response = await partnerServer.getBusinessDetails(id, request);
   if (response.authRequired) return redirect("/login");
   if (response.error || !response.data) {
     const { headers } = await setToast({
@@ -63,8 +62,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 }
 
 export async function action({ params, request }: ActionFunctionArgs) {
-  const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  const validateAuth = await requireAuth(request);
+   ;
 
   const id = params.id ?? "";
   const formData = await request.formData();
@@ -83,7 +82,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
       reason: formData.get("reason")?.toString() || undefined,
       referral_percentage: parseReferralPercentage(formData.get("referral_percentage")),
     };
-    const response = await partnerServer.updateBusinessStatus(dto, cookieHeader);
+    const response = await partnerServer.updateBusinessStatus(dto, request);
     if (response.authRequired) return redirect("/login");
     if (response.error) {
       const { headers } = await setToast({
@@ -107,7 +106,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
       alternate_phone: formData.get("alternate_phone")?.toString() ?? "",
       password: formData.get("password")?.toString() ?? "",
     };
-    const response = await partnerServer.addBusinessOwner(dto, cookieHeader);
+    const response = await partnerServer.addBusinessOwner(dto, request);
     if (response.authRequired) return redirect("/login");
     if (response.error) {
       const { headers } = await setToast({

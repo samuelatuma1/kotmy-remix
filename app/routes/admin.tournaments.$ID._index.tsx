@@ -3,7 +3,7 @@ import { Link, useLoaderData, useNavigate } from '@remix-run/react'
 
 import { tournamentRepo } from '~/services/tournament/tournament.server'
 import { contestRepo } from '~/services/contest/contest.server'
-import { setToast } from '~/lib/session.server'
+import { requireAuth, setToast } from '~/lib/session.server'
 import ContestTable from '~/components/admin/contest/ContestTable'
 import Toggletip from '~/components/reusables/ToggleTip'
 import RoundCta from '~/components/reusables/RoundCta'
@@ -12,10 +12,10 @@ import Svg from '~/components/reusables/Svg'
 import { icons } from '~/assets/icons'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+     ; 
     const { data: tournament, error: tournamentError } = await tournamentRepo.getTournamentById(params.ID!)
-    const { data: contests, error: contestError } = await contestRepo.adminGetContestsInTournament(params.ID!, cookieHeader)
+    const { data: contests, error: contestError } = await contestRepo.adminGetContestsInTournament(params.ID!, request)
     if (tournamentError || contestError) {
         let error = tournamentError?.detail ?? contestError?.detail ?? 'An error occured while fetching the contests'
         const { headers } = await setToast({ request, toast: `error::${error}::${Date.now()}` })

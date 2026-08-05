@@ -240,7 +240,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const cookieHeader = request.headers.get("Cookie") ?? undefined;
   const query = buildCustomerOrdersQuery(url.searchParams);
-  const ordersRes = await partnerServer.getCustomerOrders(query, cookieHeader);
+  const ordersRes = await partnerServer.getCustomerOrders(query, request);
 
   if (ordersRes.error) {
     return json<OrdersLoaderData>({

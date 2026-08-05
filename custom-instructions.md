@@ -133,9 +133,9 @@ import { ITournamentDto, ITournament, ITournamentRepository, dtoToTournament } f
 class TournamentRepository implements ITournamentRepository {
   async getTournaments(): Promise<TFetcherResponse<ITournament[]>> { ... }
   async getTournamentById(tournamentId: string): Promise<TFetcherResponse<ITournament>> { ... }
-  async createTournament(dto: FormData, token: string): Promise<TFetcherResponse<ITournament>> { ... }
-  async updateTournament({ id, dto }: { id: string; dto: FormData }, cookie: string): Promise<TFetcherResponse<ITournament>> { ... }
-  async deleteTournament(tournamentId: string, token: string): Promise<TFetcherResponse<null>> { ... }
+  async createTournament(dto: FormData, token: string | Request): Promise<TFetcherResponse<ITournament>> { ... }
+  async updateTournament({ id, dto }: { id: string; dto: FormData }, cookie: string | Request): Promise<TFetcherResponse<ITournament>> { ... }
+  async deleteTournament(tournamentId: string, token: string | Request): Promise<TFetcherResponse<null>> { ... }
 }
 export const tournamentRepo = new TournamentRepository();
 
@@ -198,10 +198,10 @@ import CreateTournamentForm from "~/components/admin/tournament/CreateTournament
 
 export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie") ?? "";
-  if (!cookieHeader) return redirect("/login");
+  requireAuth(request)
   const formData = await request.formData();
   const payload = prepareTournamentDto(formData);
-  const { error } = await tournamentRepo.createTournament(payload, cookieHeader);
+  const { error } = await tournamentRepo.createTournament(payload, request);
   if (error) {
     const { headers } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
     return json(error, { headers });

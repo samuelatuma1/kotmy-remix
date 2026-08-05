@@ -10,19 +10,15 @@ import { useToast } from "~/components/reusables/use-toast";
 import Svg from "~/components/reusables/Svg";
 import { icons } from "~/assets/icons";
 import { IAddAccountDetailsRequest, ICurrencyBanks, IResolveAccountDetailsResponse, IResolveAccountRequest, IWallet } from "~/services/wallet/types/wallet.interface";
+import { requireAuth } from "~/lib/session.server";
 
 export async function loader ({request, params}: LoaderFunctionArgs){
-    const cookieHeader = request.headers.get("Cookie") ?? "";
-    console.log({cookieHeader})
-    if (!cookieHeader) {
-    // User is not signed in
-      redirect("/login"); 
-    }
+    const validateAuth = await requireAuth(request);
     const walletid = params.walletid;
     if(!walletid){
       return redirect("/user/wallet")
     }
-    let {error, data, authRequired} = await walletRepo.getUserWalletById(walletid, cookieHeader);
+    let {error, data, authRequired} = await walletRepo.getUserWalletById(walletid, request);
      if(authRequired){
         redirect("/login")
     }
@@ -32,7 +28,7 @@ export async function loader ({request, params}: LoaderFunctionArgs){
     }
     const walletAccount = data;
   
-    const walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, cookieHeader)
+    const walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, request)
    
     console.log("User wallets", {walletAccount, walletCurrencyBanks: walletCurrencyBanksResponse})
     return {error, walletAccount,walletCurrencyBanks : walletCurrencyBanksResponse.data, authRequired}
@@ -54,7 +50,7 @@ export async function action({ request }: ActionFunctionArgs) {
         bank_code: formData.get("bank") as string,
         wallet_id: formData.get("wallet_id") as string
       }
-      var {data, error, authRequired} = await walletRepo.resolveAccountDetails(dto, cookieHeader)
+      var {data, error, authRequired} = await walletRepo.resolveAccountDetails(dto, request)
       console.log("DATA",error, data, authRequired)
       return json({data, error, authRequired, intent})
     case "addAccountDetails":
@@ -67,7 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
         pin: formData.get("pin") as string,
       }
       
-      var response = await walletRepo.addAccountDetails(_dto, cookieHeader)
+      var response = await walletRepo.addAccountDetails(_dto, request)
       console.log("ADD ACCOUNT DEETS",response?.error?.detail,response, _dto)
       return json({...response, intent})
       break;

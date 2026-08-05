@@ -2,7 +2,7 @@ import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-r
 import { useLoaderData } from "@remix-run/react"
 
 import { tournamentRepo } from "~/services/tournament/tournament.server"
-import { setToast } from "~/lib/session.server"
+import { requireAuth, setToast } from "~/lib/session.server"
 // import { memoryCache as cache } from "~/lib/cache"
 import TournamentCard from "~/components/admin/tournament/TournamentCard"
 import Cta from "~/components/reusables/Cta"
@@ -27,11 +27,11 @@ export async function loader({ }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData()
     const intent = formData.get('intent') as 'delete'
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-        if (!cookieHeader) return redirect("/login");
+    const validateAuth = await requireAuth(request);;
+         ;
     if (intent === 'delete') {
         const tournamentId = formData.get('tournamentId') as string
-        const { data, error } = await tournamentRepo.deleteTournament(tournamentId, cookieHeader)
+        const { data, error } = await tournamentRepo.deleteTournament(tournamentId, request)
         if (error) {
             const { headers } = await setToast({ request, toast: `error::Could not delete the tournament::${Date.now()}` })
             return json(error, { headers })

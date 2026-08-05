@@ -13,9 +13,9 @@ export class ContestantServer{
 
 export async function editContestant(payload: { dto: FormData, contestantId: string }, request: Request) {
     const dto = prepareContestantDTO(payload.dto)
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
-    const { data, error } = await contestantRepo.editContestantAdmin({ dto, contestantId: payload.contestantId }, cookieHeader)
+    const validateAuth = await requireAuth(request);;
+     ; 
+    const { data, error } = await contestantRepo.editContestantAdmin({ dto, contestantId: payload.contestantId }, request)
     if (data) {
         const { headers } = await setToast({ request, toast: `success::The contestant info has been updated::${Date.now()}` })
         return json(null, { headers })
@@ -28,14 +28,14 @@ export async function editContestant(payload: { dto: FormData, contestantId: str
 }
 
 export async function toggleEvictContestants(formData: FormData, request: Request) {
-    const cookieHeader = request.headers.get('Cookie') ?? '';
-    if (!cookieHeader) return redirect("/login"); 
+    const validateAuth = await requireAuth(request);;
+     ; 
     const dto: IToggleEvictContestantDTO = {
         action: formData.get("intent") as "evict" | "admit",
         stage_id: formData.get("stage_id") as string,
         contestants_ids: (formData.get("contestants_ids") as string).split("|")
     }
-    const { error } = await contestantRepo.toggleEvictContestants(dto, cookieHeader)
+    const { error } = await contestantRepo.toggleEvictContestants(dto, request)
     if (error) {
         const { headers } = await setToast({ request, toast: `error::${error.detail ?? "Sorry, we could not update the contestants statuses at this time"}::${Date.now()}` })
         return json(error, { headers })
@@ -44,7 +44,7 @@ export async function toggleEvictContestants(formData: FormData, request: Reques
     return json(null, { headers })
 }
 
-export async function registerContestant(formData: FormData, request: Request, cookies: string) {
+export async function registerContestant(formData: FormData, request: Request, cookies: string | Request) {
     const contestId = formData.get("contestId") as string
     
     const { data, error } = await contestantRepo.registerContestant({ contestId, dto: formData }, cookies)
@@ -85,7 +85,7 @@ export async function voteContestant(formData: FormData, request: Request) {
         return {errorCode: "LOGIN_REQUIRED" }
         }
     const { fingerprint, headers: fingerprintHeaders } = await getFingerprint({ request })
-    const { error, authRequired } = await contestantRepo.voteContestant({ dto, stageId }, cookieHeader)
+    const { error, authRequired } = await contestantRepo.voteContestant({ dto, stageId }, request)
     if(authRequired){
         return {errorCode: "LOGIN_REQUIRED" }
     }
@@ -124,7 +124,7 @@ export async function voteContestantWithGivaahCredits(formData: FormData, reques
         return json({ error: "Please enter at least 1 Givaah credit to vote with" }, { headers, status: 400 });
     }
 
-    const { data, error, authRequired } = await contestantRepo.voteForContestantWithGivaah(dto, cookieHeader)
+    const { data, error, authRequired } = await contestantRepo.voteForContestantWithGivaah(dto, request)
     if (authRequired) {
         return json({ errorCode: "LOGIN_REQUIRED" }, { status: 401 });
     }
@@ -191,7 +191,7 @@ export async function voteContestantFromWallet(formData: FormData, request: Requ
         number_of_votes: numberOfVotes,
     };
 
-    const { data, error, authRequired } = await contestantRepo.voteFromWallet(dto, cookieHeader);
+    const { data, error, authRequired } = await contestantRepo.voteFromWallet(dto, request);
     if (authRequired) {
         const { headers } = await setToast({
             request,

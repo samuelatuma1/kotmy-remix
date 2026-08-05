@@ -2,19 +2,15 @@ import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useNavigate, useParams } from "@remix-run/react";
 import { useState } from "react";
 import Cta from "~/components/reusables/Cta";
+import { requireAuth } from "~/lib/session.server";
 import { walletRepo } from "~/services/wallet/wallet.server";
 
 export async function loader ({request, params}: LoaderFunctionArgs){
-    const cookieHeader = request.headers.get("Cookie") ?? "";
-    console.log({cookieHeader})
-    if (!cookieHeader) {
-    // User is not signed in
-      redirect("/login"); 
-    }
+    const validateAuth = await requireAuth(request);
     const walletid = params.walletid ?? "";
     // get wallet
     // get
-    const {error, data, authRequired} = await walletRepo.getWalletWithdrawalAccounts(walletid, cookieHeader);
+    const {error, data, authRequired} = await walletRepo.getWalletWithdrawalAccounts(walletid, request);
 
     if(authRequired){
         redirect("/login")

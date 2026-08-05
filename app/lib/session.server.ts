@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto"
-import { Session, createCookieSessionStorage } from "@remix-run/node" // or cloudflare/deno
+import { Session, createCookieSessionStorage, redirect } from "@remix-run/node" // or cloudflare/deno
 import { ToastMessage } from "./types/toast"
 import { createCookie } from "@remix-run/node";
 import { UserAtom } from "./store/atoms/token";
@@ -38,6 +38,44 @@ export const { getSession, commitSession, destroySession } =
             // secure: true,
         },
     })
+
+export async function getAuthSessionToken(request: Request) {
+    const session = await getSession(request.headers.get("Cookie"));
+    console.log("Token ooooo", session.get("token"));
+    return session.get("token") as string | null;
+}
+
+export async function getAuthHeaders(request: Request) {
+    const token = await getAuthSessionToken(request);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export async function setAuthSession(request: Request, token: string, headers = new Headers()) {
+    const session = await getSession(request.headers.get("Cookie"));
+    console.log("Setting token in session", token);
+    session.set("token", token);
+    headers.append("Set-Cookie", await commitSession(session));
+    return { headers };
+}
+
+export async function clearAuthSession({ request, headers = new Headers() }:
+    { request: Request, headers?: Headers }
+) {
+    const session = await getSession(request.headers.get("Cookie"));
+    headers.append("Set-Cookie", await destroySession(session));
+    return { headers };
+}
+
+export async function requireAuth(request: Request) {
+  const token = await getAuthSessionToken(request);
+
+  if (!token) {
+    const url = new URL(request.url);
+    throw redirect(`/login?redirectTo=${url.pathname}`);
+  }
+
+  return token;
+}
 
 export function isAuthorized(session: Session<SessionData, SessionFlashData>, requiredRole: Role) {
     const role = session.get('role')

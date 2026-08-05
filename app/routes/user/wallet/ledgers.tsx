@@ -14,6 +14,6 @@ export async function loader({ request }) {
     page_size: page_size ? Number(page_size) : 10,
   };
 
-  const result = await walletRepo.getUserLedgersForWallet(cookieHeader, query);
+  const result = await walletRepo.getUserLedgersForWallet(request, query);
   return json({ pagedLedgers: result.data });
 }

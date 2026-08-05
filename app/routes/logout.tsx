@@ -1,15 +1,21 @@
-import {  Link, useSearchParams } from "@remix-run/react"
+import { LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { Link } from "@remix-run/react"
 import { useEffect } from "react"
 import { icons } from "~/assets/icons";
 import Svg from "~/components/reusables/Svg";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager"
+import { clearAuthSession } from "~/lib/session.server";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+    const { headers } = await clearAuthSession({ request });
+    return redirect("/login", { headers });
+}
 
 
 
 
 
 function useLogoutController(){
-    const [searchQuery] = useSearchParams();
     const {deleteUserStoreManager} = useUserManager();
 
    
