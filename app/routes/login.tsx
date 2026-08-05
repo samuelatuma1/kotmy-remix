@@ -36,6 +36,7 @@ export async function action({request}:ActionFunctionArgs) {
 
     let responseHeaders : Record<string, string> = {};
     if(headers?.['Set-Cookie']){
+        console.log("Set-Cookie header found:", headers['Set-Cookie']);
         const setCookieHeader = headers?.['Set-Cookie'];
         responseHeaders = { "Set-Cookie": setCookieHeader }
         return json({ data, error: null }, { 
