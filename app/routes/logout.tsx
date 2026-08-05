@@ -1,5 +1,5 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node"
-import { Link } from "@remix-run/react"
+import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node"
+import { Link, useLoaderData, useNavigate } from "@remix-run/react"
 import { useEffect } from "react"
 import { icons } from "~/assets/icons";
 import Svg from "~/components/reusables/Svg";
@@ -8,27 +8,22 @@ import { clearAuthSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const { headers } = await clearAuthSession({ request });
-    return redirect("/login", { headers });
+    return null;
 }
 
 
+function useLogoutController() {
 
+    const { deleteUserStoreManager } = useUserManager();
 
-
-function useLogoutController(){
-    const {deleteUserStoreManager} = useUserManager();
-
-   
     useEffect(() => {
-        // try to get user
         deleteUserStoreManager();
-        // if user is signed in already, redirect to dashboard
 
-    }, [])
-    
+    }, [deleteUserStoreManager]);
 }
 
 export default function Logout() {
+    const data = useLoaderData<typeof loader>();
     useLogoutController();
     return (
     <main className="h-dvh bg-secondary p-4 flex flex-col">

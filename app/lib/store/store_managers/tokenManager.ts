@@ -65,6 +65,7 @@ export const useUserManager = () => {
     const deleteUserStoreManager = () => {
         setUserStore(null);
         localStorage.removeItem('atom_user');
+        console.log("User removed from store and localStorage")
     }
 
     const hasAcceptedRole = (user: UserAtom | null, acceptedRoles: [] = []): boolean => {
