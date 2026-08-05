@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
-import { useActionData, useLoaderData, Form, useNavigate, useNavigation } from "@remix-run/react";
+import { useActionData, useLoaderData, Form, useNavigate, useNavigation, useSearchParams } from "@remix-run/react";
 import { partnerServer } from "~/services/partner/partner.server";
 import type { ICreatePartnerDTO, AddressDTO, ContactPersonDTO } from "~/services/partner/types/partner.interface";
 import { useState } from "react";
@@ -12,11 +12,6 @@ export async function loader({}: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  console.log("d")
-  for (const [key, value] of formData.entries()) {
-  console.log(`${key}: ${value}`);
-}
-  console.log(formData.values())
   const business_locations: AddressDTO[] = [
     {
       street: formData.get("location_street") as string,
@@ -48,6 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
     notes: (formData.get("notes") as string)?.split("\n") ?? [],
     contact_person,
     business_locations,
+    referred_by_code: (formData.get("referred_by_code") as string)?.trim() || undefined,
   };
   const response = await partnerServer.requestPartnership(dto);
   return response;
@@ -83,11 +79,13 @@ const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 focus:out
 
 function usePartnerOnboardingController(){
     const navigation = useNavigation();
+  const [searchParams] = useSearchParams();
   const [section, setSection] = useState(0);
   const [form, setForm] = useState<any>({
     estimated_weekly_volume_currency: "USD",
     referral_percentage: 10,
-    country_of_incorporation: "Nigeria"
+    country_of_incorporation: "Nigeria",
+    referred_by_code: searchParams.get("referred_by_code") ?? "",
   });
   const actionData = useActionData<{ data?: string; error?: any }>();
   const isSuccess = !!actionData?.data && !actionData?.error;
@@ -193,6 +191,17 @@ export default function PartnerOnboarding() {
         onChange={handleChange}
         required
         placeholder="Enter business email"
+      />
+    </div>
+
+    <div>
+      <Label>Referral code (Optional)</Label>
+      <input
+        name="referred_by_code"
+        className={inputClass}
+        placeholder="Enter referral code"
+        value={form.referred_by_code || ""}
+        onChange={handleChange}
       />
     </div>
 

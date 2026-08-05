@@ -77,6 +77,16 @@ function useUserProfileController() {
 export default function UserProfilePage() {
   const { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController();
   const isLoading = !profile && !email;
+  const [signupReferralLink, setSignupReferralLink] = useState("");
+  const [partnerReferralLink, setPartnerReferralLink] = useState("");
+
+  useEffect(() => {
+    const origin = window.location.origin;
+    const referralParam = encodeURIComponent(referralCode || "");
+    setSignupReferralLink(`${origin}/signup?referred_by_code=${referralParam}`);
+    setPartnerReferralLink(`${origin}/partner/partner?referred_by_code=${referralParam}`);
+  }, [referralCode]);
+
   return (
     <div className="min-h-screen bg-white text-brand-navy">
       <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
@@ -125,6 +135,21 @@ export default function UserProfilePage() {
               <div className="mt-8 grid gap-3 ">
                 <InfoChip label="Referral code" value={referralCode || "Unavailable"} />
                 <InfoChip label="Status" value={profile?.status || "Active"} />
+              </div>
+
+              <div className="mt-8 grid gap-4">
+                <ReferralShareCard
+                  label="Refer users with your referral code"
+                  description="Share your signup link with friends and family."
+                  link={signupReferralLink}
+                  whatsappText={`Join me on KOTMY using my referral link: ${signupReferralLink}`}
+                />
+                <ReferralShareCard
+                  label="Refer partner with your referral code"
+                  description="Invite businesses to join the partner onboarding flow."
+                  link={partnerReferralLink}
+                  whatsappText={`Join KOTMY as a partner using my referral link: ${partnerReferralLink}`}
+                />
               </div>
 
               
@@ -192,6 +217,63 @@ function InfoChip({ label, value }: { label: string; value: string }) {
       <p className="mt-1 break-words text-sm font-semibold text-brand-navy ">{value}</p>
     </div>
   )
+}
+
+function ReferralShareCard({
+  label,
+  description,
+  link,
+  whatsappText,
+}: {
+  label: string;
+  description: string;
+  link: string;
+  whatsappText: string;
+}) {
+  const { toast } = useToast();
+
+  const handleCopy = async () => {
+    if (!link) {
+      return;
+    }
+    await navigator.clipboard.writeText(link);
+    toast({
+      title: "Link Copied",
+      description: `${label} copied to clipboard.`,
+    });
+  };
+
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappText)}`;
+
+  return (
+    <div className="rounded-[1.5rem] border border-brand-grey bg-secondary p-5 shadow-[0_6px_20px_rgba(14,42,77,0.04)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-slate">{label}</p>
+      <p className="mt-2 text-sm leading-6 text-brand-slate">{description}</p>
+      <div className="mt-4 flex flex-col gap-3">
+        <div className="break-all rounded-2xl border border-brand-grey bg-white px-4 py-3 text-sm font-medium text-brand-navy">
+          {link || "Referral link unavailable"}
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={handleCopy}
+            disabled={!link}
+            className="inline-flex items-center justify-center rounded-full border border-brand-navy px-4 py-3 text-sm font-semibold text-brand-navy transition hover:bg-brand-navy hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Copy link
+          </button>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={`inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-white transition ${link ? "bg-green-600 hover:bg-green-500" : "pointer-events-none bg-green-600/50"}`}
+          >
+            Share on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function ProfileSkeleton() {

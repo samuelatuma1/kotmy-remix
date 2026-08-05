@@ -35,6 +35,7 @@ export interface ICreatePartnerDTO {
   notes: string[];
   contact_person: ContactPersonDTO;
   business_locations: AddressDTO[];
+  referred_by_code?: string;
 }
 
 export type BusinessStatus =
@@ -615,4 +616,3 @@ export interface PartnerOrdersLeaderboardSearchResponse {
   position: number;
   currency: WalletCurrency | string;
 }
-

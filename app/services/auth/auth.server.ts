@@ -89,6 +89,10 @@ export default class AuthServer {
         signupData.append("email", formData.get("email") as string);
         signupData.append("password", formData.get("password") as string);
         signupData.append("terms_acknowledged", String(formData.get("terms_acknowledged") === "on"));
+        const referredByCode = formData.get("referred_by_code");
+        if (typeof referredByCode === "string" && referredByCode.trim()) {
+            signupData.append("referred_by_code", referredByCode.trim());
+        }
         if (formData.get("status")) {
             signupData.append("status", formData.get("status") as string);
         }
