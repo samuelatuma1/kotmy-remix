@@ -10,6 +10,7 @@ import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { toast, useToast } from "~/components/reusables/use-toast";
 import DragnDrop from "~/components/public/contests/DragnDrop";
 import { authServer } from "~/services/auth/auth.server";
+import { setAuthSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return null;
@@ -28,14 +29,15 @@ export async function action({ request }: ActionFunctionArgs) {
         return { error: error.detail?.toString() || "An error occurred during login.", data: null};
     }
 
-  if(headers?.['Set-Cookie']){
-        const setCookieHeader = headers?.['Set-Cookie'];
-        responseHeaders = { "Set-Cookie": setCookieHeader }
-        return json({ data, error: null }, { 
-            headers: responseHeaders 
-         });
-    }
+  // if(headers?.['Set-Cookie']){
+  //       const setCookieHeader = headers?.['Set-Cookie'];
+  //       responseHeaders = { "Set-Cookie": setCookieHeader }
+  //       return json({ data, error: null }, { 
+  //           headers: responseHeaders 
+  //        });
+  //   }
 
+  const resp = await setAuthSession(request, data?.token ?? "");
   return json({ error, data, headers });
 }
 
@@ -70,6 +72,8 @@ function useSignupController() {
 
 export default function Signup() {
   const { actionData } = useSignupController();
+  const [searchQuery] = useSearchParams();
+  const referredByCode = searchQuery.get("referred_by_code") ?? "";
   return (
     <main className="bg-secondary p-4 flex flex-col">
       <Link to={'/'} aria-label='home'>
@@ -98,6 +102,15 @@ export default function Signup() {
             <FormControl as="input" id="last_name" name="last_name" placeholder="Last Name" labelText="Last Name" icon={icons.avatarIcon} required />
             <FormControl as="input" id="email" name="email" placeholder="Enter your email address" labelText="Email" icon={icons.avatarIcon} required />
             <FormControl as="input" id="password" name="password" placeholder="Enter your password" labelText="Password" type="password" icon={icons.lockIcon} required />
+            <FormControl
+              as="input"
+              id="referred_by_code"
+              name="referred_by_code"
+              placeholder="Enter referral code (optional)"
+              labelText="Referral code"
+              icon={icons.avatarIcon}
+              defaultValue={referredByCode}
+            />
             <FormControl as="input" id="status" name="status" placeholder="Status (optional)" labelText="Status" icon={icons.avatarIcon} />
 
             <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
