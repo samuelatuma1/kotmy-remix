@@ -143,6 +143,14 @@ export class ApiEndPoints {
         return `/v2/api/users/signup`
     }
 
+    static get complete_registration(){
+        return `/v2/api/users/complete_registration`
+    }
+
+    static get resend_complete_registration_token(){
+        return `/v2/api/users/resend_complete_registration_token_mail`
+    }
+
     static get me() {
         return "/v2/api/users/me";
     }

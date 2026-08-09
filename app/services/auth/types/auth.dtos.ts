@@ -7,7 +7,10 @@ export interface IForgotPasswordDTO {
     email: string
     redirect_link: string
 }
-
+export interface ICompleteRegistrationDTO {
+    user_id: string
+    token: string
+}
 export interface IResetPasswordDTO {
     email: string
     token: string

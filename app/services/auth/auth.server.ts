@@ -1,5 +1,5 @@
 import { ApiCall } from "~/lib/api/fetcher";
-import { IForgotPasswordDTO, ILoginDTO, ILoginResponseDTO, IResetPasswordDTO } from "./types/auth.dtos";
+import { ICompleteRegistrationDTO, IForgotPasswordDTO, ILoginDTO, ILoginResponseDTO, IResetPasswordDTO } from "./types/auth.dtos";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 
 
@@ -55,6 +55,23 @@ export default class AuthServer {
         }
         return { data, error: null, headers }
 
+    }
+
+    async complete_registration(dto: ICompleteRegistrationDTO){
+        let { data, error, headers, authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
+            url: `${ApiEndPoints.complete_registration}?user_id=${dto.user_id}&token=${dto.token}`,
+            method: "PATCH",
+            data: dto
+        });
+        return { data, error, headers, authRequired };
+    }
+
+    async resend_complete_registration_token(email: string){
+        let { data, error, headers, authRequired } = await ApiCall.call<null, unknown>({
+            url: `${ApiEndPoints.resend_complete_registration_token}?email=${encodeURIComponent(email)}`,
+            method: "PATCH"
+        });
+        return { data, error, headers, authRequired };
     }
 
     async getMe(cookie: string | Request | Request) {

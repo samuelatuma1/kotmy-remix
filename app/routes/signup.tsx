@@ -1,4 +1,4 @@
-import { Form, Link, useActionData, useNavigate, useSearchParams } from "@remix-run/react";
+import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import { icons } from "~/assets/icons";
 import { adminAvatar } from "~/assets/images";
 import FormControl from "~/components/reusables/FormControl";
@@ -6,11 +6,9 @@ import Cta from "~/components/reusables/Cta";
 import Svg from "~/components/reusables/Svg";
 import { ActionFunctionArgs, json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useEffect } from "react";
-import { useUserManager } from "~/lib/store/store_managers/tokenManager";
-import { toast, useToast } from "~/components/reusables/use-toast";
+import { useToast } from "~/components/reusables/use-toast";
 import DragnDrop from "~/components/public/contests/DragnDrop";
 import { authServer } from "~/services/auth/auth.server";
-import { setAuthSession } from "~/lib/session.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   return null;
@@ -22,31 +20,30 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ error: "Please confirm that you have read and agreed to the Terms and Conditions.", data: null });
   }
   const signupData = authServer.prepareUserSignupPayload(formData);
-  const { error, data, headers} = await authServer.signup(signupData);
+  const { error, data } = await authServer.signup(signupData);
 
-  let responseHeaders : Record<string, string> = {};
-  if(error){
-        return { error: error.detail?.toString() || "An error occurred during login.", data: null};
-    }
+  if (error) {
+    return json({ error: error.detail?.toString() || "An error occurred during signup.", data: null });
+  }
 
-  // if(headers?.['Set-Cookie']){
-  //       const setCookieHeader = headers?.['Set-Cookie'];
-  //       responseHeaders = { "Set-Cookie": setCookieHeader }
-  //       return json({ data, error: null }, { 
-  //           headers: responseHeaders 
-  //        });
-  //   }
+  const userId = data?._id || data?.str_id;
+  const email = data?.email;
 
-  const resp = await setAuthSession(request, data?.token ?? "");
-  return json({ error, data, headers });
+  if (!userId || !email) {
+    return json({ error: "Signup succeeded but user details were not returned.", data: null }, { status: 500 });
+  }
+
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
+  const params = new URLSearchParams({ user_id: userId, email });
+  if (redirectTo) params.set("redirectTo", redirectTo);
+
+  return redirect(`/completeregistration?${params.toString()}`);
 }
 
 function useSignupController() {
   const actionData = useActionData<typeof action>();
-  const [searchQuery] = useSearchParams();
-  const { setUserStoreManager } = useUserManager();
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (actionData?.error) {
@@ -60,13 +57,6 @@ function useSignupController() {
     }
   }, [actionData?.error]);
 
-  useEffect(() => {
-    if (actionData?.data) {
-      setUserStoreManager(actionData.data, true);
-      navigate(searchQuery.get("redirectTo") || "/user/profile");
-      return;
-    }
-  }, [actionData?.data]);
   return { actionData };
 }
 
