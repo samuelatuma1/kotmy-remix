@@ -916,6 +916,9 @@ var ApiEndPoints = class {
   static getPartnerOrderById(orderId) {
     return `/v2/api/partner/business/order/${orderId}`;
   }
+  static getCustomerOrderById(orderId) {
+    return `/v2/api/partner/customer-order/${orderId}`;
+  }
   static get fulfillPartnerOrder() {
     return "/v2/api/partner/orders/fulfill";
   }
@@ -5620,6 +5623,14 @@ var PartnerServer = class {
     }, cookies);
     return error ? { error } : { data };
   }
+  async getCustomerOrderById(orderId, cookies) {
+    let { data, error } = await ApiCall.call({
+      url: ApiEndPoints.getCustomerOrderById(orderId),
+      method: "GET"
+    }, cookies);
+    return error ? { error } : { data };
+  }
+  // /v2/api/partner/customer-order/{id}
   async fulfillOrder(dto, cookies) {
     let { data, error } = await ApiCall.call({
       url: ApiEndPoints.fulfillPartnerOrder,
@@ -17785,7 +17796,7 @@ async function verifyOrderForMutation({
   request,
   requirePrepaid
 }) {
-  let orderRes = await partnerServer.getOrderById(orderId, request);
+  let orderRes = await partnerServer.getCustomerOrderById(orderId, request);
   if (orderRes.error || !orderRes.data)
     return json58(
       {

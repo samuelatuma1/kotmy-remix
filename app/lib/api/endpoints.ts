@@ -304,6 +304,10 @@ export class ApiEndPoints {
         return `/v2/api/partner/business/order/${orderId}`;
     }
 
+    static getCustomerOrderById(orderId: string) {
+        return `/v2/api/partner/customer-order/${orderId}`;
+    }
+
     static get fulfillPartnerOrder() {
         return `/v2/api/partner/orders/fulfill`;
     }

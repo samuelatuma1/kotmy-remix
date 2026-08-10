@@ -161,7 +161,7 @@ async function verifyOrderForMutation({
   request: Request;
   requirePrepaid: boolean;
 }): Promise<{ order: OrderResponse; item: OrderItem } | Response> {
-  const orderRes = await partnerServer.getOrderById(orderId, request);
+  const orderRes = await partnerServer.getCustomerOrderById(orderId, request);
   if (orderRes.error || !orderRes.data) {
     return json<OrderMutationResponse>(
       {

@@ -418,6 +418,18 @@ export class PartnerServer {
     return { data };
   }
 
+  async getCustomerOrderById(orderId: string, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
+    const { data, error } = await ApiCall.call<OrderResponse, unknown>({
+      url: ApiEndPoints.getCustomerOrderById(orderId),
+      method: "GET",
+    }, cookies);
+
+    if (error) return { error };
+    return { data };
+  }
+
+  // /v2/api/partner/customer-order/{id}
+
   async fulfillOrder(dto: IOrderData, cookies: string | Request): Promise<TFetcherResponse<OrderResponse>> {
     const { data, error } = await ApiCall.call<OrderResponse, IOrderData>({
       url: ApiEndPoints.fulfillPartnerOrder,
