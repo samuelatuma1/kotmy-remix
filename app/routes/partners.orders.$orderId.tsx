@@ -12,7 +12,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { setToast } from "~/lib/session.server";
 import { cn } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
-import type { IOrderData, OrderItem, OrderProductStatus, OrderResponse } from "~/services/partner/types/partner.interface";
+import { IOrderData, OrderItem, OrderProductStatus, OrderResponse } from "~/services/partner/types/partner.interface";
 
 type OrderDetailLoaderData = {
   order: OrderResponse | null;
@@ -30,7 +30,7 @@ type OrderMutationResponse =
       error: string;
     };
 
-const actionableStatuses: OrderProductStatus[] = ["Pending", "Active"];
+const actionableStatuses: OrderProductStatus[] = [OrderProductStatus.Pending, OrderProductStatus.Active];
 
 function formatMoney(currency: string, value: number) {
   return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
