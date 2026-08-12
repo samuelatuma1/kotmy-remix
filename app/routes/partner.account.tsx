@@ -17,7 +17,7 @@ export default function PartnerLoginOrRequestPartnerShip() {
   const {setUserStoreManager, getUserStoreManager} = useUserManager();
   var user = getUserStoreManager();
   const location = useLocation();
-  if(!user || !user.is_partner_account){
+  if(!user || !(user.is_partner_account || user.business_id) ){
     return (
         <main className="h-dvh bg-secondary p-4 flex flex-col">
                 <Link to={'/'} aria-label='home'>
