@@ -1,9 +1,9 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
-import { IContestant, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
+import { IContestant, IContestantBiodataWContest, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { IContestWStageWContestant } from "../contest/types/contest.interface"
+import { IContestWFinalResult, IContestWStageWContestant } from "../contest/types/contest.interface"
 
 // const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3NzExNzM0NDJ9.sHAuj-OTgwKuSpgrsY0vjPeHHnOJNzENSxmYIFo414k"
 // const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NWZjNTg0ZDdiNmI5Y2RlODI2MTg3MCIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZSwiaXNfYWN0aXZlIjp0cnVlLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbIm1hbmFnZSB1c2VycyIsIm1hbmFnZSBjb250ZW50IiwibWFuYWdlIGJsb2ciLCJtYW5hZ2UgcGF5bWVudCIsIm1hbmFnZSBjb250ZXN0IiwibWFuYWdlIHZvdGVzIl0sImV4cCI6MTgwMTIyOTgyMH0.hvXKQTbFqe1roaqPJQAJrngxPRS5kbyu_UHgJkq2Hy8"
@@ -144,6 +144,20 @@ export class ContestantRepository implements IContestantRepository {
             method: MethodsEnum.POST,
             url: ApiEndPoints.voteFromWallet,
             data: payload
+        }, cookie)
+    }
+
+    async getContestantProfiles(cookie: Request): Promise<TFetcherResponse<IContestantBiodataWContest[]>> {
+        return await ApiCall.call<IContestantBiodataWContest[], unknown>({
+            method: MethodsEnum.GET,
+            url: ApiEndPoints.getContestantProfiles,
+        }, cookie)
+    }
+
+    async getContestsForContestantProfile(profileId: string, cookie: Request): Promise<TFetcherResponse<IContestWFinalResult[]>> {
+        return await ApiCall.call<IContestWFinalResult[], unknown>({
+            method: MethodsEnum.GET,
+            url: ApiEndPoints.getContestsForContestantProfile(profileId),
         }, cookie)
     }
 }

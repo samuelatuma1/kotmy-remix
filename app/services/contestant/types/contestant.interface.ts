@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { IContestWStageWContestant, IStage, Social } from "~/services/contest/types/contest.interface";
+import { IContestWStageWContestant, IStage, IContest, Social } from "~/services/contest/types/contest.interface";
 
 export interface IContestant {
   _id: string;
@@ -57,6 +57,10 @@ export interface IContestantBiodata {
     whatsapp_no: string;
     info: string;
   
+}
+
+export interface IContestantBiodataWContest extends IContestantBiodata {
+    contest?: IContest[] 
 }
 export interface ILeanContestant {
   _id: string;
@@ -154,6 +158,7 @@ export interface IContestantRepository {
 }
 
 import { StageMediaType, StageStatus } from "~/lib/types/contest.interface"
+import { extend } from "isbot";
 
 export interface EnrichedContestant{
   id: string

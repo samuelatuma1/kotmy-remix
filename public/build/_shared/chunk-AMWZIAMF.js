@@ -1,0 +1,1 @@
+function m(t){return t>=1e9?`${t/1e9}b`:t>=1e6?`${t/1e6}m`:t>=1e3?`${t/1e3}k`:t}function u(t,n={}){return new Intl.NumberFormat("en-NG",n).format(t)}function s(t){let n=Math.abs(Math.trunc(t)),r=n%100,e=n%10,o=r>=11&&r<=13?"th":["th","st","nd","rd"][e]||"th";return`${t}${o}`}export{m as a,u as b,s as c};

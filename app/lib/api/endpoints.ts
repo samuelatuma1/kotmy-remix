@@ -374,4 +374,12 @@ export class ApiEndPoints {
     static get voteFromWallet() {
         return `/v2/api/payment/vote-from-wallet`
     }
+
+    static get getContestantProfiles() {
+        return `/v2/api/contestant/get_contestant_profiles`
+    }
+
+    static getContestsForContestantProfile(profileId: string) {
+        return `/v2/api/contestant/biodata_details/${profileId}`
+    }
 }

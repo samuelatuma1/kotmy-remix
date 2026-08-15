@@ -97,7 +97,9 @@ export interface  ContestantResultForContest{
     position: number;
     total_votes: number;
     contestant_biodata: IContestantBiodata
-    table_data: { [key: string]: string | number }
+    table_data: { [key: string]: string | number };
+    contestant_image_url?: string;
+    contestant_remark?: string;
 }
 export interface IStage {
     _id: string

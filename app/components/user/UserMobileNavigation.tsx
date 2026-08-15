@@ -18,7 +18,7 @@ const primaryNavs = [
     {
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
             { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
-            { label: 'Contest Registrations', url: 'transactions/contest-registrations' },
+            { label: 'Contestant Profiles', url: '/user/contestantprofiles' },
             { label: 'My Profile', url: '/user/profile' },
             { label: 'Affiliate Leaderboard', url: '/user/affiliate' },
             { label: 'Wallet', url: '/user/wallet' },
