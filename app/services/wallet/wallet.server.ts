@@ -1,5 +1,5 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse } from "./types/wallet.interface";
+import { IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, IAffiliateLeaderboardResponse, IAffiliateLeaderboardSearch, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse } from "./types/wallet.interface";
 import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
@@ -260,6 +260,28 @@ export class WalletRepository{
           }
     
           const { data, error, authRequired } = await ApiCall.call<IAdminRefereeIncomeForReferrerPagedResponse, unknown>({
+            method: "GET",
+            url,
+          }, cookies);
+    
+          if (data) return { data };
+          return { error, authRequired };
+    }
+
+    async queryAffiliateReferralBoard(cookies: Request, query: IAffiliateLeaderboardSearch | null = null): Promise<TFetcherResponse<IPaginatedResponse<IAffiliateLeaderboardResponse>>>{
+          let url = ApiEndPoints.pagedAffiliateReferralBoard;
+          if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
+              if (v !== undefined && v !== null) acc[k] = String(v);
+              return acc;
+            }, {} as Record<string, string>));
+
+            const qs = params.toString();
+            console.log({qs})
+            if (qs) url = `${url}?${qs}`;
+          }
+
+          const { data, error, authRequired } = await ApiCall.call<IPaginatedResponse<IAffiliateLeaderboardResponse>, unknown>({
             method: "GET",
             url,
           }, cookies);

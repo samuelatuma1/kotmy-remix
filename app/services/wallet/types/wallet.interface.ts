@@ -210,3 +210,17 @@ export interface IAdminReferralsIncomeForReferrerSummary{
 export interface IAdminRefereeIncomeForReferrerPagedResponse extends IPaginatedResponse<IAdminIncomeForReferrer>{
   summary: IAdminReferralsIncomeForReferrerSummary
 }
+
+export interface IAffiliateLeaderboardSearch extends IBasePaginationQuery {
+    created_at_start_date: Date;
+    created_at_end_date: Date;
+    currency: WalletCurrency;
+}
+
+export interface IAffiliateLeaderboardResponse {
+    user_name?: string | null;
+    business_name?: string | null;
+    currency: WalletCurrency;
+    amount_earned: number;
+    position: number;
+}

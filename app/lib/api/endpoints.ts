@@ -249,6 +249,10 @@ export class ApiEndPoints {
         return `/v2/api/wallet/affiliate_leaderboard`
     }
 
+    static get pagedAffiliateReferralBoard(){
+        return `/v2/api/payment/affiliate/leaderboard`
+    }
+
     static get adminAffiliateBoard(){
         return `/v2/api/admin/affiliate_leaderboard`
     }
