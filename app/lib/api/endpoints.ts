@@ -162,6 +162,10 @@ export class ApiEndPoints {
         return `/v2/api/wallet/user_wallets`
     }
 
+    static get partnerWallets(){
+        return `/v2/api/wallet/business_wallets`
+    }
+
     static get businessLedgers(){
         return `/v2/api/wallet/business_ledgers`
     }
@@ -212,9 +216,16 @@ export class ApiEndPoints {
     static get requestWithdrawalTokenForPinCreation(){
         return `/v2/api/wallet/request_create_withdrawal_token`
     }
+    static get requestPartnerWithdrawalTokenForPinCreation(){
+        return `/v2/api/wallet/business_request_create_withdrawal_token`
+    }
 
     static get setWithdrawalPin(){
         return `/v2/api/wallet/create_withdrawal_pin`
+    }
+
+    static get setPartnerWithdrawalPin(){
+        return `/v2/api/payment/set_withdrawal_pin`
     }
 
     static getWalletWithdrawalAccounts(walletId: string){
@@ -233,12 +244,22 @@ export class ApiEndPoints {
         return `/v2/api/wallet/save_personal_withdrawal_account`
     }
 
+    static get addPartnerAccountDetails(){
+        return `/v2/api/wallet/business_save_personal_withdrawal_account`
+    }
+
     static get getWithdrawalCharges(){
         return `/v2/api/wallet/get_withdrawal_charge_for_account`
+    }
+    static get getPartnerWithdrawalCharges(){
+        return `/v2/api/wallet/business_get_withdrawal_charge_for_account`
     }
 
     static get requestWithdrawal() {
         return '/v2/api/wallet/request_withdrawal';
+    }
+    static get requestPartnerWithdrawal() {
+        return`/v2/api/wallet/business_request_withdrawal`
     }
 
     static get createAdminUser(){

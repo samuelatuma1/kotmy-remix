@@ -231,13 +231,13 @@ export default function WalletPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
-          <Link to={`/user/withdraw/${wallet._id}`}>
+          <Link to={`/partners/withdraw/${wallet._id}`}>
            <button className="bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
             ↗ Withdraw
           </button>
           </Link>
          
-          {!wallet.business_withdrawal_pin_set ? (
+          {wallet.business_withdrawal_pin_set ? (
             <Link to={`/partners/addwithdrawalaccount/${wallet._id}`}>
               <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
                 Add withdrawal account
@@ -245,7 +245,7 @@ export default function WalletPage() {
             </Link>
           
           ) : (
-            <Link to='/user/setwithdrawalpin'>
+            <Link to='/partners/setwithdrawalpin'>
             <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
               + Set withdrawal PIN
             </button></Link>

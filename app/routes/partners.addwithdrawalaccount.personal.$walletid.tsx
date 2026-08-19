@@ -63,7 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
         pin: formData.get("pin") as string,
       }
       
-      var response = await walletRepo.addAccountDetails(_dto, request)
+      var response = await walletRepo.addPartnerAccountDetails(_dto, request)
       console.log("ADD ACCOUNT DEETS",response?.error?.detail,response, _dto)
       return json({...response, intent})
       break;

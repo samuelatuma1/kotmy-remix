@@ -40,7 +40,7 @@ export function useAccountTypePage(){
   const [accountRedirectUrl, setAccountRedirectUrl] = useState("")
   function updateSelectAccountType(accountType: "personal" | "partner"){
       setSelectedType(accountType)
-      setAccountRedirectUrl(`/user/addwithdrawalaccount/${accountType}/${params.walletid}`)
+      setAccountRedirectUrl(`/partners/addwithdrawalaccount/${accountType}/${params.walletid}`)
 
   }
   return {selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl}

@@ -61,6 +61,21 @@ export class WalletRepository{
         return { error, authRequired }
     }
 
+     async getPartnerWalletById(walletId: string, cookies: string | Request): Promise<TFetcherResponse<IWallet>> {
+        // Implement API call to fetch user wallets
+        const { data, error,authRequired } = await ApiCall.call<IWallet[], unknown>({
+            method: "GET",
+            url: ApiEndPoints.partnerWallets,
+            
+        }, cookies)
+
+        if(data) {
+            const res = data.find(wallet => wallet._id === walletId)
+            return {data: res as unknown as IWallet, error, authRequired}
+        }
+        return { error, authRequired }
+    }
+
     async getWalletWithdrawalAccounts(walletid: string, cookies: string | Request): Promise<TFetcherResponse<IWalletAccount[]>> {
         const { data, error,authRequired } = await ApiCall.call<IWalletAccount[], unknown>({
             method: "GET",
@@ -238,6 +253,19 @@ export class WalletRepository{
         if(data) return {data}
         return { error, authRequired } as TFetcherResponse<string>
     }
+
+    async requestPartnerWithdrawalToken(cookies: string | Request): Promise<TFetcherResponse<string>> {
+        const { data, error,authRequired } = await ApiCall.call<string, unknown>({
+            method: "GET",
+            url: ApiEndPoints.requestPartnerWithdrawalTokenForPinCreation,
+            
+        }, cookies)
+
+        console.log({data, error})
+        if(data) return {data}
+        return { error, authRequired } as TFetcherResponse<string>
+    }
+    
     async createWithdrawalPin( dto: ICreateWithdrawalPinDTO, cookies: string | Request): Promise<TFetcherResponse<ILoginResponseDTO>> {
         const { data, error,authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
             method: "POST",
@@ -251,6 +279,22 @@ export class WalletRepository{
         
         
     }
+
+    async createPartnerWithdrawalPin( dto: ICreateWithdrawalPinDTO, cookies: string | Request): Promise<TFetcherResponse<ILoginResponseDTO>> {
+        const { data, error,authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
+            method: "POST",
+            url: ApiEndPoints.setPartnerWithdrawalPin,
+            data: dto
+            
+        }, cookies)
+        
+        if(data) return {data}
+        return { error, authRequired }
+        
+        
+    }
+
+    
 
     async resolveAccountDetails(dto: IResolveAccountRequest, cookies: string | Request): Promise<TFetcherResponse<IResolveAccountDetailsResponse>> {
         const { data, error,authRequired } = await ApiCall.call<IResolveAccountDetailsResponse, unknown>({
@@ -278,6 +322,20 @@ export class WalletRepository{
         return { error, authRequired }
     }
 
+    async addPartnerAccountDetails(dto: IAddAccountDetailsRequest, cookies: string | Request): Promise<TFetcherResponse<IWalletAccount>> {
+        const { data, error,authRequired } = await ApiCall.call<IWalletAccount, unknown>({
+            method: "POST",
+            url: ApiEndPoints.addPartnerAccountDetails,
+            data: dto
+            
+        }, cookies)
+        
+        if(data) return {data}
+        return { error, authRequired }
+    }
+
+    
+
      async getWithdrawalCharges(dto: IGetWithdrawalCharge, cookies: string | Request): Promise<TFetcherResponse<IWithdrawalChargeResponse>> {
         const { data, error,authRequired } = await ApiCall.call<IWithdrawalChargeResponse, unknown>({
             method: "POST",
@@ -289,10 +347,36 @@ export class WalletRepository{
         if(data) return {data}
         return { error, authRequired }
     }
+
+    async getPartnerWithdrawalCharges(dto: IGetWithdrawalCharge, cookies: string | Request): Promise<TFetcherResponse<IWithdrawalChargeResponse>> {
+        const { data, error,authRequired } = await ApiCall.call<IWithdrawalChargeResponse, unknown>({
+            method: "POST",
+            url: ApiEndPoints.getPartnerWithdrawalCharges,
+            data: dto
+            
+        }, cookies)
+        console.log("EERIE", dto,data, error)
+        if(data) return {data}
+        return { error, authRequired }
+    }
+
+    // business_get_withdrawal_charge_for_account
     async requestWithdrawal(dto: IRequestWithdrawal, cookies: string | Request): Promise<TFetcherResponse<IRequestWithdrawalResponse>> {
         const { data, error, authRequired } = await ApiCall.call<IRequestWithdrawalResponse, unknown>({
             method: "POST",
             url: ApiEndPoints.requestWithdrawal,
+            data: dto
+        }, cookies);
+
+        if (data) return { data };
+        return { error, authRequired };
+    }
+
+    // /v2/api/wallet/business_request_withdrawal
+     async requestPartnerWithdrawal(dto: IRequestWithdrawal, cookies: string | Request): Promise<TFetcherResponse<IRequestWithdrawalResponse>> {
+        const { data, error, authRequired } = await ApiCall.call<IRequestWithdrawalResponse, unknown>({
+            method: "POST",
+            url: ApiEndPoints.requestPartnerWithdrawal,
             data: dto
         }, cookies);
 
