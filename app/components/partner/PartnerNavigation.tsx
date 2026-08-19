@@ -18,7 +18,8 @@ const navsWSubs = [
             { label: 'Manage Locations', icon: icons.adminTournamentIcon, url:  '/partners/location'},
             { label: 'Manage Orders', icon: icons.adminTournamentIcon, url:  '/partners/orders'},
             { label: 'Settlements', icon: icons.adminTournamentIcon, url:  '/partners/settlements'},
-            { label: 'Leaderboard', icon: icons.adminTournamentIcon, url:  '/partners/orders/leaderboard'}
+            { label: 'Leaderboard', icon: icons.adminTournamentIcon, url:  '/partners/orders/leaderboard'},
+            { label: 'Wallet', icon: icons.adminTournamentIcon, url:  '/partners/wallet'}
 
         ]
     },

@@ -20,6 +20,19 @@ export class WalletRepository{
         return { error, authRequired }
     }
 
+    async getBusinessWallets(cookies: string | Request): Promise<TFetcherResponse<IWallet[]>> {
+        // Implement API call to fetch user wallets
+        const { data, error,authRequired } = await ApiCall.call<IWallet[], unknown>({
+            method: "GET",
+            url: ApiEndPoints.businessWallets,
+
+        }, cookies)
+
+        console.log({data, error})
+        if(data) return {data}
+        return { error, authRequired }
+    }
+
     async getOrganizationWallets(cookies: string | Request): Promise<TFetcherResponse<IWallet[]>> {
         // Implement API call to fetch user wallets
         const { data, error,authRequired } = await ApiCall.call<IWallet[], unknown>({
@@ -100,6 +113,50 @@ export class WalletRepository{
         return { error, authRequired }
     }
 
+    async getBusinessLedgersForWallet(cookies: string | Request, query: IUserLedgersQuery | null = null): Promise<TFetcherResponse<IPaginatedResponse<ILedgerEntry>>>{
+        // convert all data in query to url params if query is not null
+        let url = ApiEndPoints.businessLedgers;
+        if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
+                if (value !== null && value !== undefined) {
+                    acc[key] = String(value);
+                }
+                return acc;
+            }, {} as Record<string, string>));
+            const queryString = params.toString();
+
+            if (queryString) {
+                url = `${url}?${queryString}`;
+            }
+        }
+        
+        const { data, error,authRequired } = await ApiCall.call<IPaginatedResponse<ILedgerEntry>, unknown>({
+            method: "GET",
+            url,
+            
+        }, cookies)
+
+        console.log({data, error})
+        if(data) return {data}
+        return { error, authRequired }
+    }
+
+    async getBusinessWalletById(walletId: string, cookies: string | Request): Promise<TFetcherResponse<IWallet>> {
+        // Implement API call to fetch user wallets
+        const { data, error,authRequired } = await ApiCall.call<IWallet[], unknown>({
+            method: "GET",
+            url: ApiEndPoints.businessWallets,
+            
+        }, cookies)
+
+        if(data) {
+            const res = data.find(wallet => wallet._id === walletId)
+            return {data: res as unknown as IWallet, error, authRequired}
+        }
+        return { error, authRequired }
+    }
+
+
     // /v2/api/wallet/organization_ledgers
     async getOrganizationLedgersForWallet(cookies: string | Request, query: IUserLedgersQuery | null = null): Promise<TFetcherResponse<IPaginatedResponse<ILedgerEntry>>>{
         // convert all data in query to url params if query is not null
@@ -132,6 +189,26 @@ export class WalletRepository{
 
     async wallet_search(query: IUserLedgersQuery, cookies: string | Request): Promise<TFetcherResponse<IWallet>>{
         let url = ApiEndPoints.walletMetrics;
+        const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
+            if (value !== null && value !== undefined) {
+                acc[key] = String(value);
+            }
+            return acc;
+        }, {} as Record<string, string>));
+        const queryString = params.toString();
+        if (queryString) url = `${url}?${queryString}`;
+
+        const { data, error, authRequired } = await ApiCall.call<IWallet, unknown>({
+            method: 'GET',
+            url,
+        }, cookies);
+        console.log("MY DATA", data)
+        if (data) return { data };
+        return { error, authRequired };
+    }
+
+    async business_wallet_search(query: IUserLedgersQuery, cookies: string | Request): Promise<TFetcherResponse<IWallet>>{
+        let url = ApiEndPoints.businessWalletMetrics;
         const params = new URLSearchParams(Object.entries(query).reduce((acc, [key, value]) => {
             if (value !== null && value !== undefined) {
                 acc[key] = String(value);

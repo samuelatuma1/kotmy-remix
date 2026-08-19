@@ -162,6 +162,14 @@ export class ApiEndPoints {
         return `/v2/api/wallet/user_wallets`
     }
 
+    static get businessLedgers(){
+        return `/v2/api/wallet/business_ledgers`
+    }
+
+    static get businessWallets(){
+        return `/v2/api/wallet/business_wallets`
+    }
+
     static get organizationWallets(){
         return  `/v2/api/wallet/organizations_wallets`
     }
@@ -176,6 +184,10 @@ export class ApiEndPoints {
     static get walletMetrics(){
         return `/v2/api/wallet/wallet_metrics`
     }
+    static get businessWalletMetrics(){
+        return `/v2/api/wallet/business_wallet_metrics`
+    }
+    
 
     static get adminPayments(){
         return `/v2/api/admin/payment/payments`
