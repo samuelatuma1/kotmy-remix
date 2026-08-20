@@ -1,22 +1,35 @@
 import { ActionFunctionArgs, json, redirect, type LoaderFunctionArgs, type SerializeFrom } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { useState, useMemo, useEffect } from "react";
 import { UserAtom } from "~/lib/store/atoms/token";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { ICreateWithdrawalPinDTO, ILedgerEntry, IWallet } from "~/services/wallet/types/wallet.interface";
 import { walletRepo } from "~/services/wallet/wallet.server";
-import { User, AlertCircle, X } from "lucide-react";
+import { User, AlertCircle, X, Mail } from "lucide-react";
 import { useRef } from 'react';
 import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
 import { toast } from "~/components/reusables/use-toast";
 import { authServer } from "~/services/auth/auth.server";
 import { requireAuth } from "~/lib/session.server";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/reusables/Dialog";
 var tokenRequested = false;
 export async function action({ request }: ActionFunctionArgs) {
     const cookieHeader = request.headers.get("Cookie") ?? "";
 
     const formData = await request.formData()
+    const intent = formData.get("intent");
+
+    if (intent === "request-token") {
+        const { data, error, authRequired } = await walletRepo.requestWithdrawalToken(request);
+        return json({ data, error, authRequired, intent });
+    }
     
       
     const withdrawalPinDto: ICreateWithdrawalPinDTO = {
@@ -28,7 +41,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     const {data, error, authRequired} = await walletRepo.createWithdrawalPin(withdrawalPinDto, request)
     console.log({ data, error, authRequired })
-    return json({ data, error, authRequired });
+    return json({ data, error, authRequired, intent });
         
 }
 
@@ -46,14 +59,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
         // user already has pin setup. No need to retry
         return redirect("/user/wallet")
     }
-    if(!tokenRequested){
-        const d = await walletRepo.requestWithdrawalToken(request);
-        if(!d.data){
-         return redirect("/user/wallet")
-         }
-        tokenRequested = true;
-    }
-    
   }
   return json({ data, error });
 }
@@ -61,9 +66,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 function useSetWithdrawalPinController() {
   const {setUserStoreManager, getUserStoreManager} = useUserManager();
   const [user, setUser] = useState<UserAtom | null>(null)
+  const [showTokenModal, setShowTokenModal] = useState(true)
   // Track which wallet is currently selected (default to the first one)
   const actionData = useActionData<typeof action>();
   const loader_ = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
+  const isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
 
   useEffect(() => {
     const _user = getUserStoreManager()
@@ -76,16 +84,38 @@ function useSetWithdrawalPinController() {
     user,
     actionData,
     setUserStoreManager,
-    loader_
+    loader_,
+    showTokenModal,
+    setShowTokenModal,
+    isRequestingToken
   };
 }
 
 
 export default function SetWithdrawalPin() {
-  const {loader_, actionData, setUserStoreManager} = useSetWithdrawalPinController();
+  const {loader_, actionData, setUserStoreManager, showTokenModal, setShowTokenModal, isRequestingToken} = useSetWithdrawalPinController();
   useEffect(() => {
     console.log({actionData})
    
+    if (actionData?.intent === "request-token") {
+      if (actionData?.error) {
+        toast({
+          variant: "destructive",
+          title: "Token Request Failed",
+          description: actionData.error?.detail?.toString() || actionData.error?.toString() || "Failed to send token",
+        });
+      }
+      if (actionData?.data) {
+        setShowTokenModal(false);
+        toast({
+          variant: "default",
+          title: "Token sent",
+          description: "We've sent a token to your email address.",
+        });
+      }
+      return;
+    }
+
     if (actionData?.error) {
       toast({
         variant: "destructive",
@@ -100,7 +130,7 @@ export default function SetWithdrawalPin() {
         title: "Withdrawal PIN updated successfully",
         description: "Withdrawal PIN created successfully",
       });
-      setUserStoreManager(actionData.data, true)
+      setUserStoreManager(actionData.data as unknown as UserAtom, true)
       }
     }, [actionData])
   
@@ -145,7 +175,7 @@ export default function SetWithdrawalPin() {
               pattern="[0-9]*"
               name="token"
               placeholder="4 digit token sent to your email"
-              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-[#4D4966]"
+              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-brand-pink"
             />
           </div>
           
@@ -169,7 +199,7 @@ export default function SetWithdrawalPin() {
               pattern="[0-9]*"
               name="withdrawal_pin"
               placeholder="Enter your desired 6-digit PIN"
-              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-[#4D4966]"
+              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-brand-pink"
             />
           </div>
           
@@ -193,7 +223,7 @@ export default function SetWithdrawalPin() {
               pattern="[0-9]*"
               name="confirm_withdrawal_pin"
               placeholder="Confirm your 6-digit PIN"
-              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-[#4D4966]"
+              className="w-full rounded-xl border border-[#D1D1E0] p-4 text-lg text-[#1A1A1A] outline-none transition-focus focus:border-brand-pink"
             />
           </div>
           
@@ -207,12 +237,56 @@ export default function SetWithdrawalPin() {
         {/* Primary Action Button */}
         <button 
           type="submit"
-          className="mt-10 w-full rounded-2xl bg-[#4D4966] py-4 text-lg font-semibold text-white transition-all hover:bg-[#3f3b55] active:scale-[0.99]"
+          className="mt-10 w-full rounded-2xl bg-brand-pink py-4 text-lg font-semibold text-white transition-all hover:bg-brand-pink/90 active:scale-[0.99]"
         >
           Create Withdrawal PIN
         </button>
 
       </Form>
+
+      {/* Token delivery modal */}
+      <Dialog open={showTokenModal} onOpenChange={setShowTokenModal}>
+        <DialogContent className="max-w-md rounded-2xl p-8 bg-white">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-pink/10">
+              <Mail className="h-6 w-6 text-brand-pink" />
+            </div>
+            <DialogTitle className="text-xl font-bold tracking-tight text-[#1A1A1A]">
+              Set your withdrawal pin
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-[15px] text-gray-500">
+              Choose how we should send token to set withdrawal pin.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-6 space-y-3">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-brand-pink bg-brand-pink/5 p-4 transition-colors">
+              <input
+                type="radio"
+                name="token_delivery"
+                value="email"
+                defaultChecked
+                className="h-4 w-4 accent-brand-pink"
+              />
+              <span className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-brand-pink" />
+                <span className="text-[15px] font-medium text-[#1A1A1A]">Send to email</span>
+              </span>
+            </label>
+          </div>
+
+          <Form method="POST" className="mt-6">
+            <input type="hidden" name="intent" value="request-token" />
+            <button
+              type="submit"
+              disabled={isRequestingToken}
+              className="w-full rounded-2xl bg-brand-pink py-4 text-lg font-semibold text-white transition-all hover:bg-brand-pink/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isRequestingToken ? "Sending token..." : "Send token"}
+            </button>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
