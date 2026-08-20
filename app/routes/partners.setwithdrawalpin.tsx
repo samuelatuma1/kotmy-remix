@@ -99,7 +99,7 @@ export default function SetWithdrawalPin() {
         toast({
           variant: "default",
           title: "Token sent",
-          description: "We've sent a token to your email address.",
+          description: "We've sent a token to business and business owner's email address.",
         });
       }
       return;

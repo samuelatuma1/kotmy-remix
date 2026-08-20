@@ -255,6 +255,7 @@ export class WalletRepository{
     }
 
     async requestPartnerWithdrawalToken(cookies: string | Request): Promise<TFetcherResponse<string>> {
+        console.log(`Requesting partner withdrawal token for Request: ${cookies}`);
         const { data, error,authRequired } = await ApiCall.call<string, unknown>({
             method: "GET",
             url: ApiEndPoints.requestPartnerWithdrawalTokenForPinCreation,
