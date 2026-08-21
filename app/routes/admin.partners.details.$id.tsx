@@ -149,6 +149,7 @@ function DetailCardWithLink({ label, value, link }: { label: string; value?: str
 
 export default function PartnerDetailsPage() {
   const { business } = useLoaderData<typeof loader>() as { business: Business };
+  console.log("Business details:", business);
   const navigation = useNavigation();
   const navigate = useNavigate();
   const isSubmitting = navigation.state === "submitting";
@@ -239,6 +240,18 @@ export default function PartnerDetailsPage() {
               <DetailCard label="Country" value={business.contact_person?.country} />
             </div>
           </div>
+
+          {business.owner && (
+            <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6">
+              <h2 className="text-lg font-bold text-primary">Business owner</h2>
+              <div className="grid sm:grid-cols-2 gap-3 mt-4">
+                <DetailCard label="Owner ID" value={business.owner._id || business.owner.str_id} />
+                <DetailCard label="Full Name" value={business.owner.full_name || business.owner.fullName || (business.owner.user_profile ? `${business.owner.user_profile.first_name} ${business.owner.user_profile.last_name}`.trim() : null)} />
+                <DetailCard label="Email" value={business.owner.email} />
+                <DetailCard label="Status" value={business.owner.user_profile?.status} />
+              </div>
+            </div>
+          )}
 
           <div className="rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6">
             <h2 className="text-lg font-bold text-primary">Business locations</h2>

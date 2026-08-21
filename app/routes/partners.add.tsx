@@ -198,7 +198,7 @@ export default function AddPartnerProduct() {
             <SectionHeading
               eyebrow="Product basics"
               title="Tell shoppers what this is"
-              description="Keep the naming, description, category, and SKU crisp so the listing is easy to scan."
+              description="Description of product goes here."
             />
 
             <div className="grid gap-4">
