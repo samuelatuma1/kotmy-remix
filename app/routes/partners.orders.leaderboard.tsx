@@ -140,7 +140,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const query = buildLeaderboardQuery(url.searchParams);
   const cookieHeader = request.headers.get("Cookie") ?? undefined;
 
-  const leaderboardRes = await partnerServer.getPartnerOrdersLeaderboard(query, cookieHeader ?? "");
+  const leaderboardRes = await partnerServer.getPartnerOrdersLeaderboard(query, request);
 
   if (leaderboardRes.authRequired) {
     return json<LeaderboardLoaderData>({

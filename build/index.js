@@ -8524,7 +8524,7 @@ function LeaderboardRow({ entry: entry2 }) {
   ] }) });
 }
 async function loader24({ request }) {
-  let url = new URL(request.url), query = buildLeaderboardQuery(url.searchParams), cookieHeader = request.headers.get("Cookie") ?? void 0, leaderboardRes = await partnerServer.getPartnerOrdersLeaderboard(query, cookieHeader ?? "");
+  let url = new URL(request.url), query = buildLeaderboardQuery(url.searchParams), cookieHeader = request.headers.get("Cookie") ?? void 0, leaderboardRes = await partnerServer.getPartnerOrdersLeaderboard(query, request);
   return leaderboardRes.authRequired ? json22({
     leaderboard: emptyPaginatedLeaderboard(query.page_size ?? 20),
     query,
