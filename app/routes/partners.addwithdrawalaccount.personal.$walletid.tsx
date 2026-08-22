@@ -261,7 +261,7 @@ export default function AddWithdrawalAccountPage() {
               element="button" 
               type="submit" 
               disabled={isSubmitting}
-              className="mt-6 w-full h-14 rounded-2xl bg-slate-900 hover:bg-black text-white font-semibold text-lg shadow-sm transition-transform active:scale-[0.98]"
+              className="mt-6 w-full h-14 rounded-2xl brand-pink hover:bg-black text-white font-semibold text-lg shadow-sm transition-transform active:scale-[0.98]"
             >
               {isSubmitting ? "Getting details..." : "Get Account Details"}
             </Cta>
