@@ -1,3 +1,6 @@
+import { ActionFunctionArgs, json } from '@remix-run/node'
+import { useActionData } from '@remix-run/react'
+import { useEffect } from 'react'
 import ContactForm from '~/components/public/landingpage/ContactForm'
 import WhyCard from '~/components/public/landingpage/WhyCard'
 import Button from '~/components/reusables/Button'
@@ -11,9 +14,58 @@ import {
     hero3, hero4, hero5, underline
 } from '~/assets/images'
 import SponsorsSlider from '~/components/public/landingpage/SponsorsSlider'
+import { useToast } from '~/components/reusables/use-toast'
+import { userServer } from '~/services/user/userserver'
+
+type ContactActionData = {
+    error?: string
+    success?: boolean
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+    const formData = await request.formData()
+    const payload = {
+        email: String(formData.get('email') ?? ''),
+        full_name: String(formData.get('full_name') ?? ''),
+        subject: String(formData.get('subject') ?? ''),
+        message: String(formData.get('message') ?? ''),
+    }
+
+    const { data, error } = await userServer.submitContact(payload, request)
+
+    if (error) {
+        const detail = Array.isArray(error.detail)
+            ? error.detail.map(item => item.msg).join(', ')
+            : error.detail
+
+        return json<ContactActionData>({ error: detail || 'Unable to send your message.' }, { status: 400 })
+    }
+
+    return json<ContactActionData>({ success: data === true })
+}
  
 
 export default function LandingPage() {
+    const actionData = useActionData<typeof action>()
+    const { toast } = useToast()
+
+    useEffect(() => {
+        if (actionData?.error) {
+            toast({
+                variant: 'destructive',
+                title: 'Message not sent',
+                description: actionData.error,
+            })
+        }
+
+        if (actionData?.success) {
+            toast({
+                title: 'Message sent',
+                description: 'Thanks for reaching out. We will get back to you soon.',
+            })
+        }
+    }, [actionData, toast])
+
     const trustBadges = [
         'Safe & Secure Platform',
         'Transparent Competition Process',

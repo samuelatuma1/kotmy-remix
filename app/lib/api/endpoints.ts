@@ -154,6 +154,11 @@ export class ApiEndPoints {
     static get me() {
         return "/v2/api/users/me";
     }
+
+    static get supportContact() {
+        return "/v2/api/support/contact";
+    }
+
     static get updateProfile() {
         return "/v2/api/users/updateprofile/";
     }

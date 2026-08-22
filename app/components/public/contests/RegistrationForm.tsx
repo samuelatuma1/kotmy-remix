@@ -36,8 +36,7 @@ function useRegistrationForm({ contest }: { contest: IContest }){
     }
     const copyReferalLink = async () => {
         const origin = window.location.origin
-        const fullPath = `${origin}${path}`
-        const urlWithReferralId = addQueryParams(fullPath, referralKey, user?.referral_code)
+        const urlWithReferralId = `${origin}/signup?referred_by_code=${user?.referral_code}`
         await navigator.clipboard.writeText(urlWithReferralId);
         toast({
         title: "Link Copied",
@@ -48,10 +47,14 @@ function useRegistrationForm({ contest }: { contest: IContest }){
 
     const getReferalLinkForWhatsAppShare = () => {
         const origin = window.location.origin
-        const fullPath = `${origin}${path}`
-        const urlWithReferralId = addQueryParams(fullPath, 'referral_code', user?.referral_code)
+        const urlWithReferralId = `${origin}/signup?referred_by_code=${user?.referral_code}`
         let WhatsAppText = `Please use my referal link to register for KOTMY's ${contest.name} contest. click on the link to register ${urlWithReferralId}`;
         return   `https://wa.me/?text=${encodeURIComponent(WhatsAppText)}`;
+    }
+
+    const getReferralLink = () => {
+        const origin = window.location.origin
+        return `${origin}/signup?referred_by_code=${user?.referral_code}`
     }
     
     const pathname = location.pathname; // e.g., /my-route
@@ -59,11 +62,11 @@ function useRegistrationForm({ contest }: { contest: IContest }){
     const hash = location.hash;     // e.g., #section
     const path = pathname + search + hash; // Combines them
 
-    return {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, path, getQueryParam, referralKey }
+    return {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, getReferralLink, path, getQueryParam, referralKey }
 }
 export default function RegistrationForm({ contest }: { contest: IContest }) {
     
-    const {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, path, getQueryParam,referralKey } = useRegistrationForm({contest})
+    const {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, getReferralLink, path, getQueryParam,referralKey } = useRegistrationForm({contest})
     if(!user) {
         
         return (
@@ -102,6 +105,13 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                                 className="inline-block px-3 py-1.5 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 transition">
                                 WhatsApp
                             </a>
+                <br />
+                <a target="_blank"
+                   rel="noopener noreferrer"
+                   href={getReferralLink()}
+                   className="inline-block mt-2 text-accent underline break-all">
+                    {getReferralLink()}
+                </a>
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
                 <FormControl as="input" labelText="First Name" id="first_name" name="first_name"

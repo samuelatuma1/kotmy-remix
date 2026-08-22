@@ -5,9 +5,17 @@ import { contestantRepo, ContestantRepository } from "../contestant/contestant.s
 import { IGivaahCreditQuery, UserCreditResponse } from "./types/user_.interface";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 
+export interface IContactFormDTO {
+    email: string;
+    full_name: string;
+    subject: string;
+    message: string;
+}
+
 
 export interface IUserServer {
     getGivaahCredits(query?: IGivaahCreditQuery, cookies?: string | Request): Promise<TFetcherResponse<UserCreditResponse>>;
+    submitContact(payload: IContactFormDTO, cookies?: string | Request): Promise<TFetcherResponse<boolean>>;
 
 }
 export class UserServer implements IUserServer {
@@ -44,6 +52,20 @@ export class UserServer implements IUserServer {
         }, cookies);
 
         if (data) return { data };
+        return { error, authRequired };
+    }
+
+    async submitContact(payload: IContactFormDTO, cookies?: string | Request): Promise<TFetcherResponse<boolean>> {
+        const { data, error, authRequired } = await ApiCall.call<boolean, IContactFormDTO>({
+            url: ApiEndPoints.supportContact,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            data: payload,
+        }, cookies);
+
+        if (data !== undefined) return { data };
         return { error, authRequired };
     }
 
