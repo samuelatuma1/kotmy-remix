@@ -25,12 +25,12 @@ export default function RegisteringContest({ contest }: { contest: IContest }) {
             </header>
             <section className="sm:wrapper my-16">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8">
-                    <ContestGuidelines contest={contest} />
                     {/* @ts-ignore */}
                     {actionRes?.data // @ts-ignore
                         ? <RegistrationSuccess contestant={actionRes.data} contest={contest} />
                         : <RegistrationForm contest={contest} />
                     }
+                    <ContestGuidelines contest={contest} />
                 </div>
             </section>
             <section className='my-8 md:my-16'>
