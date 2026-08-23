@@ -21,7 +21,7 @@ export default function RegisteringContest({ contest }: { contest: IContest }) {
                     </div>
                     <ContestTimer deadline={new Date(contest.reg_deadline)} title='registration ends in' />
                 </div>
-                <img src={contest.image || noImage} alt="kid smiling" className="w-full rounded-3xl h-[350px] object-cover" />
+                <img src={contest.image || noImage} alt="kid smiling" className="w-full rounded-3xl h-[350px] object-contain" />
             </header>
             <section className="sm:wrapper my-16">
                 <div className="flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8">
@@ -30,7 +30,7 @@ export default function RegisteringContest({ contest }: { contest: IContest }) {
                         ? <RegistrationSuccess contestant={actionRes.data} contest={contest} />
                         : <RegistrationForm contest={contest} />
                     }
-                    
+
                     <ContestGuidelines contest={contest} />
                 </div>
             </section>
