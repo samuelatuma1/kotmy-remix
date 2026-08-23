@@ -30,6 +30,7 @@ export default function RegisteringContest({ contest }: { contest: IContest }) {
                         ? <RegistrationSuccess contestant={actionRes.data} contest={contest} />
                         : <RegistrationForm contest={contest} />
                     }
+                    
                     <ContestGuidelines contest={contest} />
                 </div>
             </section>
