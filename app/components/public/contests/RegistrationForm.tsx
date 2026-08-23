@@ -34,9 +34,15 @@ function useRegistrationForm({ contest }: { contest: IContest }){
         const fullURL = new URL(url)
         return fullURL.searchParams.get(key) ?? ""
     }
-    const copyReferalLink = async () => {
+    const getSignupLink = () => {
         const origin = window.location.origin
-        const urlWithReferralId = `${origin}/signup?referred_by_code=${user?.referral_code}`
+        const signupUrl = new URL("/signup", origin)
+        signupUrl.searchParams.set("referred_by_code", `${user?.referral_code ?? ""}`)
+        signupUrl.searchParams.set("redirectTo", path)
+        return signupUrl.toString()
+    }
+    const copyReferalLink = async () => {
+        const urlWithReferralId = getSignupLink()
         await navigator.clipboard.writeText(urlWithReferralId);
         toast({
         title: "Link Copied",
@@ -46,15 +52,13 @@ function useRegistrationForm({ contest }: { contest: IContest }){
     const location = useLocation();
 
     const getReferalLinkForWhatsAppShare = () => {
-        const origin = window.location.origin
-        const urlWithReferralId = `${origin}/signup?referred_by_code=${user?.referral_code}`
+        const urlWithReferralId = getSignupLink()
         let WhatsAppText = `Please use my referal link to register for KOTMY's ${contest.name} contest. click on the link to register ${urlWithReferralId}`;
         return   `https://wa.me/?text=${encodeURIComponent(WhatsAppText)}`;
     }
 
     const getReferralLink = () => {
-        const origin = window.location.origin
-        return `${origin}/signup?referred_by_code=${user?.referral_code}`
+        return getSignupLink()
     }
     
     const pathname = location.pathname; // e.g., /my-route
@@ -103,15 +107,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                                 rel="noopener noreferrer"
                                 href={getReferalLinkForWhatsAppShare()}
                                 className="inline-block px-3 py-1.5 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 transition">
-                                WhatsApp
-                            </a>
-                <br />
-                <a target="_blank"
-                   rel="noopener noreferrer"
-                   href={getReferralLink()}
-                   className="inline-block mt-2 text-accent underline break-all">
-                    {getReferralLink()}
-                </a>
+                                WhatsApp</a>
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
                 <FormControl as="input" labelText="First Name" id="first_name" name="first_name"
