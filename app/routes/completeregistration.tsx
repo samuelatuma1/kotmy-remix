@@ -184,7 +184,7 @@ export default function CompleteRegistration() {
     return (
       <main className="bg-secondary p-4 flex flex-col min-h-dvh">
         <Link to={"/"} aria-label="home">
-          <Svg src={icons.logoIcon} className="w-14 h-14 sm:w-16 sm:h-16" />
+          <Svg src={icons.logoIcon} className="w-32 h-[52px] sm:w-40 sm:h-[65px]" />
         </Link>
         <section className="grow flex flex-col justify-center items-center">
           <div className="w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3 text-center">
@@ -202,7 +202,7 @@ export default function CompleteRegistration() {
   return (
     <main className="bg-secondary p-4 flex flex-col min-h-dvh">
       <Link to={"/"} aria-label="home">
-        <Svg src={icons.logoIcon} className="w-14 h-14 sm:w-16 sm:h-16" />
+        <Svg src={icons.logoIcon} className="w-32 h-[52px] sm:w-40 sm:h-[65px]" />
       </Link>
       <section className="grow flex flex-col justify-center items-center">
         <Form method="POST" className="w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3">

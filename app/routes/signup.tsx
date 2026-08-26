@@ -67,7 +67,7 @@ export default function Signup() {
   return (
     <main className="bg-secondary p-4 flex flex-col">
       <Link to={'/'} aria-label='home'>
-        <Svg src={icons.logoIcon} className='w-14 h-14 sm:w-16 sm:h-16' />
+        <Svg src={icons.logoIcon} className='w-32 h-[52px] sm:w-40 sm:h-[65px]' />
       </Link>
       <section className="grow flex flex-col justify-center items-center">
         

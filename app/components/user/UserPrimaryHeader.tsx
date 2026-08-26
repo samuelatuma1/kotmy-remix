@@ -15,9 +15,8 @@ export default function UserPrimaryHeader({ toggleNav }: { toggleNav: () => void
                 >
                     <Svg src={icons.adminHamburgerIcon} width={40} height={24} />
                 </button>
-                <Link to={'/'} className='text-brand-navy flex items-center gap-6 whitespace-nowrap font-satoshi-black'>
-                    <Svg src={icons.logoIcon} width={37} height={36} />
-                    KOTMY-USER
+                <Link to={'/'} className='text-brand-navy flex items-center whitespace-nowrap font-satoshi-black'>
+                    <Svg src={icons.logoIcon} width={128} height={52} />
                 </Link>
             </div>
             <FormControl as='input' type='search' className='min-w-[280px] bg-white' placeholder='Search...' />

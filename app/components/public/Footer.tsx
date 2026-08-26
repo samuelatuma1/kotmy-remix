@@ -13,7 +13,7 @@ export default function Footer() {
                 </ul>
             </nav>
                 <Link to="/privacy" className='hover:underline'>Privacy Policy</Link>
-                <span className='md:order-first'>KOTMY © 2023  All rights reserved</span>
+                <span className='md:order-first'>Kidmonth © 2026  All rights reserved</span>
             </div>
         </footer>
     )

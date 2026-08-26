@@ -15,6 +15,7 @@ import {
 import globalStyles from './global.css'
 import autoplaycarouselStyles from "./autoplaycarousel.css"
 import toggleStyles from "./toggle.css"
+import logoK from "./assets/icons/logo-k.svg"
 import { nickToast } from "./lib/session.server"
 import PageTransitionProgressBar from "./components/reusables/PageProgress"
 import Cta from "./components/reusables/Cta"
@@ -27,6 +28,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: globalStyles },
   { rel: "stylesheet", href: autoplaycarouselStyles },
   { rel: "stylesheet", href: toggleStyles },
+  { rel: "icon", type: "image/svg+xml", href: logoK },
 ]
 
 

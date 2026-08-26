@@ -19,7 +19,7 @@ export default function Navigation() {
     return (
         <header className='flex justify-between items-center wrapper py-5'>
             <Link to={'/'} aria-label='home'>
-                <Svg src={icons.logoIcon} className='w-9 h-9 sm:w-16 sm:h-16' />
+                <Svg src={icons.logoIcon} className='w-32 h-[52px] sm:w-40 sm:h-[65px]' />
             </Link>
             <nav className='hidden md:flex gap-16 items-center'>
                 <ul className='flex gap-6 text-xl font-bold'>

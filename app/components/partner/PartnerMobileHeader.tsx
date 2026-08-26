@@ -5,9 +5,8 @@ import { Link } from "@remix-run/react"
 export default function UserMobileHeader({ toggleNav }: { toggleNav: () => void }) {
     return (
         <div className="flex sm:hidden items-center gap-4 p-4 border-b">
-            <Link to={'/'} className='text-accent flex items-center gap-3 sm:gap-6 whitespace-nowrap font-satoshi-black'>
-                <Svg src={icons.logoIcon} width={37} height={36} />
-                KOTMY-PARTNER
+            <Link to={'/'} className='text-accent flex items-center whitespace-nowrap font-satoshi-black'>
+                <Svg src={icons.logoIcon} width={128} height={52} />
             </Link>
             <button
                 onClick={toggleNav}
