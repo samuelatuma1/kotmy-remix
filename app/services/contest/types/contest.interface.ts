@@ -270,19 +270,3 @@ export interface IUserContestQuery {
   status?: ContestStatus;
 }
 
-export interface IContestRepository {
-    getContests(): Promise<TFetcherResponse<IContest[]>>
-    getContestById(contestId: string): Promise<TFetcherResponse<IContest>>
-    adminGetContestsInTournament(tournamentUniqueId: string, token: string | Request): Promise<TFetcherResponse<IContestWStage[]>>
-    getContestsInTournament(tournamentUniqueId: string): Promise<TFetcherResponse<IContestWStage[]>>
-    createContest(contest: FormData, token: string | Request): Promise<TFetcherResponse<IContest>>
-    deleteContest(contestId: string, cookie: string | Request): Promise<TFetcherResponse<boolean>>
-   updateContest({ contestId, dto }: { contestId: string, dto: FormData}, cookie: string | Request): Promise<TFetcherResponse<IContest>>
-    updateStage({ stageId, dto}: { stageId: string; dto: Partial<IStage>;},token : string ): Promise<TFetcherResponse<IStage>>
-    deleteStage({ stageId}: { stageId: string; }, token: string|Request): Promise<TFetcherResponse<null>>
-    toggleRegistration({ contestId }: { contestId: string},  token: string|Request): Promise<TFetcherResponse<IContest>>
-    getContestantsInStage(stageId: string, headers: { fingerprint: string }): Promise<TFetcherResponse<IStageWContestant>>
-    migrateStage(payload: IMigrateStageDTO, token: string | Request): Promise<TFetcherResponse<IStageWContestant>>
-    getWinners(query?: WinnerQueryDTO): Promise<TFetcherResponse<WinnerResponse[]>>
-    getWinnerById(winnerId: string): Promise<TFetcherResponse<WinnerResponse>>
-}

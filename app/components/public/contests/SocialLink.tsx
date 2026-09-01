@@ -62,8 +62,7 @@ export default React.forwardRef(function SocialLink(
                             <Button
                                 element="button"
                                 onClick={() => setSignInPrompt(false)}
-                                className="w-full sm:w-auto justify-center items-center gap-2 px-6 py-3 rounded-lg font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition"
-                            >
+                                className="w-full sm:w-auto justify-center items-center gap-2 px-6 py-3 rounded-lg font-medium borderborder-brand-navy/15 bg-brand-navy/5 text-gray-700 hover:bg-gray-50 transition"                            >
                                 Go back
                             </Button>
                             <Button

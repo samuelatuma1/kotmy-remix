@@ -1,6 +1,6 @@
 import { json, redirect } from "@remix-run/node"
 
-import { getFingerprint, setToast } from "~/lib/session.server"
+import { getFingerprint, requireAuth, setToast } from "~/lib/session.server"
 import { contestantRepo } from "./contestant.server"
 import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 

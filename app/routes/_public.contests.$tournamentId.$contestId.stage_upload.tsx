@@ -4,7 +4,6 @@ import { useLoaderData, useRouteLoaderData } from "@remix-run/react";
 import ContestTimer from "~/components/public/contests/ContestTimer";
 import { noImage } from "~/assets/images";
 import StatusTag from "~/components/reusables/StatusTag";
-import { StageContestantsLoader } from "./_public.contests.$tournamentId.$contestId";
 import { contestantRepo } from "~/services/contestant/contestant.server";
 import { setToast } from "~/lib/session.server";
 import StageUploadForm from "~/components/public/contests/StageUploadForm";

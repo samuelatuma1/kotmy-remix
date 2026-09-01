@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { IContestWStageWContestant, IStage, IContest, Social } from "~/services/contest/types/contest.interface";
+import { IContestWStageWContestant, IStage, IContest, Social, IStageWContestant } from "~/services/contest/types/contest.interface";
 
 export interface IContestant {
   _id: string;
@@ -159,6 +159,8 @@ export interface IContestantRepository {
 
 import { StageMediaType, StageStatus } from "~/lib/types/contest.interface"
 import { extend } from "isbot";
+import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
+import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 
 export interface EnrichedContestant{
   id: string
@@ -188,4 +190,17 @@ export interface IVoteContestantFromWalletPayload {
   wallet_id: string;
   remark: string;
   number_of_votes: number;
+}
+
+export interface StageContestantsQuery extends IBasePaginationQuery{
+  wild_card?: string
+
+}
+
+// class PagedContestantsStageResponse(PagedModel, StageResponse):
+//     items: List[ContestantResponse] = Field(default=[])
+//     contestants: List[ContestantResponse] | None = Field(default=None, exclude=True)
+
+export interface PagedContestantsStageResponse extends IPaginatedResponse<IContestant>, IStageWContestant{
+  
 }

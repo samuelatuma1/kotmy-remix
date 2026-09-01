@@ -22,6 +22,9 @@ export class ApiEndPoints {
     static getContestantsInStage(stageId: string) {
         return `/v2/api/contestant/${stageId}`
     }
+    static getPagedContestantsInStage(stageId: string) {
+        return `/v2/api/paged_contestant/${stageId}`
+    }
     static get getTallyLink(): string {
         return "/v2/api/payment"
     }

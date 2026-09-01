@@ -1,5 +1,6 @@
 // filepath: app/services/partner/types/partner.interface.ts
 
+import { extend } from "isbot";
 import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
 import { ILoginResponseDTO, UserProfile } from "~/services/auth/types/auth.dtos";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
@@ -66,7 +67,7 @@ export interface IBusinessOwnerModel {
   password: string;
 }
 
-export interface BusinessQuery {
+export interface BusinessQuery extends IBasePaginationQuery {
   legal_business_name?: string;
   country_of_incorporation?: string;
   phone_number?: string;
@@ -88,10 +89,6 @@ export interface BusinessQuery {
   location_city?: string;
   location_state?: string;
   location_country?: string;
-  page_size?: number;
-  direction?: string;
-  last_key_id?: string;
-  first_key_id?: string;
 }
 
 export interface BusinessStatusHistory {

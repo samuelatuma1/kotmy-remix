@@ -1,16 +1,16 @@
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
-import { Grade, IContest, IContestDto, IContestQuery, IContestRepository, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, IUserContestQuery, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
+import { Grade, IContest, IContestDto, IContestQuery, IContestWFinalResult, IContestWStage, ICreateContestDTO, IMigrateStageDTO, IStage, IStageWContestant, ITallyVoteSplitEarning, IUserContestQuery, Social, StageBonusJob, WinnerQueryDTO, WinnerResponse, dtoToContest } from "./types/contest.interface"
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
 import { setToast } from "~/lib/session.server"
 import { json, redirect } from "@remix-run/node"
-import { IVoteContestantFromWalletPayload } from "../contestant/types/contestant.interface"
+import { IVoteContestantFromWalletPayload, PagedContestantsStageResponse, StageContestantsQuery } from "../contestant/types/contestant.interface"
 import { IPaginatedResponse } from "../common/types/paginated_data"
 
 // let TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjFkYTc3MTU1MzE3NzdjMDMwZWI2NCIsImVtYWlsIjoiYXR1bWFzYW11ZWxva3BhcmEzQGdtYWlsLmNvbSIsImlzX3N0YWZmIjp0cnVlLCJpc19zdXBlcnVzZXIiOnRydWUsInJvbGVzIjpbXSwicGVybWlzc2lvbnMiOltdLCJleHAiOjE3OTc3NDQzNDB9.RISqoyZkQZm2D5r9rhZk97SHxa-Vxdvm8EcC9MwlXIQ"
 
-export class ContestRepository implements IContestRepository {
+export class ContestRepository {
 
     
     /**
@@ -129,7 +129,18 @@ export class ContestRepository implements IContestRepository {
         if (error) return { error: error ?? { detail: "Could not fetch the stage data" } }
         return { data }
     }
-    async migrateStage(payload: IMigrateStageDTO, token: string | Request): Promise<TFetcherResponse<IStageWContestant>> {
+
+    async getPagedContestantsInStage(stageId: string, headers: { fingerprint: string }, query?: StageContestantsQuery ): Promise<TFetcherResponse<PagedContestantsStageResponse>> {
+
+        const queryString = ApiCall.convertObjToQueryString(query || {});
+        const { data, error } = await ApiCall.call<PagedContestantsStageResponse, unknown>({
+            url: ApiEndPoints.getPagedContestantsInStage(stageId)  + "?" + queryString.toString(),
+            headers: { device_fingerprint: headers.fingerprint }
+        }) 
+        if (error) return { error: error ?? { detail: "Could not fetch the stage data" } }
+        return { data }
+    }
+    async migrateStage(payload: IMigrateStageDTO, token: string | Request): Promise<TFetcherResponse<PagedContestantsStageResponse>> {
         return await ApiCall.call({
             url: ApiEndPoints.migrateStage,
             method: MethodsEnum.POST,
