@@ -54,7 +54,18 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         : contest.stages.find(stage => stage.active)?._id
     ) ?? contest.stages.find(stage => stage.stage == 1)?._id
     const { fingerprint, headers } = await getFingerprint({ request })
-    const stage = stageId ? (await contestRepo.getContestantsInStage(stageId, { fingerprint })).data ?? null : null
+    const wildCard = url.searchParams.get("wild_card") ?? undefined
+    const pageSize = url.searchParams.get("page_size") ? Number(url.searchParams.get("page_size")) : undefined
+    const lastKeyId = url.searchParams.get("last_key_id") ?? undefined
+    const firstKeyId = url.searchParams.get("first_key_id") ?? undefined
+    const direction = url.searchParams.get("direction") as "next" | "previous" | undefined
+    const stage = stageId ? (await contestRepo.getPagedContestantsInStage(stageId, { fingerprint }, {
+        wild_card: wildCard,
+        page_size: pageSize,
+        last_key_id: lastKeyId,
+        first_key_id: firstKeyId,
+        direction,
+    })).data ?? null : null
     let walletVoteContext: WalletVoteContext | null = null
     const cookieHeader = request.headers.get("Cookie") ?? ""
     const stageCurrency = stage?.rates.vote_currency ?? null

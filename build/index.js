@@ -1844,7 +1844,7 @@ __export(public_contests_tournamentId_contestId_scoreboard_exports, {
   default: () => Scoreboard
 });
 import { json as json4 } from "@remix-run/node";
-import { Link as Link3, useRouteLoaderData as useRouteLoaderData2, useSearchParams } from "@remix-run/react";
+import { Form as Form3, Link as Link3, useNavigation as useNavigation2, useRouteLoaderData as useRouteLoaderData2, useSearchParams } from "@remix-run/react";
 
 // app/services/contestant/actions.server.ts
 import { json as json3, redirect as redirect2 } from "@remix-run/node";
@@ -2740,22 +2740,56 @@ function MobileScoreboard({ contestants, socialMediaType }) {
   ] }, contestant._id)) });
 }
 
+// app/components/reusables/Pagination.tsx
+import { useLocation as useLocation4, useNavigate as useNavigate4 } from "@remix-run/react";
+import { useState as useState9 } from "react";
+import { jsx as jsx23, jsxs as jsxs16 } from "react/jsx-runtime";
+function Pagination({ className = "", pageSize = 20, lastKey, firstKey }) {
+  let navigate = useNavigate4(), location = useLocation4(), [rows, setRows] = useState9(pageSize), updateSearch = (newParams) => {
+    let url = new URL(window.location.href);
+    Object.entries(newParams).forEach(([k, v]) => {
+      v === null || v === "" ? url.searchParams.delete(k) : url.searchParams.set(k, v);
+    }), navigate(`${url.pathname}${url.search}`, { replace: !1 });
+  }, onNext = () => {
+    updateSearch({ page_size: String(rows), last_key_id: lastKey ?? "", direction: "next" });
+  }, onPrev = () => {
+    updateSearch({ first_key_id: firstKey ?? "", page_size: String(rows), direction: "previous" });
+  };
+  return /* @__PURE__ */ jsxs16("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+    /* @__PURE__ */ jsxs16("label", { className: "flex gap-2", children: [
+      "Rows per page",
+      /* @__PURE__ */ jsx23("input", { type: "number", name: "rows", id: "rows", className: "w-12 rounded-md border", defaultValue: rows, onChange: (e) => setRows(parseInt(e.target.value)) })
+    ] }),
+    /* @__PURE__ */ jsxs16("div", { className: `flex gap-6 md:gap-8 justify-center items-center font-semibold ${className}`, children: [
+      /* @__PURE__ */ jsxs16("button", { onClick: onPrev, className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
+        /* @__PURE__ */ jsx23(Svg, { src: icons.arrowPrevIcon }),
+        " Prev"
+      ] }),
+      /* @__PURE__ */ jsx23("span", { className: "whitespace-nowrap", children: "Page controls" }),
+      /* @__PURE__ */ jsxs16("button", { onClick: onNext, className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
+        "Next ",
+        /* @__PURE__ */ jsx23(Svg, { src: icons.arrowNextIcon })
+      ] })
+    ] })
+  ] });
+}
+
 // app/components/public/contests/ScoreboardTable.tsx
-import { useFetcher as useFetcher4, useNavigate as useNavigate4, useLocation as useLocation4 } from "@remix-run/react";
-import { useEffect as useEffect9, useState as useState9 } from "react";
-import { Fragment as Fragment4, jsx as jsx23, jsxs as jsxs16 } from "react/jsx-runtime";
+import { useFetcher as useFetcher4, useNavigate as useNavigate5, useLocation as useLocation5 } from "@remix-run/react";
+import { useEffect as useEffect9, useState as useState10 } from "react";
+import { Fragment as Fragment4, jsx as jsx24, jsxs as jsxs17 } from "react/jsx-runtime";
 function ScoreboardTable({ contestants, socialMediaType, show_bonus }) {
-  let fetcher = useFetcher4(), [signInPrompt, setSignInPrompt] = useState9(!1), { getUserStoreManager } = useUserManager(), navigate = useNavigate4(), location = useLocation4(), path = `${location.pathname}${location.search}${location.hash}`;
+  let fetcher = useFetcher4(), [signInPrompt, setSignInPrompt] = useState10(!1), { getUserStoreManager } = useUserManager(), navigate = useNavigate5(), location = useLocation5(), path = `${location.pathname}${location.search}${location.hash}`;
   return useEffect9(() => {
     console.log({ d: fetcher?.data }), fetcher.state === "idle" && fetcher.data && fetcher.data.errorCode === "LOGIN_REQUIRED" && setSignInPrompt(!0);
   }, [fetcher.state, fetcher.data]), signInPrompt ? (
     // outer container centers the card horizontally and vertically within available space
-    /* @__PURE__ */ jsx23("div", { className: "w-full flex items-center justify-center py-12", children: /* @__PURE__ */ jsxs16("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-10 px-6 sm:px-12 text-center", children: [
-      /* @__PURE__ */ jsx23("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx23("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
-      /* @__PURE__ */ jsx23("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
-      /* @__PURE__ */ jsx23("p", { className: "text-gray-700 text-base max-w-md", children: "Voting for your favourite contestant requires you to sign in" }),
-      /* @__PURE__ */ jsxs16("div", { className: "w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-center mt-2", children: [
-        /* @__PURE__ */ jsx23(
+    /* @__PURE__ */ jsx24("div", { className: "w-full flex items-center justify-center py-12", children: /* @__PURE__ */ jsxs17("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-10 px-6 sm:px-12 text-center", children: [
+      /* @__PURE__ */ jsx24("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx24("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
+      /* @__PURE__ */ jsx24("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
+      /* @__PURE__ */ jsx24("p", { className: "text-gray-700 text-base max-w-md", children: "Voting for your favourite contestant requires you to sign in" }),
+      /* @__PURE__ */ jsxs17("div", { className: "w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-center mt-2", children: [
+        /* @__PURE__ */ jsx24(
           Button,
           {
             element: "button",
@@ -2764,7 +2798,7 @@ function ScoreboardTable({ contestants, socialMediaType, show_bonus }) {
             children: "Go back"
           }
         ),
-        /* @__PURE__ */ jsx23(
+        /* @__PURE__ */ jsx24(
           Button,
           {
             element: "button",
@@ -2774,53 +2808,53 @@ function ScoreboardTable({ contestants, socialMediaType, show_bonus }) {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs16("p", { className: "text-sm text-gray-400 mt-2", children: [
+      /* @__PURE__ */ jsxs17("p", { className: "text-sm text-gray-400 mt-2", children: [
         "Don't have an account? ",
-        /* @__PURE__ */ jsx23("button", { type: "button", className: "underline text-accent", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
+        /* @__PURE__ */ jsx24("button", { type: "button", className: "underline text-accent", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
       ] })
     ] }) })
-  ) : /* @__PURE__ */ jsxs16("table", { className: "w-full table-auto hidden sm:table", children: [
-    /* @__PURE__ */ jsx23("thead", { children: /* @__PURE__ */ jsxs16("tr", { className: "border-b border-secondary", children: [
-      /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "position" }),
-      /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "name" }),
-      /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell", children: "progress" }),
-      /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell", children: "grade" }),
-      /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "votes (SM, Prize back, givaah)" }),
-      show_bonus && /* @__PURE__ */ jsxs16(Fragment4, { children: [
-        /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "SMB" }),
-        /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "TB" }),
-        /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "GB" }),
-        /* @__PURE__ */ jsx23("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "JB" })
+  ) : /* @__PURE__ */ jsxs17("table", { className: "w-full table-auto hidden sm:table", children: [
+    /* @__PURE__ */ jsx24("thead", { children: /* @__PURE__ */ jsxs17("tr", { className: "border-b border-secondary", children: [
+      /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "position" }),
+      /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "name" }),
+      /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3 hidden lg:table-cell", children: "progress" }),
+      /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3  hidden xl:table-cell", children: "grade" }),
+      /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "votes (SM, Prize back, givaah)" }),
+      show_bonus && /* @__PURE__ */ jsxs17(Fragment4, { children: [
+        /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "SMB" }),
+        /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "TB" }),
+        /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "GB" }),
+        /* @__PURE__ */ jsx24("th", { className: "text-left uppercase text-sm font-satoshi-bold px-6 py-3", children: "JB" })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx23("tbody", { children: contestants.map((contestant) => /* @__PURE__ */ jsxs16("tr", { className: "border-b border-secondary", children: [
-      /* @__PURE__ */ jsx23("td", { className: "px-6 py-3", children: contestant.result.position }),
-      /* @__PURE__ */ jsx23("td", { className: "px-6 py-3 font-satoshi-medium max-w-[300px]  trunc_ uppercase", children: /* @__PURE__ */ jsxs16("div", { className: "flex items-center gap-2", children: [
-        /* @__PURE__ */ jsx23("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 48, className: "rounded-full aspect-square object-cover" }),
-        /* @__PURE__ */ jsxs16("div", { className: " trunc_ uppercase grow", children: [
+    /* @__PURE__ */ jsx24("tbody", { children: contestants.map((contestant) => /* @__PURE__ */ jsxs17("tr", { className: "border-b border-secondary", children: [
+      /* @__PURE__ */ jsx24("td", { className: "px-6 py-3", children: contestant.result.position }),
+      /* @__PURE__ */ jsx24("td", { className: "px-6 py-3 font-satoshi-medium max-w-[300px]  trunc_ uppercase", children: /* @__PURE__ */ jsxs17("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx24("img", { src: contestant.image_url || no_image_default, alt: "person smiling", width: 48, className: "rounded-full aspect-square object-cover" }),
+        /* @__PURE__ */ jsxs17("div", { className: " trunc_ uppercase grow", children: [
           `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`,
-          /* @__PURE__ */ jsxs16("dl", { className: "lg:hidden", children: [
-            /* @__PURE__ */ jsx23("dt", { className: "sr-only", children: "progress" }),
-            /* @__PURE__ */ jsx23("dd", { children: /* @__PURE__ */ jsx23(ProgressBar, { percentage: contestant.result.overall_vote_percentage }) }),
-            /* @__PURE__ */ jsx23("dt", { className: "sr-only", children: "grade" }),
-            /* @__PURE__ */ jsx23("dd", { children: /* @__PURE__ */ jsx23(Grade, { grade: contestant.result.grade }) })
+          /* @__PURE__ */ jsxs17("dl", { className: "lg:hidden", children: [
+            /* @__PURE__ */ jsx24("dt", { className: "sr-only", children: "progress" }),
+            /* @__PURE__ */ jsx24("dd", { children: /* @__PURE__ */ jsx24(ProgressBar, { percentage: contestant.result.overall_vote_percentage }) }),
+            /* @__PURE__ */ jsx24("dt", { className: "sr-only", children: "grade" }),
+            /* @__PURE__ */ jsx24("dd", { children: /* @__PURE__ */ jsx24(Grade, { grade: contestant.result.grade }) })
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxs16("td", { className: "px-6 py-3 hidden lg:table-cell", children: [
-        /* @__PURE__ */ jsx23(ProgressBar, { percentage: contestant.result.overall_vote_percentage }),
-        /* @__PURE__ */ jsxs16("dl", { className: "xl:hidden", children: [
-          /* @__PURE__ */ jsx23("dt", { className: "sr-only", children: "grade" }),
-          /* @__PURE__ */ jsx23("dd", { children: /* @__PURE__ */ jsx23(Grade, { grade: contestant.result.grade }) })
+      /* @__PURE__ */ jsxs17("td", { className: "px-6 py-3 hidden lg:table-cell", children: [
+        /* @__PURE__ */ jsx24(ProgressBar, { percentage: contestant.result.overall_vote_percentage }),
+        /* @__PURE__ */ jsxs17("dl", { className: "xl:hidden", children: [
+          /* @__PURE__ */ jsx24("dt", { className: "sr-only", children: "grade" }),
+          /* @__PURE__ */ jsx24("dd", { children: /* @__PURE__ */ jsx24(Grade, { grade: contestant.result.grade }) })
         ] })
       ] }),
-      /* @__PURE__ */ jsx23("td", { className: "px-6 py-3 hidden xl:table-cell", children: /* @__PURE__ */ jsx23(Grade, { grade: contestant.result.grade }) }),
-      /* @__PURE__ */ jsxs16("td", { className: "px-6 py-3 grid grid-cols-2 gap-2", children: [
-        socialMediaType === "kotmy" ? /* @__PURE__ */ jsxs16(fetcher.Form, { method: "POST", children: [
-          /* @__PURE__ */ jsx23("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
-          /* @__PURE__ */ jsx23("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }),
-          /* @__PURE__ */ jsx23("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
-          /* @__PURE__ */ jsx23(
+      /* @__PURE__ */ jsx24("td", { className: "px-6 py-3 hidden xl:table-cell", children: /* @__PURE__ */ jsx24(Grade, { grade: contestant.result.grade }) }),
+      /* @__PURE__ */ jsxs17("td", { className: "px-6 py-3 grid grid-cols-2 gap-2", children: [
+        socialMediaType === "kotmy" ? /* @__PURE__ */ jsxs17(fetcher.Form, { method: "POST", children: [
+          /* @__PURE__ */ jsx24("input", { type: "hidden", name: "contestant_id", value: contestant._id }),
+          /* @__PURE__ */ jsx24("input", { type: "hidden", name: "stage_id", value: contestant.stage_id }),
+          /* @__PURE__ */ jsx24("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
+          /* @__PURE__ */ jsx24(
             VoteLink_default,
             {
               className: "w-full",
@@ -2832,7 +2866,7 @@ function ScoreboardTable({ contestants, socialMediaType, show_bonus }) {
               count: numberSlang(contestant.vote.social_media)
             }
           )
-        ] }) : /* @__PURE__ */ jsx23(
+        ] }) : /* @__PURE__ */ jsx24(
           VoteLink_default,
           {
             type: socialMediaType,
@@ -2840,21 +2874,21 @@ function ScoreboardTable({ contestants, socialMediaType, show_bonus }) {
             count: numberSlang(contestant.vote.social_media)
           }
         ),
-        /* @__PURE__ */ jsx23(TallyVoteDialog, { contestant }),
-        /* @__PURE__ */ jsx23(GivaahVoteDialog, { contestant })
+        /* @__PURE__ */ jsx24(TallyVoteDialog, { contestant }),
+        /* @__PURE__ */ jsx24(GivaahVoteDialog, { contestant })
       ] }),
-      show_bonus && /* @__PURE__ */ jsxs16(Fragment4, { children: [
-        /* @__PURE__ */ jsx23("td", { className: "px-6 py-3", children: contestant.vote.social_media_bonus }),
-        /* @__PURE__ */ jsx23("td", { className: "px-6 py-3", children: contestant.vote.tally_bonus }),
-        /* @__PURE__ */ jsx23("td", { className: "px-6 py-3", children: contestant.vote.givaah_bonus }),
-        /* @__PURE__ */ jsx23("td", { className: "px-6 py-3", children: contestant.vote.judge_bonus })
+      show_bonus && /* @__PURE__ */ jsxs17(Fragment4, { children: [
+        /* @__PURE__ */ jsx24("td", { className: "px-6 py-3", children: contestant.vote.social_media_bonus }),
+        /* @__PURE__ */ jsx24("td", { className: "px-6 py-3", children: contestant.vote.tally_bonus }),
+        /* @__PURE__ */ jsx24("td", { className: "px-6 py-3", children: contestant.vote.givaah_bonus }),
+        /* @__PURE__ */ jsx24("td", { className: "px-6 py-3", children: contestant.vote.judge_bonus })
       ] })
     ] }, contestant._id)) })
   ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.scoreboard.tsx
-import { jsx as jsx24, jsxs as jsxs17 } from "react/jsx-runtime";
+import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
 async function action2({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "tally_vote")
@@ -2872,58 +2906,66 @@ function Scoreboard() {
   let stageContestants = useRouteLoaderData2("routes/_public.contests.$tournamentId.$contestId");
   if (!stageContestants)
     throw new Error("Could not load stage contestants");
-  let { contest, stage } = stageContestants, [_, setUrlSearchParams] = useSearchParams(), color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxs17("main", { className: "grow", children: [
-    /* @__PURE__ */ jsxs17("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxs17("div", { className: "grid", children: [
-        /* @__PURE__ */ jsxs17("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsx24("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
-          /* @__PURE__ */ jsx24("p", { className: "font-satoshi-medium", children: contest.desc })
+  let { contest, stage } = stageContestants, [searchParams, setUrlSearchParams] = useSearchParams(), isSearching = useNavigation2().state !== "idle", color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray", handleStageChange = (val) => {
+    setUrlSearchParams((prev) => (prev.set("stage", val), prev.delete("wild_card"), prev.delete("last_key_id"), prev.delete("first_key_id"), prev.delete("direction"), prev));
+  };
+  return /* @__PURE__ */ jsxs18("main", { className: "grow", children: [
+    /* @__PURE__ */ jsxs18("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs18("div", { className: "grid", children: [
+        /* @__PURE__ */ jsxs18("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx25("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
+          /* @__PURE__ */ jsx25("p", { className: "font-satoshi-medium", children: contest.desc })
         ] }),
-        /* @__PURE__ */ jsxs17("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
-          /* @__PURE__ */ jsxs17("div", { className: "", children: [
-            /* @__PURE__ */ jsx24("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
-            /* @__PURE__ */ jsx24(StatusTag, { status: contest.status, color })
+        /* @__PURE__ */ jsxs18("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
+          /* @__PURE__ */ jsxs18("div", { className: "", children: [
+            /* @__PURE__ */ jsx25("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+            /* @__PURE__ */ jsx25(StatusTag, { status: contest.status, color })
           ] }),
-          /* @__PURE__ */ jsxs17("div", { className: "", children: [
-            /* @__PURE__ */ jsx24("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
-            /* @__PURE__ */ jsx24("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs17("span", { children: [
+          /* @__PURE__ */ jsxs18("div", { className: "", children: [
+            /* @__PURE__ */ jsx25("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx25("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs18("span", { children: [
               "~ ",
               category
             ] }, category)) })
           ] }),
-          /* @__PURE__ */ jsxs17("div", { className: "col-span-2", children: [
-            /* @__PURE__ */ jsx24("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
-            /* @__PURE__ */ jsx24("span", { className: "block", children: contest.prizes })
+          /* @__PURE__ */ jsxs18("div", { className: "col-span-2", children: [
+            /* @__PURE__ */ jsx25("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx25("span", { className: "block", children: contest.prizes })
           ] })
         ] }),
-        /* @__PURE__ */ jsx24(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
+        /* @__PURE__ */ jsx25(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
       ] }),
-      /* @__PURE__ */ jsx24("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
+      /* @__PURE__ */ jsx25("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
     ] }),
-    /* @__PURE__ */ jsx24("section", { className: "sm:bg-white", children: /* @__PURE__ */ jsxs17("div", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxs17("div", { className: "flex flex-col sm:flex-row justify-between sm:items-center gap-y-4 gap-x-6 sm:gap-x-8 py-6 flex-wrap", children: [
-        /* @__PURE__ */ jsxs17("span", { className: "font-satoshi-medium text-xl", children: [
-          stage?.contestants.length ?? 0,
+    /* @__PURE__ */ jsx25("section", { className: "sm:bg-white", children: /* @__PURE__ */ jsxs18("div", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxs18("div", { className: "flex flex-col sm:flex-row justify-between sm:items-center gap-y-4 gap-x-6 sm:gap-x-8 py-6 flex-wrap", children: [
+        /* @__PURE__ */ jsxs18("span", { className: "font-satoshi-medium text-xl", children: [
+          stage?.total_items ?? 0,
           " Contestants"
         ] }),
-        /* @__PURE__ */ jsxs17("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-          /* @__PURE__ */ jsx24(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search contestant by name" }),
-          /* @__PURE__ */ jsxs17(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
-            /* @__PURE__ */ jsx24(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx24(SelectValue, { placeholder: "Stage 1" }) }),
-            /* @__PURE__ */ jsx24(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs17(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
+        /* @__PURE__ */ jsxs18("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+          /* @__PURE__ */ jsxs18(Form3, { method: "get", className: "flex flex-col sm:flex-row gap-4", children: [
+            /* @__PURE__ */ jsx25("input", { type: "hidden", name: "stage", value: String(stage?.stage ?? 1) }),
+            /* @__PURE__ */ jsx25("input", { type: "hidden", name: "page_size", value: searchParams.get("page_size") ?? "" }),
+            /* @__PURE__ */ jsx25(FormControl, { as: "input", type: "search", name: "wild_card", defaultValue: searchParams.get("wild_card") ?? "", className: "min-w-[280px] bg-white", placeholder: "Search contestant by name" }),
+            /* @__PURE__ */ jsx25("button", { type: "submit", disabled: isSearching, className: "rounded-lg bg-brand-pink px-6 py-2 text-sm font-bold text-white transition hover:bg-brand-pink/90 disabled:opacity-60 disabled:cursor-not-allowed", children: isSearching ? "Searching..." : "Search" })
+          ] }),
+          /* @__PURE__ */ jsxs18(Select, { value: String(stage?.stage), onValueChange: handleStageChange, children: [
+            /* @__PURE__ */ jsx25(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx25(SelectValue, { placeholder: "Stage 1" }) }),
+            /* @__PURE__ */ jsx25(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs18(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
               "Stage ",
               stage2.stage
             ] }, stage2.stage)) })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs17("div", { className: "flex flex-wrap gap-4", children: [
-          /* @__PURE__ */ jsx24(Link3, { to: `/results/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See result table" }),
-          /* @__PURE__ */ jsx24(Link3, { to: `/contests/${contest.tournament_unique_id}/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See contestants" })
+        /* @__PURE__ */ jsxs18("div", { className: "flex flex-wrap gap-4", children: [
+          /* @__PURE__ */ jsx25(Link3, { to: `/results/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See result table" }),
+          /* @__PURE__ */ jsx25(Link3, { to: `/contests/${contest.tournament_unique_id}/${contest.id}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See contestants" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx24(ScoreboardTable, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy", show_bonus: stage?.enable_bonus ?? !1 }),
-      /* @__PURE__ */ jsx24(MobileScoreboard, { contestants: stage?.contestants ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" })
+      /* @__PURE__ */ jsx25(ScoreboardTable, { contestants: stage?.items ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy", show_bonus: stage?.enable_bonus ?? !1 }),
+      /* @__PURE__ */ jsx25(MobileScoreboard, { contestants: stage?.items ?? [], socialMediaType: stage?.rates.social_media.type ?? "kotmy" }),
+      /* @__PURE__ */ jsx25(Pagination, { lastKey: stage?.last_key_id, firstKey: stage?.first_key_id, pageSize: stage?.items_per_page })
     ] }) })
   ] });
 }
@@ -2938,23 +2980,22 @@ import { json as json5, redirect as redirect3 } from "@remix-run/node";
 import { useRouteLoaderData as useRouteLoaderData3 } from "@remix-run/react";
 
 // app/components/public/contests/OngoingContest.tsx
-import { Link as Link5 } from "react-router-dom";
-import { useSearchParams as useSearchParams2 } from "@remix-run/react";
+import { Link as Link5, Form as Form4, useNavigation as useNavigation3, useSearchParams as useSearchParams2 } from "@remix-run/react";
 
 // app/components/public/contests/SocialLink.tsx
-import React7, { useEffect as useEffect10, useState as useState10 } from "react";
-import { useFetcher as useFetcher5, useLocation as useLocation5, useNavigate as useNavigate5 } from "@remix-run/react";
-import { jsx as jsx25, jsxs as jsxs18 } from "react/jsx-runtime";
+import React7, { useEffect as useEffect10, useState as useState11 } from "react";
+import { useFetcher as useFetcher5, useLocation as useLocation6, useNavigate as useNavigate6 } from "@remix-run/react";
+import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
 var SocialLink_default = React7.forwardRef(function({ type, url, className = "", ...rest }, ref) {
-  let props = url ? { element: "link", to: url, ...rest } : { element: "button", ref, ...rest }, fetcher = useFetcher5(), [signInPrompt, setSignInPrompt] = useState10(!1), { getUserStoreManager } = useUserManager(), navigate = useNavigate5(), location = useLocation5(), path = `${location.pathname}${location.search}${location.hash}`;
+  let props = url ? { element: "link", to: url, ...rest } : { element: "button", ref, ...rest }, fetcher = useFetcher5(), [signInPrompt, setSignInPrompt] = useState11(!1), { getUserStoreManager } = useUserManager(), navigate = useNavigate6(), location = useLocation6(), path = `${location.pathname}${location.search}${location.hash}`;
   return useEffect10(() => {
     console.log({ d: fetcher?.data }), fetcher.state === "idle" && fetcher.data && fetcher.data.errorCode === "LOGIN_REQUIRED" && setSignInPrompt(!0);
-  }, [fetcher.state, fetcher.data]), type === "kotmy" ? signInPrompt ? /* @__PURE__ */ jsx25("div", { role: "dialog", "aria-modal": "true", className: "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4", children: /* @__PURE__ */ jsxs18("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-10 px-6 sm:px-12 text-center", children: [
-    /* @__PURE__ */ jsx25("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx25("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
-    /* @__PURE__ */ jsx25("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
-    /* @__PURE__ */ jsx25("p", { className: "text-gray-700 text-base max-w-md", children: "Voting for your favourite contestant requires you to sign in" }),
-    /* @__PURE__ */ jsxs18("div", { className: "w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-center mt-2", children: [
-      /* @__PURE__ */ jsx25(
+  }, [fetcher.state, fetcher.data]), type === "kotmy" ? signInPrompt ? /* @__PURE__ */ jsx26("div", { role: "dialog", "aria-modal": "true", className: "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4", children: /* @__PURE__ */ jsxs19("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-10 px-6 sm:px-12 text-center", children: [
+    /* @__PURE__ */ jsx26("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx26("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
+    /* @__PURE__ */ jsx26("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
+    /* @__PURE__ */ jsx26("p", { className: "text-gray-700 text-base max-w-md", children: "Voting for your favourite contestant requires you to sign in" }),
+    /* @__PURE__ */ jsxs19("div", { className: "w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-center mt-2", children: [
+      /* @__PURE__ */ jsx26(
         Button,
         {
           element: "button",
@@ -2963,7 +3004,7 @@ var SocialLink_default = React7.forwardRef(function({ type, url, className = "",
           children: "Go back"
         }
       ),
-      /* @__PURE__ */ jsx25(
+      /* @__PURE__ */ jsx26(
         Button,
         {
           element: "button",
@@ -2973,15 +3014,15 @@ var SocialLink_default = React7.forwardRef(function({ type, url, className = "",
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs18("p", { className: "text-sm text-gray-400 mt-2", children: [
+    /* @__PURE__ */ jsxs19("p", { className: "text-sm text-gray-400 mt-2", children: [
       "Don't have an account? ",
-      /* @__PURE__ */ jsx25("button", { type: "button", className: "underline text-accent", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
+      /* @__PURE__ */ jsx26("button", { type: "button", className: "underline text-accent", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
     ] })
-  ] }) }) : /* @__PURE__ */ jsxs18(fetcher.Form, { method: "POST", children: [
-    /* @__PURE__ */ jsx25("input", { type: "hidden", name: "contestant_id", value: rest.contestantId }),
-    /* @__PURE__ */ jsx25("input", { type: "hidden", name: "stage_id", value: rest.stageId }),
-    /* @__PURE__ */ jsx25("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
-    /* @__PURE__ */ jsx25(
+  ] }) }) : /* @__PURE__ */ jsxs19(fetcher.Form, { method: "POST", children: [
+    /* @__PURE__ */ jsx26("input", { type: "hidden", name: "contestant_id", value: rest.contestantId }),
+    /* @__PURE__ */ jsx26("input", { type: "hidden", name: "stage_id", value: rest.stageId }),
+    /* @__PURE__ */ jsx26("input", { type: "hidden", name: "intent", value: "kotmy_vote" }),
+    /* @__PURE__ */ jsx26(
       VoteLink_default,
       {
         className: "w-full",
@@ -2993,22 +3034,22 @@ var SocialLink_default = React7.forwardRef(function({ type, url, className = "",
         count: numberSlang(rest.contestant?.vote.social_media ?? 0)
       }
     )
-  ] }) : /* @__PURE__ */ jsxs18(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
+  ] }) : /* @__PURE__ */ jsxs19(Cta_default, { ...props, variant: "outline", className: cn("p-2 flex items-center border rounded-full", {
     "border-facebook text-facebook bg-facebookBG hover:bg-facebook/15": type === "facebook",
     "border-instagram text-instagram bg-instagramBG hover:bg-instagram/15": type === "instagram",
     "border-twitter text-twitter bg-twitterBG hover:bg-twitter/15": type === "twitter",
     "border-tally text-tally bg-tallyBG hover:bg-tally/15": type === "tally",
     "border-givaah text-givaah bg-givaahBG hover:bg-givaah/15": type === "givaah"
   }, className), children: [
-    /* @__PURE__ */ jsx25("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
+    /* @__PURE__ */ jsx26("span", { className: cn("w-6 h-6 flex items-center justify-center rounded-full p-1", {
       "bg-facebook": type === "facebook",
       "bg-instagram": type === "instagram",
       "bg-twitter": type === "twitter",
       "bg-tally": type === "tally",
       "bg-givaah": type === "givaah"
-    }), children: /* @__PURE__ */ jsx25(Svg, { src: socialIcons[type] }) }),
-    /* @__PURE__ */ jsxs18("span", { className: "grow text-xs font-bold text-center mr-2", children: [
-      /* @__PURE__ */ jsx25("span", { className: "capitalize", children: type }),
+    }), children: /* @__PURE__ */ jsx26(Svg, { src: socialIcons[type] }) }),
+    /* @__PURE__ */ jsxs19("span", { className: "grow text-xs font-bold text-center mr-2", children: [
+      /* @__PURE__ */ jsx26("span", { className: "capitalize", children: type }),
       " vote"
     ] })
   ] });
@@ -3016,10 +3057,10 @@ var SocialLink_default = React7.forwardRef(function({ type, url, className = "",
 
 // app/components/public/contests/ContestantCard.tsx
 import { Link as Link4 } from "@remix-run/react";
-import { useState as useState11 } from "react";
-import { jsx as jsx26, jsxs as jsxs19 } from "react/jsx-runtime";
+import { useState as useState12 } from "react";
+import { jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
 function ContestantStatisticsCard({ contestant }) {
-  let [totalVotes, setTotalVotes] = useState11(getContestantTotalVotes(contestant));
+  let [totalVotes, setTotalVotes] = useState12(getContestantTotalVotes(contestant));
   function getContestantTotalVotes(contestant2) {
     if (contestant2.originalContestantData?.result?.total_votes > 0)
       return contestant2.originalContestantData.result.total_votes;
@@ -3029,77 +3070,77 @@ function ContestantStatisticsCard({ contestant }) {
     }), computedTotalVotes;
   }
   let { fullName, contestName, stage, stageStatus, contestImage, is_evicted, originalContestantData, stageSocialMedia } = contestant, vote = originalContestantData.vote, result = originalContestantData.result;
-  return console.log(contestant), /* @__PURE__ */ jsxs19("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
-    /* @__PURE__ */ jsx26(Link4, { to: `/contest/contestant/${originalContestantData._id}?stageId=${originalContestantData.stage_id}&contestantCode=${originalContestantData.code}`, children: /* @__PURE__ */ jsx26("img", { src: originalContestantData.image_url || no_image_default, alt: fullName, className: "w-full h-80 object-cover object-top" }) }),
-    /* @__PURE__ */ jsxs19("div", { className: "p-4 bg-secondary", children: [
-      /* @__PURE__ */ jsx26("span", { className: "block font-black uppercase mb-2", children: fullName }),
-      /* @__PURE__ */ jsx26("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestName }),
-      /* @__PURE__ */ jsxs19("span", { className: "block text-[#5F6D7E] text-xs font-medium mb-2", children: [
+  return console.log(contestant), /* @__PURE__ */ jsxs20("article", { className: "border-2 border-primary rounded-3xl overflow-hidden", children: [
+    /* @__PURE__ */ jsx27(Link4, { to: `/contest/contestant/${originalContestantData._id}?stageId=${originalContestantData.stage_id}&contestantCode=${originalContestantData.code}`, children: /* @__PURE__ */ jsx27("img", { src: originalContestantData.image_url || no_image_default, alt: fullName, className: "w-full h-80 object-cover object-top" }) }),
+    /* @__PURE__ */ jsxs20("div", { className: "p-4 bg-secondary", children: [
+      /* @__PURE__ */ jsx27("span", { className: "block font-black uppercase mb-2", children: fullName }),
+      /* @__PURE__ */ jsx27("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestName }),
+      /* @__PURE__ */ jsxs20("span", { className: "block text-[#5F6D7E] text-xs font-medium mb-2", children: [
         "Stage ",
         stage,
         " \u2022 ",
         stageStatus.replace(/_/g, " ")
       ] }),
-      /* @__PURE__ */ jsxs19("div", { className: "grid grid-cols-2 gap-4 mb-4", children: [
-        /* @__PURE__ */ jsxs19("div", { children: [
-          /* @__PURE__ */ jsx26("span", { className: "text-xs text-gray-500", children: "Total Votes" }),
-          /* @__PURE__ */ jsx26("div", { className: "text-xl font-bold text-indigo-700", children: totalVotes })
+      /* @__PURE__ */ jsxs20("div", { className: "grid grid-cols-2 gap-4 mb-4", children: [
+        /* @__PURE__ */ jsxs20("div", { children: [
+          /* @__PURE__ */ jsx27("span", { className: "text-xs text-gray-500", children: "Total Votes" }),
+          /* @__PURE__ */ jsx27("div", { className: "text-xl font-bold text-indigo-700", children: totalVotes })
         ] }),
-        /* @__PURE__ */ jsxs19("div", { children: [
-          /* @__PURE__ */ jsx26("span", { className: "text-xs text-gray-500", children: "Rank" }),
-          /* @__PURE__ */ jsx26("div", { className: "text-xl font-bold text-green-700", children: originalContestantData.rank ?? "N/A" })
+        /* @__PURE__ */ jsxs20("div", { children: [
+          /* @__PURE__ */ jsx27("span", { className: "text-xs text-gray-500", children: "Rank" }),
+          /* @__PURE__ */ jsx27("div", { className: "text-xl font-bold text-green-700", children: originalContestantData.rank ?? "N/A" })
         ] }),
-        /* @__PURE__ */ jsxs19("div", { children: [
-          /* @__PURE__ */ jsx26("span", { className: "text-xs text-gray-500", children: "Grade" }),
-          /* @__PURE__ */ jsx26("div", { className: "text-lg font-semibold text-gray-800", children: result?.grade ?? "N/A" })
+        /* @__PURE__ */ jsxs20("div", { children: [
+          /* @__PURE__ */ jsx27("span", { className: "text-xs text-gray-500", children: "Grade" }),
+          /* @__PURE__ */ jsx27("div", { className: "text-lg font-semibold text-gray-800", children: result?.grade ?? "N/A" })
         ] }),
-        /* @__PURE__ */ jsxs19("div", { children: [
-          /* @__PURE__ */ jsx26("span", { className: "text-xs text-gray-500", children: "Vote %" }),
-          /* @__PURE__ */ jsxs19("div", { className: "text-lg font-semibold text-blue-600", children: [
+        /* @__PURE__ */ jsxs20("div", { children: [
+          /* @__PURE__ */ jsx27("span", { className: "text-xs text-gray-500", children: "Vote %" }),
+          /* @__PURE__ */ jsxs20("div", { className: "text-lg font-semibold text-blue-600", children: [
             result?.overall_vote_percentage ?? 0,
             "%"
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs19("div", { className: "mb-4", children: [
-        /* @__PURE__ */ jsx26("span", { className: "block text-xs text-gray-500 mb-1", children: "Votes by Channel" }),
-        /* @__PURE__ */ jsxs19("div", { className: "grid grid-cols-2 gap-2", children: [
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26("span", { className: "text-xs font-semibold capitalize", children: stageSocialMedia }),
-            /* @__PURE__ */ jsx26("span", { className: "text-sm font-bold", children: vote.social_media })
+      /* @__PURE__ */ jsxs20("div", { className: "mb-4", children: [
+        /* @__PURE__ */ jsx27("span", { className: "block text-xs text-gray-500 mb-1", children: "Votes by Channel" }),
+        /* @__PURE__ */ jsxs20("div", { className: "grid grid-cols-2 gap-2", children: [
+          /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx27("span", { className: "text-xs font-semibold capitalize", children: stageSocialMedia }),
+            /* @__PURE__ */ jsx27("span", { className: "text-sm font-bold", children: vote.social_media })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26("span", { className: "text-xs font-semibold", children: "Tally" }),
-            /* @__PURE__ */ jsx26("span", { className: "text-sm font-bold", children: vote.tally ?? result?.weighted_scores?.tally ?? 0 })
+          /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx27("span", { className: "text-xs font-semibold", children: "Tally" }),
+            /* @__PURE__ */ jsx27("span", { className: "text-sm font-bold", children: vote.tally ?? result?.weighted_scores?.tally ?? 0 })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26("span", { className: "text-xs font-semibold", children: "Judge" }),
-            /* @__PURE__ */ jsx26("span", { className: "text-sm font-bold", children: vote.judge ?? result?.weighted_scores?.judge ?? 0 })
+          /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx27("span", { className: "text-xs font-semibold", children: "Judge" }),
+            /* @__PURE__ */ jsx27("span", { className: "text-sm font-bold", children: vote.judge ?? result?.weighted_scores?.judge ?? 0 })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26("span", { className: "text-xs font-semibold", children: "Givaah" }),
-            /* @__PURE__ */ jsx26("span", { className: "text-sm font-bold", children: vote.givaah ?? result?.weighted_scores?.givaah ?? 0 })
+          /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx27("span", { className: "text-xs font-semibold", children: "Givaah" }),
+            /* @__PURE__ */ jsx27("span", { className: "text-sm font-bold", children: vote.givaah ?? result?.weighted_scores?.givaah ?? 0 })
           ] }),
-          /* @__PURE__ */ jsxs19("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx26("span", { className: "text-xs font-semibold", children: "Bonus" }),
-            /* @__PURE__ */ jsx26("span", { className: "text-sm font-bold", children: vote.bonus ?? result?.weighted_scores?.bonus ?? 0 })
+          /* @__PURE__ */ jsxs20("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx27("span", { className: "text-xs font-semibold", children: "Bonus" }),
+            /* @__PURE__ */ jsx27("span", { className: "text-sm font-bold", children: vote.bonus ?? result?.weighted_scores?.bonus ?? 0 })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsx26("span", { className: `inline-block px-3 py-1 rounded-full text-xs font-bold ${is_evicted ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`, children: is_evicted ? "Evicted" : "Active" })
+      /* @__PURE__ */ jsx27("span", { className: `inline-block px-3 py-1 rounded-full text-xs font-bold ${is_evicted ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`, children: is_evicted ? "Evicted" : "Active" })
     ] })
   ] });
 }
 function ContestantCard({ contestant, socialMedia }) {
   let fullName = `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`;
-  return console.log({ contestant }), /* @__PURE__ */ jsxs19("article", { className: "border-2 border-secondary rounded-3xl overflow-hidden", children: [
-    /* @__PURE__ */ jsx26(Link4, { to: `/contest/contestant/${contestant._id}?stageId=${contestant.stage_id}&contestantCode=${contestant.code}`, children: /* @__PURE__ */ jsx26("img", { src: contestant.image_url || no_image_default, alt: "person smiling", className: "w-full h-80 object-cover object-top" }) }),
-    /* @__PURE__ */ jsxs19("div", { className: "p-4 bg-secondary", children: [
-      /* @__PURE__ */ jsx26("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: "Vote now for your favorite contestant" }),
-      /* @__PURE__ */ jsx26("span", { className: "block font-black uppercase mb-4", children: fullName }),
-      /* @__PURE__ */ jsx26("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestant.category }),
-      /* @__PURE__ */ jsxs19("div", { className: "grid grid-cols-2 gap-4", children: [
-        socialMedia === "kotmy" ? /* @__PURE__ */ jsx26(
+  return console.log({ contestant }), /* @__PURE__ */ jsxs20("article", { className: "border-2 border-secondary rounded-3xl overflow-hidden", children: [
+    /* @__PURE__ */ jsx27(Link4, { to: `/contest/contestant/${contestant._id}?stageId=${contestant.stage_id}&contestantCode=${contestant.code}`, children: /* @__PURE__ */ jsx27("img", { src: contestant.image_url || no_image_default, alt: "person smiling", className: "w-full h-80 object-cover object-top" }) }),
+    /* @__PURE__ */ jsxs20("div", { className: "p-4 bg-secondary", children: [
+      /* @__PURE__ */ jsx27("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: "Vote now for your favorite contestant" }),
+      /* @__PURE__ */ jsx27("span", { className: "block font-black uppercase mb-4", children: fullName }),
+      /* @__PURE__ */ jsx27("span", { className: "block text-[#5F6D7E] text-sm font-medium mb-2", children: contestant.category }),
+      /* @__PURE__ */ jsxs20("div", { className: "grid grid-cols-2 gap-4", children: [
+        socialMedia === "kotmy" ? /* @__PURE__ */ jsx27(
           SocialLink_default,
           {
             type: socialMedia,
@@ -3109,7 +3150,7 @@ function ContestantCard({ contestant, socialMedia }) {
             stageId: contestant.stage_id,
             contestant
           }
-        ) : /* @__PURE__ */ jsx26(
+        ) : /* @__PURE__ */ jsx27(
           SocialLink_default,
           {
             type: socialMedia,
@@ -3118,64 +3159,72 @@ function ContestantCard({ contestant, socialMedia }) {
             contestant
           }
         ),
-        /* @__PURE__ */ jsx26(TallyVoteDialog, { contestant, children: /* @__PURE__ */ jsx26(SocialLink_default, { type: "tally", className: "w-full" }) }),
-        /* @__PURE__ */ jsx26(GivaahVoteDialog, { contestant })
+        /* @__PURE__ */ jsx27(TallyVoteDialog, { contestant, children: /* @__PURE__ */ jsx27(SocialLink_default, { type: "tally", className: "w-full" }) }),
+        /* @__PURE__ */ jsx27(GivaahVoteDialog, { contestant })
       ] })
     ] })
   ] });
 }
 
 // app/components/public/contests/OngoingContest.tsx
-import { Fragment as Fragment5, jsx as jsx27, jsxs as jsxs20 } from "react/jsx-runtime";
+import { Fragment as Fragment5, jsx as jsx28, jsxs as jsxs21 } from "react/jsx-runtime";
 function OngoingContest({ contest, stage }) {
-  let [searchParams, setUrlSearchParams] = useSearchParams2(), status = contest.status, color = status === "ongoing" ? "green" : status === "completed" ? "red" : "gray";
-  return /* @__PURE__ */ jsxs20(Fragment5, { children: [
-    /* @__PURE__ */ jsxs20("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxs20("div", { className: "grid", children: [
-        /* @__PURE__ */ jsxs20("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsx27("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
-          /* @__PURE__ */ jsx27("p", { className: "font-satoshi-medium", children: contest.desc })
+  let [searchParams, setUrlSearchParams] = useSearchParams2(), isSearching = useNavigation3().state !== "idle", status = contest.status, color = status === "ongoing" ? "green" : status === "completed" ? "red" : "gray", handleStageChange = (val) => {
+    setUrlSearchParams((prev) => (prev.set("stage", val), prev.delete("wild_card"), prev.delete("last_key_id"), prev.delete("first_key_id"), prev.delete("direction"), prev));
+  };
+  return /* @__PURE__ */ jsxs21(Fragment5, { children: [
+    /* @__PURE__ */ jsxs21("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs21("div", { className: "grid", children: [
+        /* @__PURE__ */ jsxs21("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx28("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3 uppercase", children: contest.name }),
+          /* @__PURE__ */ jsx28("p", { className: "font-satoshi-medium", children: contest.desc })
         ] }),
-        /* @__PURE__ */ jsxs20("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
-          /* @__PURE__ */ jsxs20("div", { className: "", children: [
-            /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
-            /* @__PURE__ */ jsx27(StatusTag, { status, color })
+        /* @__PURE__ */ jsxs21("div", { className: "mt-6 grid grid-cols-2 gap-2 max-w-4xl", children: [
+          /* @__PURE__ */ jsxs21("div", { className: "", children: [
+            /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+            /* @__PURE__ */ jsx28(StatusTag, { status, color })
           ] }),
-          /* @__PURE__ */ jsxs20("div", { className: "", children: [
-            /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
-            /* @__PURE__ */ jsx27("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs20("span", { children: [
+          /* @__PURE__ */ jsxs21("div", { className: "", children: [
+            /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Categories" }),
+            /* @__PURE__ */ jsx28("div", { className: "flex gap-4 flex-wrap capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs21("span", { children: [
               "~ ",
               category
             ] }, category)) })
           ] }),
-          /* @__PURE__ */ jsxs20("div", { className: "col-span-2", children: [
-            /* @__PURE__ */ jsx27("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
-            /* @__PURE__ */ jsx27("span", { className: "block", children: contest.prizes })
+          /* @__PURE__ */ jsxs21("div", { className: "col-span-2", children: [
+            /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+            /* @__PURE__ */ jsx28("span", { className: "block", children: contest.prizes })
           ] })
         ] }),
-        /* @__PURE__ */ jsx27(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
+        /* @__PURE__ */ jsx28(ContestTimer, { deadline: new Date(contest.end_date), title: "contest ends in" })
       ] }),
-      /* @__PURE__ */ jsx27("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
+      /* @__PURE__ */ jsx28("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" })
     ] }),
-    /* @__PURE__ */ jsxs20("section", { className: "wrapper my-16", children: [
-      /* @__PURE__ */ jsxs20("h2", { className: "text-accent text-lg lg:text-2xl font-satoshi-bold mb-3 sm:mb-6 uppercase", children: [
+    /* @__PURE__ */ jsxs21("section", { className: "wrapper my-16", children: [
+      /* @__PURE__ */ jsxs21("h2", { className: "text-accent text-lg lg:text-2xl font-satoshi-bold mb-3 sm:mb-6 uppercase", children: [
         contest.name,
         " contestants"
       ] }),
-      /* @__PURE__ */ jsxs20("div", { className: "flex flex-col sm:flex-row justify-between sm:items-end gap-6 sm:gap-8", children: [
-        /* @__PURE__ */ jsxs20("div", { className: "flex flex-col sm:flex-row gap-4", children: [
-          /* @__PURE__ */ jsx27(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white py-2 text-sm", placeholder: "Search contestant by name" }),
-          /* @__PURE__ */ jsxs20(Select, { value: String(stage?.stage), onValueChange: (val) => setUrlSearchParams((prev) => (prev.set("stage", val), prev)), children: [
-            /* @__PURE__ */ jsx27(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx27(SelectValue, { placeholder: "Stage 1" }) }),
-            /* @__PURE__ */ jsx27(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs20(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
+      /* @__PURE__ */ jsxs21("div", { className: "flex flex-col sm:flex-row justify-between sm:items-end gap-6 sm:gap-8", children: [
+        /* @__PURE__ */ jsxs21("div", { className: "flex flex-col sm:flex-row gap-4", children: [
+          /* @__PURE__ */ jsxs21(Form4, { method: "get", className: "flex flex-col sm:flex-row gap-4", children: [
+            /* @__PURE__ */ jsx28("input", { type: "hidden", name: "stage", value: String(stage?.stage ?? 1) }),
+            /* @__PURE__ */ jsx28("input", { type: "hidden", name: "page_size", value: searchParams.get("page_size") ?? "" }),
+            /* @__PURE__ */ jsx28(FormControl, { as: "input", type: "search", name: "wild_card", defaultValue: searchParams.get("wild_card") ?? "", className: "min-w-[280px] bg-white py-2 text-sm", placeholder: "Search contestant by name" }),
+            /* @__PURE__ */ jsx28("button", { type: "submit", disabled: isSearching, className: "rounded-lg bg-brand-pink px-6 py-2 text-sm font-bold text-white transition hover:bg-brand-pink/90 disabled:opacity-60 disabled:cursor-not-allowed", children: isSearching ? "Searching..." : "Search" })
+          ] }),
+          /* @__PURE__ */ jsxs21(Select, { value: String(stage?.stage), onValueChange: handleStageChange, children: [
+            /* @__PURE__ */ jsx28(SelectTrigger, { className: "sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent", children: /* @__PURE__ */ jsx28(SelectValue, { placeholder: "Stage 1" }) }),
+            /* @__PURE__ */ jsx28(SelectContent, { children: contest.stages.map((stage2) => /* @__PURE__ */ jsxs21(SelectItem, { value: String(stage2.stage), className: "focus:bg-blue-700/25", children: [
               "Stage ",
               stage2.stage
             ] }, stage2.stage)) })
           ] })
         ] }),
-        /* @__PURE__ */ jsx27(Link5, { to: `scoreboard?${searchParams.toString()}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See scoreboard" })
+        /* @__PURE__ */ jsx28(Link5, { to: `scoreboard?${searchParams.toString()}`, className: "w-fit text-accent font-bold hover:underline underline-offset-4", children: "See scoreboard" })
       ] }),
-      /* @__PURE__ */ jsx27("div", { className: "my-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16", children: stage?.contestants.map((contestant) => /* @__PURE__ */ jsx27(ContestantCard, { contestant, socialMedia: stage.rates.social_media.type }, contestant.code)) })
+      /* @__PURE__ */ jsx28("div", { className: "my-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16", children: stage?.items.map((contestant) => /* @__PURE__ */ jsx28(ContestantCard, { contestant, socialMedia: stage.rates.social_media.type }, contestant._id)) }),
+      /* @__PURE__ */ jsx28(Pagination, { lastKey: stage?.last_key_id, firstKey: stage?.first_key_id, pageSize: stage?.items_per_page })
     ] })
   ] });
 }
@@ -3184,91 +3233,91 @@ function OngoingContest({ contest, stage }) {
 import { useActionData } from "@remix-run/react";
 
 // app/components/public/contests/ContestGuidelines.tsx
-import { jsx as jsx28, jsxs as jsxs21 } from "react/jsx-runtime";
+import { jsx as jsx29, jsxs as jsxs22 } from "react/jsx-runtime";
 function ContestGuidelines({ contest }) {
-  return /* @__PURE__ */ jsxs21("div", { className: "wrapper sm:max-w-lg sm:mx-0", children: [
-    /* @__PURE__ */ jsxs21("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
-      /* @__PURE__ */ jsx28(StatusTag, { status: "registering", color: "yellow" })
+  return /* @__PURE__ */ jsxs22("div", { className: "wrapper sm:max-w-lg sm:mx-0", children: [
+    /* @__PURE__ */ jsxs22("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold mb-1", children: "Status" }),
+      /* @__PURE__ */ jsx29(StatusTag, { status: "registering", color: "yellow" })
     ] }),
-    /* @__PURE__ */ jsxs21("div", { className: "grid gap-4 sm:grid-cols-2 my-8", children: [
-      /* @__PURE__ */ jsxs21("div", { className: "", children: [
-        /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Age Categories" }),
-        /* @__PURE__ */ jsx28("div", { className: "flex flex-wrap gap-x-4 capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs21("span", { children: [
+    /* @__PURE__ */ jsxs22("div", { className: "grid gap-4 sm:grid-cols-2 my-8", children: [
+      /* @__PURE__ */ jsxs22("div", { className: "", children: [
+        /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold mb-1", children: "Age Categories" }),
+        /* @__PURE__ */ jsx29("div", { className: "flex flex-wrap gap-x-4 capitalize", children: contest.categories.map((category) => /* @__PURE__ */ jsxs22("span", { children: [
           "~ ",
           category
         ] }, category)) })
       ] }),
-      /* @__PURE__ */ jsxs21("div", { className: "", children: [
-        /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Submission Guideline" }),
-        /* @__PURE__ */ jsx28("span", { className: "block", children: contest.sub_req })
+      /* @__PURE__ */ jsxs22("div", { className: "", children: [
+        /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold mb-1", children: "Submission Guideline" }),
+        /* @__PURE__ */ jsx29("span", { className: "block", children: contest.sub_req })
       ] }),
-      /* @__PURE__ */ jsxs21("div", { className: "", children: [
-        /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Submission Deadline" }),
-        /* @__PURE__ */ jsxs21("span", { className: "block", children: [
+      /* @__PURE__ */ jsxs22("div", { className: "", children: [
+        /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold mb-1", children: "Submission Deadline" }),
+        /* @__PURE__ */ jsxs22("span", { className: "block", children: [
           "All entries must be submitted by ",
           new Date(contest.reg_deadline).toLocaleString("en-US", { timeStyle: "short", dateStyle: "long" }),
           "."
         ] })
       ] }),
-      /* @__PURE__ */ jsxs21("div", { className: "", children: [
-        /* @__PURE__ */ jsx28("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
-        /* @__PURE__ */ jsx28("span", { className: "block", children: contest.prizes })
+      /* @__PURE__ */ jsxs22("div", { className: "", children: [
+        /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold mb-1", children: "Prizes" }),
+        /* @__PURE__ */ jsx29("span", { className: "block", children: contest.prizes })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs21("div", { className: "flex flex-col gap-2 my-8", children: [
-      /* @__PURE__ */ jsx28("span", { className: "font-satoshi-bold", children: "Terms & Conditions" }),
+    /* @__PURE__ */ jsxs22("div", { className: "flex flex-col gap-2 my-8", children: [
+      /* @__PURE__ */ jsx29("span", { className: "font-satoshi-bold", children: "Terms & Conditions" }),
       contest.terms_cond
     ] }),
-    /* @__PURE__ */ jsxs21("div", { className: "flex flex-col gap-2 my-8", children: [
-      /* @__PURE__ */ jsx28("span", { className: "font-satoshi-bold", children: "Additional Notes" }),
+    /* @__PURE__ */ jsxs22("div", { className: "flex flex-col gap-2 my-8", children: [
+      /* @__PURE__ */ jsx29("span", { className: "font-satoshi-bold", children: "Additional Notes" }),
       contest.add_info
     ] })
   ] });
 }
 
 // app/components/public/contests/RegistrationSuccess.tsx
-import { jsx as jsx29, jsxs as jsxs22 } from "react/jsx-runtime";
+import { jsx as jsx30, jsxs as jsxs23 } from "react/jsx-runtime";
 function RegistrationSuccess({ contestant, contest }) {
   let fullName = `${contestant.contestant_biodata.first_name} ${contestant.contestant_biodata.last_name}`, formattedDob = new Date(contestant.contestant_biodata.dob).toDateString();
-  return /* @__PURE__ */ jsxs22("div", { className: "bg-secondary p-10 sm:rounded-3xl flex flex-col max-w-xl gap-10", children: [
-    /* @__PURE__ */ jsxs22("aside", { className: "border-2 border-success-700 bg-success-500 rounded-xl p-6 flex items-start gap-4", children: [
-      /* @__PURE__ */ jsx29("img", { src: icons.alertCheckIcon, width: 30, height: 30, className: "mt-1" }),
-      /* @__PURE__ */ jsxs22("p", { children: [
-        /* @__PURE__ */ jsx29("span", { className: "block font-bold mb-2", children: "Dear Esteemed Contestant/Guardian" }),
-        /* @__PURE__ */ jsxs22("span", { className: "font-medium", children: [
+  return /* @__PURE__ */ jsxs23("div", { className: "bg-secondary p-10 sm:rounded-3xl flex flex-col max-w-xl gap-10", children: [
+    /* @__PURE__ */ jsxs23("aside", { className: "border-2 border-success-700 bg-success-500 rounded-xl p-6 flex items-start gap-4", children: [
+      /* @__PURE__ */ jsx30("img", { src: icons.alertCheckIcon, width: 30, height: 30, className: "mt-1" }),
+      /* @__PURE__ */ jsxs23("p", { children: [
+        /* @__PURE__ */ jsx30("span", { className: "block font-bold mb-2", children: "Dear Esteemed Contestant/Guardian" }),
+        /* @__PURE__ */ jsxs23("span", { className: "font-medium", children: [
           "Congratulations, ",
           fullName,
           "! Your submission to ",
           contest.name,
           " has been received successfully. Your code is ",
-          /* @__PURE__ */ jsx29("span", { className: "font-semibold", children: contestant.code }),
+          /* @__PURE__ */ jsx30("span", { className: "font-semibold", children: contestant.code }),
           "."
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs22("div", { className: "grid sm:grid-cols-2 justify-between gap-6 sm:gap-10", children: [
-      /* @__PURE__ */ jsx29("img", { src: contestant.image_url, alt: "kid smiling", className: "rounded-3xl" }),
-      /* @__PURE__ */ jsxs22("div", { className: "grid gap-1 leading-tight", children: [
-        /* @__PURE__ */ jsxs22("p", { className: "", children: [
-          /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold", children: "Full Name" }),
-          /* @__PURE__ */ jsx29("span", { className: "block capitalize", children: fullName })
+    /* @__PURE__ */ jsxs23("div", { className: "grid sm:grid-cols-2 justify-between gap-6 sm:gap-10", children: [
+      /* @__PURE__ */ jsx30("img", { src: contestant.image_url, alt: "kid smiling", className: "rounded-3xl" }),
+      /* @__PURE__ */ jsxs23("div", { className: "grid gap-1 leading-tight", children: [
+        /* @__PURE__ */ jsxs23("p", { className: "", children: [
+          /* @__PURE__ */ jsx30("span", { className: "block font-satoshi-bold", children: "Full Name" }),
+          /* @__PURE__ */ jsx30("span", { className: "block capitalize", children: fullName })
         ] }),
-        /* @__PURE__ */ jsxs22("p", { className: "", children: [
-          /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold", children: "Date of Birth" }),
-          /* @__PURE__ */ jsx29("span", { className: "block", children: formattedDob })
+        /* @__PURE__ */ jsxs23("p", { className: "", children: [
+          /* @__PURE__ */ jsx30("span", { className: "block font-satoshi-bold", children: "Date of Birth" }),
+          /* @__PURE__ */ jsx30("span", { className: "block", children: formattedDob })
         ] }),
-        /* @__PURE__ */ jsxs22("p", { className: "", children: [
-          /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold", children: "Gender" }),
-          /* @__PURE__ */ jsx29("span", { className: "block capitalize", children: contestant.contestant_biodata.sex.toLowerCase() })
+        /* @__PURE__ */ jsxs23("p", { className: "", children: [
+          /* @__PURE__ */ jsx30("span", { className: "block font-satoshi-bold", children: "Gender" }),
+          /* @__PURE__ */ jsx30("span", { className: "block capitalize", children: contestant.contestant_biodata.sex.toLowerCase() })
         ] }),
-        /* @__PURE__ */ jsxs22("p", { className: "min-w-0", children: [
-          /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold", children: "Email Address" }),
-          /* @__PURE__ */ jsx29("span", { className: "block  trunc_ ...", children: contestant.contestant_biodata.email })
+        /* @__PURE__ */ jsxs23("p", { className: "min-w-0", children: [
+          /* @__PURE__ */ jsx30("span", { className: "block font-satoshi-bold", children: "Email Address" }),
+          /* @__PURE__ */ jsx30("span", { className: "block  trunc_ ...", children: contestant.contestant_biodata.email })
         ] }),
-        /* @__PURE__ */ jsxs22("p", { className: "", children: [
-          /* @__PURE__ */ jsx29("span", { className: "block font-satoshi-bold", children: "State of Residence" }),
-          /* @__PURE__ */ jsx29("span", { className: "block capitalize", children: contestant.contestant_biodata.state_of_residence })
+        /* @__PURE__ */ jsxs23("p", { className: "", children: [
+          /* @__PURE__ */ jsx30("span", { className: "block font-satoshi-bold", children: "State of Residence" }),
+          /* @__PURE__ */ jsx30("span", { className: "block capitalize", children: contestant.contestant_biodata.state_of_residence })
         ] })
       ] })
     ] })
@@ -3276,11 +3325,11 @@ function RegistrationSuccess({ contestant, contest }) {
 }
 
 // app/components/public/contests/RegistrationForm.tsx
-import { Form as Form3, useLocation as useLocation6, useNavigate as useNavigate6 } from "@remix-run/react";
-import { useEffect as useEffect11, useState as useState12 } from "react";
-import { jsx as jsx30, jsxs as jsxs23 } from "react/jsx-runtime";
+import { Form as Form5, useLocation as useLocation7, useNavigate as useNavigate7 } from "@remix-run/react";
+import { useEffect as useEffect11, useState as useState13 } from "react";
+import { jsx as jsx31, jsxs as jsxs24 } from "react/jsx-runtime";
 function useRegistrationForm({ contest }) {
-  let { getUserStoreManager } = useUserManager(), [user, setUser] = useState12(null), navigate = useNavigate6(), referralKey = "referral_code";
+  let { getUserStoreManager } = useUserManager(), [user, setUser] = useState13(null), navigate = useNavigate7(), referralKey = "referral_code";
   useEffect11(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
@@ -3300,7 +3349,7 @@ function useRegistrationForm({ contest }) {
       title: "Link Copied",
       description: "Your referral link has been successfully copied, hurray."
     });
-  }, location = useLocation6(), getReferalLinkForWhatsAppShare = () => {
+  }, location = useLocation7(), getReferalLinkForWhatsAppShare = () => {
     let urlWithReferralId = getSignupLink(), WhatsAppText = `Please use my referal link to register for KOTMY's ${contest.name} contest. click on the link to register ${urlWithReferralId}`;
     return `https://wa.me/?text=${encodeURIComponent(WhatsAppText)}`;
   }, getReferralLink = () => getSignupLink(), pathname = location.pathname, search = location.search, hash = location.hash, path = pathname + search + hash;
@@ -3308,30 +3357,30 @@ function useRegistrationForm({ contest }) {
 }
 function RegistrationForm({ contest }) {
   let { user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, getReferralLink, path, getQueryParam, referralKey } = useRegistrationForm({ contest });
-  return user ? /* @__PURE__ */ jsxs23(Form3, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
-    /* @__PURE__ */ jsx30("p", { className: "text-2xl font-satoshi-bold", children: 'Participate by filling in your basic information below and clicking "Submit".' }),
-    /* @__PURE__ */ jsxs23("div", { children: [
+  return user ? /* @__PURE__ */ jsxs24(Form5, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+    /* @__PURE__ */ jsx31("p", { className: "text-2xl font-satoshi-bold", children: 'Participate by filling in your basic information below and clicking "Submit".' }),
+    /* @__PURE__ */ jsxs24("div", { children: [
       "Refer your friends to this contest and win big prices. ",
-      /* @__PURE__ */ jsx30("br", {}),
+      /* @__PURE__ */ jsx31("br", {}),
       "Click to copy referral link \xA0",
-      /* @__PURE__ */ jsxs23(
+      /* @__PURE__ */ jsxs24(
         "button",
         {
           type: "button",
           onClick: copyReferalLink,
           className: "inline-flex items-center gap-2 px-3 py-1.5 max-h-10 rounded-md font-bold bg-accent text-white hover:bg-accent/90 transition shadow text-sm mt-2",
           children: [
-            /* @__PURE__ */ jsxs23("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", strokeWidth: 2, viewBox: "0 0 24 24", children: [
-              /* @__PURE__ */ jsx30("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" }),
-              /* @__PURE__ */ jsx30("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 8v8m0 0l-4-4m4 4l4-4" })
+            /* @__PURE__ */ jsxs24("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", strokeWidth: 2, viewBox: "0 0 24 24", children: [
+              /* @__PURE__ */ jsx31("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" }),
+              /* @__PURE__ */ jsx31("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M12 8v8m0 0l-4-4m4 4l4-4" })
             ] }),
             "Refer"
           ]
         }
       ),
-      /* @__PURE__ */ jsx30("br", {}),
+      /* @__PURE__ */ jsx31("br", {}),
       "Or Share on ",
-      /* @__PURE__ */ jsx30(
+      /* @__PURE__ */ jsx31(
         "a",
         {
           target: "_blank",
@@ -3342,8 +3391,8 @@ function RegistrationForm({ contest }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs23("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsxs24("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx31(
         FormControl,
         {
           as: "input",
@@ -3354,7 +3403,7 @@ function RegistrationForm({ contest }) {
           required: !0
         }
       ),
-      /* @__PURE__ */ jsx30(
+      /* @__PURE__ */ jsx31(
         FormControl,
         {
           as: "input",
@@ -3366,8 +3415,8 @@ function RegistrationForm({ contest }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs23("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsxs24("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx31(
         FormControl,
         {
           as: "input",
@@ -3380,7 +3429,7 @@ function RegistrationForm({ contest }) {
           required: !0
         }
       ),
-      /* @__PURE__ */ jsx30(
+      /* @__PURE__ */ jsx31(
         FormControl,
         {
           as: "input",
@@ -3394,33 +3443,33 @@ function RegistrationForm({ contest }) {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs23("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsxs23("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
-        /* @__PURE__ */ jsxs23("span", { children: [
+    /* @__PURE__ */ jsxs24("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs24("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs24("span", { children: [
           "Gender",
-          /* @__PURE__ */ jsx30("span", { className: "text-red-400", children: "*" })
+          /* @__PURE__ */ jsx31("span", { className: "text-red-400", children: "*" })
         ] }),
-        /* @__PURE__ */ jsxs23(Select, { name: "sex", required: !0, children: [
-          /* @__PURE__ */ jsx30(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx30(SelectValue, { placeholder: "Gender" }) }),
-          /* @__PURE__ */ jsxs23(SelectContent, { children: [
-            /* @__PURE__ */ jsx30(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
-            /* @__PURE__ */ jsx30(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+        /* @__PURE__ */ jsxs24(Select, { name: "sex", required: !0, children: [
+          /* @__PURE__ */ jsx31(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx31(SelectValue, { placeholder: "Gender" }) }),
+          /* @__PURE__ */ jsxs24(SelectContent, { children: [
+            /* @__PURE__ */ jsx31(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+            /* @__PURE__ */ jsx31(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs23("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
-        /* @__PURE__ */ jsxs23("span", { children: [
+      /* @__PURE__ */ jsxs24("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs24("span", { children: [
           "State of Residence",
-          /* @__PURE__ */ jsx30("span", { className: "text-red-400", children: "*" })
+          /* @__PURE__ */ jsx31("span", { className: "text-red-400", children: "*" })
         ] }),
-        /* @__PURE__ */ jsxs23(Select, { name: "state_of_residence", required: !0, children: [
-          /* @__PURE__ */ jsx30(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx30(SelectValue, { placeholder: "Select a state" }) }),
-          /* @__PURE__ */ jsx30(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx30(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
+        /* @__PURE__ */ jsxs24(Select, { name: "state_of_residence", required: !0, children: [
+          /* @__PURE__ */ jsx31(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx31(SelectValue, { placeholder: "Select a state" }) }),
+          /* @__PURE__ */ jsx31(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx31(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs23("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-      /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsxs24("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+      /* @__PURE__ */ jsx31(
         FormControl,
         {
           as: "input",
@@ -3432,18 +3481,18 @@ function RegistrationForm({ contest }) {
           required: !0
         }
       ),
-      /* @__PURE__ */ jsxs23("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
-        /* @__PURE__ */ jsxs23("span", { children: [
+      /* @__PURE__ */ jsxs24("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs24("span", { children: [
           "Category",
-          /* @__PURE__ */ jsx30("span", { className: "text-red-400", children: "*" })
+          /* @__PURE__ */ jsx31("span", { className: "text-red-400", children: "*" })
         ] }),
-        /* @__PURE__ */ jsxs23(Select, { name: "category", required: !!contest.categories.length, children: [
-          /* @__PURE__ */ jsx30(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx30(SelectValue, { placeholder: "Select a category" }) }),
-          /* @__PURE__ */ jsx30(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx30(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
+        /* @__PURE__ */ jsxs24(Select, { name: "category", required: !!contest.categories.length, children: [
+          /* @__PURE__ */ jsx31(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx31(SelectValue, { placeholder: "Select a category" }) }),
+          /* @__PURE__ */ jsx31(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx31(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsx30("div", { className: "grid gap-6 lg:grid-cols-2", children: /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsx31("div", { className: "grid gap-6 lg:grid-cols-2", children: /* @__PURE__ */ jsx31(
       FormControl,
       {
         as: "input",
@@ -3455,7 +3504,7 @@ function RegistrationForm({ contest }) {
         defaultValue: `${getQueryParam(referralKey)}`
       }
     ) }),
-    /* @__PURE__ */ jsx30(
+    /* @__PURE__ */ jsx31(
       FormControl,
       {
         as: "textarea",
@@ -3466,78 +3515,78 @@ function RegistrationForm({ contest }) {
         placeholder: ""
       }
     ),
-    /* @__PURE__ */ jsx30(DragnDrop, { labelText: "Upload Image", name: "contestant_image", multiple: !0, required: !0 }),
-    /* @__PURE__ */ jsx30("input", { type: "hidden", name: "contestId", value: contest._id }),
-    /* @__PURE__ */ jsx30(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Submit" })
-  ] }) : /* @__PURE__ */ jsxs23("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-12 px-6 sm:px-12 text-center", children: [
-    /* @__PURE__ */ jsx30("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx30("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
-    /* @__PURE__ */ jsx30("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
-    /* @__PURE__ */ jsx30("p", { className: "text-gray-700 text-base max-w-md", children: "You must be signed in to register for this contest. Please sign in to continue and unlock the registration form or refer your friends and win great prices." }),
-    /* @__PURE__ */ jsx30(Button, { element: "button", onClick: () => navigate(`/login?redirectTo=${encodeURIComponent(path)}`), className: "mt-2 px-8 py-3 text-lg rounded-lg font-bold bg-accent text-white hover:bg-accent/90 transition", children: "Sign In" }),
-    /* @__PURE__ */ jsxs23("p", { className: "text-sm text-gray-400 mt-2", children: [
+    /* @__PURE__ */ jsx31(DragnDrop, { labelText: "Upload Image", name: "contestant_image", multiple: !0, required: !0 }),
+    /* @__PURE__ */ jsx31("input", { type: "hidden", name: "contestId", value: contest._id }),
+    /* @__PURE__ */ jsx31(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Submit" })
+  ] }) : /* @__PURE__ */ jsxs24("div", { className: "w-full max-w-xl bg-white border rounded-3xl shadow-lg flex flex-col items-center justify-center gap-6 py-12 px-6 sm:px-12 text-center", children: [
+    /* @__PURE__ */ jsx31("svg", { width: "64", height: "64", fill: "none", viewBox: "0 0 24 24", className: "mx-auto mb-2 text-accent", children: /* @__PURE__ */ jsx31("path", { d: "M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z", fill: "currentColor" }) }),
+    /* @__PURE__ */ jsx31("h2", { className: "text-2xl font-satoshi-bold text-accent", children: "Sign In Required" }),
+    /* @__PURE__ */ jsx31("p", { className: "text-gray-700 text-base max-w-md", children: "You must be signed in to register for this contest. Please sign in to continue and unlock the registration form or refer your friends and win great prices." }),
+    /* @__PURE__ */ jsx31(Button, { element: "button", onClick: () => navigate(`/login?redirectTo=${encodeURIComponent(path)}`), className: "mt-2 px-8 py-3 text-lg rounded-lg font-bold bg-accent text-white hover:bg-accent/90 transition", children: "Sign In" }),
+    /* @__PURE__ */ jsxs24("p", { className: "text-sm text-gray-400 mt-2", children: [
       "Don't have an account? ",
-      /* @__PURE__ */ jsx30("span", { className: "underline text-accent cursor-pointer", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
+      /* @__PURE__ */ jsx31("span", { className: "underline text-accent cursor-pointer", onClick: () => navigate(`/signup?redirectTo=${encodeURIComponent(path)}`), children: "Sign up here" })
     ] })
   ] });
 }
 
 // app/components/reusables/AutoplayCarousel.tsx
-import { useEffect as useEffect12, useRef as useRef5, useState as useState13 } from "react";
-import { jsx as jsx31, jsxs as jsxs24 } from "react/jsx-runtime";
+import { useEffect as useEffect12, useRef as useRef5, useState as useState14 } from "react";
+import { jsx as jsx32, jsxs as jsxs25 } from "react/jsx-runtime";
 function AutoplayCarousel({ children, containerClass = "", trackClass = "", slideDuration, reverse = !1 }) {
-  let [fillAmount, setFillAmount] = useState13(1), container = useRef5(null), track = useRef5(null);
+  let [fillAmount, setFillAmount] = useState14(1), container = useRef5(null), track = useRef5(null);
   return useEffect12(() => {
     let containerWidth = container.current?.offsetWidth ?? 0, trackWidth = track.current?.offsetWidth ?? 0, soln = Math.min(Math.ceil(containerWidth / trackWidth));
     container.current?.style.setProperty("--timing", `${slideDuration ?? soln * 18}s`), console.log({ soln, containerWidth, trackWidth }), setFillAmount(soln);
-  }, []), /* @__PURE__ */ jsxs24("div", { ref: container, className: `carousel-container ${containerClass}`, children: [
-    /* @__PURE__ */ jsx31("div", { ref: track, className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) }),
-    /* @__PURE__ */ jsx31("div", { className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) })
+  }, []), /* @__PURE__ */ jsxs25("div", { ref: container, className: `carousel-container ${containerClass}`, children: [
+    /* @__PURE__ */ jsx32("div", { ref: track, className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) }),
+    /* @__PURE__ */ jsx32("div", { className: `carousel-track ${reverse ? "slide-reverse" : "slide"} ${trackClass}`, children: Array(fillAmount).fill(children) })
   ] });
 }
 
 // app/components/reusables/CarouselItem.tsx
-import { jsx as jsx32 } from "react/jsx-runtime";
+import { jsx as jsx33 } from "react/jsx-runtime";
 function CarouselItem({ children, className = "", ...props }) {
-  return /* @__PURE__ */ jsx32("div", { className: `carousel-card sm:mx-2 ${className}`, ...props, children });
+  return /* @__PURE__ */ jsx33("div", { className: `carousel-card sm:mx-2 ${className}`, ...props, children });
 }
 
 // app/components/public/ContestantSlider.tsx
-import { Fragment as Fragment6, jsx as jsx33, jsxs as jsxs25 } from "react/jsx-runtime";
+import { Fragment as Fragment6, jsx as jsx34, jsxs as jsxs26 } from "react/jsx-runtime";
 function ContestantSlider({ contestants }) {
-  return /* @__PURE__ */ jsxs25(Fragment6, { children: [
-    /* @__PURE__ */ jsx33(AutoplayCarousel, { slideDuration: 30, children: contestants.map((contestant) => /* @__PURE__ */ jsx33(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx33("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) }),
-    /* @__PURE__ */ jsx33(AutoplayCarousel, { slideDuration: 30, reverse: !0, children: contestants.map((contestant) => /* @__PURE__ */ jsx33(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx33("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) })
+  return /* @__PURE__ */ jsxs26(Fragment6, { children: [
+    /* @__PURE__ */ jsx34(AutoplayCarousel, { slideDuration: 30, children: contestants.map((contestant) => /* @__PURE__ */ jsx34(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx34("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) }),
+    /* @__PURE__ */ jsx34(AutoplayCarousel, { slideDuration: 30, reverse: !0, children: contestants.map((contestant) => /* @__PURE__ */ jsx34(CarouselItem, { className: "h-24 md:h-72 aspect-square rounded-lg overflow-hidden mx-2 md:mx-6", children: /* @__PURE__ */ jsx34("img", { src: contestant.image, alt: "person smiling", className: "h-full aspect-square object-cover" }) }, contestant.id)) })
   ] });
 }
 
 // app/components/public/contests/RegisteringContest.tsx
-import { Fragment as Fragment7, jsx as jsx34, jsxs as jsxs26 } from "react/jsx-runtime";
+import { Fragment as Fragment7, jsx as jsx35, jsxs as jsxs27 } from "react/jsx-runtime";
 function RegisteringContest({ contest }) {
   let actionRes = useActionData();
-  return /* @__PURE__ */ jsxs26(Fragment7, { children: [
-    /* @__PURE__ */ jsxs26("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
-      /* @__PURE__ */ jsxs26("div", { className: "flex flex-col justify-around", children: [
-        /* @__PURE__ */ jsxs26("div", { className: "max-w-2xl", children: [
-          /* @__PURE__ */ jsx34("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
-          /* @__PURE__ */ jsx34("p", { className: "font-satoshi-medium", children: contest.desc })
+  return /* @__PURE__ */ jsxs27(Fragment7, { children: [
+    /* @__PURE__ */ jsxs27("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: [
+      /* @__PURE__ */ jsxs27("div", { className: "flex flex-col justify-around", children: [
+        /* @__PURE__ */ jsxs27("div", { className: "max-w-2xl", children: [
+          /* @__PURE__ */ jsx35("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
+          /* @__PURE__ */ jsx35("p", { className: "font-satoshi-medium", children: contest.desc })
         ] }),
-        /* @__PURE__ */ jsx34(ContestTimer, { deadline: new Date(contest.reg_deadline), title: "registration ends in" })
+        /* @__PURE__ */ jsx35(ContestTimer, { deadline: new Date(contest.reg_deadline), title: "registration ends in" })
       ] }),
-      /* @__PURE__ */ jsx34("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-contain" })
+      /* @__PURE__ */ jsx35("img", { src: contest.image || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-contain" })
     ] }),
-    /* @__PURE__ */ jsx34("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs26("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
-      actionRes?.data ? /* @__PURE__ */ jsx34(RegistrationSuccess, { contestant: actionRes.data, contest }) : /* @__PURE__ */ jsx34(RegistrationForm, { contest }),
-      /* @__PURE__ */ jsx34(ContestGuidelines, { contest })
+    /* @__PURE__ */ jsx35("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs27("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
+      actionRes?.data ? /* @__PURE__ */ jsx35(RegistrationSuccess, { contestant: actionRes.data, contest }) : /* @__PURE__ */ jsx35(RegistrationForm, { contest }),
+      /* @__PURE__ */ jsx35(ContestGuidelines, { contest })
     ] }) }),
-    /* @__PURE__ */ jsxs26("section", { className: "my-8 md:my-16", children: [
-      /* @__PURE__ */ jsx34("h2", { className: "text-2xl sm:text-[40px] leading-snug font-satoshi-black w-4/5 max-w-lg text-center mx-auto my-10", children: "Over 500 registered participants and counting" }),
-      /* @__PURE__ */ jsx34(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] })
+    /* @__PURE__ */ jsxs27("section", { className: "my-8 md:my-16", children: [
+      /* @__PURE__ */ jsx35("h2", { className: "text-2xl sm:text-[40px] leading-snug font-satoshi-black w-4/5 max-w-lg text-center mx-auto my-10", children: "Over 500 registered participants and counting" }),
+      /* @__PURE__ */ jsx35(ContestantSlider, { contestants: [{ id: "sdjc", image: hero_1_default }, { id: "adcn", image: hero_2_default }, { id: "kjsd", image: hero_3_default }] })
     ] })
   ] });
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId._index.tsx
-import { jsx as jsx35 } from "react/jsx-runtime";
+import { jsx as jsx36 } from "react/jsx-runtime";
 async function action3({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "register") {
@@ -3564,7 +3613,7 @@ function ContestPage() {
   if (console.log("----stageContestants-----"), console.log({ stageContestants }), !stageContestants)
     throw new Error("Could not load stage contestants");
   let { contest, stage } = stageContestants;
-  return /* @__PURE__ */ jsx35("main", { className: "grow", children: contest.status === "registering" ? /* @__PURE__ */ jsx35(RegisteringContest, { contest }) : /* @__PURE__ */ jsx35(OngoingContest, { contest, stage }) });
+  return /* @__PURE__ */ jsx36("main", { className: "grow", children: contest.status === "registering" ? /* @__PURE__ */ jsx36(RegisteringContest, { contest }) : /* @__PURE__ */ jsx36(OngoingContest, { contest, stage }) });
 }
 
 // app/routes/partners.addwithdrawalaccount.personal.$walletid.tsx
@@ -3576,8 +3625,8 @@ __export(partners_addwithdrawalaccount_personal_walletid_exports, {
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage
 });
 import { redirect as redirect4 } from "@remix-run/node";
-import { Form as Form4, useNavigate as useNavigate7, useNavigation as useNavigation2 } from "@remix-run/react";
-import { useMemo as useMemo2, useRef as useRef6, useState as useState14 } from "react";
+import { Form as Form6, useNavigate as useNavigate8, useNavigation as useNavigation4 } from "@remix-run/react";
+import { useMemo as useMemo2, useRef as useRef6, useState as useState15 } from "react";
 
 // app/services/wallet/wallet.server.ts
 var WalletRepository = class {
@@ -3823,7 +3872,7 @@ var WalletRepository = class {
 import { useLoaderData as useLoaderData3, useActionData as useActionData2 } from "@remix-run/react";
 import { json as json6 } from "@remix-run/node";
 import { useEffect as useEffect13 } from "react";
-import { jsx as jsx36, jsxs as jsxs27 } from "react/jsx-runtime";
+import { jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
 async function loader3({ request, params }) {
   let validateAuth = await requireAuth(request), walletid = params.walletid;
   if (!walletid)
@@ -3861,7 +3910,7 @@ async function action4({ request }) {
   return json6({ success: !0 });
 }
 function useAddWithdrawalAccountPage() {
-  let navigate = useNavigate7(), { error, walletAccount, walletCurrencyBanks, authRequired } = useLoaderData3(), { toast: toast4 } = useToast(), actionData = useActionData2(), [banks, setBanks] = useState14([]), [wallet, setWallet] = useState14(), [accountDetails, setAccountDetails] = useState14(null);
+  let navigate = useNavigate8(), { error, walletAccount, walletCurrencyBanks, authRequired } = useLoaderData3(), { toast: toast4 } = useToast(), actionData = useActionData2(), [banks, setBanks] = useState15([]), [wallet, setWallet] = useState15(), [accountDetails, setAccountDetails] = useState15(null);
   return useEffect13(() => {
     error && toast4({
       variant: "destructive",
@@ -3883,7 +3932,7 @@ function useAddWithdrawalAccountPage() {
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, setAccountDetails };
 }
 function AddWithdrawalAccountPage() {
-  let { banks, wallet, accountDetails, setAccountDetails } = useAddWithdrawalAccountPage(), isSubmitting = useNavigation2().state === "submitting", [searchTerm, setSearchTerm] = useState14(""), [isOpen, setIsOpen] = useState14(!1), [selectedBank, setSelectedBank] = useState14(null), dropdownRef = useRef6(null), filteredBanks = useMemo2(() => banks.filter(
+  let { banks, wallet, accountDetails, setAccountDetails } = useAddWithdrawalAccountPage(), isSubmitting = useNavigation4().state === "submitting", [searchTerm, setSearchTerm] = useState15(""), [isOpen, setIsOpen] = useState15(!1), [selectedBank, setSelectedBank] = useState15(null), dropdownRef = useRef6(null), filteredBanks = useMemo2(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
   useEffect13(() => {
@@ -3900,18 +3949,18 @@ function AddWithdrawalAccountPage() {
     hover:border-gray-400
     focus:border-slate-800 focus:ring-1 focus:ring-slate-800
   `;
-  return /* @__PURE__ */ jsx36("div", { className: "min-h-screen bg-white flex flex-col items-center pt-16 px-4", children: /* @__PURE__ */ jsxs27("div", { className: "max-w-md w-full flex flex-col items-center", children: [
-    /* @__PURE__ */ jsxs27("div", { className: "flex flex-col items-center mb-10 text-center", children: [
-      /* @__PURE__ */ jsx36("div", { className: "w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100", children: /* @__PURE__ */ jsx36("div", { className: "w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx36(Svg, { src: icons.avatarIcon, className: "w-6 h-6 text-white" }) }) }),
-      /* @__PURE__ */ jsx36("h1", { className: "text-2xl font-bold text-gray-900", children: "Add personal account" }),
-      /* @__PURE__ */ jsx36("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter your banking details below" })
+  return /* @__PURE__ */ jsx37("div", { className: "min-h-screen bg-white flex flex-col items-center pt-16 px-4", children: /* @__PURE__ */ jsxs28("div", { className: "max-w-md w-full flex flex-col items-center", children: [
+    /* @__PURE__ */ jsxs28("div", { className: "flex flex-col items-center mb-10 text-center", children: [
+      /* @__PURE__ */ jsx37("div", { className: "w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100", children: /* @__PURE__ */ jsx37("div", { className: "w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx37(Svg, { src: icons.avatarIcon, className: "w-6 h-6 text-white" }) }) }),
+      /* @__PURE__ */ jsx37("h1", { className: "text-2xl font-bold text-gray-900", children: "Add personal account" }),
+      /* @__PURE__ */ jsx37("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter your banking details below" })
     ] }),
-    accountDetails ? /* @__PURE__ */ jsxs27(Form4, { method: "POST", className: "w-full flex flex-col gap-4", children: [
-      /* @__PURE__ */ jsxs27("div", { className: "relative", children: [
-        /* @__PURE__ */ jsx36("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx36("option", { value: "NG", children: "Nigeria" }) }),
-        /* @__PURE__ */ jsx36("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx36(ChevronDownIcon2, {}) })
+    accountDetails ? /* @__PURE__ */ jsxs28(Form6, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+      /* @__PURE__ */ jsxs28("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx37("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx37("option", { value: "NG", children: "Nigeria" }) }),
+        /* @__PURE__ */ jsx37("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx37(ChevronDownIcon2, {}) })
       ] }),
-      /* @__PURE__ */ jsx36("div", { className: "relative", children: /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37("div", { className: "relative", children: /* @__PURE__ */ jsx37(
         "input",
         {
           required: !0,
@@ -3920,7 +3969,7 @@ function AddWithdrawalAccountPage() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx36("div", { className: "relative", children: /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37("div", { className: "relative", children: /* @__PURE__ */ jsx37(
         "input",
         {
           id: "accountNumber",
@@ -3931,7 +3980,7 @@ function AddWithdrawalAccountPage() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx36("div", { className: "relative", children: /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37("div", { className: "relative", children: /* @__PURE__ */ jsx37(
         "input",
         {
           id: "pin",
@@ -3944,15 +3993,15 @@ function AddWithdrawalAccountPage() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "bank_code", value: selectedBank?.code || "", required: !0 }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "intent", value: "addAccountDetails" }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
-      /* @__PURE__ */ jsxs27("div", { className: "px-5 py-3 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex justify-between items-center", children: [
-        /* @__PURE__ */ jsx36("span", { className: "text-xs font-medium text-gray-400 uppercase tracking-wider", children: "Account Name" }),
-        /* @__PURE__ */ jsx36("p", { className: "text-sm font-bold text-slate-800", children: accountDetails ? accountDetails.account_name : "Invalid Account" })
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "bank_code", value: selectedBank?.code || "", required: !0 }),
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "intent", value: "addAccountDetails" }),
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
+      /* @__PURE__ */ jsxs28("div", { className: "px-5 py-3 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex justify-between items-center", children: [
+        /* @__PURE__ */ jsx37("span", { className: "text-xs font-medium text-gray-400 uppercase tracking-wider", children: "Account Name" }),
+        /* @__PURE__ */ jsx37("p", { className: "text-sm font-bold text-slate-800", children: accountDetails ? accountDetails.account_name : "Invalid Account" })
       ] }),
-      /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37(
         Cta_default,
         {
           element: "button",
@@ -3962,7 +4011,7 @@ function AddWithdrawalAccountPage() {
           children: isSubmitting ? "Adding..." : "Add Account"
         }
       ),
-      /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37(
         "button",
         {
           type: "button",
@@ -3971,13 +4020,13 @@ function AddWithdrawalAccountPage() {
           children: "Go back"
         }
       )
-    ] }) : /* @__PURE__ */ jsxs27(Form4, { method: "POST", className: "w-full flex flex-col gap-4", children: [
-      /* @__PURE__ */ jsxs27("div", { className: "relative", children: [
-        /* @__PURE__ */ jsx36("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx36("option", { value: "NG", children: "Nigeria" }) }),
-        /* @__PURE__ */ jsx36("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx36(ChevronDownIcon2, {}) })
+    ] }) : /* @__PURE__ */ jsxs28(Form6, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+      /* @__PURE__ */ jsxs28("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx37("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx37("option", { value: "NG", children: "Nigeria" }) }),
+        /* @__PURE__ */ jsx37("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx37(ChevronDownIcon2, {}) })
       ] }),
-      /* @__PURE__ */ jsxs27("div", { className: "relative", ref: dropdownRef, children: [
-        /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsxs28("div", { className: "relative", ref: dropdownRef, children: [
+        /* @__PURE__ */ jsx37(
           "input",
           {
             type: "text",
@@ -3992,9 +4041,9 @@ function AddWithdrawalAccountPage() {
             }
           }
         ),
-        /* @__PURE__ */ jsx36("input", { type: "hidden", name: "bank", value: selectedBank?.code || "", required: !0 }),
-        /* @__PURE__ */ jsx36("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx36(ChevronDownIcon2, {}) }),
-        isOpen && /* @__PURE__ */ jsx36("div", { className: "absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden", children: filteredBanks.length > 0 ? filteredBanks.map((bank) => /* @__PURE__ */ jsx36(
+        /* @__PURE__ */ jsx37("input", { type: "hidden", name: "bank", value: selectedBank?.code || "", required: !0 }),
+        /* @__PURE__ */ jsx37("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx37(ChevronDownIcon2, {}) }),
+        isOpen && /* @__PURE__ */ jsx37("div", { className: "absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden", children: filteredBanks.length > 0 ? filteredBanks.map((bank) => /* @__PURE__ */ jsx37(
           "div",
           {
             className: "px-5 py-4 hover:bg-slate-50 cursor-pointer text-gray-900 border-b border-gray-50 last:border-none transition-colors",
@@ -4004,9 +4053,9 @@ function AddWithdrawalAccountPage() {
             children: bank.name
           },
           bank.code
-        )) : /* @__PURE__ */ jsx36("div", { className: "px-5 py-4 text-gray-400 italic", children: "No banks found" }) })
+        )) : /* @__PURE__ */ jsx37("div", { className: "px-5 py-4 text-gray-400 italic", children: "No banks found" }) })
       ] }),
-      /* @__PURE__ */ jsx36("div", { className: "relative", children: /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37("div", { className: "relative", children: /* @__PURE__ */ jsx37(
         "input",
         {
           id: "accountNumber",
@@ -4016,10 +4065,10 @@ function AddWithdrawalAccountPage() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "intent", value: "getAccountDetails" }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
-      /* @__PURE__ */ jsx36("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
-      /* @__PURE__ */ jsx36(
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "intent", value: "getAccountDetails" }),
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
+      /* @__PURE__ */ jsx37("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
+      /* @__PURE__ */ jsx37(
         Cta_default,
         {
           element: "button",
@@ -4032,7 +4081,7 @@ function AddWithdrawalAccountPage() {
     ] })
   ] }) });
 }
-var ChevronDownIcon2 = () => /* @__PURE__ */ jsx36("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx36("path", { d: "m6 9 6 6 6-6" }) });
+var ChevronDownIcon2 = () => /* @__PURE__ */ jsx37("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx37("path", { d: "m6 9 6 6 6-6" }) });
 
 // app/routes/_public.contest.contestant.$contestantId._index.tsx
 var public_contest_contestant_contestantId_index_exports = {};
@@ -4043,7 +4092,7 @@ __export(public_contest_contestant_contestantId_index_exports, {
   useContestContestantController: () => useContestContestantController
 });
 import { useLoaderData as useLoaderData4 } from "@remix-run/react";
-import { useEffect as useEffect14, useState as useState15 } from "react";
+import { useEffect as useEffect14, useState as useState16 } from "react";
 
 // app/lib/helpers/contestant.helper.ts
 var ContestantHelper = class {
@@ -4083,7 +4132,7 @@ var ContestantHelper = class {
 }, contestantHelper = new ContestantHelper();
 
 // app/routes/_public.contest.contestant.$contestantId._index.tsx
-import { jsx as jsx37, jsxs as jsxs28 } from "react/jsx-runtime";
+import { jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
 async function loader4({ request }) {
   let url = new URL(request.url), contestantCode = url.searchParams.get("contestantCode") ?? "", stageId = url.searchParams.get("stageId") ?? "", { data, error } = await contestantRepo.getContestantDetailsForContest(contestantCode, stageId), stage = data?.stages.find((currentStage) => currentStage._id === stageId) ?? data?.stages.find((currentStage) => currentStage.active) ?? data?.stages.find((currentStage) => currentStage.stage === 1) ?? null, stageCurrency = stage?.rates.vote_currency ?? null, pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0, walletVoteContext = null, cookieHeader = request.headers.get("Cookie") ?? "";
   if (cookieHeader && stageCurrency) {
@@ -4120,7 +4169,7 @@ async function loader4({ request }) {
   return { data, error, url: request.url, baseUrl: process.env._BASE_URL, walletVoteContext };
 }
 function useContestContestantController() {
-  let [enrichedContestants, setEnrichedcontestants] = useState15([]), [contestantDetailsForActiveStage, setContestantDetailsForActiveStage] = useState15(null), { data, error, url } = useLoaderData4(), [isToastFired, setIsToastFired] = useState15(!1);
+  let [enrichedContestants, setEnrichedcontestants] = useState16([]), [contestantDetailsForActiveStage, setContestantDetailsForActiveStage] = useState16(null), { data, error, url } = useLoaderData4(), [isToastFired, setIsToastFired] = useState16(!1);
   useEffect14(() => {
     error && !isToastFired && (toast({
       variant: "destructive",
@@ -4144,29 +4193,29 @@ function useContestContestantController() {
 function ContestContestant() {
   let { enrichedContestants, contestantDetailsForActiveStage, handleCopy, whatsappUrl } = useContestContestantController(), profileContestant = contestantDetailsForActiveStage || enrichedContestants[0];
   if (console.log({ profileContestant, enrichedContestants, contestantDetailsForActiveStage }), !profileContestant)
-    return /* @__PURE__ */ jsx37("div", { className: "min-h-screen flex items-center justify-center ", children: /* @__PURE__ */ jsx37("p", { className: "text-xl text-gray-500", children: "Loading or no contestant data found..." }) });
+    return /* @__PURE__ */ jsx38("div", { className: "min-h-screen flex items-center justify-center ", children: /* @__PURE__ */ jsx38("p", { className: "text-xl text-gray-500", children: "Loading or no contestant data found..." }) });
   console.log({ profileContestant });
   let { originalContestantData, stageSocialMedia, fullName, info, stage, is_evicted } = profileContestant;
-  return /* @__PURE__ */ jsxs28("div", { className: "min-h-screen text-gray-900", children: [
-    /* @__PURE__ */ jsx37("header", { className: " pt-24 pb-16 border-b border-gray-200", children: /* @__PURE__ */ jsx37("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs28("div", { className: "flex flex-col lg:flex-row items-start lg:space-x-12", children: [
-      /* @__PURE__ */ jsx37("div", { className: "w-full lg:w-96 flex-shrink-0 mb-8 lg:mb-0", children: /* @__PURE__ */ jsx37(
+  return /* @__PURE__ */ jsxs29("div", { className: "min-h-screen text-gray-900", children: [
+    /* @__PURE__ */ jsx38("header", { className: " pt-24 pb-16 border-b border-gray-200", children: /* @__PURE__ */ jsx38("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs29("div", { className: "flex flex-col lg:flex-row items-start lg:space-x-12", children: [
+      /* @__PURE__ */ jsx38("div", { className: "w-full lg:w-96 flex-shrink-0 mb-8 lg:mb-0", children: /* @__PURE__ */ jsx38(
         ContestantCard,
         {
           contestant: originalContestantData,
           socialMedia: stageSocialMedia
         }
       ) }),
-      /* @__PURE__ */ jsxs28("div", { className: "flex-grow pt-4", children: [
-        /* @__PURE__ */ jsx37("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs28("div", { children: [
-          /* @__PURE__ */ jsxs28("div", { className: "flex items-center mb-2", children: [
-            /* @__PURE__ */ jsx37("h1", { className: "text-5xl font-extrabold text-gray-900", children: fullName }),
-            /* @__PURE__ */ jsx37("span", { className: "ml-4 inline-flex items-center px-4 py-1.5 rounded-full text-base font-semibold tracking-wide bg-indigo-50 text-indigo-800", children: is_evicted ? "EVICTED" : "ACTIVE" })
+      /* @__PURE__ */ jsxs29("div", { className: "flex-grow pt-4", children: [
+        /* @__PURE__ */ jsx38("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs29("div", { children: [
+          /* @__PURE__ */ jsxs29("div", { className: "flex items-center mb-2", children: [
+            /* @__PURE__ */ jsx38("h1", { className: "text-5xl font-extrabold text-gray-900", children: fullName }),
+            /* @__PURE__ */ jsx38("span", { className: "ml-4 inline-flex items-center px-4 py-1.5 rounded-full text-base font-semibold tracking-wide bg-indigo-50 text-indigo-800", children: is_evicted ? "EVICTED" : "ACTIVE" })
           ] }),
-          /* @__PURE__ */ jsx37("p", { className: "text-xl text-gray-600 mb-6 font-light", children: info }),
-          /* @__PURE__ */ jsx37("p", { className: "text-lg text-gray-700 mb-8 max-w-2xl", children: contestantDetailsForActiveStage?.info ?? "No stage-specific bio available. Displaying general contestant info." }),
-          /* @__PURE__ */ jsxs28("div", { className: "flex space-x-4 mb-8", children: [
-            /* @__PURE__ */ jsx37("button", { onClick: () => handleCopy(), className: "bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.02]", children: "Share Link" }),
-            /* @__PURE__ */ jsx37(
+          /* @__PURE__ */ jsx38("p", { className: "text-xl text-gray-600 mb-6 font-light", children: info }),
+          /* @__PURE__ */ jsx38("p", { className: "text-lg text-gray-700 mb-8 max-w-2xl", children: contestantDetailsForActiveStage?.info ?? "No stage-specific bio available. Displaying general contestant info." }),
+          /* @__PURE__ */ jsxs29("div", { className: "flex space-x-4 mb-8", children: [
+            /* @__PURE__ */ jsx38("button", { onClick: () => handleCopy(), className: "bg-indigo-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.02]", children: "Share Link" }),
+            /* @__PURE__ */ jsx38(
               "a",
               {
                 href: whatsappUrl,
@@ -4178,32 +4227,32 @@ function ContestContestant() {
             )
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxs28("div", { className: "grid grid-cols-3 gap-8 pt-6 mt-6 border-t border-gray-200", children: [
-          /* @__PURE__ */ jsxs28("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsx37("span", { className: "text-5xl font-extrabold text-indigo-600", children: enrichedContestants.length }),
-            /* @__PURE__ */ jsx37("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Total Stages" })
+        /* @__PURE__ */ jsxs29("div", { className: "grid grid-cols-3 gap-8 pt-6 mt-6 border-t border-gray-200", children: [
+          /* @__PURE__ */ jsxs29("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx38("span", { className: "text-5xl font-extrabold text-indigo-600", children: enrichedContestants.length }),
+            /* @__PURE__ */ jsx38("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Total Stages" })
           ] }),
-          /* @__PURE__ */ jsxs28("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsx37("span", { className: "text-5xl font-extrabold text-gray-900", children: stage }),
-            /* @__PURE__ */ jsx37("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Current Stage" })
+          /* @__PURE__ */ jsxs29("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx38("span", { className: "text-5xl font-extrabold text-gray-900", children: stage }),
+            /* @__PURE__ */ jsx38("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "Current Stage" })
           ] }),
-          /* @__PURE__ */ jsxs28("div", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsx37("span", { className: "text-5xl font-extrabold text-gray-900", children: is_evicted ? "No" : "Yes" }),
-            /* @__PURE__ */ jsx37("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "In Contest" })
+          /* @__PURE__ */ jsxs29("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx38("span", { className: "text-5xl font-extrabold text-gray-900", children: is_evicted ? "No" : "Yes" }),
+            /* @__PURE__ */ jsx38("span", { className: "text-sm text-gray-500 uppercase tracking-wider mt-1", children: "In Contest" })
           ] })
         ] })
       ] })
     ] }) }) }),
-    /* @__PURE__ */ jsxs28("main", { className: "max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8", children: [
-      /* @__PURE__ */ jsxs28("div", { className: " z-10 border-b border-gray-200 mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 pb-3", children: [
-        /* @__PURE__ */ jsx37("h2", { className: "text-3xl font-bold text-gray-900 mb-4", children: "Contest Stages History" }),
-        /* @__PURE__ */ jsx37("nav", { children: /* @__PURE__ */ jsx37("ul", { className: "flex space-x-10 text-lg font-medium", children: /* @__PURE__ */ jsxs28("li", { className: "text-indigo-600 border-b-2 border-indigo-600 pb-2 cursor-pointer", children: [
+    /* @__PURE__ */ jsxs29("main", { className: "max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8", children: [
+      /* @__PURE__ */ jsxs29("div", { className: " z-10 border-b border-gray-200 mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-4 pb-3", children: [
+        /* @__PURE__ */ jsx38("h2", { className: "text-3xl font-bold text-gray-900 mb-4", children: "Contest Stages History" }),
+        /* @__PURE__ */ jsx38("nav", { children: /* @__PURE__ */ jsx38("ul", { className: "flex space-x-10 text-lg font-medium", children: /* @__PURE__ */ jsxs29("li", { className: "text-indigo-600 border-b-2 border-indigo-600 pb-2 cursor-pointer", children: [
           "All Stages (",
           enrichedContestants.length,
           ")"
         ] }) }) })
       ] }),
-      /* @__PURE__ */ jsx37("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3", children: enrichedContestants.map((contestant) => /* @__PURE__ */ jsx37(
+      /* @__PURE__ */ jsx38("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3", children: enrichedContestants.map((contestant) => /* @__PURE__ */ jsx38(
         ContestantStatisticsCard,
         {
           contestant
@@ -4222,45 +4271,45 @@ __export(partners_addwithdrawalaccount_partner_walletid_exports, {
   useAccountTypePage: () => useAccountTypePage
 });
 import { redirect as redirect5 } from "@remix-run/node";
-import { Form as Form5, Link as Link7, useNavigate as useNavigate8, useParams } from "@remix-run/react";
-import { useState as useState16 } from "react";
-import { jsx as jsx38, jsxs as jsxs29 } from "react/jsx-runtime";
+import { Form as Form7, Link as Link7, useNavigate as useNavigate9, useParams } from "@remix-run/react";
+import { useState as useState17 } from "react";
+import { jsx as jsx39, jsxs as jsxs30 } from "react/jsx-runtime";
 async function loader5({ request, params }) {
   let validateAuth = await requireAuth(request), walletid = params.walletid ?? "", { error, data, authRequired } = await walletRepo.getWalletWithdrawalAccounts(walletid, request);
   return authRequired && redirect5("/login"), console.log("User wallets", data), { error, data, authRequired };
 }
-var BriefcaseIcon = () => /* @__PURE__ */ jsx38("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx38("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx38("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
+var BriefcaseIcon = () => /* @__PURE__ */ jsx39("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx39("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx39("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
 function useAccountTypePage() {
-  let params = useParams(), [selectedType, setSelectedType] = useState16(null), [accountRedirectUrl, setAccountRedirectUrl] = useState16("");
+  let params = useParams(), [selectedType, setSelectedType] = useState17(null), [accountRedirectUrl, setAccountRedirectUrl] = useState17("");
   function updateSelectAccountType(accountType) {
     setSelectedType(accountType), setAccountRedirectUrl(`/partners/addwithdrawalaccount/${accountType}/${params.walletid}`);
   }
   return { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl };
 }
 function AccountTypePage() {
-  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage(), navigate = useNavigate8();
-  return /* @__PURE__ */ jsx38("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs29("div", { className: "max-w-4xl w-full text-center", children: [
-    /* @__PURE__ */ jsxs29("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
+  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage(), navigate = useNavigate9();
+  return /* @__PURE__ */ jsx39("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs30("div", { className: "max-w-4xl w-full text-center", children: [
+    /* @__PURE__ */ jsxs30("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
       "What type of account ",
-      /* @__PURE__ */ jsx38("br", {}),
+      /* @__PURE__ */ jsx39("br", {}),
       " would you like to add?"
     ] }),
-    /* @__PURE__ */ jsxs29(Form5, { method: "post", className: "mt-16", children: [
-      /* @__PURE__ */ jsx38("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: /* @__PURE__ */ jsxs29(
+    /* @__PURE__ */ jsxs30(Form7, { method: "post", className: "mt-16", children: [
+      /* @__PURE__ */ jsx39("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: /* @__PURE__ */ jsxs30(
         "div",
         {
           onClick: () => updateSelectAccountType("partner"),
           className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
                 ${selectedType === "partner" ? "border-green-500 ring-4 ring-green-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
           children: [
-            /* @__PURE__ */ jsx38("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx38(BriefcaseIcon, {}) }),
-            /* @__PURE__ */ jsx38("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
-            /* @__PURE__ */ jsx38("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
-            /* @__PURE__ */ jsx38("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
+            /* @__PURE__ */ jsx39("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx39(BriefcaseIcon, {}) }),
+            /* @__PURE__ */ jsx39("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
+            /* @__PURE__ */ jsx39("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
+            /* @__PURE__ */ jsx39("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsx38("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx38(Link7, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx38(
+      /* @__PURE__ */ jsx39("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx39(Link7, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx39(
         Cta_default,
         {
           element: "button",
@@ -4283,12 +4332,12 @@ __export(user_addwithdrawalaccount_personal_walletid_exports, {
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage2
 });
 import { redirect as redirect6 } from "@remix-run/node";
-import { Form as Form6, useNavigate as useNavigate9, useNavigation as useNavigation3 } from "@remix-run/react";
-import { useMemo as useMemo3, useRef as useRef7, useState as useState17 } from "react";
+import { Form as Form8, useNavigate as useNavigate10, useNavigation as useNavigation5 } from "@remix-run/react";
+import { useMemo as useMemo3, useRef as useRef7, useState as useState18 } from "react";
 import { useLoaderData as useLoaderData5, useActionData as useActionData3 } from "@remix-run/react";
 import { json as json7 } from "@remix-run/node";
 import { useEffect as useEffect15 } from "react";
-import { jsx as jsx39, jsxs as jsxs30 } from "react/jsx-runtime";
+import { jsx as jsx40, jsxs as jsxs31 } from "react/jsx-runtime";
 async function loader6({ request, params }) {
   let validateAuth = await requireAuth(request), walletid = params.walletid;
   if (!walletid)
@@ -4326,7 +4375,7 @@ async function action5({ request }) {
   return json7({ success: !0 });
 }
 function useAddWithdrawalAccountPage2() {
-  let navigate = useNavigate9(), { error, walletAccount, walletCurrencyBanks, authRequired } = useLoaderData5(), { toast: toast4 } = useToast(), actionData = useActionData3(), [banks, setBanks] = useState17([]), [wallet, setWallet] = useState17(), [accountDetails, setAccountDetails] = useState17(null);
+  let navigate = useNavigate10(), { error, walletAccount, walletCurrencyBanks, authRequired } = useLoaderData5(), { toast: toast4 } = useToast(), actionData = useActionData3(), [banks, setBanks] = useState18([]), [wallet, setWallet] = useState18(), [accountDetails, setAccountDetails] = useState18(null);
   return useEffect15(() => {
     error && toast4({
       variant: "destructive",
@@ -4348,7 +4397,7 @@ function useAddWithdrawalAccountPage2() {
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, setAccountDetails };
 }
 function AddWithdrawalAccountPage2() {
-  let { banks, wallet, accountDetails, setAccountDetails } = useAddWithdrawalAccountPage2(), isSubmitting = useNavigation3().state === "submitting", [searchTerm, setSearchTerm] = useState17(""), [isOpen, setIsOpen] = useState17(!1), [selectedBank, setSelectedBank] = useState17(null), dropdownRef = useRef7(null), filteredBanks = useMemo3(() => banks.filter(
+  let { banks, wallet, accountDetails, setAccountDetails } = useAddWithdrawalAccountPage2(), isSubmitting = useNavigation5().state === "submitting", [searchTerm, setSearchTerm] = useState18(""), [isOpen, setIsOpen] = useState18(!1), [selectedBank, setSelectedBank] = useState18(null), dropdownRef = useRef7(null), filteredBanks = useMemo3(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
   useEffect15(() => {
@@ -4365,18 +4414,18 @@ function AddWithdrawalAccountPage2() {
     hover:border-gray-400
     focus:border-slate-800 focus:ring-1 focus:ring-slate-800
   `;
-  return /* @__PURE__ */ jsx39("div", { className: "min-h-screen bg-white flex flex-col items-center pt-16 px-4", children: /* @__PURE__ */ jsxs30("div", { className: "max-w-md w-full flex flex-col items-center", children: [
-    /* @__PURE__ */ jsxs30("div", { className: "flex flex-col items-center mb-10 text-center", children: [
-      /* @__PURE__ */ jsx39("div", { className: "w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100", children: /* @__PURE__ */ jsx39("div", { className: "w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx39(Svg, { src: icons.avatarIcon, className: "w-6 h-6 text-white" }) }) }),
-      /* @__PURE__ */ jsx39("h1", { className: "text-2xl font-bold text-gray-900", children: "Add personal account" }),
-      /* @__PURE__ */ jsx39("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter your banking details below" })
+  return /* @__PURE__ */ jsx40("div", { className: "min-h-screen bg-white flex flex-col items-center pt-16 px-4", children: /* @__PURE__ */ jsxs31("div", { className: "max-w-md w-full flex flex-col items-center", children: [
+    /* @__PURE__ */ jsxs31("div", { className: "flex flex-col items-center mb-10 text-center", children: [
+      /* @__PURE__ */ jsx40("div", { className: "w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100", children: /* @__PURE__ */ jsx40("div", { className: "w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx40(Svg, { src: icons.avatarIcon, className: "w-6 h-6 text-white" }) }) }),
+      /* @__PURE__ */ jsx40("h1", { className: "text-2xl font-bold text-gray-900", children: "Add personal account" }),
+      /* @__PURE__ */ jsx40("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter your banking details below" })
     ] }),
-    accountDetails ? /* @__PURE__ */ jsxs30(Form6, { method: "POST", className: "w-full flex flex-col gap-4", children: [
-      /* @__PURE__ */ jsxs30("div", { className: "relative", children: [
-        /* @__PURE__ */ jsx39("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx39("option", { value: "NG", children: "Nigeria" }) }),
-        /* @__PURE__ */ jsx39("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx39(ChevronDownIcon3, {}) })
+    accountDetails ? /* @__PURE__ */ jsxs31(Form8, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+      /* @__PURE__ */ jsxs31("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx40("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx40("option", { value: "NG", children: "Nigeria" }) }),
+        /* @__PURE__ */ jsx40("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx40(ChevronDownIcon3, {}) })
       ] }),
-      /* @__PURE__ */ jsx39("div", { className: "relative", children: /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40("div", { className: "relative", children: /* @__PURE__ */ jsx40(
         "input",
         {
           required: !0,
@@ -4385,7 +4434,7 @@ function AddWithdrawalAccountPage2() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx39("div", { className: "relative", children: /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40("div", { className: "relative", children: /* @__PURE__ */ jsx40(
         "input",
         {
           id: "accountNumber",
@@ -4396,7 +4445,7 @@ function AddWithdrawalAccountPage2() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx39("div", { className: "relative", children: /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40("div", { className: "relative", children: /* @__PURE__ */ jsx40(
         "input",
         {
           id: "pin",
@@ -4409,15 +4458,15 @@ function AddWithdrawalAccountPage2() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "bank_code", value: selectedBank?.code || "", required: !0 }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "intent", value: "addAccountDetails" }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
-      /* @__PURE__ */ jsxs30("div", { className: "px-5 py-3 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex justify-between items-center", children: [
-        /* @__PURE__ */ jsx39("span", { className: "text-xs font-medium text-gray-400 uppercase tracking-wider", children: "Account Name" }),
-        /* @__PURE__ */ jsx39("p", { className: "text-sm font-bold text-slate-800", children: accountDetails ? accountDetails.account_name : "Invalid Account" })
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "bank_code", value: selectedBank?.code || "", required: !0 }),
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "intent", value: "addAccountDetails" }),
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
+      /* @__PURE__ */ jsxs31("div", { className: "px-5 py-3 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex justify-between items-center", children: [
+        /* @__PURE__ */ jsx40("span", { className: "text-xs font-medium text-gray-400 uppercase tracking-wider", children: "Account Name" }),
+        /* @__PURE__ */ jsx40("p", { className: "text-sm font-bold text-slate-800", children: accountDetails ? accountDetails.account_name : "Invalid Account" })
       ] }),
-      /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40(
         Cta_default,
         {
           element: "button",
@@ -4427,7 +4476,7 @@ function AddWithdrawalAccountPage2() {
           children: isSubmitting ? "Adding..." : "Add Account"
         }
       ),
-      /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40(
         "button",
         {
           type: "button",
@@ -4436,13 +4485,13 @@ function AddWithdrawalAccountPage2() {
           children: "Go back"
         }
       )
-    ] }) : /* @__PURE__ */ jsxs30(Form6, { method: "POST", className: "w-full flex flex-col gap-4", children: [
-      /* @__PURE__ */ jsxs30("div", { className: "relative", children: [
-        /* @__PURE__ */ jsx39("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx39("option", { value: "NG", children: "Nigeria" }) }),
-        /* @__PURE__ */ jsx39("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx39(ChevronDownIcon3, {}) })
+    ] }) : /* @__PURE__ */ jsxs31(Form8, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+      /* @__PURE__ */ jsxs31("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx40("select", { id: "country", name: "country", required: !0, className: `${inputClasses} bg-gray-50 cursor-not-allowed appearance-none`, children: /* @__PURE__ */ jsx40("option", { value: "NG", children: "Nigeria" }) }),
+        /* @__PURE__ */ jsx40("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx40(ChevronDownIcon3, {}) })
       ] }),
-      /* @__PURE__ */ jsxs30("div", { className: "relative", ref: dropdownRef, children: [
-        /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsxs31("div", { className: "relative", ref: dropdownRef, children: [
+        /* @__PURE__ */ jsx40(
           "input",
           {
             type: "text",
@@ -4457,9 +4506,9 @@ function AddWithdrawalAccountPage2() {
             }
           }
         ),
-        /* @__PURE__ */ jsx39("input", { type: "hidden", name: "bank", value: selectedBank?.code || "", required: !0 }),
-        /* @__PURE__ */ jsx39("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx39(ChevronDownIcon3, {}) }),
-        isOpen && /* @__PURE__ */ jsx39("div", { className: "absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden", children: filteredBanks.length > 0 ? filteredBanks.map((bank) => /* @__PURE__ */ jsx39(
+        /* @__PURE__ */ jsx40("input", { type: "hidden", name: "bank", value: selectedBank?.code || "", required: !0 }),
+        /* @__PURE__ */ jsx40("div", { className: "absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400", children: /* @__PURE__ */ jsx40(ChevronDownIcon3, {}) }),
+        isOpen && /* @__PURE__ */ jsx40("div", { className: "absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl max-h-60 overflow-y-auto overflow-x-hidden", children: filteredBanks.length > 0 ? filteredBanks.map((bank) => /* @__PURE__ */ jsx40(
           "div",
           {
             className: "px-5 py-4 hover:bg-slate-50 cursor-pointer text-gray-900 border-b border-gray-50 last:border-none transition-colors",
@@ -4469,9 +4518,9 @@ function AddWithdrawalAccountPage2() {
             children: bank.name
           },
           bank.code
-        )) : /* @__PURE__ */ jsx39("div", { className: "px-5 py-4 text-gray-400 italic", children: "No banks found" }) })
+        )) : /* @__PURE__ */ jsx40("div", { className: "px-5 py-4 text-gray-400 italic", children: "No banks found" }) })
       ] }),
-      /* @__PURE__ */ jsx39("div", { className: "relative", children: /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40("div", { className: "relative", children: /* @__PURE__ */ jsx40(
         "input",
         {
           id: "accountNumber",
@@ -4481,10 +4530,10 @@ function AddWithdrawalAccountPage2() {
           className: inputClasses
         }
       ) }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "intent", value: "getAccountDetails" }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
-      /* @__PURE__ */ jsx39("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
-      /* @__PURE__ */ jsx39(
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "intent", value: "getAccountDetails" }),
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "currency", value: `${wallet?.wallet_currency}` }),
+      /* @__PURE__ */ jsx40("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` }),
+      /* @__PURE__ */ jsx40(
         Cta_default,
         {
           element: "button",
@@ -4497,7 +4546,7 @@ function AddWithdrawalAccountPage2() {
     ] })
   ] }) });
 }
-var ChevronDownIcon3 = () => /* @__PURE__ */ jsx39("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx39("path", { d: "m6 9 6 6 6-6" }) });
+var ChevronDownIcon3 = () => /* @__PURE__ */ jsx40("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", children: /* @__PURE__ */ jsx40("path", { d: "m6 9 6 6 6-6" }) });
 
 // app/routes/user.addwithdrawalaccount.partner.$walletid.tsx
 var user_addwithdrawalaccount_partner_walletid_exports = {};
@@ -4507,45 +4556,45 @@ __export(user_addwithdrawalaccount_partner_walletid_exports, {
   useAccountTypePage: () => useAccountTypePage2
 });
 import { redirect as redirect7 } from "@remix-run/node";
-import { Form as Form7, Link as Link9, useNavigate as useNavigate10, useParams as useParams2 } from "@remix-run/react";
-import { useState as useState18 } from "react";
-import { jsx as jsx40, jsxs as jsxs31 } from "react/jsx-runtime";
+import { Form as Form9, Link as Link9, useNavigate as useNavigate11, useParams as useParams2 } from "@remix-run/react";
+import { useState as useState19 } from "react";
+import { jsx as jsx41, jsxs as jsxs32 } from "react/jsx-runtime";
 async function loader7({ request, params }) {
   let validateAuth = await requireAuth(request), walletid = params.walletid ?? "", { error, data, authRequired } = await walletRepo.getWalletWithdrawalAccounts(walletid, request);
   return authRequired && redirect7("/login"), console.log("User wallets", data), { error, data, authRequired };
 }
-var BriefcaseIcon2 = () => /* @__PURE__ */ jsx40("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx40("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx40("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
+var BriefcaseIcon2 = () => /* @__PURE__ */ jsx41("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx41("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx41("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
 function useAccountTypePage2() {
-  let params = useParams2(), [selectedType, setSelectedType] = useState18(null), [accountRedirectUrl, setAccountRedirectUrl] = useState18("");
+  let params = useParams2(), [selectedType, setSelectedType] = useState19(null), [accountRedirectUrl, setAccountRedirectUrl] = useState19("");
   function updateSelectAccountType(accountType) {
     setSelectedType(accountType), setAccountRedirectUrl(`/user/addwithdrawalaccount/${accountType}/${params.walletid}`);
   }
   return { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl };
 }
 function AccountTypePage2() {
-  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage2(), navigate = useNavigate10();
-  return /* @__PURE__ */ jsx40("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs31("div", { className: "max-w-4xl w-full text-center", children: [
-    /* @__PURE__ */ jsxs31("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
+  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage2(), navigate = useNavigate11();
+  return /* @__PURE__ */ jsx41("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs32("div", { className: "max-w-4xl w-full text-center", children: [
+    /* @__PURE__ */ jsxs32("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
       "What type of account ",
-      /* @__PURE__ */ jsx40("br", {}),
+      /* @__PURE__ */ jsx41("br", {}),
       " would you like to add?"
     ] }),
-    /* @__PURE__ */ jsxs31(Form7, { method: "post", className: "mt-16", children: [
-      /* @__PURE__ */ jsx40("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: /* @__PURE__ */ jsxs31(
+    /* @__PURE__ */ jsxs32(Form9, { method: "post", className: "mt-16", children: [
+      /* @__PURE__ */ jsx41("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: /* @__PURE__ */ jsxs32(
         "div",
         {
           onClick: () => updateSelectAccountType("partner"),
           className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
                 ${selectedType === "partner" ? "border-green-500 ring-4 ring-green-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
           children: [
-            /* @__PURE__ */ jsx40("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx40(BriefcaseIcon2, {}) }),
-            /* @__PURE__ */ jsx40("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
-            /* @__PURE__ */ jsx40("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
-            /* @__PURE__ */ jsx40("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
+            /* @__PURE__ */ jsx41("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx41(BriefcaseIcon2, {}) }),
+            /* @__PURE__ */ jsx41("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
+            /* @__PURE__ */ jsx41("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
+            /* @__PURE__ */ jsx41("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
           ]
         }
       ) }),
-      /* @__PURE__ */ jsx40("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx40(Link9, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx40(
+      /* @__PURE__ */ jsx41("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx41(Link9, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx41(
         Cta_default,
         {
           element: "button",
@@ -4893,7 +4942,7 @@ async function getFinalResultForContest(contestUniqueId) {
 }
 
 // app/routes/_public.contests.$tournamentId.$contestId.tsx
-import { jsx as jsx41 } from "react/jsx-runtime";
+import { jsx as jsx42 } from "react/jsx-runtime";
 async function loader8({ params, request }) {
   let { tournamentId, contestId } = params;
   if (!contestId)
@@ -4909,7 +4958,13 @@ async function loader8({ params, request }) {
     return redirect9(`/contests/${tournamentId}`);
   if (contest.status === "registering")
     return json9({ contest, stage: null, baseUrl: process.env._BASE_URL, walletVoteContext: null });
-  let stageQ = url.searchParams.get("stage"), stageId = (stageQ ? contest.stages.find((stage2) => stage2.stage == +stageQ)?._id : contest.stages.find((stage2) => stage2.active)?._id) ?? contest.stages.find((stage2) => stage2.stage == 1)?._id, { fingerprint, headers } = await getFingerprint({ request }), stage = stageId ? (await contestRepo.getContestantsInStage(stageId, { fingerprint })).data ?? null : null, walletVoteContext = null, cookieHeader = request.headers.get("Cookie") ?? "", stageCurrency = stage?.rates.vote_currency ?? null, pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0;
+  let stageQ = url.searchParams.get("stage"), stageId = (stageQ ? contest.stages.find((stage2) => stage2.stage == +stageQ)?._id : contest.stages.find((stage2) => stage2.active)?._id) ?? contest.stages.find((stage2) => stage2.stage == 1)?._id, { fingerprint, headers } = await getFingerprint({ request }), wildCard = url.searchParams.get("wild_card") ?? void 0, pageSize = url.searchParams.get("page_size") ? Number(url.searchParams.get("page_size")) : void 0, lastKeyId = url.searchParams.get("last_key_id") ?? void 0, firstKeyId = url.searchParams.get("first_key_id") ?? void 0, direction = url.searchParams.get("direction"), stage = stageId ? (await contestRepo.getPagedContestantsInStage(stageId, { fingerprint }, {
+    wild_card: wildCard,
+    page_size: pageSize,
+    last_key_id: lastKeyId,
+    first_key_id: firstKeyId,
+    direction
+  })).data ?? null : null, walletVoteContext = null, cookieHeader = request.headers.get("Cookie") ?? "", stageCurrency = stage?.rates.vote_currency ?? null, pricePerVote = stage?.rates.price_per_vote ?? stage?.price_per_vote ?? 0;
   if (cookieHeader && stageCurrency) {
     let walletsResponse = await walletRepo.getUserWallets(request);
     if (walletsResponse.data) {
@@ -4944,7 +4999,7 @@ async function loader8({ params, request }) {
   return json9({ contest, stage, baseUrl: process.env._BASE_URL, walletVoteContext }, { headers });
 }
 function ContestLayout() {
-  return /* @__PURE__ */ jsx41(Outlet2, {});
+  return /* @__PURE__ */ jsx42(Outlet2, {});
 }
 
 // app/routes/user.contestantprofilecontests.$profileId.tsx
@@ -4953,10 +5008,10 @@ __export(user_contestantprofilecontests_profileId_exports, {
   default: () => UserContestantProfileContests,
   loader: () => loader9
 });
-import { useEffect as useEffect16, useState as useState19 } from "react";
-import { Link as Link10, useLoaderData as useLoaderData6, useNavigation as useNavigation4 } from "@remix-run/react";
+import { useEffect as useEffect16, useState as useState20 } from "react";
+import { Link as Link10, useLoaderData as useLoaderData6, useNavigation as useNavigation6 } from "@remix-run/react";
 import { json as json10, redirect as redirect10 } from "@remix-run/node";
-import { jsx as jsx42, jsxs as jsxs32 } from "react/jsx-runtime";
+import { jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
 async function loader9({ request, params }) {
   await requireAuth(request);
   let profileId = params.profileId;
@@ -4966,7 +5021,7 @@ async function loader9({ request, params }) {
   return authRequired ? redirect10("/login") : json10({ data, error, authRequired });
 }
 function useContestantProfileContestsController() {
-  let { data, error } = useLoaderData6(), navigation = useNavigation4(), [contests, setContests] = useState19([]);
+  let { data, error } = useLoaderData6(), navigation = useNavigation6(), [contests, setContests] = useState20([]);
   useEffect16(() => {
     data && setContests(data);
   }, [data]), useEffect16(() => {
@@ -4981,20 +5036,20 @@ function useContestantProfileContestsController() {
 }
 function UserContestantProfileContests() {
   let { contests, isLoading } = useContestantProfileContestsController();
-  return /* @__PURE__ */ jsx42("div", { className: "min-h-screen bg-white text-brand-navy", children: /* @__PURE__ */ jsxs32("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: [
-    /* @__PURE__ */ jsx42("section", { className: "overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]", children: /* @__PURE__ */ jsxs32("div", { className: "bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12", children: [
-      /* @__PURE__ */ jsx42("p", { className: "text-xs font-semibold uppercase tracking-[0.24em] text-white/70", children: "Contestant profile" }),
-      /* @__PURE__ */ jsx42("h1", { className: "mt-3 max-w-xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl", children: "Contests for profile" }),
-      /* @__PURE__ */ jsx42("p", { className: "mt-4 max-w-2xl text-sm leading-6 text-white/75 sm:text-base", children: "These are the contests this profile is participating in, along with the contestant\u2019s performance." })
+  return /* @__PURE__ */ jsx43("div", { className: "min-h-screen bg-white text-brand-navy", children: /* @__PURE__ */ jsxs33("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: [
+    /* @__PURE__ */ jsx43("section", { className: "overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]", children: /* @__PURE__ */ jsxs33("div", { className: "bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12", children: [
+      /* @__PURE__ */ jsx43("p", { className: "text-xs font-semibold uppercase tracking-[0.24em] text-white/70", children: "Contestant profile" }),
+      /* @__PURE__ */ jsx43("h1", { className: "mt-3 max-w-xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl", children: "Contests for profile" }),
+      /* @__PURE__ */ jsx43("p", { className: "mt-4 max-w-2xl text-sm leading-6 text-white/75 sm:text-base", children: "These are the contests this profile is participating in, along with the contestant\u2019s performance." })
     ] }) }),
-    /* @__PURE__ */ jsx42("main", { className: "py-8 sm:py-10 lg:py-12", children: isLoading ? /* @__PURE__ */ jsx42(ContestsSkeleton, {}) : contests.length > 0 ? /* @__PURE__ */ jsx42("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: contests.map((contest) => /* @__PURE__ */ jsx42(ContestResultCard, { contest }, contest._id)) }) : /* @__PURE__ */ jsx42(EmptyState, {}) })
+    /* @__PURE__ */ jsx43("main", { className: "py-8 sm:py-10 lg:py-12", children: isLoading ? /* @__PURE__ */ jsx43(ContestsSkeleton, {}) : contests.length > 0 ? /* @__PURE__ */ jsx43("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: contests.map((contest) => /* @__PURE__ */ jsx43(ContestResultCard, { contest }, contest._id)) }) : /* @__PURE__ */ jsx43(EmptyState, {}) })
   ] }) });
 }
 function ContestResultCard({ contest }) {
   let result = contest.final_result_scores?.[0], fullName = result ? `${result.contestant_biodata.first_name} ${result.contestant_biodata.last_name}`.trim() : "", image = result?.contestant_image_url || no_image_default;
-  return /* @__PURE__ */ jsxs32("article", { className: "group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition-transform duration-300 hover:-translate-y-1", children: [
-    /* @__PURE__ */ jsxs32("div", { className: "relative", children: [
-      /* @__PURE__ */ jsx42(
+  return /* @__PURE__ */ jsxs33("article", { className: "group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition-transform duration-300 hover:-translate-y-1", children: [
+    /* @__PURE__ */ jsxs33("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx43(
         "img",
         {
           src: image,
@@ -5002,26 +5057,26 @@ function ContestResultCard({ contest }) {
           className: "aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         }
       ),
-      /* @__PURE__ */ jsx42("div", { className: "absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-navy/45 to-transparent" }),
-      result && /* @__PURE__ */ jsxs32("div", { className: "absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-navy shadow-[0_8px_24px_rgba(14,42,77,0.12)]", children: [
+      /* @__PURE__ */ jsx43("div", { className: "absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-navy/45 to-transparent" }),
+      result && /* @__PURE__ */ jsxs33("div", { className: "absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-navy shadow-[0_8px_24px_rgba(14,42,77,0.12)]", children: [
         "Position ",
         result.position
       ] })
     ] }),
-    /* @__PURE__ */ jsxs32("div", { className: "flex flex-1 flex-col gap-4 px-5 py-5 sm:px-6", children: [
-      /* @__PURE__ */ jsxs32("div", { children: [
-        /* @__PURE__ */ jsx42("p", { className: "text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate", children: contest.name }),
-        /* @__PURE__ */ jsx42("h3", { className: "mt-2 text-xl font-black tracking-tight text-brand-navy", children: fullName || "Contestant" }),
-        result?.contestant_biodata.email && /* @__PURE__ */ jsx42("p", { className: "mt-1 text-sm text-brand-slate", children: result.contestant_biodata.email })
+    /* @__PURE__ */ jsxs33("div", { className: "flex flex-1 flex-col gap-4 px-5 py-5 sm:px-6", children: [
+      /* @__PURE__ */ jsxs33("div", { children: [
+        /* @__PURE__ */ jsx43("p", { className: "text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate", children: contest.name }),
+        /* @__PURE__ */ jsx43("h3", { className: "mt-2 text-xl font-black tracking-tight text-brand-navy", children: fullName || "Contestant" }),
+        result?.contestant_biodata.email && /* @__PURE__ */ jsx43("p", { className: "mt-1 text-sm text-brand-slate", children: result.contestant_biodata.email })
       ] }),
-      result && /* @__PURE__ */ jsxs32("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
-        /* @__PURE__ */ jsxs32("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
-          /* @__PURE__ */ jsx42("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Position" }),
-          /* @__PURE__ */ jsx42("p", { className: "mt-1 text-lg font-black text-brand-navy", children: toOrdinal(result.position) })
+      result && /* @__PURE__ */ jsxs33("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
+        /* @__PURE__ */ jsxs33("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
+          /* @__PURE__ */ jsx43("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Position" }),
+          /* @__PURE__ */ jsx43("p", { className: "mt-1 text-lg font-black text-brand-navy", children: toOrdinal(result.position) })
         ] }),
-        /* @__PURE__ */ jsxs32("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
-          /* @__PURE__ */ jsx42("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Total votes Percent" }),
-          /* @__PURE__ */ jsxs32("p", { className: "mt-1 text-lg font-black text-brand-pink", children: [
+        /* @__PURE__ */ jsxs33("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
+          /* @__PURE__ */ jsx43("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Total votes Percent" }),
+          /* @__PURE__ */ jsxs33("p", { className: "mt-1 text-lg font-black text-brand-pink", children: [
             result.total_votes?.toFixed(2),
             "%"
           ] })
@@ -5031,21 +5086,21 @@ function ContestResultCard({ contest }) {
   ] });
 }
 function ContestsSkeleton() {
-  return /* @__PURE__ */ jsx42("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxs32(
+  return /* @__PURE__ */ jsx43("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxs33(
     "div",
     {
       className: "animate-pulse overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)]",
       children: [
-        /* @__PURE__ */ jsx42("div", { className: "aspect-[4/5] bg-slate-200" }),
-        /* @__PURE__ */ jsxs32("div", { className: "flex flex-col gap-4 px-5 py-5 sm:px-6", children: [
-          /* @__PURE__ */ jsxs32("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx42("div", { className: "h-3 w-1/2 rounded-full bg-slate-200" }),
-            /* @__PURE__ */ jsx42("div", { className: "h-5 w-3/4 rounded-full bg-slate-200" }),
-            /* @__PURE__ */ jsx42("div", { className: "h-4 w-1/2 rounded-full bg-slate-200" })
+        /* @__PURE__ */ jsx43("div", { className: "aspect-[4/5] bg-slate-200" }),
+        /* @__PURE__ */ jsxs33("div", { className: "flex flex-col gap-4 px-5 py-5 sm:px-6", children: [
+          /* @__PURE__ */ jsxs33("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx43("div", { className: "h-3 w-1/2 rounded-full bg-slate-200" }),
+            /* @__PURE__ */ jsx43("div", { className: "h-5 w-3/4 rounded-full bg-slate-200" }),
+            /* @__PURE__ */ jsx43("div", { className: "h-4 w-1/2 rounded-full bg-slate-200" })
           ] }),
-          /* @__PURE__ */ jsxs32("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
-            /* @__PURE__ */ jsx42("div", { className: "h-16 rounded-2xl bg-slate-200" }),
-            /* @__PURE__ */ jsx42("div", { className: "h-16 rounded-2xl bg-slate-200" })
+          /* @__PURE__ */ jsxs33("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
+            /* @__PURE__ */ jsx43("div", { className: "h-16 rounded-2xl bg-slate-200" }),
+            /* @__PURE__ */ jsx43("div", { className: "h-16 rounded-2xl bg-slate-200" })
           ] })
         ] })
       ]
@@ -5054,14 +5109,14 @@ function ContestsSkeleton() {
   )) });
 }
 function EmptyState() {
-  return /* @__PURE__ */ jsxs32("section", { className: "rounded-[2rem] border border-dashed border-brand-grey bg-secondary px-6 py-14 text-center sm:px-10", children: [
-    /* @__PURE__ */ jsx42("div", { className: "mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-brand-grey bg-white shadow-[0_10px_24px_rgba(14,42,77,0.06)]", children: /* @__PURE__ */ jsxs32("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", className: "h-7 w-7 text-brand-pink", fill: "none", children: [
-      /* @__PURE__ */ jsx42("path", { d: "M12 8v8M8 12h8", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round" }),
-      /* @__PURE__ */ jsx42("circle", { cx: "12", cy: "12", r: "9", stroke: "currentColor", strokeWidth: "1.8" })
+  return /* @__PURE__ */ jsxs33("section", { className: "rounded-[2rem] border border-dashed border-brand-grey bg-secondary px-6 py-14 text-center sm:px-10", children: [
+    /* @__PURE__ */ jsx43("div", { className: "mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-brand-grey bg-white shadow-[0_10px_24px_rgba(14,42,77,0.06)]", children: /* @__PURE__ */ jsxs33("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", className: "h-7 w-7 text-brand-pink", fill: "none", children: [
+      /* @__PURE__ */ jsx43("path", { d: "M12 8v8M8 12h8", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round" }),
+      /* @__PURE__ */ jsx43("circle", { cx: "12", cy: "12", r: "9", stroke: "currentColor", strokeWidth: "1.8" })
     ] }) }),
-    /* @__PURE__ */ jsx42("h2", { className: "mt-6 text-2xl font-black tracking-tight text-brand-navy", children: "No contests for this profile" }),
-    /* @__PURE__ */ jsx42("p", { className: "mx-auto mt-3 max-w-xl text-sm leading-6 text-brand-slate", children: "This profile is not participating in any contests at the moment." }),
-    /* @__PURE__ */ jsx42(
+    /* @__PURE__ */ jsx43("h2", { className: "mt-6 text-2xl font-black tracking-tight text-brand-navy", children: "No contests for this profile" }),
+    /* @__PURE__ */ jsx43("p", { className: "mx-auto mt-3 max-w-xl text-sm leading-6 text-brand-slate", children: "This profile is not participating in any contests at the moment." }),
+    /* @__PURE__ */ jsx43(
       Link10,
       {
         to: "/user/contestantprofiles",
@@ -5091,7 +5146,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from "@tanstack/react-table";
-import { jsx as jsx43, jsxs as jsxs33 } from "react/jsx-runtime";
+import { jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
 function DataTable({
   data,
   columns: columns5,
@@ -5111,79 +5166,45 @@ function DataTable({
     onRowSelectionChange: setRowSelection,
     ...expandOptions
   });
-  return /* @__PURE__ */ jsxs33("div", { className: "", children: [
-    TableActions ? /* @__PURE__ */ jsx43(TableActions, { table }) : null,
-    /* @__PURE__ */ jsxs33("table", { className: `w-full ${className}`, children: [
-      /* @__PURE__ */ jsx43("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsx43("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsx43("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id)) }, headerGroup.id)) }),
-      /* @__PURE__ */ jsx43("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxs33(React10.Fragment, { children: [
-        /* @__PURE__ */ jsx43(
+  return /* @__PURE__ */ jsxs34("div", { className: "", children: [
+    TableActions ? /* @__PURE__ */ jsx44(TableActions, { table }) : null,
+    /* @__PURE__ */ jsxs34("table", { className: `w-full ${className}`, children: [
+      /* @__PURE__ */ jsx44("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsx44("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsx44("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id)) }, headerGroup.id)) }),
+      /* @__PURE__ */ jsx44("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxs34(React10.Fragment, { children: [
+        /* @__PURE__ */ jsx44(
           "tr",
           {
             className: "border-b border-secondary hover:bg-secondary",
             "data-state": row.getIsSelected() && "selected",
-            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx43("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
+            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx44("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
           },
           row.id
         ),
-        /* @__PURE__ */ jsx43("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsx43("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsx43(SubComponent, { row }) }) })
-      ] }, row.id)) : /* @__PURE__ */ jsx43("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsx43("td", { className: "p-3 text-center", colSpan: columns5.length, children: "No data to display" }) }) })
+        /* @__PURE__ */ jsx44("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsx44("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsx44(SubComponent, { row }) }) })
+      ] }, row.id)) : /* @__PURE__ */ jsx44("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsx44("td", { className: "p-3 text-center", colSpan: columns5.length, children: "No data to display" }) }) })
     ] })
   ] });
 }
 
 // app/components/reusables/DataTableColumnHeader.tsx
-import { jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
+import { jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
 function DataTableColumnHeader({
   column,
   title,
   className
 }) {
-  return column.getCanSort() ? /* @__PURE__ */ jsxs34(
+  return column.getCanSort() ? /* @__PURE__ */ jsxs35(
     "span",
     {
       "data-sortable": !0,
       className: `flex items-center ${className}`,
       onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       children: [
-        /* @__PURE__ */ jsx44("span", { children: title }),
-        /* @__PURE__ */ jsx44(Svg, { src: icons.arrowUpDownIcon })
+        /* @__PURE__ */ jsx45("span", { children: title }),
+        /* @__PURE__ */ jsx45(Svg, { src: icons.arrowUpDownIcon })
       ]
     }
   ) : title;
-}
-
-// app/components/reusables/Pagination.tsx
-import { useLocation as useLocation7, useNavigate as useNavigate11 } from "@remix-run/react";
-import { useState as useState20 } from "react";
-import { jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
-function Pagination({ className = "", pageSize = 20, lastKey, firstKey }) {
-  let navigate = useNavigate11(), location = useLocation7(), [rows, setRows] = useState20(pageSize), updateSearch = (newParams) => {
-    let url = new URL(window.location.href);
-    Object.entries(newParams).forEach(([k, v]) => {
-      v === null || v === "" ? url.searchParams.delete(k) : url.searchParams.set(k, v);
-    }), navigate(`${url.pathname}${url.search}`, { replace: !1 });
-  }, onNext = () => {
-    updateSearch({ page_size: String(rows), last_key_id: lastKey ?? "", direction: "next" });
-  }, onPrev = () => {
-    updateSearch({ first_key_id: firstKey ?? "", page_size: String(rows), direction: "previous" });
-  };
-  return /* @__PURE__ */ jsxs35("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-    /* @__PURE__ */ jsxs35("label", { className: "flex gap-2", children: [
-      "Rows per page",
-      /* @__PURE__ */ jsx45("input", { type: "number", name: "rows", id: "rows", className: "w-12 rounded-md border", defaultValue: rows, onChange: (e) => setRows(parseInt(e.target.value)) })
-    ] }),
-    /* @__PURE__ */ jsxs35("div", { className: `flex gap-6 md:gap-8 justify-center items-center font-semibold ${className}`, children: [
-      /* @__PURE__ */ jsxs35("button", { onClick: onPrev, className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
-        /* @__PURE__ */ jsx45(Svg, { src: icons.arrowPrevIcon }),
-        " Prev"
-      ] }),
-      /* @__PURE__ */ jsx45("span", { className: "whitespace-nowrap", children: "Page controls" }),
-      /* @__PURE__ */ jsxs35("button", { onClick: onNext, className: "flex gap-1 items-center rounded py-1 px-2 hover:outline outline-primary", children: [
-        "Next ",
-        /* @__PURE__ */ jsx45(Svg, { src: icons.arrowNextIcon })
-      ] })
-    ] })
-  ] });
 }
 
 // app/lib/dates.utils.ts
@@ -5316,7 +5337,7 @@ __export(partners_addwithdrawalaccount_walletid_exports, {
   useAccountTypePage: () => useAccountTypePage3
 });
 import { redirect as redirect11 } from "@remix-run/node";
-import { Form as Form8, Link as Link11, useNavigate as useNavigate12, useParams as useParams3 } from "@remix-run/react";
+import { Form as Form10, Link as Link11, useNavigate as useNavigate12, useParams as useParams3 } from "@remix-run/react";
 import { useState as useState21 } from "react";
 import { jsx as jsx48, jsxs as jsxs38 } from "react/jsx-runtime";
 async function loader11({ request, params }) {
@@ -5339,7 +5360,7 @@ function AccountTypePage3() {
       /* @__PURE__ */ jsx48("br", {}),
       " would you like to add?"
     ] }),
-    /* @__PURE__ */ jsxs38(Form8, { method: "post", className: "mt-16", children: [
+    /* @__PURE__ */ jsxs38(Form10, { method: "post", className: "mt-16", children: [
       /* @__PURE__ */ jsxs38("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: [
         /* @__PURE__ */ jsxs38(
           "div",
@@ -5525,7 +5546,7 @@ __export(user_addwithdrawalaccount_walletid_exports, {
   useAccountTypePage: () => useAccountTypePage4
 });
 import { redirect as redirect13 } from "@remix-run/node";
-import { Form as Form9, Link as Link13, useNavigate as useNavigate13, useParams as useParams4 } from "@remix-run/react";
+import { Form as Form11, Link as Link13, useNavigate as useNavigate13, useParams as useParams4 } from "@remix-run/react";
 import { useState as useState23 } from "react";
 import { jsx as jsx51, jsxs as jsxs41 } from "react/jsx-runtime";
 async function loader13({ request, params }) {
@@ -5548,7 +5569,7 @@ function AccountTypePage4() {
       /* @__PURE__ */ jsx51("br", {}),
       " would you like to add?"
     ] }),
-    /* @__PURE__ */ jsxs41(Form9, { method: "post", className: "mt-16", children: [
+    /* @__PURE__ */ jsxs41(Form11, { method: "post", className: "mt-16", children: [
       /* @__PURE__ */ jsxs41("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: [
         /* @__PURE__ */ jsxs41(
           "div",
@@ -5620,7 +5641,7 @@ function Checkbox({ className, checked = !1, onCheckedChange = () => {
 }
 
 // app/components/admin/contest/EditContestantDialog.tsx
-import { Form as Form10, useLoaderData as useLoaderData9 } from "@remix-run/react";
+import { Form as Form12, useLoaderData as useLoaderData9 } from "@remix-run/react";
 import { useState as useState25 } from "react";
 
 // app/components/reusables/RoundCta.tsx
@@ -5672,7 +5693,7 @@ function EditContestantDialog({ disabled, contestant }) {
     ),
     disabled ? null : /* @__PURE__ */ jsx54(DialogContent, { className: "bg-secondary max-h-screen overflow-y-auto", children: /* @__PURE__ */ jsxs42(DialogHeader, { children: [
       /* @__PURE__ */ jsx54(DialogTitle, { children: "Edit Contestant Data" }),
-      /* @__PURE__ */ jsx54(DialogDescription, { children: /* @__PURE__ */ jsxs42(Form10, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 mt-3", encType: "multipart/form-data", children: [
+      /* @__PURE__ */ jsx54(DialogDescription, { children: /* @__PURE__ */ jsxs42(Form12, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 mt-3", encType: "multipart/form-data", children: [
         /* @__PURE__ */ jsxs42("fieldset", { className: "py-1 grid grid-cols-2 gap-3", children: [
           /* @__PURE__ */ jsx54("legend", { className: "text-gray-400 font-medium", children: "Biodata" }),
           /* @__PURE__ */ jsxs42("div", { className: "relative max-sm:col-span-2 row-span-3 flex flex-col max-h-56 overflow-y-hidden rounded text-left font-semibold", children: [
@@ -5987,7 +6008,7 @@ __export(admin_transactions_affiliate_board_exports, {
   loader: () => loader15
 });
 import { json as json14, redirect as redirect15 } from "@remix-run/node";
-import { useLoaderData as useLoaderData11, Form as Form11, useNavigation as useNavigation5 } from "@remix-run/react";
+import { useLoaderData as useLoaderData11, Form as Form13, useNavigation as useNavigation7 } from "@remix-run/react";
 import { jsx as jsx61, jsxs as jsxs48 } from "react/jsx-runtime";
 async function loader15({ request }) {
   let validateAuth = await requireAuth(request), url = new URL(request.url), query = {};
@@ -6001,10 +6022,10 @@ async function loader15({ request }) {
   return referralBoardRes.authRequired ? redirect15("/login") : json14({ wallets: walletsResponse.data, referralBoardRes: referralBoardRes.data, query });
 }
 function AffilliateLeaderBoard() {
-  let { wallets, referralBoardRes, query } = useLoaderData11(), navigation = useNavigation5();
+  let { wallets, referralBoardRes, query } = useLoaderData11(), navigation = useNavigation7();
   return console.log(referralBoardRes), /* @__PURE__ */ jsxs48("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsx61("p", { className: "font-semibold", children: "Affiliates Leaderboard" }),
-    /* @__PURE__ */ jsx61("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx61(Form11, { method: "get", onSubmit: (e) => {
+    /* @__PURE__ */ jsx61("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: /* @__PURE__ */ jsx61(Form13, { method: "get", onSubmit: (e) => {
       try {
       } catch {
       }
@@ -6053,7 +6074,7 @@ __export(partners_product_update_productId_exports, {
   loader: () => loader16
 });
 import { json as json15, redirect as redirect16 } from "@remix-run/node";
-import { Form as Form12, useActionData as useActionData4, useLoaderData as useLoaderData12, useNavigate as useNavigate15, useNavigation as useNavigation6 } from "@remix-run/react";
+import { Form as Form14, useActionData as useActionData4, useLoaderData as useLoaderData12, useNavigate as useNavigate15, useNavigation as useNavigation8 } from "@remix-run/react";
 import { useEffect as useEffect18, useState as useState26 } from "react";
 
 // app/components/reusables/Select.tsx
@@ -6406,7 +6427,7 @@ async function action8({ request, params }) {
 function UpdatePartnerProduct() {
   let { product, locations } = useLoaderData12();
   product = product, locations = locations;
-  let actionData = useActionData4(), isSubmitting = useNavigation6().state === "submitting", navigate = useNavigate15(), [tags, setTags] = useState26(product.tags.join(", "));
+  let actionData = useActionData4(), isSubmitting = useNavigation8().state === "submitting", navigate = useNavigate15(), [tags, setTags] = useState26(product.tags.join(", "));
   return useEffect18(() => {
     setTags(product.tags.join(", "));
   }, [product]), useEffect18(() => {
@@ -6424,7 +6445,7 @@ function UpdatePartnerProduct() {
       /* @__PURE__ */ jsx63(Cta_default, { element: "button", type: "button", onClick: () => navigate(-1), className: "hover:bg-[#F7F7F8] text-primary px-4 py-2 rounded-lg", variant: "outline", children: "Back" }),
       /* @__PURE__ */ jsx63("h1", { className: "text-2xl font-black text-primary", children: "Update Partner Product" })
     ] }),
-    /* @__PURE__ */ jsxs50(Form12, { method: "post", encType: "multipart/form-data", onReset: () => setTags(product.tags.join(", ")), className: "grid gap-4 text-sm bg-white p-6 rounded-xl border border-gray-100 shadow-sm", children: [
+    /* @__PURE__ */ jsxs50(Form14, { method: "post", encType: "multipart/form-data", onReset: () => setTags(product.tags.join(", ")), className: "grid gap-4 text-sm bg-white p-6 rounded-xl border border-gray-100 shadow-sm", children: [
       /* @__PURE__ */ jsx63(FormControl, { as: "input", labelText: "Product Name", name: "name", id: "name", defaultValue: product.name, placeholder: "Enter product name" }),
       /* @__PURE__ */ jsx63(FormControl, { as: "textarea", labelText: "Description", name: "description", id: "description", defaultValue: product.description, placeholder: "Enter product description" }),
       /* @__PURE__ */ jsx63(FormControl, { as: "input", labelText: "Category", name: "category", id: "category", defaultValue: product.category, placeholder: "e.g. Shoes" }),
@@ -6803,7 +6824,7 @@ import { json as json17, redirect as redirect18 } from "@remix-run/node";
 import { useLoaderData as useLoaderData14, useNavigate as useNavigate16 } from "@remix-run/react";
 
 // app/components/admin/tournament/EditContestForm.tsx
-import { Form as Form14 } from "@remix-run/react";
+import { Form as Form16 } from "@remix-run/react";
 
 // app/components/admin/tournament/CategoryInputs.tsx
 import { useState as useState28 } from "react";
@@ -6899,7 +6920,7 @@ import { useState as useState29 } from "react";
 import { jsx as jsx67, jsxs as jsxs54 } from "react/jsx-runtime";
 function EditContestForm({ tournaments, contest }) {
   let [fileList, setFileList] = useState29(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
-  return console.log(contest), /* @__PURE__ */ jsxs54(Form14, { className: "max-w-[700px] mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+  return console.log(contest), /* @__PURE__ */ jsxs54(Form16, { className: "max-w-[700px] mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
     /* @__PURE__ */ jsx67("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
     /* @__PURE__ */ jsxs54("div", { className: "flex items-center gap-x-5", children: [
       filePreview ? /* @__PURE__ */ jsx67("img", { className: "w-20 h-20 rounded-lg object-cover", src: filePreview, alt: "chosen image" }) : /* @__PURE__ */ jsx67("img", { className: "w-20 h-20 rounded-lg object-cover", src: contest.image || no_image_default, alt: "Contest banner" }),
@@ -7357,7 +7378,7 @@ __export(user_contestant_contestantId_exports, {
   useRegistrationFormController: () => useRegistrationFormController
 });
 import { json as json19, redirect as redirect21 } from "@remix-run/node";
-import { Form as Form15, useActionData as useActionData7, useLoaderData as useLoaderData16 } from "@remix-run/react";
+import { Form as Form17, useActionData as useActionData7, useLoaderData as useLoaderData16 } from "@remix-run/react";
 import { useEffect as useEffect21, useState as useState31 } from "react";
 
 // app/services/user/userserver.ts
@@ -7462,7 +7483,7 @@ function RegistrationForm2() {
     ] }) }) }),
     /* @__PURE__ */ jsx74("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs61("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
       /* @__PURE__ */ jsx74(ContestGuidelines, { contest }),
-      /* @__PURE__ */ jsxs61(Form15, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+      /* @__PURE__ */ jsxs61(Form17, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
         /* @__PURE__ */ jsxs61("p", { className: "text-2xl font-satoshi-bold", children: [
           "Welcome, ",
           contestant?.contestant_biodata.first_name,
@@ -7583,7 +7604,7 @@ __export(public_marketplace_checkout_exports, {
   loader: () => loader22
 });
 import { json as json20, redirect as redirect22 } from "@remix-run/node";
-import { Form as Form16, Link as Link16, useActionData as useActionData8, useFetcher as useFetcher10, useLoaderData as useLoaderData17, useNavigation as useNavigation7 } from "@remix-run/react";
+import { Form as Form18, Link as Link16, useActionData as useActionData8, useFetcher as useFetcher10, useLoaderData as useLoaderData17, useNavigation as useNavigation9 } from "@remix-run/react";
 import { ArrowLeft, CheckCircle2, CreditCard, Loader2, MapPin, Package, Plus } from "lucide-react";
 import { useEffect as useEffect22, useRef as useRef9, useState as useState32 } from "react";
 import { Fragment as Fragment11, jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
@@ -7866,7 +7887,7 @@ function DeliveryDetailsForm({
   ] });
 }
 function MarketplaceCheckout() {
-  let { cart, saved_delivery_details, payment_options, error } = useLoaderData17(), actionData = useActionData8(), navigation = useNavigation7(), deliveryFetcher = useFetcher10(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
+  let { cart, saved_delivery_details, payment_options, error } = useLoaderData17(), actionData = useActionData8(), navigation = useNavigation9(), deliveryFetcher = useFetcher10(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
   return useEffect22(() => {
     saved_delivery_details.length > 0 && deliveryDetails.length === 0 && (setDeliveryDetails(saved_delivery_details), setSelectedDeliveryDetailsId(saved_delivery_details[0]?.str_id ?? ""));
   }, [deliveryDetails.length, saved_delivery_details]), useEffect22(() => {
@@ -7999,7 +8020,7 @@ function MarketplaceCheckout() {
               /* @__PURE__ */ jsx75("div", { className: "mt-2 text-2xl font-black", children: cart ? `${formatMoney(cart.currency, cart.minimum_total_amount)}${cart.maximum_total_amount !== cart.minimum_total_amount ? ` - ${formatMoney(cart.currency, cart.maximum_total_amount)}` : ""}` : "NGN 0" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs62(Form16, { method: "post", className: "mt-6 space-y-4", children: [
+          /* @__PURE__ */ jsxs62(Form18, { method: "post", className: "mt-6 space-y-4", children: [
             /* @__PURE__ */ jsx75("input", { type: "hidden", name: "intent", value: "place-order" }),
             /* @__PURE__ */ jsxs62("div", { className: "grid gap-3", children: [
               /* @__PURE__ */ jsxs62("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
@@ -8196,7 +8217,7 @@ function ContestTableActions({ rowData }) {
 
 // app/components/admin/contest/EditStageForm.tsx
 import { useState as useState33 } from "react";
-import { Form as Form17, Link as Link17 } from "@remix-run/react";
+import { Form as Form19, Link as Link17 } from "@remix-run/react";
 import cn7 from "classnames";
 
 // app/components/admin/contest/GradeInputs.tsx
@@ -8244,7 +8265,7 @@ function Stages({ row }) {
   ] });
 }
 function EditStageForm({ stage, contestId, closeForm }) {
-  return /* @__PURE__ */ jsxs67(Form17, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
+  return /* @__PURE__ */ jsxs67(Form19, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
     /* @__PURE__ */ jsxs67("fieldset", { className: "py-4 grid grid-cols-4 gap-3 border-b", children: [
       /* @__PURE__ */ jsx80(FormControl, { as: "input", id: "start_date", name: "start_date", labelText: "Stage Start Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.start_date) }),
       /* @__PURE__ */ jsx80(FormControl, { as: "input", id: "end_date", name: "end_date", labelText: "Stage End Date", type: "datetime-local", defaultValue: parseDateTimeForInput(stage.end_date) }),
@@ -8292,7 +8313,7 @@ function EditStageForm({ stage, contestId, closeForm }) {
 }
 function ToggleStageBonus({ stage }) {
   let [enabled, setEnabled] = useState33(stage.enable_bonus), [time] = useState33(stage.bonus_reset_time || "00:00:00"), [hours, minutes] = time.split(":");
-  return /* @__PURE__ */ jsxs67(Form17, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 py-4", children: [
+  return /* @__PURE__ */ jsxs67(Form19, { method: "POST", className: "text-primary text-xs flex flex-col gap-4 py-4", children: [
     /* @__PURE__ */ jsxs67("fieldset", { className: "py-4 grid grid-cols-4 gap-3", children: [
       /* @__PURE__ */ jsx80("legend", { className: "font-bold text-sm text-admin-pry w-max col-span-4", children: "Stage Bonus" }),
       /* @__PURE__ */ jsxs67("div", { className: "flex items-center gap-2", children: [
@@ -8478,7 +8499,7 @@ __export(partners_orders_leaderboard_exports, {
   loader: () => loader24
 });
 import { json as json22 } from "@remix-run/node";
-import { Form as Form18, useLoaderData as useLoaderData19, useNavigation as useNavigation8 } from "@remix-run/react";
+import { Form as Form20, useLoaderData as useLoaderData19, useNavigation as useNavigation10 } from "@remix-run/react";
 import { Search, Trophy } from "lucide-react";
 import { jsx as jsx84, jsxs as jsxs71 } from "react/jsx-runtime";
 function buildLeaderboardQuery(searchParams) {
@@ -8570,7 +8591,7 @@ async function loader24({ request }) {
   });
 }
 function GeneralOrdersLeaderboard() {
-  let { leaderboard, query, error } = useLoaderData19(), isBusy = useNavigation8().state !== "idle", hasItems = leaderboard.items.length > 0;
+  let { leaderboard, query, error } = useLoaderData19(), isBusy = useNavigation10().state !== "idle", hasItems = leaderboard.items.length > 0;
   return /* @__PURE__ */ jsxs71("main", { className: "w-full grow bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs71("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsx84("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: /* @__PURE__ */ jsxs71("div", { className: "max-w-3xl space-y-4", children: [
@@ -8585,7 +8606,7 @@ function GeneralOrdersLeaderboard() {
       ] }) }),
       error ? /* @__PURE__ */ jsx84("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx84("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs71(Form18, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx84("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs71(Form20, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs71("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx84("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Start date" }),
         /* @__PURE__ */ jsx84(
@@ -8675,7 +8696,7 @@ __export(partners_settlements_index_exports, {
   loader: () => loader25
 });
 import { json as json23, redirect as redirect24 } from "@remix-run/node";
-import { Form as Form19, useActionData as useActionData9, useLoaderData as useLoaderData20, useNavigation as useNavigation9 } from "@remix-run/react";
+import { Form as Form21, useActionData as useActionData9, useLoaderData as useLoaderData20, useNavigation as useNavigation11 } from "@remix-run/react";
 import { ChevronRight, Search as Search2, X } from "lucide-react";
 import { useEffect as useEffect24, useMemo as useMemo5, useState as useState35 } from "react";
 import { jsx as jsx85, jsxs as jsxs72 } from "react/jsx-runtime";
@@ -8976,7 +8997,7 @@ function PaymentModal({
       )
     ] }),
     actionError ? /* @__PURE__ */ jsx85("div", { className: "mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: actionError }) : null,
-    /* @__PURE__ */ jsxs72(Form19, { method: "post", className: "mt-5 space-y-4", children: [
+    /* @__PURE__ */ jsxs72(Form21, { method: "post", className: "mt-5 space-y-4", children: [
       /* @__PURE__ */ jsx85("input", { type: "hidden", name: "intent", value: "pay-settlements" }),
       /* @__PURE__ */ jsx85("input", { type: "hidden", name: "settlement_ids", value: JSON.stringify(selectedIds) }),
       /* @__PURE__ */ jsxs72("div", { className: "space-y-3", children: [
@@ -9117,7 +9138,7 @@ async function action14({ request }) {
   return redirect24(`${currentUrl.pathname}${currentUrl.search}`, { headers });
 }
 function PartnerSettlementsIndex() {
-  let { settlements, query, error } = useLoaderData20(), actionData = useActionData9(), navigation = useNavigation9(), [selectedSettlementIds, setSelectedSettlementIds] = useState35([]), [activeSettlementId, setActiveSettlementId] = useState35(null), [paymentModalOpen, setPaymentModalOpen] = useState35(!1), activeSettlement = useMemo5(
+  let { settlements, query, error } = useLoaderData20(), actionData = useActionData9(), navigation = useNavigation11(), [selectedSettlementIds, setSelectedSettlementIds] = useState35([]), [activeSettlementId, setActiveSettlementId] = useState35(null), [paymentModalOpen, setPaymentModalOpen] = useState35(!1), activeSettlement = useMemo5(
     () => settlements.items.find((settlement) => settlement._id === activeSettlementId) ?? null,
     [activeSettlementId, settlements.items]
   ), selectedSettlements = useMemo5(
@@ -9150,7 +9171,7 @@ function PartnerSettlementsIndex() {
         /* @__PURE__ */ jsx85(MetricCard, { label: "Total selected", value: formatMoney2(selectedSettlements[0]?.currency ?? "NGN", selectedTotal), wide: !0 })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx85("section", { className: "mt-6 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8", children: /* @__PURE__ */ jsxs72(Form19, { method: "get", className: "grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx85("section", { className: "mt-6 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8", children: /* @__PURE__ */ jsxs72(Form21, { method: "get", className: "grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs72("div", { className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4", children: [
         /* @__PURE__ */ jsxs72("label", { className: "space-y-2", children: [
           /* @__PURE__ */ jsx85("span", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Business name" }),
@@ -9305,7 +9326,7 @@ __export(partners_withdraw_walletid_exports, {
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage3
 });
 import { redirect as redirect25 } from "@remix-run/node";
-import { Form as Form20, useNavigate as useNavigate18, useNavigation as useNavigation10 } from "@remix-run/react";
+import { Form as Form22, useNavigate as useNavigate18, useNavigation as useNavigation12 } from "@remix-run/react";
 import { useMemo as useMemo6, useRef as useRef11, useState as useState36 } from "react";
 import { useLoaderData as useLoaderData21, useActionData as useActionData10 } from "@remix-run/react";
 import { json as json24 } from "@remix-run/node";
@@ -9374,7 +9395,7 @@ function useAddWithdrawalAccountPage3() {
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges };
 }
 function AddWithdrawalAccountPage3() {
-  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage3(), isSubmitting = useNavigation10().state === "submitting", [searchTerm, setSearchTerm] = useState36(""), [isOpen, setIsOpen] = useState36(!1), [selectedBank, setSelectedBank] = useState36(null), [withdrawalAccount, setWithdrawalAccount] = useState36(null), [amount, setAmount] = useState36(0), dropdownRef = useRef11(null), filteredBanks = useMemo6(() => banks.filter(
+  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage3(), isSubmitting = useNavigation12().state === "submitting", [searchTerm, setSearchTerm] = useState36(""), [isOpen, setIsOpen] = useState36(!1), [selectedBank, setSelectedBank] = useState36(null), [withdrawalAccount, setWithdrawalAccount] = useState36(null), [amount, setAmount] = useState36(0), dropdownRef = useRef11(null), filteredBanks = useMemo6(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
   useEffect25(() => {
@@ -9397,7 +9418,7 @@ function AddWithdrawalAccountPage3() {
       /* @__PURE__ */ jsx86("h1", { className: "text-2xl font-bold text-gray-900", children: "Withdraw " }),
       /* @__PURE__ */ jsx86("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter details below" })
     ] }),
-    withdrawalCharges ? /* @__PURE__ */ jsxs73(Form20, { method: "POST", className: "w-full flex flex-col max-w-md mx-auto", children: [
+    withdrawalCharges ? /* @__PURE__ */ jsxs73(Form22, { method: "POST", className: "w-full flex flex-col max-w-md mx-auto", children: [
       /* @__PURE__ */ jsxs73("div", { className: "mb-6", children: [
         /* @__PURE__ */ jsx86("label", { className: "text-sm font-medium text-gray-500 mb-2 block", children: "You withdraw exactly" }),
         /* @__PURE__ */ jsxs73("div", { className: "flex items-center justify-between gap-4", children: [
@@ -9502,7 +9523,7 @@ function AddWithdrawalAccountPage3() {
       /* @__PURE__ */ jsx86("input", { type: "hidden", name: "intent", value: "requestWithdrawal" }),
       /* @__PURE__ */ jsx86("input", { type: "hidden", name: "withdrawal_account_id", value: withdrawalAccount?._id || "" }),
       /* @__PURE__ */ jsx86("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` })
-    ] }) : /* @__PURE__ */ jsxs73(Form20, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+    ] }) : /* @__PURE__ */ jsxs73(Form22, { method: "POST", className: "w-full flex flex-col gap-4", children: [
       /* @__PURE__ */ jsxs73("div", { className: "relative", ref: dropdownRef, children: [
         /* @__PURE__ */ jsxs73("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
           "Select beneficiary",
@@ -9580,7 +9601,7 @@ __export(public_leaderboard_orders_exports, {
   loader: () => loader27
 });
 import { json as json25 } from "@remix-run/node";
-import { Form as Form21, useLoaderData as useLoaderData22, useNavigation as useNavigation11 } from "@remix-run/react";
+import { Form as Form23, useLoaderData as useLoaderData22, useNavigation as useNavigation13 } from "@remix-run/react";
 import { Search as Search3, Trophy as Trophy2 } from "lucide-react";
 import { jsx as jsx87, jsxs as jsxs74 } from "react/jsx-runtime";
 function buildLeaderboardQuery2(searchParams) {
@@ -9669,7 +9690,7 @@ async function loader27({ request }) {
   });
 }
 function GeneralOrdersLeaderboard2() {
-  let { leaderboard, query, error } = useLoaderData22(), isBusy = useNavigation11().state !== "idle", hasItems = leaderboard.items.length > 0;
+  let { leaderboard, query, error } = useLoaderData22(), isBusy = useNavigation13().state !== "idle", hasItems = leaderboard.items.length > 0;
   return /* @__PURE__ */ jsxs74("main", { className: "w-full grow bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs74("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsx87("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: /* @__PURE__ */ jsxs74("div", { className: "max-w-3xl space-y-4", children: [
@@ -9684,7 +9705,7 @@ function GeneralOrdersLeaderboard2() {
       ] }) }),
       error ? /* @__PURE__ */ jsx87("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx87("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs74(Form21, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx87("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs74(Form23, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs74("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx87("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Business name" }),
         /* @__PURE__ */ jsx87(
@@ -9786,7 +9807,7 @@ __export(public_marketplace_index_exports, {
   loader: () => loader28
 });
 import { json as json26 } from "@remix-run/node";
-import { Form as Form22, Link as Link20, useFetcher as useFetcher14, useLoaderData as useLoaderData23, useNavigation as useNavigation12 } from "@remix-run/react";
+import { Form as Form24, Link as Link20, useFetcher as useFetcher14, useLoaderData as useLoaderData23, useNavigation as useNavigation14 } from "@remix-run/react";
 import { ShoppingCart } from "lucide-react";
 import { useEffect as useEffect26, useMemo as useMemo7, useState as useState37 } from "react";
 import { jsx as jsx88, jsxs as jsxs75 } from "react/jsx-runtime";
@@ -9975,7 +9996,7 @@ function MarketplaceSkeleton() {
   ] }, index)) });
 }
 function MarketplaceHome() {
-  let { products, query, productError } = useLoaderData23(), navigation = useNavigation12(), cartSummaryFetcher = useFetcher14(), cartMutationFetcher = useFetcher14(), [cartState, setCartState] = useState37(null), [cartHydrated, setCartHydrated] = useState37(!1);
+  let { products, query, productError } = useLoaderData23(), navigation = useNavigation14(), cartSummaryFetcher = useFetcher14(), cartMutationFetcher = useFetcher14(), [cartState, setCartState] = useState37(null), [cartHydrated, setCartHydrated] = useState37(!1);
   useEffect26(() => {
     cartSummaryFetcher.load("/marketplace?intent=cart");
   }, []), useEffect26(() => {
@@ -10036,7 +10057,7 @@ function MarketplaceHome() {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx88("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxs75(Form22, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx88("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxs75(Form24, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs75("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx88("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Search products" }),
         /* @__PURE__ */ jsx88(
@@ -10124,7 +10145,7 @@ __export(public_marketplace_orders_exports, {
   loader: () => loader29
 });
 import { json as json27 } from "@remix-run/node";
-import { Form as Form23, Link as Link21, useLoaderData as useLoaderData24, useNavigation as useNavigation13 } from "@remix-run/react";
+import { Form as Form25, Link as Link21, useLoaderData as useLoaderData24, useNavigation as useNavigation15 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft2, PackageSearch, ShoppingBag } from "lucide-react";
 import { jsx as jsx89, jsxs as jsxs76 } from "react/jsx-runtime";
 var orderStatusOptions = [
@@ -10311,7 +10332,7 @@ async function loader29({ request }) {
   });
 }
 function MarketplaceOrders() {
-  let { orders, query, error } = useLoaderData24(), isLoading = useNavigation13().state === "loading", hasOrders = orders.items.length > 0;
+  let { orders, query, error } = useLoaderData24(), isLoading = useNavigation15().state === "loading", hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxs76("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs76("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs76("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -10350,7 +10371,7 @@ function MarketplaceOrders() {
       ] }),
       error ? /* @__PURE__ */ jsx89("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx89("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs76(Form23, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx89("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs76(Form25, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs76("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx89("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
         /* @__PURE__ */ jsx89(
@@ -10522,7 +10543,7 @@ __export(admin_partners_details_id_exports, {
   loader: () => loader31
 });
 import { json as json29, redirect as redirect27 } from "@remix-run/node";
-import { Form as Form24, useLoaderData as useLoaderData26, useNavigation as useNavigation14, useNavigate as useNavigate19, Link as Link23 } from "@remix-run/react";
+import { Form as Form26, useLoaderData as useLoaderData26, useNavigation as useNavigation16, useNavigate as useNavigate19, Link as Link23 } from "@remix-run/react";
 import { jsx as jsx91, jsxs as jsxs78 } from "react/jsx-runtime";
 var statusColors = {
   Approved: "text-green-600 bg-green-50 border-green-200",
@@ -10640,7 +10661,7 @@ function DetailCardWithLink({ label, value, link }) {
 function PartnerDetailsPage() {
   let { business } = useLoaderData26();
   console.log("Business details:", business);
-  let navigation = useNavigation14(), navigate = useNavigate19(), isSubmitting = navigation.state === "submitting";
+  let navigation = useNavigation16(), navigate = useNavigate19(), isSubmitting = navigation.state === "submitting";
   return /* @__PURE__ */ jsxs78("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxs78("div", { className: "flex items-center gap-3 mb-6", children: [
       /* @__PURE__ */ jsx91(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
@@ -10739,7 +10760,7 @@ function PartnerDetailsPage() {
       /* @__PURE__ */ jsxs78("aside", { className: "grid gap-4", children: [
         /* @__PURE__ */ jsxs78("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
           /* @__PURE__ */ jsx91("h2", { className: "text-lg font-bold text-primary", children: "Update status" }),
-          /* @__PURE__ */ jsxs78(Form24, { method: "post", className: "grid gap-4 mt-4", children: [
+          /* @__PURE__ */ jsxs78(Form26, { method: "post", className: "grid gap-4 mt-4", children: [
             /* @__PURE__ */ jsx91("input", { type: "hidden", name: "intent", value: "update_status" }),
             /* @__PURE__ */ jsx91("input", { type: "hidden", name: "business_id", value: business._id }),
             /* @__PURE__ */ jsx91("input", { type: "hidden", name: "updated_by", value: "" }),
@@ -10751,7 +10772,7 @@ function PartnerDetailsPage() {
         ] }),
         /* @__PURE__ */ jsxs78("div", { className: "rounded-3xl border border-gray-100 bg-white shadow-sm p-5 sm:p-6", children: [
           /* @__PURE__ */ jsx91("h2", { className: "text-lg font-bold text-primary", children: "Add business owner" }),
-          /* @__PURE__ */ jsxs78(Form24, { method: "post", className: "grid gap-4 mt-4", children: [
+          /* @__PURE__ */ jsxs78(Form26, { method: "post", className: "grid gap-4 mt-4", children: [
             /* @__PURE__ */ jsx91("input", { type: "hidden", name: "intent", value: "add_owner" }),
             /* @__PURE__ */ jsx91("input", { type: "hidden", name: "business_id", value: business._id }),
             /* @__PURE__ */ jsxs78("div", { className: "grid sm:grid-cols-2 gap-4", children: [
@@ -10778,7 +10799,7 @@ __export(admin_partners_settlements_exports, {
   loader: () => loader32
 });
 import { json as json30, redirect as redirect28 } from "@remix-run/node";
-import { Form as Form25, useActionData as useActionData11, useLoaderData as useLoaderData27, useNavigation as useNavigation15 } from "@remix-run/react";
+import { Form as Form27, useActionData as useActionData11, useLoaderData as useLoaderData27, useNavigation as useNavigation17 } from "@remix-run/react";
 import { ChevronRight as ChevronRight2, Search as Search4, X as X2 } from "lucide-react";
 import { useEffect as useEffect27, useMemo as useMemo8, useState as useState38 } from "react";
 import { jsx as jsx92, jsxs as jsxs79 } from "react/jsx-runtime";
@@ -11083,7 +11104,7 @@ function PaymentModal2({
       )
     ] }),
     actionError ? /* @__PURE__ */ jsx92("div", { className: "mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: actionError }) : null,
-    /* @__PURE__ */ jsxs79(Form25, { method: "post", className: "mt-5 space-y-4", children: [
+    /* @__PURE__ */ jsxs79(Form27, { method: "post", className: "mt-5 space-y-4", children: [
       /* @__PURE__ */ jsx92("input", { type: "hidden", name: "intent", value: "pay-settlements" }),
       /* @__PURE__ */ jsx92("input", { type: "hidden", name: "settlement_ids", value: JSON.stringify(selectedIds) }),
       /* @__PURE__ */ jsxs79("div", { className: "space-y-3", children: [
@@ -11224,7 +11245,7 @@ async function action18({ request }) {
   return redirect28(`${currentUrl.pathname}${currentUrl.search}`, { headers });
 }
 function PartnerSettlementsIndex2() {
-  let { settlements, query, error } = useLoaderData27(), actionData = useActionData11(), navigation = useNavigation15(), [selectedSettlementIds, setSelectedSettlementIds] = useState38([]), [activeSettlementId, setActiveSettlementId] = useState38(null), [paymentModalOpen, setPaymentModalOpen] = useState38(!1), activeSettlement = useMemo8(
+  let { settlements, query, error } = useLoaderData27(), actionData = useActionData11(), navigation = useNavigation17(), [selectedSettlementIds, setSelectedSettlementIds] = useState38([]), [activeSettlementId, setActiveSettlementId] = useState38(null), [paymentModalOpen, setPaymentModalOpen] = useState38(!1), activeSettlement = useMemo8(
     () => settlements.items.find((settlement) => settlement._id === activeSettlementId) ?? null,
     [activeSettlementId, settlements.items]
   ), selectedSettlements = useMemo8(
@@ -11257,7 +11278,7 @@ function PartnerSettlementsIndex2() {
         /* @__PURE__ */ jsx92(MetricCard2, { label: "Total selected", value: formatMoney4(selectedSettlements[0]?.currency ?? "NGN", selectedTotal), wide: !0 })
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx92("section", { className: "mt-6 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8", children: /* @__PURE__ */ jsxs79(Form25, { method: "get", className: "grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx92("section", { className: "mt-6 rounded-[2rem] border border-slate-200 bg-white px-6 py-5 shadow-sm sm:px-8", children: /* @__PURE__ */ jsxs79(Form27, { method: "get", className: "grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs79("div", { className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4", children: [
         /* @__PURE__ */ jsxs79("label", { className: "space-y-2", children: [
           /* @__PURE__ */ jsx92("span", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Business name" }),
@@ -11397,12 +11418,12 @@ import { json as json31, redirect as redirect29 } from "@remix-run/node";
 import { useLoaderData as useLoaderData28, useNavigate as useNavigate20 } from "@remix-run/react";
 
 // app/components/admin/tournament/EditTournamentForm.tsx
-import { Form as Form26 } from "@remix-run/react";
+import { Form as Form28 } from "@remix-run/react";
 import { useState as useState39 } from "react";
 import { jsx as jsx93, jsxs as jsxs80 } from "react/jsx-runtime";
 function EditTournamentForm({ tournament }) {
   let [fileList, setFileList] = useState39(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
-  return /* @__PURE__ */ jsxs80(Form26, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+  return /* @__PURE__ */ jsxs80(Form28, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
     /* @__PURE__ */ jsx93("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }),
     /* @__PURE__ */ jsxs80("div", { className: "grid gap-3 sm:gap-6", children: [
       /* @__PURE__ */ jsxs80("div", { className: "flex items-center gap-x-5", children: [
@@ -11474,7 +11495,7 @@ __export(partners_setwithdrawalpin_exports, {
   loader: () => loader34
 });
 import { json as json32, redirect as redirect30 } from "@remix-run/node";
-import { Form as Form27, Link as Link24, useActionData as useActionData12, useLoaderData as useLoaderData29, useNavigation as useNavigation16 } from "@remix-run/react";
+import { Form as Form29, Link as Link24, useActionData as useActionData12, useLoaderData as useLoaderData29, useNavigation as useNavigation18 } from "@remix-run/react";
 import { useState as useState40, useEffect as useEffect28 } from "react";
 import { User, X as X3, Mail } from "lucide-react";
 import { jsx as jsx95, jsxs as jsxs82 } from "react/jsx-runtime";
@@ -11503,7 +11524,7 @@ async function loader34({ request }) {
   return userWalltetsPinNotSet ? json32({}) : redirect30("/partners/wallet");
 }
 function useSetWithdrawalPinController() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState40(null), [showTokenModal, setShowTokenModal] = useState40(!0), actionData = useActionData12(), loader_ = useLoaderData29(), navigation = useNavigation16(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState40(null), [showTokenModal, setShowTokenModal] = useState40(!0), actionData = useActionData12(), loader_ = useLoaderData29(), navigation = useNavigation18(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
   return useEffect28(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
@@ -11542,7 +11563,7 @@ function SetWithdrawalPin() {
     }), setUserStoreManager(actionData.data, !0));
   }, [actionData]), /* @__PURE__ */ jsxs82("div", { className: "flex min-h-screen items-center justify-center bg-white p-6 font-sans relative", children: [
     /* @__PURE__ */ jsx95(Link24, { to: "/partners/wallet", className: "absolute top-4 right-4 text-gray-500 hover:text-gray-800", children: /* @__PURE__ */ jsx95(X3, { size: 24 }) }),
-    /* @__PURE__ */ jsxs82(Form27, { className: "w-full max-w-lg text-center", method: "POST", children: [
+    /* @__PURE__ */ jsxs82(Form29, { className: "w-full max-w-lg text-center", method: "POST", children: [
       /* @__PURE__ */ jsx95("input", { type: "hidden", name: "intent", value: "create-withdrawal-pin" }),
       /* @__PURE__ */ jsx95("div", { className: "mb-8 flex justify-center", children: /* @__PURE__ */ jsxs82("div", { className: "relative flex h-16 w-16 items-center justify-center rounded-full bg-[#E5E5EF]", children: [
         /* @__PURE__ */ jsx95("div", { className: "absolute h-24 w-24 rounded-full border border-slate-100" }),
@@ -11636,7 +11657,7 @@ function SetWithdrawalPin() {
           /* @__PURE__ */ jsx95("span", { className: "text-[15px] font-medium text-[#1A1A1A]", children: "Send to email" })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxs82(Form27, { method: "POST", className: "mt-6", children: [
+      /* @__PURE__ */ jsxs82(Form29, { method: "POST", className: "mt-6", children: [
         /* @__PURE__ */ jsx95("input", { type: "hidden", name: "intent", value: "request-token" }),
         /* @__PURE__ */ jsx95(
           "button",
@@ -11660,7 +11681,7 @@ __export(public_marketplace_cart_exports, {
   loader: () => loader35
 });
 import { json as json33 } from "@remix-run/node";
-import { Link as Link25, useFetcher as useFetcher15, useLoaderData as useLoaderData30, useNavigation as useNavigation17 } from "@remix-run/react";
+import { Link as Link25, useFetcher as useFetcher15, useLoaderData as useLoaderData30, useNavigation as useNavigation19 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft3, Minus, Plus as Plus2, ShoppingCart as ShoppingCart2, Trash2 } from "lucide-react";
 import { jsx as jsx96, jsxs as jsxs83 } from "react/jsx-runtime";
 function formatMoney5(currency, value) {
@@ -11780,7 +11801,7 @@ function CartSkeleton() {
   ] }, index)) });
 }
 function MarketplaceCart() {
-  let { cart, cartError } = useLoaderData30(), isLoading = useNavigation17().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
+  let { cart, cartError } = useLoaderData30(), isLoading = useNavigation19().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
   return /* @__PURE__ */ jsxs83("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs83("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs83("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -12101,7 +12122,7 @@ import {
   Link as Link27,
   useFetcher as useFetcher17,
   useLoaderData as useLoaderData33,
-  useNavigation as useNavigation18,
+  useNavigation as useNavigation20,
   useRevalidator
 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft4, CreditCard as CreditCard2, PackageSearch as PackageSearch2, Phone, ShieldCheck, SquarePen } from "lucide-react";
@@ -12363,7 +12384,7 @@ async function action23({ params, request }) {
 }
 function PartnerOrderDetailPage() {
   let { order, error } = useLoaderData33();
-  if (useNavigation18().state === "loading" && !order)
+  if (useNavigation20().state === "loading" && !order)
     return /* @__PURE__ */ jsx102(OrderPageSkeleton, {});
   if (error || !order)
     return /* @__PURE__ */ jsx102("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsx102("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-10 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8", children: /* @__PURE__ */ jsxs89("div", { className: "flex items-start gap-4", children: [
@@ -12540,7 +12561,7 @@ __export(admin_accounts_allusers_exports, {
   loader: () => loader40
 });
 import { json as json37, redirect as redirect33 } from "@remix-run/node";
-import { useLoaderData as useLoaderData35, Form as Form28, useNavigation as useNavigation19 } from "@remix-run/react";
+import { useLoaderData as useLoaderData35, Form as Form30, useNavigation as useNavigation21 } from "@remix-run/react";
 
 // app/components/reusables/ToggleBtn.tsx
 import cn8 from "classnames";
@@ -12679,7 +12700,7 @@ async function loader40({ request }) {
   return pagedUsersRes.authRequired ? redirect33("/login") : json37({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts() {
-  let { headings, tableData, pagedUserData, query } = useLoaderData35(), navigation = useNavigation19();
+  let { headings, tableData, pagedUserData, query } = useLoaderData35(), navigation = useNavigation21();
   return console.log(pagedUserData), /* @__PURE__ */ jsxs92("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxs92("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsx106("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }),
@@ -12690,7 +12711,7 @@ function Accounts() {
     ] }),
     /* @__PURE__ */ jsxs92("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: [
       /* @__PURE__ */ jsx106("p", { className: "font-semibold", children: "Registered Admin Users" }),
-      /* @__PURE__ */ jsxs92(Form28, { method: "get", className: "flex items-center gap-3", onSubmit: (e) => {
+      /* @__PURE__ */ jsxs92(Form30, { method: "get", className: "flex items-center gap-3", onSubmit: (e) => {
         try {
           let form = e.currentTarget, searchInput = form.elements.namedItem("searchUser"), hidden = form.elements.namedItem("wild_card");
           searchInput && hidden && (hidden.value = searchInput.value || "");
@@ -12737,7 +12758,7 @@ __export(user_contestantprofiles_exports, {
   loader: () => loader41
 });
 import { useEffect as useEffect30, useState as useState42 } from "react";
-import { Link as Link28, useLoaderData as useLoaderData36, useNavigation as useNavigation20 } from "@remix-run/react";
+import { Link as Link28, useLoaderData as useLoaderData36, useNavigation as useNavigation22 } from "@remix-run/react";
 import { json as json38, redirect as redirect34 } from "@remix-run/node";
 import { jsx as jsx107, jsxs as jsxs93 } from "react/jsx-runtime";
 async function loader41({ request }) {
@@ -12746,7 +12767,7 @@ async function loader41({ request }) {
   return authRequired ? redirect34("/login") : json38({ data, error, authRequired });
 }
 function useContestantProfilesController() {
-  let { data, error } = useLoaderData36(), navigation = useNavigation20(), [profiles, setProfiles] = useState42([]);
+  let { data, error } = useLoaderData36(), navigation = useNavigation22(), [profiles, setProfiles] = useState42([]);
   useEffect30(() => {
     data && setProfiles(data);
   }, [data]), useEffect30(() => {
@@ -12856,7 +12877,7 @@ __export(user_withdraw_walletid_exports, {
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage4
 });
 import { redirect as redirect35 } from "@remix-run/node";
-import { Form as Form29, useNavigate as useNavigate21, useNavigation as useNavigation21 } from "@remix-run/react";
+import { Form as Form31, useNavigate as useNavigate21, useNavigation as useNavigation23 } from "@remix-run/react";
 import { useMemo as useMemo9, useRef as useRef13, useState as useState43 } from "react";
 import { useLoaderData as useLoaderData37, useActionData as useActionData13 } from "@remix-run/react";
 import { json as json39 } from "@remix-run/node";
@@ -12925,7 +12946,7 @@ function useAddWithdrawalAccountPage4() {
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges };
 }
 function AddWithdrawalAccountPage4() {
-  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage4(), isSubmitting = useNavigation21().state === "submitting", [searchTerm, setSearchTerm] = useState43(""), [isOpen, setIsOpen] = useState43(!1), [selectedBank, setSelectedBank] = useState43(null), [withdrawalAccount, setWithdrawalAccount] = useState43(null), [amount, setAmount] = useState43(0), dropdownRef = useRef13(null), filteredBanks = useMemo9(() => banks.filter(
+  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage4(), isSubmitting = useNavigation23().state === "submitting", [searchTerm, setSearchTerm] = useState43(""), [isOpen, setIsOpen] = useState43(!1), [selectedBank, setSelectedBank] = useState43(null), [withdrawalAccount, setWithdrawalAccount] = useState43(null), [amount, setAmount] = useState43(0), dropdownRef = useRef13(null), filteredBanks = useMemo9(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
   useEffect31(() => {
@@ -12948,7 +12969,7 @@ function AddWithdrawalAccountPage4() {
       /* @__PURE__ */ jsx108("h1", { className: "text-2xl font-bold text-gray-900", children: "Withdraw " }),
       /* @__PURE__ */ jsx108("p", { className: "text-gray-500 mt-1 text-sm", children: "Enter details below" })
     ] }),
-    withdrawalCharges ? /* @__PURE__ */ jsxs94(Form29, { method: "POST", className: "w-full flex flex-col max-w-md mx-auto", children: [
+    withdrawalCharges ? /* @__PURE__ */ jsxs94(Form31, { method: "POST", className: "w-full flex flex-col max-w-md mx-auto", children: [
       /* @__PURE__ */ jsxs94("div", { className: "mb-6", children: [
         /* @__PURE__ */ jsx108("label", { className: "text-sm font-medium text-gray-500 mb-2 block", children: "You withdraw exactly" }),
         /* @__PURE__ */ jsxs94("div", { className: "flex items-center justify-between gap-4", children: [
@@ -13053,7 +13074,7 @@ function AddWithdrawalAccountPage4() {
       /* @__PURE__ */ jsx108("input", { type: "hidden", name: "intent", value: "requestWithdrawal" }),
       /* @__PURE__ */ jsx108("input", { type: "hidden", name: "withdrawal_account_id", value: withdrawalAccount?._id || "" }),
       /* @__PURE__ */ jsx108("input", { type: "hidden", name: "wallet_id", value: `${wallet?._id}` })
-    ] }) : /* @__PURE__ */ jsxs94(Form29, { method: "POST", className: "w-full flex flex-col gap-4", children: [
+    ] }) : /* @__PURE__ */ jsxs94(Form31, { method: "POST", className: "w-full flex flex-col gap-4", children: [
       /* @__PURE__ */ jsxs94("div", { className: "relative", ref: dropdownRef, children: [
         /* @__PURE__ */ jsxs94("label", { className: "mb-2 block text-[15px] font-medium text-[#1A1A1A]", children: [
           "Select beneficiary",
@@ -13219,7 +13240,7 @@ __export(admin_accounts_userId_exports, {
   default: () => EditAdminUser,
   loader: () => loader45
 });
-import { Form as Form30, useActionData as useActionData14, useLoaderData as useLoaderData39, useNavigate as useNavigate22, useNavigation as useNavigation22 } from "@remix-run/react";
+import { Form as Form32, useActionData as useActionData14, useLoaderData as useLoaderData39, useNavigate as useNavigate22, useNavigation as useNavigation24 } from "@remix-run/react";
 import { redirect as redirect36 } from "@remix-run/node";
 
 // app/components/admin/RolesFormControl.tsx
@@ -13320,13 +13341,13 @@ function EditAdminUser() {
       description: "Admin account was successfully updated!"
     });
   }, [actionData]);
-  let isSubmitting = useNavigation22().state === "submitting";
+  let isSubmitting = useNavigation24().state === "submitting";
   return /* @__PURE__ */ jsxs97("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxs97("div", { className: "flex items-center mb-10 sm:mb-16 gap-4", children: [
       /* @__PURE__ */ jsx111(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
       /* @__PURE__ */ jsx111("h1", { className: "text-2xl font-black text-primary", children: "Edit User" })
     ] }),
-    /* @__PURE__ */ jsxs97(Form30, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
+    /* @__PURE__ */ jsxs97(Form32, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
       /* @__PURE__ */ jsx111(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", defaultValue: user.full_name.split(" ")[0], required: !0 }),
       /* @__PURE__ */ jsx111(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", defaultValue: user.full_name.split(" ")[1], required: !0 }),
       /* @__PURE__ */ jsx111(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", defaultValue: user.email, required: !0 }),
@@ -13359,7 +13380,7 @@ __export(partners_orders_Index_exports, {
   loader: () => loader46
 });
 import { json as json42 } from "@remix-run/node";
-import { Form as Form31, Link as Link30, useLoaderData as useLoaderData40, useLocation as useLocation8, useNavigation as useNavigation23 } from "@remix-run/react";
+import { Form as Form33, Link as Link30, useLoaderData as useLoaderData40, useLocation as useLocation8, useNavigation as useNavigation25 } from "@remix-run/react";
 import { PackageSearch as PackageSearch3, Search as Search5, ShoppingBag as ShoppingBag2 } from "lucide-react";
 import { jsx as jsx112, jsxs as jsxs98 } from "react/jsx-runtime";
 var orderStatusOptions2 = [
@@ -13566,7 +13587,7 @@ async function loader46({ request }) {
   });
 }
 function PartnerOrdersPage() {
-  let { orders, query, error } = useLoaderData40(), navigation = useNavigation23(), location = useLocation8(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
+  let { orders, query, error } = useLoaderData40(), navigation = useNavigation25(), location = useLocation8(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxs98("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs98("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs98("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -13594,7 +13615,7 @@ function PartnerOrdersPage() {
       ] }),
       error ? /* @__PURE__ */ jsx112("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx112("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs98(Form31, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx112("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs98(Form33, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsx112("input", { type: "hidden", name: "page_size", value: orders.items_per_page }),
       /* @__PURE__ */ jsxs98("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx112("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
@@ -13710,7 +13731,7 @@ __export(admin_accounts_index_exports, {
   loader: () => loader47
 });
 import { json as json43, redirect as redirect37 } from "@remix-run/node";
-import { useLoaderData as useLoaderData41, Form as Form32, useNavigation as useNavigation24 } from "@remix-run/react";
+import { useLoaderData as useLoaderData41, Form as Form34, useNavigation as useNavigation26 } from "@remix-run/react";
 import { jsx as jsx113, jsxs as jsxs99 } from "react/jsx-runtime";
 async function loader47({ request }) {
   let headings = ["full_name", "email", "username", "roles", "access"], validateAuth = await requireAuth(request), url = new URL(request.url), query = {};
@@ -13721,7 +13742,7 @@ async function loader47({ request }) {
   return pagedUsersRes.authRequired ? redirect37("/login") : json43({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts2() {
-  let { headings, tableData, pagedUserData, query } = useLoaderData41(), navigation = useNavigation24();
+  let { headings, tableData, pagedUserData, query } = useLoaderData41(), navigation = useNavigation26();
   return console.log(pagedUserData), /* @__PURE__ */ jsxs99("main", { className: "w-full overflow-y-auto p-6", children: [
     /* @__PURE__ */ jsxs99("div", { className: "flex justify-between items-center mb-8 sm:mb-16", children: [
       /* @__PURE__ */ jsx113("h1", { className: "text-2xl font-black text-primary", children: "Admin Accounts" }),
@@ -13732,7 +13753,7 @@ function Accounts2() {
     ] }),
     /* @__PURE__ */ jsxs99("div", { className: "flex flex-col gap-3 sm:flex-row justify-between sm:items-center my-8", children: [
       /* @__PURE__ */ jsx113("p", { className: "font-semibold", children: "Registered Admin Users" }),
-      /* @__PURE__ */ jsxs99(Form32, { method: "get", className: "flex items-center gap-3", onSubmit: (e) => {
+      /* @__PURE__ */ jsxs99(Form34, { method: "get", className: "flex items-center gap-3", onSubmit: (e) => {
         try {
           let form = e.currentTarget, searchInput = form.elements.namedItem("searchUser"), hidden = form.elements.namedItem("wild_card");
           searchInput && hidden && (hidden.value = searchInput.value || "");
@@ -13825,7 +13846,7 @@ __export(admin_partners_index_exports, {
   loader: () => loader49
 });
 import { json as json45 } from "@remix-run/node";
-import { useLoaderData as useLoaderData43, useNavigation as useNavigation25, Form as Form33 } from "@remix-run/react";
+import { useLoaderData as useLoaderData43, useNavigation as useNavigation27, Form as Form35 } from "@remix-run/react";
 import { useState as useState45 } from "react";
 import { ArrowRight, Building2, Globe, Search as Search6, Store, Users } from "lucide-react";
 import { Fragment as Fragment15, jsx as jsx115, jsxs as jsxs101 } from "react/jsx-runtime";
@@ -13877,14 +13898,14 @@ function Banner({ data }) {
   ] });
 }
 function SearchPanel() {
-  let isBusy = useNavigation25().state !== "idle";
+  let isBusy = useNavigation27().state !== "idle";
   return /* @__PURE__ */ jsxs101("section", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
     /* @__PURE__ */ jsxs101("div", { className: "mb-4 flex items-center gap-2 text-slate-500", children: [
       /* @__PURE__ */ jsx115(Search6, { className: "h-4 w-4" }),
       /* @__PURE__ */ jsx115("h2", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Filter partners" })
     ] }),
     /* @__PURE__ */ jsxs101(
-      Form33,
+      Form35,
       {
         method: "get",
         className: "grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end",
@@ -14037,7 +14058,7 @@ function LoadingSkeleton() {
   ] });
 }
 function PartnersIndex() {
-  let data = useLoaderData43(), navigation = useNavigation25(), [search, setSearch] = useState45(data.query?.legal_business_name || "");
+  let data = useLoaderData43(), navigation = useNavigation27(), [search, setSearch] = useState45(data.query?.legal_business_name || "");
   if ("redirect" in data && typeof window < "u")
     return window.location.href = data.redirect, null;
   let { partnersRes, query } = data, isBusy = navigation.state !== "idle";
@@ -14081,12 +14102,12 @@ __export(admin_partners_orders_exports, {
 });
 import { json as json46 } from "@remix-run/node";
 import {
-  Form as Form34,
+  Form as Form36,
   Link as Link31,
   useFetcher as useFetcher18,
   useLoaderData as useLoaderData44,
   useLocation as useLocation9,
-  useNavigation as useNavigation26,
+  useNavigation as useNavigation28,
   useRevalidator as useRevalidator2
 } from "@remix-run/react";
 import { PackageSearch as PackageSearch4, Search as Search7, ShieldCheck as ShieldCheck2, ShieldX, ShoppingBag as ShoppingBag3 } from "lucide-react";
@@ -14614,7 +14635,7 @@ async function action27({ request }) {
   });
 }
 function AdminPartnerOrdersPage() {
-  let { orders, query, error } = useLoaderData44(), navigation = useNavigation26(), location = useLocation9(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, rows = useMemo10(
+  let { orders, query, error } = useLoaderData44(), navigation = useNavigation28(), location = useLocation9(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, rows = useMemo10(
     () => orders.items.flatMap(
       (order) => order.orders.map((item) => ({
         order,
@@ -14650,7 +14671,7 @@ function AdminPartnerOrdersPage() {
       ] }),
       error ? /* @__PURE__ */ jsx116("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx116("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs102(Form34, { method: "get", className: "grid gap-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx116("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs102(Form36, { method: "get", className: "grid gap-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsx116("input", { type: "hidden", name: "page_size", value: orders.items_per_page }),
       /* @__PURE__ */ jsxs102("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx116("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
@@ -14776,10 +14797,10 @@ import { json as json47, redirect as redirect39 } from "@remix-run/node";
 import { useNavigate as useNavigate23 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateTournamentForm.tsx
-import { Form as Form35 } from "@remix-run/react";
+import { Form as Form37 } from "@remix-run/react";
 import { jsx as jsx117, jsxs as jsxs103 } from "react/jsx-runtime";
 function CreateTournamentForm() {
-  return /* @__PURE__ */ jsxs103(Form35, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
+  return /* @__PURE__ */ jsxs103(Form37, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12", method: "post", encType: "multipart/form-data", children: [
     /* @__PURE__ */ jsx117("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Create New Tournament" }),
     /* @__PURE__ */ jsxs103("div", { className: "grid gap-3 sm:gap-6", children: [
       /* @__PURE__ */ jsx117(FormControl, { as: "input", labelText: "Tournament Name", placeholder: "Enter tournament name", id: "name", name: "name", required: !0 }),
@@ -14821,7 +14842,7 @@ __export(user_setwithdrawalpin_exports, {
   loader: () => loader51
 });
 import { json as json48, redirect as redirect40 } from "@remix-run/node";
-import { Form as Form36, Link as Link32, useActionData as useActionData15, useLoaderData as useLoaderData45, useNavigation as useNavigation27 } from "@remix-run/react";
+import { Form as Form38, Link as Link32, useActionData as useActionData15, useLoaderData as useLoaderData45, useNavigation as useNavigation29 } from "@remix-run/react";
 import { useState as useState47, useEffect as useEffect34 } from "react";
 import { User as User2, X as X4, Mail as Mail2 } from "lucide-react";
 
@@ -14933,7 +14954,7 @@ async function loader51({ request }) {
   return authRequired ? redirect40("/login") : data && data.withdrawal_pin_set ? redirect40("/user/wallet") : json48({ data, error });
 }
 function useSetWithdrawalPinController2() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState47(null), [showTokenModal, setShowTokenModal] = useState47(!0), actionData = useActionData15(), loader_ = useLoaderData45(), navigation = useNavigation27(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState47(null), [showTokenModal, setShowTokenModal] = useState47(!0), actionData = useActionData15(), loader_ = useLoaderData45(), navigation = useNavigation29(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
   return useEffect34(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
@@ -14972,7 +14993,7 @@ function SetWithdrawalPin2() {
     }), setUserStoreManager(actionData.data, !0));
   }, [actionData]), /* @__PURE__ */ jsxs105("div", { className: "flex min-h-screen items-center justify-center bg-white p-6 font-sans relative", children: [
     /* @__PURE__ */ jsx119(Link32, { to: "/user/wallet", className: "absolute top-4 right-4 text-gray-500 hover:text-gray-800", children: /* @__PURE__ */ jsx119(X4, { size: 24 }) }),
-    /* @__PURE__ */ jsxs105(Form36, { className: "w-full max-w-lg text-center", method: "POST", children: [
+    /* @__PURE__ */ jsxs105(Form38, { className: "w-full max-w-lg text-center", method: "POST", children: [
       /* @__PURE__ */ jsx119("input", { type: "hidden", name: "intent", value: "create-withdrawal-pin" }),
       /* @__PURE__ */ jsx119("div", { className: "mb-8 flex justify-center", children: /* @__PURE__ */ jsxs105("div", { className: "relative flex h-16 w-16 items-center justify-center rounded-full bg-[#E5E5EF]", children: [
         /* @__PURE__ */ jsx119("div", { className: "absolute h-24 w-24 rounded-full border border-slate-100" }),
@@ -15066,7 +15087,7 @@ function SetWithdrawalPin2() {
           /* @__PURE__ */ jsx119("span", { className: "text-[15px] font-medium text-[#1A1A1A]", children: "Send to email" })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxs105(Form36, { method: "POST", className: "mt-6", children: [
+      /* @__PURE__ */ jsxs105(Form38, { method: "POST", className: "mt-6", children: [
         /* @__PURE__ */ jsx119("input", { type: "hidden", name: "intent", value: "request-token" }),
         /* @__PURE__ */ jsx119(
           "button",
@@ -15089,7 +15110,7 @@ __export(completeregistration_exports, {
   default: () => CompleteRegistration,
   loader: () => loader52
 });
-import { Form as Form37, Link as Link33, useActionData as useActionData16, useNavigate as useNavigate24, useNavigation as useNavigation28, useSearchParams as useSearchParams3 } from "@remix-run/react";
+import { Form as Form39, Link as Link33, useActionData as useActionData16, useNavigate as useNavigate24, useNavigation as useNavigation30, useSearchParams as useSearchParams3 } from "@remix-run/react";
 import { json as json49 } from "@remix-run/node";
 import { useEffect as useEffect35, useRef as useRef16, useState as useState48 } from "react";
 import { jsx as jsx120, jsxs as jsxs106 } from "react/jsx-runtime";
@@ -15189,10 +15210,10 @@ function useCompleteRegistrationController() {
   }, [actionData]), { user_id, email, prefilledToken, resendCountdown };
 }
 function CompleteRegistration() {
-  let { user_id, email, prefilledToken, resendCountdown } = useCompleteRegistrationController(), [searchQuery] = useSearchParams3(), isSubmitting = useNavigation28().state === "submitting", hasToken = Boolean(searchQuery.get("token"));
+  let { user_id, email, prefilledToken, resendCountdown } = useCompleteRegistrationController(), [searchQuery] = useSearchParams3(), isSubmitting = useNavigation30().state === "submitting", hasToken = Boolean(searchQuery.get("token"));
   return user_id ? /* @__PURE__ */ jsxs106("main", { className: "bg-secondary p-4 flex flex-col min-h-dvh", children: [
     /* @__PURE__ */ jsx120(Link33, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx120(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsx120("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs106(Form37, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+    /* @__PURE__ */ jsx120("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs106(Form39, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
       /* @__PURE__ */ jsx120("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx120("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx120("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
       /* @__PURE__ */ jsx120("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Complete your registration" }),
       /* @__PURE__ */ jsx120("hr", {}),
@@ -15377,7 +15398,7 @@ __export(user_givaah_credits_exports, {
   loader: () => loader55
 });
 import { json as json52 } from "@remix-run/node";
-import { Form as Form38, Link as Link35, useLoaderData as useLoaderData48, useNavigation as useNavigation29 } from "@remix-run/react";
+import { Form as Form40, Link as Link35, useLoaderData as useLoaderData48, useNavigation as useNavigation31 } from "@remix-run/react";
 import { jsx as jsx123, jsxs as jsxs109 } from "react/jsx-runtime";
 function formatValue(value) {
   return new Intl.NumberFormat("en-NG", {
@@ -15417,7 +15438,7 @@ async function loader55({ request }) {
   });
 }
 function GivaahCreditsPage() {
-  let { credits, query, error, validationError } = useLoaderData48(), isBusy = useNavigation29().state !== "idle", pageCredits = credits?.credits ?? [];
+  let { credits, query, error, validationError } = useLoaderData48(), isBusy = useNavigation31().state !== "idle", pageCredits = credits?.credits ?? [];
   return /* @__PURE__ */ jsx123("main", { className: "min-h-full bg-slate-50 p-4 sm:p-6 lg:p-8", children: /* @__PURE__ */ jsxs109("div", { className: "mx-auto flex w-full max-w-6xl flex-col gap-6", children: [
     /* @__PURE__ */ jsx123("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_16px_40px_rgba(15,23,42,0.06)] sm:p-8", children: /* @__PURE__ */ jsxs109("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between", children: [
       /* @__PURE__ */ jsxs109("div", { className: "max-w-2xl space-y-3", children: [
@@ -15437,7 +15458,7 @@ function GivaahCreditsPage() {
       ] })
     ] }) }),
     /* @__PURE__ */ jsxs109("section", { className: "rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
-      /* @__PURE__ */ jsxs109(Form38, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+      /* @__PURE__ */ jsxs109(Form40, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
         /* @__PURE__ */ jsxs109("label", { className: "grid gap-2", children: [
           /* @__PURE__ */ jsx123("span", { className: "text-sm font-semibold text-slate-700", children: "Phone" }),
           /* @__PURE__ */ jsx123(
@@ -15567,7 +15588,7 @@ __export(admin_accounts_add_exports, {
   loader: () => loader56,
   useAddAdminUser: () => useAddAdminUser
 });
-import { Form as Form39, useActionData as useActionData17, useLoaderData as useLoaderData49, useNavigate as useNavigate25, useNavigation as useNavigation30 } from "@remix-run/react";
+import { Form as Form41, useActionData as useActionData17, useLoaderData as useLoaderData49, useNavigate as useNavigate25, useNavigation as useNavigation32 } from "@remix-run/react";
 import { redirect as redirect43 } from "@remix-run/node";
 import { useEffect as useEffect37 } from "react";
 import { jsx as jsx124, jsxs as jsxs110 } from "react/jsx-runtime";
@@ -15593,7 +15614,7 @@ function useAddAdminUser() {
   let { permissions: permissions2, roles } = useLoaderData49(), rolesNames = [];
   for (let roleName in roles)
     rolesNames.push(roleName);
-  let isSubmitting = useNavigation30().state === "submitting", actionData = useActionData17();
+  let isSubmitting = useNavigation32().state === "submitting", actionData = useActionData17();
   return useEffect37(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
@@ -15613,7 +15634,7 @@ function AddAdminUser() {
       /* @__PURE__ */ jsx124(RoundCta_default, { icon: icons.arrowPrevIcon, className: "hover:bg-[#F7F7F8] text-primary", onClick: () => navigate(-1) }),
       /* @__PURE__ */ jsx124("h1", { className: "text-2xl font-black text-primary", children: "Add User" })
     ] }),
-    /* @__PURE__ */ jsxs110(Form39, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
+    /* @__PURE__ */ jsxs110(Form41, { className: "sm:wrapper grid sm:grid-cols-2 gap-3 sm:gap-6 text-sm", method: "post", children: [
       /* @__PURE__ */ jsx124(FormControl, { as: "input", labelText: "First Name", className: "", placeholder: "Enter first name", id: "firstName", name: "firstName", required: !0 }),
       /* @__PURE__ */ jsx124(FormControl, { as: "input", labelText: "Last Name", className: "", placeholder: "Enter last name", id: "lastName", name: "lastName", required: !0 }),
       /* @__PURE__ */ jsx124(FormControl, { as: "input", labelText: "Email Address", className: "", placeholder: "Enter email address", id: "email", name: "email", required: !0 }),
@@ -15651,11 +15672,11 @@ import { json as json53, redirect as redirect44 } from "@remix-run/node";
 import { useLoaderData as useLoaderData50, useNavigate as useNavigate26 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateContestForm.tsx
-import { Form as Form40, useSearchParams as useSearchParams4 } from "@remix-run/react";
+import { Form as Form42, useSearchParams as useSearchParams4 } from "@remix-run/react";
 import { jsx as jsx125, jsxs as jsxs111 } from "react/jsx-runtime";
 function CreateContestForm({ tournaments }) {
   let [searchParams] = useSearchParams4(), defaultTournament = searchParams.get("tournament") ?? void 0;
-  return /* @__PURE__ */ jsxs111(Form40, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
+  return /* @__PURE__ */ jsxs111(Form42, { className: "max-w-[700px] mx-auto my-8 grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
     /* @__PURE__ */ jsx125("h1", { className: "text-2xl font-bold text-primary", children: "Contest Details" }),
     /* @__PURE__ */ jsxs111("fieldset", { className: "grid gap-3 sm:gap-6 sm:grid-cols-2", children: [
       /* @__PURE__ */ jsxs111(Select2, { name: "tournament", id: "tournament", label: "Tournament", className: "uppercase", defaultValue: defaultTournament, required: !0, children: [
@@ -15723,7 +15744,7 @@ __export(partners_location_exports, {
   loader: () => loader58
 });
 import { json as json54, redirect as redirect45 } from "@remix-run/node";
-import { Form as Form41, useLoaderData as useLoaderData51, useNavigation as useNavigation31 } from "@remix-run/react";
+import { Form as Form43, useLoaderData as useLoaderData51, useNavigation as useNavigation33 } from "@remix-run/react";
 import { ArrowRight as ArrowRight2, Globe as Globe2, MapPin as MapPin2, Navigation2, Search as Search8 } from "lucide-react";
 import { jsx as jsx127, jsxs as jsxs113 } from "react/jsx-runtime";
 async function loader58({ request }) {
@@ -15766,14 +15787,14 @@ function Banner2({
   ] });
 }
 function SearchPanel2() {
-  let isBusy = useNavigation31().state !== "idle";
+  let isBusy = useNavigation33().state !== "idle";
   return /* @__PURE__ */ jsxs113("section", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
     /* @__PURE__ */ jsxs113("div", { className: "mb-4 flex items-center gap-2 text-slate-500", children: [
       /* @__PURE__ */ jsx127(Search8, { className: "h-4 w-4" }),
       /* @__PURE__ */ jsx127("h2", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Filter locations" })
     ] }),
     /* @__PURE__ */ jsxs113(
-      Form41,
+      Form43,
       {
         method: "get",
         className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end",
@@ -15875,7 +15896,7 @@ function EmptyState5() {
   ] });
 }
 function PartnerProducts() {
-  let { data, query } = useLoaderData51(), isBusy = useNavigation31().state !== "idle";
+  let { data, query } = useLoaderData51(), isBusy = useNavigation33().state !== "idle";
   return /* @__PURE__ */ jsxs113("main", { className: "w-full min-h-screen bg-tertiary p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsx127(Banner2, { data }),
     /* @__PURE__ */ jsx127("div", { className: "mt-6 flex justify-end", children: /* @__PURE__ */ jsxs113(
@@ -16559,7 +16580,7 @@ __export(partner_partner_exports, {
   loader: () => loader60
 });
 import { json as json55 } from "@remix-run/node";
-import { useActionData as useActionData19, Form as Form43, useNavigate as useNavigate28, useNavigation as useNavigation32, useSearchParams as useSearchParams5 } from "@remix-run/react";
+import { useActionData as useActionData19, Form as Form45, useNavigate as useNavigate28, useNavigation as useNavigation34, useSearchParams as useSearchParams5 } from "@remix-run/react";
 import { useState as useState52 } from "react";
 import { useEffect as useEffect40 } from "react";
 import { jsx as jsx131, jsxs as jsxs117 } from "react/jsx-runtime";
@@ -16615,7 +16636,7 @@ var Label2 = ({ children, required }) => /* @__PURE__ */ jsxs117("label", { clas
   required && /* @__PURE__ */ jsx131("span", { className: "text-red-500", children: "*" })
 ] }), inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-gray-400 bg-white";
 function usePartnerOnboardingController() {
-  let navigation = useNavigation32(), [searchParams] = useSearchParams5(), [section, setSection] = useState52(0), [form, setForm] = useState52({
+  let navigation = useNavigation34(), [searchParams] = useSearchParams5(), [section, setSection] = useState52(0), [form, setForm] = useState52({
     estimated_weekly_volume_currency: "USD",
     referral_percentage: 10,
     country_of_incorporation: "Nigeria",
@@ -16665,7 +16686,7 @@ function PartnerOnboarding() {
   ] }) }) : /* @__PURE__ */ jsx131("main", { className: "min-h-screen bg-white font-sans text-slate-900 pb-20", children: /* @__PURE__ */ jsxs117("div", { className: "max-w-3xl mx-auto px-2 sm:px-6 pt-8 sm:pt-12", children: [
     /* @__PURE__ */ jsx131(Stepper, { currentStep: section }),
     /* @__PURE__ */ jsx131("div", { className: "text-center mb-8 sm:mb-10", children: /* @__PURE__ */ jsx131("h1", { className: "text-2xl sm:text-4xl font-bold tracking-tight text-gray-900", children: section === 0 ? "Tell us about your business" : section === 1 ? "Enter your business's legal address" : "Enter contact info details" }) }),
-    /* @__PURE__ */ jsx131("div", { className: "w-full max-w-xl mx-auto", children: /* @__PURE__ */ jsxs117(Form43, { method: "post", className: "space-y-6", children: [
+    /* @__PURE__ */ jsx131("div", { className: "w-full max-w-xl mx-auto", children: /* @__PURE__ */ jsxs117(Form45, { method: "post", className: "space-y-6", children: [
       /* @__PURE__ */ jsxs117("div", { className: section === 0 ? "" : "hidden", children: [
         /* @__PURE__ */ jsxs117("div", { className: "bg-gray-50 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 border border-gray-100", children: [
           /* @__PURE__ */ jsx131("h3", { className: "text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 sm:mb-4", children: "Company information" }),
@@ -17236,11 +17257,11 @@ import { useActionData as useActionData21 } from "@remix-run/react";
 import { useEffect as useEffect42 } from "react";
 
 // app/components/public/landingpage/ContactForm.tsx
-import { Form as Form45, useNavigation as useNavigation33 } from "@remix-run/react";
+import { Form as Form47, useNavigation as useNavigation35 } from "@remix-run/react";
 import { jsx as jsx133, jsxs as jsxs119 } from "react/jsx-runtime";
 function ContactForm() {
-  let isSubmitting = useNavigation33().state === "submitting";
-  return /* @__PURE__ */ jsxs119(Form45, { method: "post", className: "wrapper flex flex-col gap-6", children: [
+  let isSubmitting = useNavigation35().state === "submitting";
+  return /* @__PURE__ */ jsxs119(Form47, { method: "post", className: "wrapper flex flex-col gap-6", children: [
     /* @__PURE__ */ jsxs119("div", { className: "grid gap-6 lg:grid-cols-2", children: [
       /* @__PURE__ */ jsx133(
         FormControl,
@@ -17710,7 +17731,7 @@ __export(forgotpassword_exports, {
   loader: () => loader63
 });
 import { json as json59 } from "@remix-run/node";
-import { Form as Form46, Link as Link39, useActionData as useActionData22, useLoaderData as useLoaderData57, useNavigation as useNavigation34 } from "@remix-run/react";
+import { Form as Form48, Link as Link39, useActionData as useActionData22, useLoaderData as useLoaderData57, useNavigation as useNavigation36 } from "@remix-run/react";
 import { useEffect as useEffect43, useMemo as useMemo13, useState as useState54 } from "react";
 import { jsx as jsx143, jsxs as jsxs127 } from "react/jsx-runtime";
 async function loader63({ request }) {
@@ -17735,7 +17756,7 @@ async function action36({ request }) {
   });
 }
 function ForgotPassword() {
-  let { baseUrl, resetPath } = useLoaderData57(), actionData = useActionData22(), navigation = useNavigation34(), { toast: pushToast } = useToast(), [email, setEmail] = useState54(""), [message, setMessage] = useState54(""), redirectLink = useMemo13(() => `${baseUrl.replace(/\/$/, "")}${resetPath}`, [baseUrl, resetPath]), isValidEmail = /\S+@\S+\.\S+/.test(email.trim()), isSubmitting = navigation.state !== "idle";
+  let { baseUrl, resetPath } = useLoaderData57(), actionData = useActionData22(), navigation = useNavigation36(), { toast: pushToast } = useToast(), [email, setEmail] = useState54(""), [message, setMessage] = useState54(""), redirectLink = useMemo13(() => `${baseUrl.replace(/\/$/, "")}${resetPath}`, [baseUrl, resetPath]), isValidEmail = /\S+@\S+\.\S+/.test(email.trim()), isSubmitting = navigation.state !== "idle";
   return useEffect43(() => {
     actionData?.error && pushToast({
       variant: "destructive",
@@ -17750,7 +17771,7 @@ function ForgotPassword() {
       /* @__PURE__ */ jsx143("h1", { className: "text-2xl font-satoshi-bold", children: "Forgot password" }),
       /* @__PURE__ */ jsx143(Link39, { to: "/login", className: "text-sm font-medium text-primary underline", children: "Back to login" })
     ] }),
-    /* @__PURE__ */ jsxs127(Form46, { method: "post", className: "mt-6 flex flex-col gap-4", children: [
+    /* @__PURE__ */ jsxs127(Form48, { method: "post", className: "mt-6 flex flex-col gap-4", children: [
       /* @__PURE__ */ jsx143("input", { type: "hidden", name: "redirect_link", value: redirectLink }),
       /* @__PURE__ */ jsx143(
         FormControl,
@@ -17788,7 +17809,7 @@ __export(user_affiliate_exports, {
   loader: () => loader64
 });
 import { json as json60, redirect as redirect48 } from "@remix-run/node";
-import { Form as Form47, useLoaderData as useLoaderData58, useNavigation as useNavigation35 } from "@remix-run/react";
+import { Form as Form49, useLoaderData as useLoaderData58, useNavigation as useNavigation37 } from "@remix-run/react";
 import { useState as useState55 } from "react";
 import { Building2 as Building22, Coins, Search as Search9, Trophy as Trophy3, Users as Users2 } from "lucide-react";
 import { jsx as jsx144, jsxs as jsxs128 } from "react/jsx-runtime";
@@ -17908,14 +17929,14 @@ function HeroBanner({
   ] });
 }
 function SearchForm({ query }) {
-  let [localError, setLocalError] = useState55(null), isBusy = useNavigation35().state !== "idle";
+  let [localError, setLocalError] = useState55(null), isBusy = useNavigation37().state !== "idle";
   return /* @__PURE__ */ jsxs128("div", { children: [
     /* @__PURE__ */ jsxs128("div", { className: "mb-4 flex items-center gap-2 text-slate-500", children: [
       /* @__PURE__ */ jsx144(Search9, { className: "h-4 w-4" }),
       /* @__PURE__ */ jsx144("h2", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Filter results" })
     ] }),
     /* @__PURE__ */ jsxs128(
-      Form47,
+      Form49,
       {
         method: "get",
         onSubmit: (e) => {
@@ -18074,7 +18095,7 @@ function EmptyState6() {
   ] });
 }
 function AffiliateDashboard() {
-  let { leaderboard, query, error } = useLoaderData58(), isBusy = useNavigation35().state !== "idle", hasItems = leaderboard.items.length > 0;
+  let { leaderboard, query, error } = useLoaderData58(), isBusy = useNavigation37().state !== "idle", hasItems = leaderboard.items.length > 0;
   return /* @__PURE__ */ jsxs128("main", { className: "w-full min-h-screen bg-tertiary p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsx144(HeroBanner, { leaderboard, query }),
     /* @__PURE__ */ jsx144("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsx144(SearchForm, { query }) }),
@@ -18733,7 +18754,7 @@ __export(partners_home_exports, {
   loader: () => loader65
 });
 import { json as json61, redirect as redirect49 } from "@remix-run/node";
-import { Form as Form48, useLoaderData as useLoaderData59, useNavigation as useNavigation36 } from "@remix-run/react";
+import { Form as Form50, useLoaderData as useLoaderData59, useNavigation as useNavigation38 } from "@remix-run/react";
 import { ArrowRight as ArrowRight3, Package as Package2, Search as Search10, Tag, Store as Store2 } from "lucide-react";
 import { jsx as jsx146, jsxs as jsxs130 } from "react/jsx-runtime";
 async function loader65({ request }) {
@@ -18780,14 +18801,14 @@ function Banner3({
   ] });
 }
 function SearchPanel3() {
-  let isBusy = useNavigation36().state !== "idle";
+  let isBusy = useNavigation38().state !== "idle";
   return /* @__PURE__ */ jsxs130("section", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: [
     /* @__PURE__ */ jsxs130("div", { className: "mb-4 flex items-center gap-2 text-slate-500", children: [
       /* @__PURE__ */ jsx146(Search10, { className: "h-4 w-4" }),
       /* @__PURE__ */ jsx146("h2", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Filter products" })
     ] }),
     /* @__PURE__ */ jsxs130(
-      Form48,
+      Form50,
       {
         method: "get",
         className: "grid gap-4 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end",
@@ -18910,7 +18931,7 @@ function EmptyState7() {
   ] });
 }
 function PartnerProducts2() {
-  let { data, query } = useLoaderData59(), isBusy = useNavigation36().state !== "idle";
+  let { data, query } = useLoaderData59(), isBusy = useNavigation38().state !== "idle";
   return /* @__PURE__ */ jsxs130("main", { className: "w-full min-h-screen bg-tertiary p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsx146(Banner3, { data }),
     /* @__PURE__ */ jsx146("div", { className: "mt-6 flex justify-end", children: /* @__PURE__ */ jsxs130(
@@ -18965,7 +18986,7 @@ __export(resetpassword_exports, {
   loader: () => loader66
 });
 import { json as json62 } from "@remix-run/node";
-import { Link as Link40, useActionData as useActionData23, useLoaderData as useLoaderData60, useNavigate as useNavigate29, useNavigation as useNavigation37 } from "@remix-run/react";
+import { Link as Link40, useActionData as useActionData23, useLoaderData as useLoaderData60, useNavigate as useNavigate29, useNavigation as useNavigation39 } from "@remix-run/react";
 import { useEffect as useEffect44, useMemo as useMemo14, useState as useState56 } from "react";
 import { jsx as jsx147, jsxs as jsxs131 } from "react/jsx-runtime";
 async function loader66({ request }) {
@@ -18992,7 +19013,7 @@ async function action37({ request }) {
   });
 }
 function ResetPassword() {
-  let { email, token } = useLoaderData60(), actionData = useActionData23(), navigation = useNavigation37(), navigate = useNavigate29(), { toast: pushToast } = useToast(), [password, setPassword] = useState56(""), [confirmPassword, setConfirmPassword] = useState56(""), [redirecting, setRedirecting] = useState56(!1), decodedEmail = useMemo14(() => {
+  let { email, token } = useLoaderData60(), actionData = useActionData23(), navigation = useNavigation39(), navigate = useNavigate29(), { toast: pushToast } = useToast(), [password, setPassword] = useState56(""), [confirmPassword, setConfirmPassword] = useState56(""), [redirecting, setRedirecting] = useState56(!1), decodedEmail = useMemo14(() => {
     try {
       return decodeURIComponent(email);
     } catch {
@@ -19099,11 +19120,11 @@ import {
   redirect as redirect51
 } from "@remix-run/node";
 import {
-  Form as Form49,
+  Form as Form51,
   useActionData as useActionData24,
   useLoaderData as useLoaderData61,
   useNavigate as useNavigate30,
-  useNavigation as useNavigation38
+  useNavigation as useNavigation40
 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft5, ArrowRight as ArrowRight4, Package as Package3, Sparkles, Upload } from "lucide-react";
 import { useEffect as useEffect45, useState as useState57 } from "react";
@@ -19173,7 +19194,7 @@ function SectionHeading({
   ] });
 }
 function AddPartnerProduct() {
-  let { locations } = useLoaderData61(), actionData = useActionData24(), isSubmitting = useNavigation38().state === "submitting", navigate = useNavigate30(), [tags, setTags] = useState57("");
+  let { locations } = useLoaderData61(), actionData = useActionData24(), isSubmitting = useNavigation40().state === "submitting", navigate = useNavigate30(), [tags, setTags] = useState57("");
   return useEffect45(() => {
     actionData?.error && toast({
       variant: "destructive",
@@ -19203,7 +19224,7 @@ function AddPartnerProduct() {
       ),
       /* @__PURE__ */ jsx148("span", { className: "hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 shadow-sm sm:inline-flex", children: "Ready to publish" })
     ] }),
-    /* @__PURE__ */ jsx148("section", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxs132(Form49, { method: "post", encType: "multipart/form-data", className: "grid gap-8", children: [
+    /* @__PURE__ */ jsx148("section", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6", children: /* @__PURE__ */ jsxs132(Form51, { method: "post", encType: "multipart/form-data", className: "grid gap-8", children: [
       /* @__PURE__ */ jsx148(
         SectionHeading,
         {
@@ -19408,7 +19429,7 @@ __export(user_profile_exports, {
   default: () => UserProfilePage,
   loader: () => loader69
 });
-import { Form as Form50, useLoaderData as useLoaderData62, useActionData as useActionData25, useNavigate as useNavigate31 } from "@remix-run/react";
+import { Form as Form52, useLoaderData as useLoaderData62, useActionData as useActionData25, useNavigate as useNavigate31 } from "@remix-run/react";
 import { json as json64, redirect as redirect52 } from "@remix-run/node";
 import { useEffect as useEffect46, useRef as useRef18, useState as useState58 } from "react";
 import { Fragment as Fragment16, jsx as jsx149, jsxs as jsxs133 } from "react/jsx-runtime";
@@ -19499,7 +19520,7 @@ function UserProfilePage() {
         /* @__PURE__ */ jsx149("h2", { className: "mt-2 text-2xl font-black tracking-tight text-brand-navy", children: "Edit profile" }),
         /* @__PURE__ */ jsx149("p", { className: "mt-2 max-w-2xl text-sm leading-6 text-brand-slate" })
       ] }),
-      /* @__PURE__ */ jsx149("div", { className: "px-6 py-6 sm:px-8 sm:py-8", children: isLoading ? /* @__PURE__ */ jsx149(ProfileSkeleton, {}) : /* @__PURE__ */ jsxs133(Form50, { method: "POST", encType: "multipart/form-data", className: "grid gap-6", children: [
+      /* @__PURE__ */ jsx149("div", { className: "px-6 py-6 sm:px-8 sm:py-8", children: isLoading ? /* @__PURE__ */ jsx149(ProfileSkeleton, {}) : /* @__PURE__ */ jsxs133(Form52, { method: "POST", encType: "multipart/form-data", className: "grid gap-6", children: [
         /* @__PURE__ */ jsxs133("div", { className: "grid gap-4 sm:grid-cols-2", children: [
           /* @__PURE__ */ jsx149(FormControl, { as: "input", id: "first_name", name: "first_name", labelText: "First Name", defaultValue: profile?.first_name, icon: icons.avatarIcon, required: !0 }),
           /* @__PURE__ */ jsx149(FormControl, { as: "input", id: "last_name", name: "last_name", labelText: "Last Name", defaultValue: profile?.last_name, icon: icons.avatarIcon, required: !0 })
@@ -20142,7 +20163,7 @@ __export(user_orders_exports, {
   loader: () => loader70
 });
 import { json as json65 } from "@remix-run/node";
-import { Form as Form51, Link as Link41, useFetcher as useFetcher20, useLoaderData as useLoaderData63, useNavigation as useNavigation39, useRevalidator as useRevalidator3 } from "@remix-run/react";
+import { Form as Form53, Link as Link41, useFetcher as useFetcher20, useLoaderData as useLoaderData63, useNavigation as useNavigation41, useRevalidator as useRevalidator3 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft6, PackageSearch as PackageSearch5, ShoppingBag as ShoppingBag4, Star } from "lucide-react";
 import { useEffect as useEffect47, useRef as useRef19, useState as useState59 } from "react";
 import { jsx as jsx151, jsxs as jsxs135 } from "react/jsx-runtime";
@@ -20650,7 +20671,7 @@ async function action40({ request }) {
   });
 }
 function MarketplaceOrders2() {
-  let { orders, query, error } = useLoaderData63(), isLoading = useNavigation39().state === "loading", hasOrders = orders.items.length > 0;
+  let { orders, query, error } = useLoaderData63(), isLoading = useNavigation41().state === "loading", hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxs135("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs135("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs135("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -20689,7 +20710,7 @@ function MarketplaceOrders2() {
       ] }),
       error ? /* @__PURE__ */ jsx151("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
     ] }),
-    /* @__PURE__ */ jsx151("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs135(Form51, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
+    /* @__PURE__ */ jsx151("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs135(Form53, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
       /* @__PURE__ */ jsxs135("label", { className: "grid gap-2", children: [
         /* @__PURE__ */ jsx151("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
         /* @__PURE__ */ jsx151(
@@ -21637,7 +21658,7 @@ __export(signup_exports, {
   default: () => Signup,
   loader: () => loader73
 });
-import { Form as Form53, Link as Link50, useActionData as useActionData27, useSearchParams as useSearchParams6 } from "@remix-run/react";
+import { Form as Form55, Link as Link50, useActionData as useActionData27, useSearchParams as useSearchParams6 } from "@remix-run/react";
 import { json as json67, redirect as redirect55 } from "@remix-run/node";
 import { useEffect as useEffect55 } from "react";
 import { jsx as jsx164, jsxs as jsxs148 } from "react/jsx-runtime";
@@ -21671,7 +21692,7 @@ function Signup() {
   let { actionData } = useSignupController(), [searchQuery] = useSearchParams6(), referredByCode = searchQuery.get("referred_by_code") ?? "";
   return /* @__PURE__ */ jsxs148("main", { className: "bg-secondary p-4 flex flex-col", children: [
     /* @__PURE__ */ jsx164(Link50, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx164(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsx164("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs148(Form53, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+    /* @__PURE__ */ jsx164("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs148(Form55, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
       /* @__PURE__ */ jsx164("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx164("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx164("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
       /* @__PURE__ */ jsx164("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
       /* @__PURE__ */ jsx164("hr", {}),
@@ -22135,7 +22156,7 @@ __export(login_exports, {
   default: () => Login,
   loader: () => loader74
 });
-import { Form as Form54, Link as Link54, useActionData as useActionData28, useNavigate as useNavigate36, useSearchParams as useSearchParams7 } from "@remix-run/react";
+import { Form as Form56, Link as Link54, useActionData as useActionData28, useNavigate as useNavigate36, useSearchParams as useSearchParams7 } from "@remix-run/react";
 import { json as json68 } from "@remix-run/node";
 import { useEffect as useEffect60 } from "react";
 import { jsx as jsx171, jsxs as jsxs155 } from "react/jsx-runtime";
@@ -22178,7 +22199,7 @@ function Login() {
   let { actionData } = useLoginController();
   return /* @__PURE__ */ jsxs155("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
     /* @__PURE__ */ jsx171(Link54, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx171(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsx171("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs155(Form54, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+    /* @__PURE__ */ jsx171("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs155(Form56, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
       /* @__PURE__ */ jsx171("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx171("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx171("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
       /* @__PURE__ */ jsx171("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
       /* @__PURE__ */ jsx171("hr", {}),
@@ -22593,7 +22614,7 @@ function ErrorBoundary4() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-E353V6VB.js", imports: ["/build/_shared/chunk-OKVQMUDQ.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-Q3P5XV5L.js", imports: ["/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-MDCS7PR5.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-VNDYVQFO.js", imports: ["/build/_shared/chunk-XF7UPJ32.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-XGKLRE2A.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-QPPM4P2E.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-MHRBFMZQ.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-A5L6FHFL.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-K3DCLZRI.js", imports: ["/build/_shared/chunk-QPPM4P2E.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-MHRBFMZQ.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-BYE2BEVV.js", imports: ["/build/_shared/chunk-MHRBFMZQ.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-5344J2JI.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-3R7KRDUZ.js", imports: ["/build/_shared/chunk-ADN6HTSG.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-HX6KRQTN.js", imports: ["/build/_shared/chunk-ADN6HTSG.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-LA26TZAA.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-RFN4CM2K.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-CGMEAXBS.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-7GVH4C3H.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-ZXG3ORRA.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-DGZA66HN.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-4HPN5PNA.js", imports: ["/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-ADN6HTSG.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-M4EH6QVW.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-5QFFGOP6.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-F4A5WRUV.js", imports: ["/build/_shared/chunk-XF7UPJ32.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-B7NDLFNN.js", imports: ["/build/_shared/chunk-ZBJHZCK6.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-YW5L2BSW.js", imports: ["/build/_shared/chunk-LYMRS6VZ.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-MCTAAOPM.js", imports: ["/build/_shared/chunk-ZBJHZCK6.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-JUPRY5AV.js", imports: ["/build/_shared/chunk-LYMRS6VZ.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-NVZULHGI.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-PG4HXD5D.js", imports: ["/build/_shared/chunk-RO4XMB4K.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-KSI6CLPN.js", imports: ["/build/_shared/chunk-FFFD5SDM.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-LQPJFT6S.js", imports: ["/build/_shared/chunk-RO4XMB4K.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-VQ5GZZHL.js", imports: ["/build/_shared/chunk-LYMRS6VZ.js", "/build/_shared/chunk-RZDPHSEU.js", "/build/_shared/chunk-FFFD5SDM.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-AFXE7I4U.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-D2M2BCWZ.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-SMTWH4P6.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-JZFIA3KC.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-CQCCIVZ3.js", imports: ["/build/_shared/chunk-FFFD5SDM.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-EC2JIWSE.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-HA2PD56E.js", imports: ["/build/_shared/chunk-RZDPHSEU.js", "/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-Q57UTLCK.js", imports: ["/build/_shared/chunk-MTVLEKRS.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-6X7TAG4U.js", imports: ["/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-ZY2JAMMB.js", imports: ["/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-ZB4CJRY6.js", imports: ["/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-EKC3MJXP.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-PDCGXMQA.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-WAHATBUH.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-YGZUSLQC.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-TOUVSC45.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-EJV2ZPZE.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-DKBJWPIT.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-EEHJP7GQ.js", imports: ["/build/_shared/chunk-XF7UPJ32.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-GPHVDWVY.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-LCLRXRGH.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-P6KMCCNR.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-IKM4WIIR.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-KWUOEDJD.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-PESXRZWS.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-PX4BSMQH.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-ZCSJJBCX.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-XPVOEADZ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-C5SJRAHE.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-IOXAFMJU.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-4CJ2JN6M.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-EHIBZODZ.js", imports: ["/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-KGA4RHYE.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-ZFOFEU23.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-ZVJZTDOH.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-EBS3BR4S.js", imports: ["/build/_shared/chunk-XF7UPJ32.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-VA4DINZD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-2C4O3UIV.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-O5N7PHIG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-DWYUYO2I.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-7PALKG6W.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-VRIDSK2E.js", imports: ["/build/_shared/chunk-ADN6HTSG.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-JXAYMXDD.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-22YWCRYF.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-MQ4TLMK7.js", "/build/_shared/chunk-HOAH7SO7.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-SHS52Z5H.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-IWGPI7MV.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-NCOO3QEX.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-5FFHLCAM.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-YNI2EDD2.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-YYVVIC5O.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-R67TM2E2.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-HWGJ4G5A.js", "/build/_shared/chunk-YZB5VQR4.js", "/build/_shared/chunk-IGYEUDTY.js", "/build/_shared/chunk-43TBY4OR.js", "/build/_shared/chunk-AO6OHMLU.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-XXIEMRMB.js", imports: ["/build/_shared/chunk-I3SJRPAO.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-QL3S5LRE.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-Z47ERH47.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "194f2f9f", hmr: void 0, url: "/build/manifest-194F2F9F.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-ETP7RXPD.js", imports: ["/build/_shared/chunk-ZBBV32P5.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-5G2ZGM4V.js", imports: ["/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-AIDXMK3I.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-ZLRPXESB.js", imports: ["/build/_shared/chunk-LKEMHYCM.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-DLGBS6ND.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-46V36ING.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-6TC6N72G.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-7AYTMS2W.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-RBXC7LWK.js", imports: ["/build/_shared/chunk-46V36ING.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-6TC6N72G.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-XTIFRXJZ.js", imports: ["/build/_shared/chunk-6TC6N72G.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-QTI3A6DY.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-QDQL4TH7.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-RN643W56.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-FJTSDS5D.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-277JEMMS.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-C733DNSN.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-BAW4TBQM.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-3PQZ6KSA.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-A3X5GDPW.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-F6O5QJN5.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-BG4JRLKU.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-OXIU3FUD.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-LHQMTH6I.js", imports: ["/build/_shared/chunk-LKEMHYCM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-X5IBFX7V.js", imports: ["/build/_shared/chunk-U7FFF5OY.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-ZDSLZ5PH.js", imports: ["/build/_shared/chunk-DUV7HLKN.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-MJDC2QXW.js", imports: ["/build/_shared/chunk-U7FFF5OY.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-OEJKVFK5.js", imports: ["/build/_shared/chunk-DUV7HLKN.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-JIVQJXSR.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-D2ZITQS2.js", imports: ["/build/_shared/chunk-RO4XMB4K.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-2AEJZT2R.js", imports: ["/build/_shared/chunk-MYY45SFR.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-5SL3HLAF.js", imports: ["/build/_shared/chunk-RO4XMB4K.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-GAH6D5DX.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-OQ3B7K4L.js", imports: ["/build/_shared/chunk-DUV7HLKN.js", "/build/_shared/chunk-MEGC44KO.js", "/build/_shared/chunk-MYY45SFR.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-Y7GW5DXX.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-PVQUMF7S.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-PPKTW5PB.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-IX6MMHLI.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-M4DGG3OM.js", imports: ["/build/_shared/chunk-MYY45SFR.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-LYW2WNLI.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-VFIBTQ7Q.js", imports: ["/build/_shared/chunk-MEGC44KO.js", "/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-SWKQKNOY.js", imports: ["/build/_shared/chunk-CIQYA5YI.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-74BH6CBM.js", imports: ["/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-4WUHB6RL.js", imports: ["/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-AE53M4NI.js", imports: ["/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-CC4FQ2SJ.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-IAJY2AN7.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-U4B5DIG6.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-3QQ56DOD.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-BKZJBDZH.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-HKSTCLSE.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PBCS3GQ5.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-X4C3UZYV.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-LO6BQNS4.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-63VTSWNA.js", imports: ["/build/_shared/chunk-LKEMHYCM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-LJBZA3TB.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-ZJZCA6OY.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-7VX3STWA.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-ULLOBBDS.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-BGHGHGQ3.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-EZSEJ7YC.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-RZSTKPFF.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-USE5ULAJ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-VC7KU75F.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-E3LSSEQV.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-6NFYW3LE.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-6X4WLBWH.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-QZULAAEI.js", imports: ["/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-BCUGJDD6.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-B67VW46G.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-YQJKVOJI.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-RIYPL7CP.js", imports: ["/build/_shared/chunk-LKEMHYCM.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-E6BUVUKP.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PBCS3GQ5.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-GBIX2KJC.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-D5P27DHG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-R7VO5WJK.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-ORYKTJMX.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-TGNQP3CC.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-XUW3JMQG.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-SHGVDM7F.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-VENZ5VQL.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-US4N3FF6.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-ZKF76H6J.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-AFWUCOC4.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-V3YWBGTL.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-X5SWIIKP.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-NMHPLUBK.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-HROF6SJ5.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-SGHKHH5Y.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-EQOSR4CK.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-ZUVDTR5I.js", imports: ["/build/_shared/chunk-SU3RA6LL.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-OVCMAC3I.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "1c65ba5b", hmr: void 0, url: "/build/manifest-1C65BA5B.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {

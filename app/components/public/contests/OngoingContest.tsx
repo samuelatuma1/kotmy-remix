@@ -1,20 +1,34 @@
-import { Link } from 'react-router-dom'
-import { useSearchParams } from '@remix-run/react'
+import { Link, Form, useNavigation, useSearchParams } from '@remix-run/react'
 
 import FormControl from '~/components/reusables/FormControl'
 import StatusTag from '~/components/reusables/StatusTag'
+import Pagination from '~/components/reusables/Pagination'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/reusables/select-shad'
 import ContestantCard from './ContestantCard'
 import ContestTimer from './ContestTimer'
 import { noImage } from '~/assets/images'
-import { IContestWStage, IStageWContestant } from '~/services/contest/types/contest.interface'
+import { IContestWStage } from '~/services/contest/types/contest.interface'
+import { PagedContestantsStageResponse } from '~/services/contestant/types/contestant.interface'
 
-export default function OngoingContest({ contest, stage }: { contest: IContestWStage, stage: IStageWContestant | null }) {
+export default function OngoingContest({ contest, stage }: { contest: IContestWStage, stage: PagedContestantsStageResponse | null }) {
     const [searchParams, setUrlSearchParams] = useSearchParams()
+    const navigation = useNavigation()
+    const isSearching = navigation.state !== 'idle'
     const status = contest.status
     const color = status === 'ongoing'
         ? 'green' : status === 'completed'
             ? 'red' : 'gray'
+
+    const handleStageChange = (val: string) => {
+        setUrlSearchParams(prev => {
+            prev.set('stage', val)
+            prev.delete('wild_card')
+            prev.delete('last_key_id')
+            prev.delete('first_key_id')
+            prev.delete('direction')
+            return prev
+        })
+    }
 
     return (
         <>
@@ -48,8 +62,15 @@ export default function OngoingContest({ contest, stage }: { contest: IContestWS
                 <h2 className="text-accent text-lg lg:text-2xl font-satoshi-bold mb-3 sm:mb-6 uppercase">{contest.name} contestants</h2>
                 <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-6 sm:gap-8">
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <FormControl as='input' type='search' className='min-w-[280px] bg-white py-2 text-sm' placeholder='Search contestant by name' />
-                        <Select value={String(stage?.stage)} onValueChange={(val) => setUrlSearchParams(prev => { prev.set('stage', val); return prev })}>
+                        <Form method="get" className="flex flex-col sm:flex-row gap-4">
+                            <input type="hidden" name="stage" value={String(stage?.stage ?? 1)} />
+                            <input type="hidden" name="page_size" value={searchParams.get('page_size') ?? ''} />
+                            <FormControl as='input' type='search' name='wild_card' defaultValue={searchParams.get('wild_card') ?? ''} className='min-w-[280px] bg-white py-2 text-sm' placeholder='Search contestant by name' />
+                            <button type="submit" disabled={isSearching} className="rounded-lg bg-brand-pink px-6 py-2 text-sm font-bold text-white transition hover:bg-brand-pink/90 disabled:opacity-60 disabled:cursor-not-allowed">
+                                {isSearching ? 'Searching...' : 'Search'}
+                            </button>
+                        </Form>
+                        <Select value={String(stage?.stage)} onValueChange={handleStageChange}>
                             <SelectTrigger className="sm:w-[180px] h-auto rounded-lg shadow-none bg-white hover:border-accent">
                                 <SelectValue placeholder={"Stage 1"} />
                             </SelectTrigger>
@@ -63,13 +84,11 @@ export default function OngoingContest({ contest, stage }: { contest: IContestWS
                     <Link to={`scoreboard?${searchParams.toString()}`} className="w-fit text-accent font-bold hover:underline underline-offset-4">See scoreboard</Link>
                 </div>
                 <div className="my-16 grid sm:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-16">
-                    {stage?.contestants.map((contestant) => (
-                        <ContestantCard key={contestant.code} contestant={contestant} socialMedia={stage.rates.social_media.type} />
+                    {stage?.items.map((contestant) => (
+                        <ContestantCard key={contestant._id} contestant={contestant} socialMedia={stage.rates.social_media.type} />
                     ))}
                 </div>
-                {/* <div className="wrapper my-20 flex justify-center">
-                    <Button element="button" variant="outline">See more contestants</Button>
-                </div> */}
+                <Pagination lastKey={stage?.last_key_id} firstKey={stage?.first_key_id} pageSize={stage?.items_per_page} />
             </section>
         </>
     )
