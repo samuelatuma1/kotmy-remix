@@ -46,8 +46,7 @@ function Banner({
             Keep every branch easy to find
           </h1>
           <p className="max-w-xl text-sm leading-6 text-white/70 sm:text-base">
-            Review your locations, open directions instantly, and move through
-            each branch without clutter.
+            Review your locations.
           </p>
           <div className="flex flex-wrap gap-3">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold text-white/90 backdrop-blur">
