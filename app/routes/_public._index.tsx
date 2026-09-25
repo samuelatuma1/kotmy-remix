@@ -232,16 +232,46 @@ export default function LandingPage() {
                             </p>
                             <p>
                                 <span className='block font-satoshi-black mb-3'>Email Us</span>
-                                <span className='font-satoshi-medium'>kidmonthyear@gmail.com</span>
+                                <span className='font-satoshi-medium'>hello@kidmonth.com</span>
                             </p>
                         </div>
                         <div>
                             <span className='block font-satoshi-black mb-3'>Follow Us</span>
                             <span className='flex gap-4'>
-                                <Svg src={icons.twitterXIcon} width={'24px'} height={'24px'} />
-                                <Svg src={icons.instagramIcon} width={'24px'} height={'24px'} />
-                                <Svg src={icons.facebookIcon} width={'24px'} height={'24px'} />
-                                <Svg src={icons.youtubeIcon} width={'24px'} height={'24px'} />
+                                <a
+                                    href="https://x.com/kidmonth"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Visit us on X"
+                                >
+                                    <Svg src={icons.twitterXIcon} width={'24px'} height={'24px'} />
+                                </a>
+                                <a
+                                    href="https://www.instagram.com/kidmonth"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Visit us on Instagram"
+                                >
+                                    <Svg src={icons.instagramIcon} width={'24px'} height={'24px'} />
+                                </a>
+
+                                <a
+                                    href="https://www.facebook.com/kidmonth"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Visit us on Facebook"
+                                >
+                                    <Svg src={icons.facebookIcon} width={'24px'} height={'24px'} />
+                                </a>
+                                
+                                <a
+                                    href="https://www.youtube.com/@kidmonth"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Visit us on Youtube"
+                                >
+                                    <Svg src={icons.youtubeIcon} width={'24px'} height={'24px'} />
+                                </a>
                             </span>
                         </div>
                     </div>
