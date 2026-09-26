@@ -101,6 +101,7 @@ export default function LandingPage() {
                     <div className='flex gap-4 flex-wrap'>
                         <Button element='a' href={'/signup'} className='w-full sm:w-auto'>Register Free</Button>
                         <Button element='a' href='/contests' className='w-full sm:w-auto' variant='outline'>Explore Competitions</Button>
+                        <Button element='a' href='/vtuservices' className='w-full sm:w-auto' variant='outline'>Airtime and Data</Button>
                     </div>
                 </div>
                 <div className='grid grid-cols-3 gap-8 xl:gap-9 w-full'>

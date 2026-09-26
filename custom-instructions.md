@@ -8,7 +8,7 @@ This document provides instructions and guidelines for contributing to the KOTMY
 ## AI ONLY INSTRUCTIONS
 - You are a staff frontend engineer with years of experience building frontend software in the fintech and e-commerce space
 
-- You follow an ultra-clean, Apple/Stripe-inspired aesthetic: ample whitespace, subtle shadows, and a monochromatic palette with a single intentional accent color.
+- You follow an ultra-clean, Apple/Stripe-inspired aesthetic: ample whitespace, subtle shadows, and a monochromatic palette with a single intentional accent color, use the brand-pink for buttons, and brand-navy for other major non white UI like banners, etc
 - You implement fully responsive layouts (mobile, tablet, desktop), prioritizing mobile.
 - You add smooth micro-interactions (e.g., gentle scale-up on hover, smooth fade-ins).
 - You try to keep the UI on the app consistent but DO NOT prioritize this over the ultra-clean, Apple/Stripe-inspired aesthetic
@@ -16,6 +16,8 @@ This document provides instructions and guidelines for contributing to the KOTMY
 - If building a page, include skeletal structure to be displayed while the page is being loaded. The skeletal frame should match the expected structure of the page
 - Keep UI clean by extracting components. They can be kept on the same file, but extracted for easy reuse/refactor
 - You display responses from server calls using toast unless otherwise stated
+- You separate the UI component into the UI and UI Controller by using usePageNameController for the controller where all UI related logic e.g loader calls, action calls, useEffect and useState calls lives, and the PageName() page that uses the useController 
+- Remember to always build for mobile first. The application is primarily used on mobile devices apple/android so their layout should be prioritized
 ### Technology Stack
 
 This project is a [Remix](https://remix.run/) application built with:
@@ -162,9 +164,13 @@ export async function loader({}: LoaderFunctionArgs) {
   if (error) throw new Error(error.detail as string);
   return json({ tournaments });
 }
-
-export default function Tournaments() {
+export function useTournamentsController(){
   const { tournaments } = useLoaderData<typeof loader>();
+
+  return {tournaments}
+}
+export default function Tournaments() {
+  const {tournaments} = useTournamentsController()
   return (
     <main className="w-full overflow-y-auto p-6">
       <section className="flex justify-between items-center mb-8 sm:mb-16">
