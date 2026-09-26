@@ -228,7 +228,7 @@ export default function LandingPage() {
                         <div className="flex flex-col lg:flex-row gap-6">
                             <p>
                                 <span className='block font-satoshi-black mb-3'>Phone Us</span>
-                                <span className='font-satoshi-medium whitespace-nowrap'>+234 703 515 9093</span>
+                                <span className='font-satoshi-medium whitespace-nowrap'>+234 813 583 7259</span>
                             </p>
                             <p>
                                 <span className='block font-satoshi-black mb-3'>Email Us</span>

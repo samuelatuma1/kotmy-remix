@@ -223,10 +223,10 @@ export default function MarketplaceCart() {
                 Cart
               </div>
               <h1 className="text-4xl font-black leading-tight text-slate-950 sm:text-5xl">
-                Review items and adjust quantities before checkout.
+                Manage your cart
               </h1>
               <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-                This cart stays guest-friendly and can be updated from the marketplace or directly here.
+                Use this menu to manage your cart
               </p>
             </div>
           </div>
