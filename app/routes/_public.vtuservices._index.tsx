@@ -1,4 +1,6 @@
 import { useNavigation } from "@remix-run/react";
+import Svg from "~/components/reusables/Svg";
+import { icons } from "~/assets/icons";
 
 type VtuService = {
   name: "Airtime" | "Data";
@@ -28,42 +30,15 @@ export function useVtuServicesController() {
   };
 }
 
-function AirtimeIcon() {
-  return (
-    <svg
-      aria-label="Airtime"
-      className="h-12 w-12"
-      fill="none"
-      role="img"
-      viewBox="0 0 48 48"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect fill="currentColor" height="30" rx="5" width="20" x="14" y="9" />
-      <path d="M20 14h8M21 34h6" stroke="white" strokeLinecap="round" strokeWidth="2" />
-      <circle cx="24" cy="28" fill="white" r="2" />
-      <path d="M11 17.5a17 17 0 0 0 0 13M37 17.5a17 17 0 0 1 0 13" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
-    </svg>
-  );
-}
-
-function DataIcon() {
-  return (
-    <svg
-      aria-label="Data"
-      className="h-12 w-12"
-      fill="none"
-      role="img"
-      viewBox="0 0 48 48"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M24 33a2 2 0 1 0 0 .01" fill="currentColor" stroke="currentColor" strokeWidth="2" />
-      <path d="M17 26a10 10 0 0 1 14 0M12 21a17 17 0 0 1 24 0M7 16a24 24 0 0 1 34 0" stroke="currentColor" strokeLinecap="round" strokeWidth="3" />
-    </svg>
-  );
-}
-
 function ServiceIcon({ icon }: { icon: VtuService["icon"] }) {
-  return icon === "airtime" ? <AirtimeIcon /> : <DataIcon />;
+  return (
+    <Svg
+      aria-label={icon === "airtime" ? "Airtime" : "Data"}
+      className="h-12 w-12"
+      role="img"
+      src={icon === "airtime" ? icons.airtimeIcon : icons.dataIcon}
+    />
+  );
 }
 
 function VtuServicesSkeleton() {

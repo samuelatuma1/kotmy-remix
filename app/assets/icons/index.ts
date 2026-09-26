@@ -49,6 +49,8 @@ import avatar from './admin-avatar.svg'
 import hidden from './hidden.svg'
 import lock from './lock.svg'
 import question from './question.svg'
+import airtime from './airtime.svg'
+import data from './data.svg'
 
 export const icons = {
     addIcon: `${add}#img`,
@@ -102,4 +104,6 @@ export const icons = {
     hiddenIcon: `${hidden}#img`,
     lockIcon: `${lock}#img`,
     questionIcon: `${question}#img`,
+    airtimeIcon: `${airtime}#img`,
+    dataIcon: `${data}#img`,
 }

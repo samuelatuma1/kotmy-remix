@@ -229,6 +229,7 @@ File Naming: Use kebab-case for files, PascalCase for components.
 Types: Always type props, state, and API responses.
 Remix Data Flow: Use loader for fetching, action for mutations.
 Styling: Use Tailwind CSS utility classes.
+SVG Icons: Create reusable SVGs as files in `app/assets/icons/`, register them in `app/assets/icons/index.ts`, and consume them through the shared icon exports instead of defining them inline in a page or component.
 Pagination: Use the shared Pagination component.
 Responsiveness: Use Tailwind's responsive classes (sm:, md:, etc.).
 Build for mobile first
