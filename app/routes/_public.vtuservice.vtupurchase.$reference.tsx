@@ -77,6 +77,7 @@ export default function VTUPurchaseReferencePage() {
 
         <section className="rounded-[2rem] border border-brand-grey bg-white p-6 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-8">
           <div className="grid gap-5 sm:grid-cols-2">
+            {purchase.description && <div className="sm:col-span-2"><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Description</p><p className="mt-1 font-bold">{purchase.description}</p></div>}
             <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Network</p><p className="mt-1 font-bold">{purchase.network ?? "—"}</p></div>
             <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Type</p><p className="mt-1 font-bold">{purchase.type}</p></div>
             <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Phone number</p><p className="mt-1 font-bold">{purchase.phone_number}</p></div>

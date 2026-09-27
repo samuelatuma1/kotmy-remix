@@ -1,6 +1,8 @@
 import { Link, useNavigation } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import Svg from "~/components/reusables/Svg";
 import { icons } from "~/assets/icons";
+import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 
 type VtuService = {
   name: "Airtime" | "Data";
@@ -26,9 +28,16 @@ const services: VtuService[] = [
 
 export function useVtuServicesController() {
   const navigation = useNavigation();
+  const { getUserStoreManager } = useUserManager();
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    setIsSignedIn(Boolean(getUserStoreManager()));
+  }, []);
 
   return {
     isLoading: navigation.state === "loading",
+    isSignedIn,
     services,
   };
 }
@@ -63,7 +72,7 @@ function VtuServicesSkeleton() {
 }
 
 export default function VtuServices() {
-  const { isLoading, services: vtuServices } = useVtuServicesController();
+  const { isLoading, isSignedIn, services: vtuServices } = useVtuServicesController();
 
   return (
     <main className="grow min-w-0 overflow-x-hidden">
@@ -85,6 +94,18 @@ export default function VtuServices() {
                 <p className="mt-3 max-w-sm break-words text-base leading-7 text-brand-navy/70 sm:text-lg">{service.description}</p>
               </Link>
             ))}
+            {isSignedIn && (
+              <Link
+                to="/vtuservice/vtupurchases"
+                className="group min-w-0 overflow-hidden rounded-[2rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(14,42,77,0.14)] sm:p-8"
+              >
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-pink/10 text-brand-pink transition duration-300 group-hover:scale-105">
+                  <Svg aria-label="My VTU purchases" className="h-12 w-12" role="img" src={icons.noteIcon} />
+                </div>
+                <h2 className="mt-8 text-2xl font-black text-brand-navy sm:text-3xl">My VTU purchases</h2>
+                <p className="mt-3 max-w-sm break-words text-base leading-7 text-brand-navy/70 sm:text-lg">View your airtime and data purchase history.</p>
+              </Link>
+            )}
           </section>
         )}
       </section>

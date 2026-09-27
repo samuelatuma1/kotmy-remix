@@ -448,4 +448,7 @@ export class ApiEndPoints {
     static getVtuPurchaseByReference(reference: string){
         return `/v2/api/vtu/purchases/${reference}`
     }
+    static get getVtuPurchases(){
+        return `/v2/api/vtu/purchases`
+    }
 }

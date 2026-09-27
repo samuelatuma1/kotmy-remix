@@ -1,4 +1,6 @@
+import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
 import { ProfileOwnerType } from "~/services/auth/types/auth.dtos";
+import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { WalletCurrency } from "~/services/wallet/types/wallet.interface";
 
 // enums
@@ -143,7 +145,7 @@ export interface GetDiscountedAirtimePrice{
     amount: number
 }
 
-export interface VTUPurchase {
+export interface VTUPurchaseResponse {
   _id: string;
   str_id: string
   vtu_product_id: string;
@@ -178,6 +180,7 @@ export interface VTUPurchase {
   last_retried_at?: string; 
   first_retried_at?: string;
   remark?: string;
+  description: string;
 }
 
 export interface VTUAirtimeProductFromBank {
@@ -188,4 +191,12 @@ export interface VTUAirtimeProductFromBank {
   amount_paid: number;
   email: string;
   redirect_url: string;
+}
+
+export interface VTUPurchaseResponsePaged extends IPaginatedResponse<VTUPurchaseResponse>{
+
+}
+
+export interface IQueryVTUPurchases extends IBasePaginationQuery {
+  
 }
