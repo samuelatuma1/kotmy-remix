@@ -108,6 +108,7 @@ To add a new feature, follow these steps:
 - **Code Style**: Follow the existing code style and formatting. This project uses ESLint to enforce code style.
 - **Data Flow**: Adhere to the Remix data flow principles. Fetch data in `loader` functions and mutate data in `action` functions.
 - **Types**: Add types for all new functions, variables, and props.
+- **Shared Utilities**: Before creating a utility or helper inside a component or route, check `app/lib/utils.ts` and reuse an appropriate helper from it. If it does not exist, create `app/lib/utils.ts`, add the reusable helper there, and import it into the component or route that needs it. Keep reusable pure logic out of page components.
 
 ---
 

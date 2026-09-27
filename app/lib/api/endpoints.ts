@@ -427,4 +427,25 @@ export class ApiEndPoints {
     static getContestsForContestantProfile(profileId: string) {
         return `/v2/api/contestant/biodata_details/${profileId}`
     }
+
+    // VTU
+    static get getAirtimePlans(){
+        return `/v2/api/vtu/airtime_plans`
+    }
+
+    static get discountedAirtimePrice(){
+        return `/v2/api/vtu/airtime_plans/discounted_price`
+    }
+
+    static get airtimeplansWalletPurchase(){
+        return `/v2/api/vtu/airtime_plans/wallet_purchase`
+    }
+
+    static get airtimePurchaseFromProvider(){
+        return `/v2/api/vtu/airtime_plans/provider_purchase`
+    }
+
+    static getVtuPurchaseByReference(reference: string){
+        return `/v2/api/vtu/purchases/${reference}`
+    }
 }

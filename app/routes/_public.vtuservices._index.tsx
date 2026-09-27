@@ -1,4 +1,4 @@
-import { useNavigation } from "@remix-run/react";
+import { Link, useNavigation } from "@remix-run/react";
 import Svg from "~/components/reusables/Svg";
 import { icons } from "~/assets/icons";
 
@@ -6,6 +6,7 @@ type VtuService = {
   name: "Airtime" | "Data";
   description: string;
   icon: "airtime" | "data";
+  to: string;
 };
 
 const services: VtuService[] = [
@@ -13,11 +14,13 @@ const services: VtuService[] = [
     name: "Airtime",
     description: "Buy airtime from all networks in Nigeria",
     icon: "airtime",
+    to: "/vtuservice/airtime",
   },
   {
     name: "Data",
     description: "Best data offers available at kidmonth",
     icon: "data",
+    to: "/vtuservice"
   },
 ];
 
@@ -70,7 +73,8 @@ export default function VtuServices() {
         ) : (
           <section className="grid min-w-0 gap-6 sm:grid-cols-2">
             {vtuServices.map((service) => (
-              <article
+              <Link
+                to={service.to}
                 className="group min-w-0 overflow-hidden rounded-[2rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(14,42,77,0.14)] sm:p-8"
                 key={service.name}
               >
@@ -79,7 +83,7 @@ export default function VtuServices() {
                 </div>
                 <h2 className="mt-8 text-2xl font-black text-brand-navy sm:text-3xl">{service.name}</h2>
                 <p className="mt-3 max-w-sm break-words text-base leading-7 text-brand-navy/70 sm:text-lg">{service.description}</p>
-              </article>
+              </Link>
             ))}
           </section>
         )}

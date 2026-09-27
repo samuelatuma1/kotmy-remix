@@ -51,6 +51,10 @@ import lock from './lock.svg'
 import question from './question.svg'
 import airtime from './airtime.svg'
 import data from './data.svg'
+import mtn from './mtn.svg'
+import glo from './glo.svg'
+import airtel from './airtel.svg'
+import nineMobile from './9mobile.svg'
 
 export const icons = {
     addIcon: `${add}#img`,
@@ -106,4 +110,8 @@ export const icons = {
     questionIcon: `${question}#img`,
     airtimeIcon: `${airtime}#img`,
     dataIcon: `${data}#img`,
+    mtnIcon: `${mtn}#img`,
+    gloIcon: `${glo}#img`,
+    airtelIcon: `${airtel}#img`,
+    nineMobileIcon: `${nineMobile}#img`,
 }

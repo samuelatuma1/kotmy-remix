@@ -189,7 +189,7 @@ import StatusTag from '~/components/reusables/StatusTag'
 import { formatDate } from '~/lib/dates.utils'
 import { numberFormatter } from '~/lib/numbers.utils'
 import TallyTableActions from "~/components/admin/transactions/TallyTableActions"
-import { TallyTransaction } from "~/services/admin/types/admin.interface"
+import { PaymentResponseDTO } from "~/services/admin/types/admin.interface"
 import { contestRepo } from "~/services/contest/contest.server";
 import { IContestWStage } from "~/services/contest/types/contest.interface";
 
@@ -206,7 +206,7 @@ const timeOptions: Intl.DateTimeFormatOptions = {
     second: "2-digit",
 }
 
-const columns: ColumnDef<TallyTransaction>[] = [
+const columns: ColumnDef<PaymentResponseDTO>[] = [
     {
         id: "select",
         header: ({ table }) => (<div className="flex place-content-center">
@@ -233,7 +233,7 @@ const columns: ColumnDef<TallyTransaction>[] = [
             <DataTableColumnHeader column={column} title="sender" />
         ),
         cell: ({getValue}) => {
-            const customer = getValue<TallyTransaction['customer']>()
+            const customer = getValue<PaymentResponseDTO['customer']>()
             return customer?.email
         }
     }, {
@@ -275,7 +275,7 @@ const columns: ColumnDef<TallyTransaction>[] = [
             <DataTableColumnHeader column={column} title="status" />
         ),
         cell: ({ getValue }) => {
-            const status = getValue<TallyTransaction['payment_status']>()
+            const status = getValue<PaymentResponseDTO['payment_status']>()
             const color = status === 'PENDING'
                 ? 'yellow' : status === 'SUCCESS'
                     ? 'green' : status === 'REFUNDED'
@@ -285,7 +285,7 @@ const columns: ColumnDef<TallyTransaction>[] = [
     }
 ]
 
-export  function TallyTransactionsTable({ data, lastKey, pageSize, firstKey }: { data: TallyTransaction[], lastKey: string, firstKey: string, pageSize: number }) {
+export  function TallyTransactionsTable({ data, lastKey, pageSize, firstKey }: { data: PaymentResponseDTO[], lastKey: string, firstKey: string, pageSize: number }) {
     return (
         <>
             <div className="w-full overflow-x-auto">

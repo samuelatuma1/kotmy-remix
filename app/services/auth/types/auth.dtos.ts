@@ -43,5 +43,11 @@ export class ILoginResponseDTO {
     _id: string = "";
     str_id: string = "";
     business_id: string = "";
-    is_partner_account: boolean = false 
+    is_partner_account: boolean = false;
+    phone?: string = ""
+}
+
+export enum ProfileOwnerType{
+    BUSINESS = "business",
+    USER = "user"
 }

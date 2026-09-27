@@ -18,7 +18,7 @@ export interface ICreateAdminDto {
     'permissions': string[];
 }
 
-export type TallyTransaction = {
+export type PaymentResponseDTO = {
     reference: string;
     contestant_code: string;
     number_of_votes: number;
@@ -26,11 +26,20 @@ export type TallyTransaction = {
     app_fee: number;
     created_at: string;
     payment_status: 'PENDING'  | 'revoked' | 'PROCESSING' | 'SUCCESS' | 'FOR_REFUND' |'REFUNDED' | 'FAILED';
+    payment_method: string;
     customer: {
         name: string;
         email: string;
         phone_number: string;
     }
+    amount_paid: number;
+    currency: string;
+    provider_fee: number;
+    created_by: string;
+    created_by_email: string;
+    bank_reference: string | null;
+    payment_type: string; // e.g., "vtu_purchase"
+    payment_link?: string
 }
 
 /*

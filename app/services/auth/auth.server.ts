@@ -110,6 +110,10 @@ export default class AuthServer {
         if (typeof referredByCode === "string" && referredByCode.trim()) {
             signupData.append("referred_by_code", referredByCode.trim());
         }
+        const phone = formData.get("phone");
+        if (typeof phone === "string" && phone.trim()) {
+            signupData.append("phone", phone);
+        }
         if (formData.get("status")) {
             signupData.append("status", formData.get("status") as string);
         }

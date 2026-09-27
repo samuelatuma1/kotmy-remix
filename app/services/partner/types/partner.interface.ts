@@ -4,6 +4,7 @@ import { extend } from "isbot";
 import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
 import { ILoginResponseDTO, UserProfile } from "~/services/auth/types/auth.dtos";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
+import { WalletCurrency } from "~/services/wallet/types/wallet.interface";
 
 export interface AddressDTO {
   street: string;
@@ -127,7 +128,6 @@ export interface Business {
 }
 
 export type PartnerProductStatus = "available" | "out_of_stock" | "suspended";
-export type WalletCurrency = "NGN" | "USD";
 
 export interface ICreatePartnerProductDTO {
   name: string;

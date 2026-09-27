@@ -3,14 +3,14 @@ import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
-import { IGetPaymentsDTO, TallyTransaction, ICreateBankTransaction, ICreateAdminUser, IUpdateAdminUser, IUserQueryDTO } from "./types/admin.interface";
+import { IGetPaymentsDTO, PaymentResponseDTO, ICreateBankTransaction, ICreateAdminUser, IUpdateAdminUser, IUserQueryDTO } from "./types/admin.interface";
 
 
 
 
 
 export class AdminRepository {
-  async getPayments(cookies: string | Request, query: IGetPaymentsDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<TallyTransaction>>> {
+  async getPayments(cookies: string | Request, query: IGetPaymentsDTO | null = null): Promise<TFetcherResponse<IPaginatedResponse<PaymentResponseDTO>>> {
     let url = ApiEndPoints.adminPayments;
     if (query) {
       const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
@@ -21,7 +21,7 @@ export class AdminRepository {
       if (qs) url = `${url}?${qs}`;
     }
 
-    const { data, error, authRequired } = await ApiCall.call<IPaginatedResponse<TallyTransaction>, unknown>({
+    const { data, error, authRequired } = await ApiCall.call<IPaginatedResponse<PaymentResponseDTO>, unknown>({
       method: "GET",
       url,
     }, cookies);
@@ -30,9 +30,9 @@ export class AdminRepository {
     return { error, authRequired };
   }
 
-  async createBankTransaction(cookies: string | Request, dto: ICreateBankTransaction): Promise<TFetcherResponse<TallyTransaction>> {
+  async createBankTransaction(cookies: string | Request, dto: ICreateBankTransaction): Promise<TFetcherResponse<PaymentResponseDTO>> {
     const url = ApiEndPoints.createBankPayment;
-    const { data, error, authRequired } = await ApiCall.call<TallyTransaction, unknown>({
+    const { data, error, authRequired } = await ApiCall.call<PaymentResponseDTO, unknown>({
       method: "POST",
       url,
       data: dto,

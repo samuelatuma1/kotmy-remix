@@ -101,6 +101,16 @@ export default function Signup() {
               icon={icons.avatarIcon}
               defaultValue={referredByCode}
             />
+
+            <FormControl
+              as="input"
+              id="phone"
+              name="phone"
+              placeholder="Your phone number (optional)"
+              labelText="Phone Number"
+              // icon={icons.avatarIcon}
+              defaultValue={""}
+            />
             <FormControl as="input" id="status" name="status" placeholder="Status (optional)" labelText="Status" icon={icons.avatarIcon} />
 
             <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
