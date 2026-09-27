@@ -449,8 +449,17 @@ export class ApiEndPoints {
         return `/v2/api/vtu/airtime_plans/wallet_purchase`
     }
 
+    static get dataplansWalletPurchase(){
+        return `/v2/api/vtu/data_plans/wallet_purchase`
+    }
+
+    
     static get airtimePurchaseFromProvider(){
         return `/v2/api/vtu/airtime_plans/provider_purchase`
+    }
+
+    static get dataPurchaseFromProvider(){
+        return `/v2/api/vtu/data_plans/provider_purchase`
     }
 
     static getVtuPurchaseByReference(reference: string){

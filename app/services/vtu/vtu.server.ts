@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse } from "./types/vtu.interface";
+import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse, PurchaseDataProductFromWallet, PurchaseDataProductFromBank } from "./types/vtu.interface";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { PaymentResponseDTO } from "../admin/types/admin.interface";
@@ -73,6 +73,17 @@ export class VTUServer {
         return { data };
   }
 
+  async purchaseVTUDataProductFromWallet(form: PurchaseDataProductFromWallet, cookies: Request):  Promise<TFetcherResponse<VTUPurchaseResponse>>{
+    const { data, error } = await ApiCall.call<VTUPurchaseResponse, PurchaseDataProductFromWallet>({
+          url: ApiEndPoints.dataplansWalletPurchase,
+          method: "POST",
+          data: form,
+        }, cookies);
+    
+        if (error) return { error };
+        return { data };
+  }
+
   async purchaseVTUAirtimeProductFromBank(form: VTUAirtimeProductFromBank, cookies: Request):  Promise<TFetcherResponse<PaymentResponseDTO>>{
     const { data, error } = await ApiCall.call<PaymentResponseDTO, VTUAirtimeProductFromBank>({
           url: ApiEndPoints.airtimePurchaseFromProvider,
@@ -83,6 +94,19 @@ export class VTUServer {
         if (error) return { error };
         return { data };
   }
+
+  async purchaseVTUDataProductFromBank(form: PurchaseDataProductFromBank, cookies: Request):  Promise<TFetcherResponse<PaymentResponseDTO>>{
+    const { data, error } = await ApiCall.call<PaymentResponseDTO, PurchaseDataProductFromBank>({
+          url: ApiEndPoints.dataPurchaseFromProvider,
+          method: "POST",
+          data: form,
+        }, cookies);
+    
+        if (error) return { error };
+        return { data };
+  }
+
+  
 
   async getVTUPurchaseByReference(reference: string, cookies?: Request):  Promise<TFetcherResponse<VTUPurchaseResponse>>{
         const url = `${ApiEndPoints.getVtuPurchaseByReference(reference)}`;

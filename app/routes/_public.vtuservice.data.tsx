@@ -1,4 +1,4 @@
-import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
@@ -17,7 +17,7 @@ import { toast } from "~/components/reusables/use-toast";
 import { UserAtom } from "~/lib/store/atoms/token";
 import { getAuthSessionToken } from "~/lib/session.server";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager";
-import { formatAmount, getErrorMessage, isValidNigerianPhoneNumber, normalizePhoneNumber } from "~/lib/utils";
+import { formatAmount, getErrorMessage, isValidEmail, isValidNigerianPhoneNumber, normalizePhoneNumber } from "~/lib/utils";
 import { walletRepo } from "~/services/wallet/wallet.server";
 import { vtuServer } from "~/services/vtu/vtu.server";
 import type { DiscountedDataAmountResponse, VTUDataCategoryResponse, VTUDataPlansDTO, VTUProduct } from "~/services/vtu/types/vtu.interface";
@@ -68,6 +68,77 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     return json({ intent, preview: response.data, wallet, walletError, error: null });
+  }
+
+  if (intent === "purchase_data_wallet") {
+    const productId = String(formData.get("vtu_product_id") ?? "").trim();
+    const phoneNumber = normalizePhoneNumber(String(formData.get("phone_number") ?? ""));
+    const amount = Number(formData.get("amount"));
+    const walletId = String(formData.get("wallet_id") ?? "").trim();
+    const pin = String(formData.get("pin") ?? "").trim();
+    const referrerCode = String(formData.get("referrer_code") ?? "").trim();
+
+    if (
+      !productId ||
+      !isValidNigerianPhoneNumber(phoneNumber) ||
+      !Number.isFinite(amount) || amount <= 0 ||
+      !walletId ||
+      !/^\d{6}$/.test(pin)
+    ) {
+      return json({ intent, error: "Enter a valid six-digit PIN and confirm the purchase details." }, { status: 400 });
+    }
+
+    const purchaseResponse = await vtuServer.purchaseVTUDataProductFromWallet({
+      vtu_product_id: productId,
+      phone_number: phoneNumber,
+      amount,
+      wallet_id: walletId,
+      pin,
+      ...(referrerCode ? { referrer_code: referrerCode } : {}),
+    }, request);
+
+    if (purchaseResponse.error || !purchaseResponse.data?.reference) {
+      return json({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to complete the data purchase.") }, { status: 400 });
+    }
+
+    return redirect(`/vtuservice/vtupurchase/${encodeURIComponent(purchaseResponse.data.reference)}`);
+  }
+
+  if (intent === "purchase_data_bank") {
+    const productId = String(formData.get("vtu_product_id") ?? "").trim();
+    const phoneNumber = normalizePhoneNumber(String(formData.get("phone_number") ?? ""));
+    const amount = Number(formData.get("amount"));
+    const email = String(formData.get("email") ?? "").trim();
+    const referrerCode = String(formData.get("referrer_code") ?? "").trim();
+
+    if (
+      !productId ||
+      !isValidNigerianPhoneNumber(phoneNumber) ||
+      !Number.isFinite(amount) || amount <= 0 ||
+      !isValidEmail(email)
+    ) {
+      return json({ intent, error: "Provide a valid email and confirm the data purchase details." }, { status: 400 });
+    }
+
+    const purchaseResponse = await vtuServer.purchaseVTUDataProductFromBank({
+      vtu_product_id: productId,
+      phone_number: phoneNumber,
+      amount,
+      email,
+      redirect_url: new URL("/vtuservice/provider_payment_redirect", request.url).toString(),
+      ...(referrerCode ? { referrer_code: referrerCode } : {}),
+    }, request);
+
+    if (purchaseResponse.error) {
+      return json({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to start bank payment.") }, { status: 400 });
+    }
+
+    const paymentLink = purchaseResponse.data?.payment_link?.trim();
+    if (!paymentLink) {
+      return json({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+    }
+
+    return redirect(paymentLink);
   }
 
   if (intent !== "search_data_plans") {
@@ -199,18 +270,42 @@ function DataPaymentPreviewModal({
   phoneNumber,
   user,
   referrerCode,
+  walletPaymentOpen,
+  walletPin,
+  bankPaymentOpen,
+  bankEmail,
+  isPurchaseProcessing,
+  isBankPaymentProcessing,
   onReferrerCodeChange,
+  onWalletPaymentOpen,
+  onWalletPinChange,
+  onCompleteWalletPurchase,
+  onBankPaymentOpen,
+  onBankEmailChange,
+  onStartBankPayment,
   onClose,
 }: {
   data: DataPaymentPreview;
   phoneNumber: string;
   user: UserAtom | null;
   referrerCode: string;
+  walletPaymentOpen: boolean;
+  walletPin: string;
+  bankPaymentOpen: boolean;
+  bankEmail: string;
+  isPurchaseProcessing: boolean;
+  isBankPaymentProcessing: boolean;
   onReferrerCodeChange: (value: string) => void;
+  onWalletPaymentOpen: () => void;
+  onWalletPinChange: (value: string) => void;
+  onCompleteWalletPurchase: () => void;
+  onBankPaymentOpen: () => void;
+  onBankEmailChange: (value: string) => void;
+  onStartBankPayment: () => void;
   onClose: () => void;
 }) {
-  const showComingSoon = () => toast({ title: "Coming soon", description: "Data payment will be available in the next step." });
   const hasSufficientWalletBalance = Boolean(data.wallet && data.wallet.withdrawable_balance >= data.preview.amount);
+  const showComingSoon = () => toast({ title: "Coming soon", description: "Data payment will be available in the next step." });
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -229,10 +324,55 @@ function DataPaymentPreviewModal({
           wallet={data.wallet}
           walletError={data.walletError}
         />
+        {bankPaymentOpen && !walletPaymentOpen && (
+          <div className="space-y-3 border-t border-slate-200 px-6 pt-5">
+            <p className="text-sm font-bold text-brand-navy">Provide your email to continue to bank payment.</p>
+            <label className="block text-sm font-bold text-brand-navy" htmlFor="data-payment-email">
+              Email address
+              <input
+                aria-describedby="data-payment-email-help"
+                className="mt-2 h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 font-medium outline-none transition focus:border-brand-pink focus:bg-white"
+                id="data-payment-email"
+                onChange={(event) => onBankEmailChange(event.target.value)}
+                placeholder="you@example.com"
+                required
+                type="email"
+                value={bankEmail}
+              />
+              <span className="mt-2 block text-xs font-normal leading-5 text-slate-500" id="data-payment-email-help">
+                Provide email to notify you of the status of your data
+              </span>
+            </label>
+          </div>
+        )}
+        {walletPaymentOpen && data.wallet && user && (
+          <div className="space-y-3 border-t border-slate-200 px-6 pt-5">
+            <p className="text-sm font-bold text-brand-navy">Pay {data.preview.currency}{formatAmount(data.preview.amount)} from wallet, enter pin to continue</p>
+            <input
+              aria-label="Wallet PIN"
+              autoComplete="off"
+              className="h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-center text-xl font-bold tracking-[0.5em] outline-none transition focus:border-brand-pink focus:bg-white"
+              inputMode="numeric"
+              maxLength={6}
+              onChange={(event) => onWalletPinChange(event.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="••••••"
+              type="password"
+              value={walletPin}
+            />
+          </div>
+        )}
         <DialogFooter className="gap-3 border-t border-slate-200 p-6 sm:flex-row">
-          <button className="min-h-14 w-full flex-1 rounded-2xl bg-brand-pink px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-brand-pink/90 active:scale-[0.99] sm:w-auto" onClick={showComingSoon} type="button">Pay from Bank</button>
-          {data.wallet && user && (
-            <button className="min-h-14 w-full flex-1 rounded-2xl border-2 border-brand-pink px-5 py-4 text-base font-bold text-brand-pink shadow-sm transition hover:bg-brand-pink/5 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" disabled={!hasSufficientWalletBalance} onClick={showComingSoon} type="button">Pay from Wallet</button>
+          {walletPaymentOpen ? (
+            <button className="min-h-14 w-full rounded-2xl bg-brand-pink px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-brand-pink/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" disabled={walletPin.length !== 6 || isPurchaseProcessing} onClick={onCompleteWalletPurchase} type="button">{isPurchaseProcessing ? "Processing…" : "Complete Purchase"}</button>
+          ) : bankPaymentOpen ? (
+            <button className="min-h-14 w-full rounded-2xl bg-brand-pink px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-brand-pink/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" disabled={!isValidEmail(bankEmail) || isBankPaymentProcessing} onClick={onStartBankPayment} type="button">{isBankPaymentProcessing ? "Starting payment…" : "Continue to Bank"}</button>
+          ) : (
+            <>
+              <button className="min-h-14 w-full flex-1 rounded-2xl bg-brand-pink px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-brand-pink/90 active:scale-[0.99] sm:w-auto" onClick={onBankPaymentOpen} type="button">Pay from Bank</button>
+              {data.wallet && user && (
+                <button className="min-h-14 w-full flex-1 rounded-2xl border-2 border-brand-pink px-5 py-4 text-base font-bold text-brand-pink shadow-sm transition hover:bg-brand-pink/5 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" disabled={!hasSufficientWalletBalance || isPurchaseProcessing} onClick={onWalletPaymentOpen} type="button">Pay from Wallet</button>
+              )}
+            </>
           )}
         </DialogFooter>
       </DialogContent>
@@ -249,6 +389,10 @@ export function useDataController() {
   const [phoneNumber, setPhoneNumber] = useState(initialData.phoneNumber);
   const [paymentPreview, setPaymentPreview] = useState<DataPaymentPreview | null>(null);
   const [referrerCode, setReferrerCode] = useState("");
+  const [walletPaymentOpen, setWalletPaymentOpen] = useState(false);
+  const [walletPin, setWalletPin] = useState("");
+  const [bankPaymentOpen, setBankPaymentOpen] = useState(false);
+  const [bankEmail, setBankEmail] = useState("");
   const selectedPlan = useState<VTUProduct | null>(null);
 
   useEffect(() => {
@@ -279,7 +423,7 @@ export function useDataController() {
     }
 
     if (data?.error) {
-      toast({ variant: "destructive", title: "Unable to prepare payment", description: data.error });
+      toast({ variant: "destructive", title: data.intent === "purchase_data_bank" ? "Unable to start bank payment" : "Unable to prepare payment", description: data.error });
     }
   }, [previewFetcher.data]);
 
@@ -294,6 +438,10 @@ export function useDataController() {
 
     selectedPlan[1](plan);
     setPaymentPreview(null);
+    setWalletPaymentOpen(false);
+    setWalletPin("");
+    setBankPaymentOpen(false);
+    setBankEmail("");
     previewFetcher.submit({
       intent: "preview_data_payment",
       data_product_id: plan.str_id,
@@ -304,7 +452,47 @@ export function useDataController() {
   const closePaymentPreview = () => {
     setPaymentPreview(null);
     setReferrerCode("");
+    setWalletPaymentOpen(false);
+    setWalletPin("");
+    setBankPaymentOpen(false);
+    setBankEmail("");
     selectedPlan[1](null);
+  };
+
+  const openBankPayment = () => {
+    setWalletPaymentOpen(false);
+    setBankPaymentOpen(true);
+    setBankEmail(user?.email ?? "");
+  };
+
+  const startBankPayment = () => {
+    if (!paymentPreview || !isValidEmail(bankEmail)) {
+      toast({ variant: "destructive", title: "Invalid email", description: "Provide email to notify you of the status of your data." });
+      return;
+    }
+
+    previewFetcher.submit({
+      intent: "purchase_data_bank",
+      vtu_product_id: paymentPreview.plan.str_id,
+      phone_number: phoneNumber,
+      amount: String(paymentPreview.preview.amount),
+      email: bankEmail.trim(),
+      referrer_code: user ? "" : referrerCode,
+    }, { method: "post" });
+  };
+
+  const completeWalletPurchase = () => {
+    if (!paymentPreview?.wallet || !user || walletPin.length !== 6) return;
+
+    previewFetcher.submit({
+      intent: "purchase_data_wallet",
+      vtu_product_id: paymentPreview.plan.str_id,
+      phone_number: phoneNumber,
+      amount: String(paymentPreview.preview.amount),
+      wallet_id: paymentPreview.wallet.wallet_id,
+      pin: walletPin,
+      referrer_code: referrerCode,
+    }, { method: "post" });
   };
 
   return {
@@ -316,15 +504,27 @@ export function useDataController() {
     paymentPreview,
     referrerCode,
     setReferrerCode,
+    walletPaymentOpen,
+    walletPin,
+    setWalletPin,
+    completeWalletPurchase,
+    openWalletPayment: () => setWalletPaymentOpen(true),
+    bankPaymentOpen,
+    bankEmail,
+    setBankEmail,
+    openBankPayment,
+    startBankPayment,
     requestPaymentPreview,
     closePaymentPreview,
     hasValidPhoneNumber,
     isLoading: fetcher.state !== "idle" || previewFetcher.state !== "idle",
+    isPurchaseProcessing: previewFetcher.state !== "idle",
+    isBankPaymentProcessing: previewFetcher.state !== "idle" && bankPaymentOpen,
   };
 }
 
 export default function DataPage() {
-  const { fetcher, phoneNumber, setPhoneNumber, plans, user, paymentPreview, referrerCode, setReferrerCode, requestPaymentPreview, closePaymentPreview, hasValidPhoneNumber, isLoading } = useDataController();
+  const { fetcher, phoneNumber, setPhoneNumber, plans, user, paymentPreview, referrerCode, setReferrerCode, walletPaymentOpen, walletPin, setWalletPin, completeWalletPurchase, openWalletPayment, bankPaymentOpen, bankEmail, setBankEmail, openBankPayment, startBankPayment, requestPaymentPreview, closePaymentPreview, hasValidPhoneNumber, isLoading, isPurchaseProcessing, isBankPaymentProcessing } = useDataController();
 
   return (
     <main className="grow min-w-0 overflow-x-hidden bg-white text-brand-navy">
@@ -354,7 +554,7 @@ export default function DataPage() {
 
         {isLoading ? <DataSkeleton /> : plans ? <DataPlans onPreview={requestPaymentPreview} plans={plans} /> : <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-12 text-center"><p className="text-lg font-bold text-brand-navy">Your data plans will appear here</p><p className="mt-2 text-sm text-brand-slate">Enter a valid phone number to continue.</p></div>}
       </section>
-      {paymentPreview && <DataPaymentPreviewModal data={paymentPreview} onClose={closePaymentPreview} onReferrerCodeChange={setReferrerCode} phoneNumber={phoneNumber} referrerCode={referrerCode} user={user} />}
+      {paymentPreview && <DataPaymentPreviewModal bankEmail={bankEmail} bankPaymentOpen={bankPaymentOpen} data={paymentPreview} isBankPaymentProcessing={isBankPaymentProcessing} isPurchaseProcessing={isPurchaseProcessing} onBankEmailChange={setBankEmail} onBankPaymentOpen={openBankPayment} onClose={closePaymentPreview} onCompleteWalletPurchase={completeWalletPurchase} onReferrerCodeChange={setReferrerCode} onStartBankPayment={startBankPayment} onWalletPaymentOpen={openWalletPayment} onWalletPinChange={setWalletPin} phoneNumber={phoneNumber} referrerCode={referrerCode} user={user} walletPaymentOpen={walletPaymentOpen} walletPin={walletPin} />}
     </main>
   );
 }

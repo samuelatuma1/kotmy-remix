@@ -81,6 +81,42 @@ export interface PurchaseAirtimeProductBaseModel {
   amount_paid: number; 
 }
 
+/**
+ * 
+ * {
+    {
+    "vtu_product_id": "6aa84b5312ea7bcdd1b31a22",
+    "email": "samuel@gmail.com",
+    "phone_number": "07059180332",
+    "amount": 101.2,
+    "referrer_code": "agara",
+    "redirect_url": "https://google.com"
+}
+}
+ */
+
+export interface PurchaseDataProductBaseModel {
+  vtu_product_id: string;
+  phone_number: string;
+  amount: number;
+  referrer_code?: string;
+}
+
+export interface PurchaseDataProductFromWallet extends PurchaseDataProductBaseModel {
+  wallet_id: string;
+  pin: string;
+}
+
+export interface PurchaseDataProductFromBank {
+  vtu_product_id: string;
+  phone_number: string;
+  amount: number;
+  email: string;
+  referrer_code?: string;
+  redirect_url: string;
+}
+
+
 export interface PurchaseVTUAirtimeProductFromWallet extends PurchaseAirtimeProductBaseModel {
   wallet_id: string;
   pin: string;
