@@ -441,6 +441,10 @@ export class ApiEndPoints {
         return `/v2/api/vtu/airtime_plans/discounted_price`
     }
 
+    static get discountedDataPrice(){
+        return `/v2/api/vtu/data_plans/discounted_price`
+    }
+
     static get airtimeplansWalletPurchase(){
         return `/v2/api/vtu/airtime_plans/wallet_purchase`
     }

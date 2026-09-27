@@ -156,6 +156,13 @@ export interface DiscountedAirtimeAmountResponse{
     givaah_credits_rate: number,
 }
 
+export interface DiscountedDataAmountResponse{
+    amount: number;
+    currency: WalletCurrency
+    givaah_credits_bonus: number
+    givaah_credits_rate: number,
+}
+
 export interface SearchAirtimePlansQuery{
     phone_number: string
 }
@@ -166,6 +173,11 @@ export interface SearchDataPlansQuery{
 
 export interface GetDiscountedAirtimePrice{
     airtime_product_id: string;
+    amount: number
+}
+
+export interface GetDiscountedDataPrice{
+    data_product_id: string;
     amount: number
 }
 

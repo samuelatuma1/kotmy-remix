@@ -3,6 +3,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 
 import { icons } from "~/assets/icons";
+import { VtuPaymentPreviewDetails } from "~/components/public/vtu/VtuPaymentPreviewDetails";
 import {
   Dialog,
   DialogContent,
@@ -268,50 +269,15 @@ function PaymentPreviewModal({
             Complete purchase to earn givaah credits
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-5 p-6">
-          <div className="rounded-2xl bg-secondary p-5">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-slate">Amount to pay</p>
-            <p className="mt-2 text-3xl font-black text-brand-navy">
-              {data.preview.currency}{formatAmount(data.preview.amount)}
-            </p>
-            <div className="mt-4 border-t border-slate-200 pt-4">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-slate">Airtime phone number</p>
-              <p className="mt-1 text-base font-bold text-brand-navy">{phoneNumber}</p>
-            </div>
-          </div>
-
-          {isSignedIn ? (
-            <div className="rounded-2xl border border-brand-pink/20 bg-brand-pink/5 p-4 text-sm font-semibold text-brand-navy">
-              You will earn {formatAmount(data.preview.givaah_credits_bonus)} Givaah Credits for this purchase.
-            </div>
-          ) : (
-            <label className="block text-sm font-bold text-brand-navy">
-              Referrer code <span className="font-normal text-slate-400">(optional)</span>
-              <input
-                className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-medium outline-none transition focus:border-brand-pink focus:bg-white"
-                onChange={(event) => onReferrerCodeChange(event.target.value)}
-                placeholder="Enter referrer code"
-                value={referrerCode}
-              />
-              <span className="mt-2 block text-xs font-normal leading-5 text-slate-500">
-                Input optional referrer code so your referrer can earn {formatAmount(data.preview.givaah_credits_bonus)} Givaah Credits.
-              </span>
-            </label>
-          )}
-
-          {data.walletError && isSignedIn && (
-            <p className="text-xs leading-5 text-slate-500">Wallet payment is unavailable for this currency. You can still pay from bank.</p>
-          )}
-
-          {data.wallet && isSignedIn && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-4">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-slate">Wallet balance</p>
-              <p className="mt-2 text-lg font-black text-brand-navy">
-                {data.wallet.wallet_currency}{formatAmount(data.wallet.withdrawable_balance)}
-              </p>
-            </div>
-          )}
-        </div>
+        <VtuPaymentPreviewDetails
+          onReferrerCodeChange={onReferrerCodeChange}
+          phoneNumber={phoneNumber}
+          preview={data.preview}
+          referrerCode={referrerCode}
+          user={user}
+          wallet={data.wallet}
+          walletError={data.walletError}
+        />
         {walletPaymentOpen && data.wallet && isSignedIn && (
           <div className="space-y-3 border-t border-slate-200 px-6 pt-5">
             <p className="text-sm font-bold text-brand-navy">Pay {data.preview.currency}{formatAmount(data.preview.amount)} from wallet, enter pin to continue</p>

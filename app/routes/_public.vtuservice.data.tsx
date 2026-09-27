@@ -3,12 +3,24 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import { icons } from "~/assets/icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/reusables/Dialog";
+import { VtuPaymentPreviewDetails, type VtuPaymentWallet } from "~/components/public/vtu/VtuPaymentPreviewDetails";
 import Svg from "~/components/reusables/Svg";
 import { toast } from "~/components/reusables/use-toast";
+import { UserAtom } from "~/lib/store/atoms/token";
+import { getAuthSessionToken } from "~/lib/session.server";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { formatAmount, getErrorMessage, isValidNigerianPhoneNumber, normalizePhoneNumber } from "~/lib/utils";
+import { walletRepo } from "~/services/wallet/wallet.server";
 import { vtuServer } from "~/services/vtu/vtu.server";
-import type { VTUDataCategoryResponse, VTUDataPlansDTO, VTUProduct } from "~/services/vtu/types/vtu.interface";
+import type { DiscountedDataAmountResponse, VTUDataCategoryResponse, VTUDataPlansDTO, VTUProduct } from "~/services/vtu/types/vtu.interface";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const phoneNumber = normalizePhoneNumber(new URL(request.url).searchParams.get("phone_number") ?? "");
@@ -19,6 +31,44 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "search_data_plans");
+
+  if (intent === "preview_data_payment") {
+    const dataProductId = String(formData.get("data_product_id") ?? "").trim();
+    const amount = Number(formData.get("amount"));
+
+    if (!dataProductId || !Number.isFinite(amount) || amount <= 0) {
+      return json({ intent, preview: null, wallet: null, walletError: null, error: "Select a valid data plan." }, { status: 400 });
+    }
+
+    const response = await vtuServer.getDiscountedDataPrice({ data_product_id: dataProductId, amount }, request);
+
+    if (response.error || !response.data) {
+      return json({ intent, preview: null, wallet: null, walletError: null, error: getErrorMessage(response.error, "Unable to calculate the data price.") }, { status: 400 });
+    }
+
+    let wallet: VtuPaymentWallet | null = null;
+    let walletError: string | null = null;
+    const authToken = await getAuthSessionToken(request);
+
+    if (authToken) {
+      const walletsResponse = await walletRepo.getUserWallets(request);
+      const matchingWallet = walletsResponse.data?.find((candidate) => candidate.wallet_currency === response.data?.currency);
+
+      if (matchingWallet) {
+        wallet = {
+          wallet_id: matchingWallet._id,
+          wallet_currency: matchingWallet.wallet_currency,
+          withdrawable_balance: matchingWallet.withdrawable_balance,
+        };
+      } else {
+        walletError = walletsResponse.error
+          ? getErrorMessage(walletsResponse.error, "Unable to load your wallet.")
+          : `No wallet found for ${response.data.currency}.`;
+      }
+    }
+
+    return json({ intent, preview: response.data, wallet, walletError, error: null });
+  }
 
   if (intent !== "search_data_plans") {
     return json({ intent, plans: null, error: "Unsupported data-plan action." }, { status: 400 });
@@ -64,11 +114,11 @@ function DataSkeleton() {
   );
 }
 
-function DataPlanCard({ plan }: { plan: VTUProduct }) {
+function DataPlanCard({ plan, onPreview }: { plan: VTUProduct; onPreview: (plan: VTUProduct) => void }) {
   return (
     <button
       className="group rounded-[1.5rem] border border-brand-grey bg-white p-5 text-left shadow-[0_12px_36px_rgba(14,42,77,0.06)] transition hover:-translate-y-1 hover:border-brand-pink hover:shadow-[0_18px_44px_rgba(14,42,77,0.12)]"
-      onClick={() => undefined}
+      onClick={() => onPreview(plan)}
       type="button"
     >
       <p className="text-2xl font-black text-brand-navy">{formatAmount(plan.size)}{plan.size_unit}</p>
@@ -80,7 +130,7 @@ function DataPlanCard({ plan }: { plan: VTUProduct }) {
   );
 }
 
-function DataPlans({ plans }: { plans: VTUDataPlansDTO }) {
+function DataPlans({ plans, onPreview }: { plans: VTUDataPlansDTO; onPreview: (plan: VTUProduct) => void }) {
   const categories = plans.categories ?? [];
   const [activeCategoryId, setActiveCategoryId] = useState(categories[0]?.category_id ?? "");
 
@@ -124,7 +174,7 @@ function DataPlans({ plans }: { plans: VTUDataPlansDTO }) {
 
           {activePlans.length > 0 ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-              {activePlans.map((plan) => <DataPlanCard key={plan.str_id} plan={plan} />)}
+              {activePlans.map((plan) => <DataPlanCard key={plan.str_id} onPreview={onPreview} plan={plan} />)}
             </div>
           ) : (
             <p className="rounded-2xl bg-secondary p-5 text-sm text-brand-slate">No data plans are available in this category.</p>
@@ -137,14 +187,73 @@ function DataPlans({ plans }: { plans: VTUDataPlansDTO }) {
   );
 }
 
+type DataPaymentPreview = {
+  preview: DiscountedDataAmountResponse;
+  wallet: VtuPaymentWallet | null;
+  walletError: string | null;
+  plan: VTUProduct;
+};
+
+function DataPaymentPreviewModal({
+  data,
+  phoneNumber,
+  user,
+  referrerCode,
+  onReferrerCodeChange,
+  onClose,
+}: {
+  data: DataPaymentPreview;
+  phoneNumber: string;
+  user: UserAtom | null;
+  referrerCode: string;
+  onReferrerCodeChange: (value: string) => void;
+  onClose: () => void;
+}) {
+  const showComingSoon = () => toast({ title: "Coming soon", description: "Data payment will be available in the next step." });
+  const hasSufficientWalletBalance = Boolean(data.wallet && data.wallet.withdrawable_balance >= data.preview.amount);
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-h-[calc(100dvh-1rem)] max-w-md overflow-y-auto overscroll-contain rounded-[1.75rem] bg-white p-0 sm:max-h-[calc(100dvh-2rem)]">
+        <DialogHeader className="border-b border-slate-200 p-6">
+          <DialogTitle className="text-left text-2xl font-black text-brand-navy">Complete data payment</DialogTitle>
+          <DialogDescription className="mt-2 text-left text-sm leading-6 text-slate-500">Complete purchase to earn Givaah Credits</DialogDescription>
+        </DialogHeader>
+        <VtuPaymentPreviewDetails
+          onReferrerCodeChange={onReferrerCodeChange}
+          phoneNumber={phoneNumber}
+          preview={data.preview}
+          productDescription={`${data.plan.description ? `${data.plan.description} · ` : ""}${formatAmount(data.plan.size)}${data.plan.size_unit} data plan valid for ${data.plan.validity} ${data.plan.validity_unit}`}
+          referrerCode={referrerCode}
+          user={user}
+          wallet={data.wallet}
+          walletError={data.walletError}
+        />
+        <DialogFooter className="gap-3 border-t border-slate-200 p-6 sm:flex-row">
+          <button className="min-h-14 w-full flex-1 rounded-2xl bg-brand-pink px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-brand-pink/90 active:scale-[0.99] sm:w-auto" onClick={showComingSoon} type="button">Pay from Bank</button>
+          {data.wallet && user && (
+            <button className="min-h-14 w-full flex-1 rounded-2xl border-2 border-brand-pink px-5 py-4 text-base font-bold text-brand-pink shadow-sm transition hover:bg-brand-pink/5 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" disabled={!hasSufficientWalletBalance} onClick={showComingSoon} type="button">Pay from Wallet</button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function useDataController() {
   const initialData = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
+  const previewFetcher = useFetcher<typeof action>();
   const { getUserStoreManager } = useUserManager();
+  const [user, setUser] = useState<UserAtom | null>(null);
   const [phoneNumber, setPhoneNumber] = useState(initialData.phoneNumber);
+  const [paymentPreview, setPaymentPreview] = useState<DataPaymentPreview | null>(null);
+  const [referrerCode, setReferrerCode] = useState("");
+  const selectedPlan = useState<VTUProduct | null>(null);
 
   useEffect(() => {
     const user = getUserStoreManager();
+    setUser(user);
     if (user?.phone) setPhoneNumber(normalizePhoneNumber(user.phone));
   }, []);
 
@@ -158,21 +267,64 @@ export function useDataController() {
     }
   }, [fetcher.data?.error]);
 
+  useEffect(() => {
+    const data = previewFetcher.data;
+    if (data?.intent === "preview_data_payment" && "preview" in data && data.preview && selectedPlan[0]) {
+      setPaymentPreview({
+        preview: data.preview,
+        wallet: data.wallet,
+        walletError: data.walletError,
+        plan: selectedPlan[0],
+      });
+    }
+
+    if (data?.error) {
+      toast({ variant: "destructive", title: "Unable to prepare payment", description: data.error });
+    }
+  }, [previewFetcher.data]);
+
   const hasValidPhoneNumber = isValidNigerianPhoneNumber(normalizePhoneNumber(phoneNumber));
   const plans = hasValidPhoneNumber && fetcher.data && "plans" in fetcher.data ? fetcher.data.plans : null;
+
+  const requestPaymentPreview = (plan: VTUProduct) => {
+    if (!plan.str_id || !Number.isFinite(plan.retail_price) || plan.retail_price <= 0) {
+      toast({ variant: "destructive", title: "Invalid data plan", description: "This data plan cannot be selected." });
+      return;
+    }
+
+    selectedPlan[1](plan);
+    setPaymentPreview(null);
+    previewFetcher.submit({
+      intent: "preview_data_payment",
+      data_product_id: plan.str_id,
+      amount: String(plan.retail_price),
+    }, { method: "post" });
+  };
+
+  const closePaymentPreview = () => {
+    setPaymentPreview(null);
+    setReferrerCode("");
+    selectedPlan[1](null);
+  };
 
   return {
     fetcher,
     phoneNumber,
     setPhoneNumber: (value: string) => setPhoneNumber(normalizePhoneNumber(value)),
     plans,
+    user,
+    paymentPreview,
+    referrerCode,
+    setReferrerCode,
+    requestPaymentPreview,
+    closePaymentPreview,
     hasValidPhoneNumber,
-    isLoading: fetcher.state !== "idle",
+    isLoading: fetcher.state !== "idle" || previewFetcher.state !== "idle",
   };
 }
 
 export default function DataPage() {
-  const { fetcher, phoneNumber, setPhoneNumber, plans, hasValidPhoneNumber, isLoading } = useDataController();
+  const { fetcher, phoneNumber, setPhoneNumber, plans, user, paymentPreview, referrerCode, setReferrerCode, requestPaymentPreview, closePaymentPreview, hasValidPhoneNumber, isLoading } = useDataController();
 
   return (
     <main className="grow min-w-0 overflow-x-hidden bg-white text-brand-navy">
@@ -200,8 +352,9 @@ export default function DataPage() {
           </section>
         </fetcher.Form>
 
-        {isLoading ? <DataSkeleton /> : plans ? <DataPlans plans={plans} /> : <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-12 text-center"><p className="text-lg font-bold text-brand-navy">Your data plans will appear here</p><p className="mt-2 text-sm text-brand-slate">Enter a valid phone number to continue.</p></div>}
+        {isLoading ? <DataSkeleton /> : plans ? <DataPlans onPreview={requestPaymentPreview} plans={plans} /> : <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-12 text-center"><p className="text-lg font-bold text-brand-navy">Your data plans will appear here</p><p className="mt-2 text-sm text-brand-slate">Enter a valid phone number to continue.</p></div>}
       </section>
+      {paymentPreview && <DataPaymentPreviewModal data={paymentPreview} onClose={closePaymentPreview} onReferrerCodeChange={setReferrerCode} phoneNumber={phoneNumber} referrerCode={referrerCode} user={user} />}
     </main>
   );
 }

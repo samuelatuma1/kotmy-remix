@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO } from "./types/vtu.interface";
+import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse } from "./types/vtu.interface";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { PaymentResponseDTO } from "../admin/types/admin.interface";
@@ -44,6 +44,17 @@ export class VTUServer {
         const params = this.buildQueryString(query);
         const url = `${ApiEndPoints.discountedAirtimePrice}?${params}`;
         const { data, error } = await ApiCall.call<DiscountedAirtimeAmountResponse, unknown>({
+        url,
+        method: "GET",
+        }, cookies);
+        if (error) return { error };
+        return { data };
+  }
+
+  async getDiscountedDataPrice(query: GetDiscountedDataPrice, cookies?: Request):  Promise<TFetcherResponse<DiscountedDataAmountResponse>>{
+        const params = this.buildQueryString(query);
+        const url = `${ApiEndPoints.discountedDataPrice}?${params}`;
+        const { data, error } = await ApiCall.call<DiscountedDataAmountResponse, unknown>({
         url,
         method: "GET",
         }, cookies);
