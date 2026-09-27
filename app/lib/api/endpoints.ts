@@ -433,6 +433,10 @@ export class ApiEndPoints {
         return `/v2/api/vtu/airtime_plans`
     }
 
+    static get getDataPlans(){
+        return `/v2/api/vtu/data_plans`
+    }
+
     static get discountedAirtimePrice(){
         return `/v2/api/vtu/airtime_plans/discounted_price`
     }

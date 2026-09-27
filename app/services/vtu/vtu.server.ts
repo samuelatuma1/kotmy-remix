@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged } from "./types/vtu.interface";
+import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO } from "./types/vtu.interface";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { PaymentResponseDTO } from "../admin/types/admin.interface";
@@ -20,7 +20,6 @@ export class VTUServer {
   async searchAirtimePlans(query: SearchAirtimePlansQuery, cookies?: Request): Promise<TFetcherResponse<VTUAirtimePlanDTO>> {
     const params = this.buildQueryString(query);
     const url = `${ApiEndPoints.getAirtimePlans}?${params}`;
-    console.log("Ng toto sha, so rich in flavor")
     const { data, error } = await ApiCall.call<VTUAirtimePlanDTO, unknown>({
       url,
       method: "GET",
@@ -28,6 +27,18 @@ export class VTUServer {
     if (error) return { error };
     return { data };
   }
+
+  async searchDataPlans(query: SearchDataPlansQuery, cookies?: Request): Promise<TFetcherResponse<VTUDataPlansDTO>> {
+    const params = this.buildQueryString(query);
+    const url = `${ApiEndPoints.getDataPlans}?${params}`;
+    const { data, error } = await ApiCall.call<VTUDataPlansDTO, unknown>({
+      url,
+      method: "GET",
+    }, cookies);
+    if (error) return { error };
+    return { data };
+  }
+
 
   async getDiscountedAirtimePrice(query: GetDiscountedAirtimePrice, cookies?: Request):  Promise<TFetcherResponse<DiscountedAirtimeAmountResponse>>{
         const params = this.buildQueryString(query);

@@ -128,6 +128,26 @@ export interface VTUAirtimePlanDTO {
   fixed_airtime_plans: VTUAirtimeDTO[];
   all_airtime_plans: VTUAirtimeDTO[];
 }
+export interface VTUProduct extends VTUProductBase {
+  category: VTUProductCategory;
+  validity: number;
+  validity_unit: string;
+  size: number;
+  size_unit: VTUDataSizeUnit;
+  retail_price: number;
+  retail_price_type: VTURetailPriceType;
+}
+
+export interface VTUDataCategoryResponse{
+  category_id: string;
+  category_name: string;
+  plans: VTUProduct[]
+}
+
+export interface VTUDataPlansDTO{
+  network: string;
+  categories: VTUDataCategoryResponse[]
+}
 
 export interface DiscountedAirtimeAmountResponse{
     amount: number;
@@ -137,6 +157,10 @@ export interface DiscountedAirtimeAmountResponse{
 }
 
 export interface SearchAirtimePlansQuery{
+    phone_number: string
+}
+
+export interface SearchDataPlansQuery{
     phone_number: string
 }
 

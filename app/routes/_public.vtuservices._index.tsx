@@ -22,7 +22,7 @@ const services: VtuService[] = [
     name: "Data",
     description: "Best data offers available at kidmonth",
     icon: "data",
-    to: "/vtuservice"
+    to: "/vtuservice/data"
   },
 ];
 
