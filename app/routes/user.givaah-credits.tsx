@@ -186,9 +186,9 @@ export default function GivaahCreditsPage() {
                   >
                     <div className="space-y-4">
                       <div className="flex items-start justify-between gap-4">
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Order Code</p>
-                          <h3 className="mt-2 text-xl font-black text-slate-950">{credit.order_code}</h3>
+                          <h3 className="mt-2 text-base font-black leading-tight text-slate-950 [overflow-wrap:anywhere]">{credit.order_code}</h3>
                         </div>
                         <div className="rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white">
                           {credit.order_currency}
