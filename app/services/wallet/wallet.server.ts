@@ -1,10 +1,11 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, IAffiliateLeaderboardResponse, IAffiliateLeaderboardSearch, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse } from "./types/wallet.interface";
+import { FundWallet } from "~/lib/types/wallet.interface";
 import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "../common/types/paginated_data";
 import { ILoginResponseDTO } from "../auth/types/auth.dtos";
-import { IUserQueryDTO } from "../admin/types/admin.interface";
+import { IUserQueryDTO, PaymentResponseDTO } from "../admin/types/admin.interface";
 
 export class WalletRepository{
     async getUserWallets(cookies: string | Request): Promise<TFetcherResponse<IWallet[]>> {
@@ -285,6 +286,34 @@ export class WalletRepository{
         const { data, error,authRequired } = await ApiCall.call<ILoginResponseDTO, unknown>({
             method: "POST",
             url: ApiEndPoints.setPartnerWithdrawalPin,
+            data: dto
+            
+        }, cookies)
+        
+        if(data) return {data}
+        return { error, authRequired }
+        
+        
+    }
+
+    async fundUserWallet( dto: FundWallet, cookies: string | Request): Promise<TFetcherResponse<PaymentResponseDTO>> {
+        const { data, error,authRequired } = await ApiCall.call<PaymentResponseDTO, unknown>({
+            method: "POST",
+            url: ApiEndPoints.fundUserWallet,
+            data: dto
+            
+        }, cookies)
+        
+        if(data) return {data}
+        return { error, authRequired }
+        
+        
+    }
+
+    async fundBusinessUserWallet( dto: FundWallet, cookies: string | Request): Promise<TFetcherResponse<PaymentResponseDTO>> {
+        const { data, error,authRequired } = await ApiCall.call<PaymentResponseDTO, unknown>({
+            method: "POST",
+            url: ApiEndPoints.fundBusinessUserWallet,
             data: dto
             
         }, cookies)

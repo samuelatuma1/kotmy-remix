@@ -15,3 +15,10 @@ export interface WalletAccount {
   creation_fee_paid_at: string | null;
   status: "verified" | string;
 }
+
+export interface FundWallet {
+  amount: number;
+  narration?: string;
+  wallet_id: string;
+  redirect_url: string;
+}

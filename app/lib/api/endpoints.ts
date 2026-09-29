@@ -236,6 +236,14 @@ export class ApiEndPoints {
         return `/v2/api/payment/set_withdrawal_pin`
     }
 
+    static get fundUserWallet(){
+        return `/v2/api/payment/fund-wallet`
+    }
+
+    static get fundBusinessUserWallet(){
+        return `/v2/api/payment/business-fund-wallet`
+    }
+
     static getWalletWithdrawalAccounts(walletId: string){
         return `/v2/api/wallet/get_wallet_withdrawal_accounts/${walletId}`
     }

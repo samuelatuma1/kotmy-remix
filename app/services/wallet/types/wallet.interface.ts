@@ -225,3 +225,11 @@ export interface IAffiliateLeaderboardResponse {
     amount_earned: number;
     position: number;
 }
+
+export interface FundWallet{
+    
+    amount: number;
+    narration?: string;
+    wallet_id: string;
+    redirect_url: string
+}

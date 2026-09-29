@@ -8,6 +8,8 @@ import { ILedgerEntry, IUserLedgersQuery, IWallet } from "~/services/wallet/type
 import { walletRepo } from "~/services/wallet/wallet.server";
 import Pagination from "~/components/reusables/Pagination";
 import { requireAuth } from "~/lib/session.server";
+import { toast } from "~/components/reusables/use-toast";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/reusables/Dialog";
 
 // Type for the combined data structure from loader
 type WalletWithLedger = {
@@ -58,9 +60,39 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-    const cookieHeader = request.headers.get("Cookie") ?? "";
-
     const formData = await request.formData();
+    const intent = String(formData.get("intent") ?? "");
+
+    if (intent === "fund-business-wallet") {
+      const amount = Number(String(formData.get("amount") ?? "").trim());
+      const walletId = String(formData.get("wallet_id") ?? "").trim();
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        return json({ intent, error: "Please enter a valid amount greater than zero." }, { status: 400 });
+      }
+      if (!walletId) {
+        return json({ intent, error: "Please select a wallet to fund." }, { status: 400 });
+      }
+
+      const response = await walletRepo.fundBusinessUserWallet({
+        amount,
+        wallet_id: walletId,
+        narration: String(formData.get("narration") ?? "").trim() || undefined,
+        redirect_url: new URL("/partners/wallet", request.url).toString(),
+      }, request);
+
+      if (response.error) {
+        return json({ intent, error: getWalletErrorMessage(response.error) }, { status: 400 });
+      }
+
+      const paymentLink = response.data?.payment_link?.trim();
+      if (!paymentLink) {
+        return json({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+      }
+
+      return redirect(paymentLink);
+    }
+
     // clean form data: remove empty values
     const cleaned: Record<string, string> = {};
     formData.forEach((value, key) => {
@@ -119,6 +151,16 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ wallets });
 }
 
+function getWalletErrorMessage(error: unknown): string {
+  if (typeof error === "string") return error;
+  if (error && typeof error === "object" && "detail" in error) {
+    const detail = (error as { detail?: unknown }).detail;
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail)) return detail.map((item) => typeof item === "object" && item && "msg" in item ? String(item.msg) : String(item)).join(", ");
+  }
+  return "Unable to fund the business wallet. Please try again.";
+}
+
 function useWalletController() {
   const { wallets } = useLoaderData<{ wallets: WalletWithLedger[] }>();
   const {setUserStoreManager, getUserStoreManager} = useUserManager();
@@ -152,8 +194,18 @@ function useWalletController() {
   // const { wallets, activeData, setActiveWalletId, formatCurrency, user } = useWalletController();
   const [searchOpen, setSearchOpen] = useState(false);
   const fetcher = useFetcher();
+  const fundFetcher = useFetcher<typeof action>();
   const isSubmitting = fetcher.state === 'submitting';
+  const isFunding = fundFetcher.state !== "idle";
+  const [fundWalletOpen, setFundWalletOpen] = useState(false);
   const actionData = useActionData<typeof action>();
+
+  useEffect(() => {
+    const data = fundFetcher.data as { intent?: string; error?: string } | undefined;
+    if (data?.intent === "fund-business-wallet" && data.error) {
+      toast({ variant: "destructive", title: "Business wallet funding failed", description: data.error });
+    }
+  }, [fundFetcher.data]);
 
   // local wallets state so we can update UI when action/fetcher returns updated wallets
   const [walletsState, setWalletsState] = useState<WalletWithLedger[]>(wallets);
@@ -182,12 +234,13 @@ function useWalletController() {
     formatCurrency,
     user,
     actionData,
-    searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher
+    searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher,
+    fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen
   };
 }
 
 export default function WalletPage() {
-   const { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher } = useWalletController();
+   const { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher, fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen } = useWalletController();
 
   if (!activeData) return <div className="p-8">No wallets found.</div>;
 
@@ -231,6 +284,35 @@ export default function WalletPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mt-8">
+          <Dialog open={fundWalletOpen} onOpenChange={setFundWalletOpen}>
+            <DialogTrigger asChild>
+              <button type="button" className="bg-[#E91E63] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
+                + Fund Business Wallet
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md rounded-2xl bg-white p-0">
+              <DialogHeader className="border-b border-gray-100 p-6 text-left">
+                <DialogTitle className="text-xl font-bold">Fund Business Wallet</DialogTitle>
+                <DialogDescription className="mt-2 text-sm text-gray-500">Enter the amount you want to add to this business wallet.</DialogDescription>
+              </DialogHeader>
+              <fundFetcher.Form method="post" className="space-y-5 p-6">
+                <input type="hidden" name="intent" value="fund-business-wallet" />
+                <input type="hidden" name="wallet_id" value={wallet._id} />
+                <label className="block text-sm font-medium text-gray-700">
+                  Amount ({wallet.wallet_currency})
+                  <input required min="0.01" step="0.01" type="number" name="amount" className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="0.00" />
+                </label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Narration <span className="font-normal text-gray-400">(optional)</span>
+                  <textarea name="narration" rows={3} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="What is this funding for?" />
+                </label>
+                <DialogFooter className="gap-3 sm:flex-row sm:justify-end">
+                  <DialogClose asChild><button type="button" className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700">Cancel</button></DialogClose>
+                  <button type="submit" disabled={isFunding} className="rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">{isFunding ? "Preparing payment..." : "Continue to payment"}</button>
+                </DialogFooter>
+              </fundFetcher.Form>
+            </DialogContent>
+          </Dialog>
           <Link to={`/partners/withdraw/${wallet._id}`}>
            <button className="bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto">
             ↗ Withdraw
