@@ -33,9 +33,9 @@ export const { getSession, commitSession, destroySession } =
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 365, // 1 year
             path: "/",
-            sameSite: true,
+            sameSite: "lax",
             secrets: ["s3cret1"],
-            // secure: true,
+            // secure: process.env.NODE_ENV === "production",
         },
     })
 
@@ -98,7 +98,9 @@ export async function nickToast({ request, headers = new Headers() }:
 ) {
     const session = await getSession(request.headers.get('Cookie'))
     const toast = session.get("alert") as ToastMessage | undefined
-    headers.append('Set-Cookie', await commitSession(session))
+    if (toast) {
+        headers.append('Set-Cookie', await commitSession(session))
+    }
     return { headers, toast }
 }
 

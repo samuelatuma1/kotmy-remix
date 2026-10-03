@@ -145,9 +145,9 @@ var { getSession, commitSession, destroySession } = createCookieSessionStorage({
     maxAge: 60 * 60 * 24 * 365,
     // 1 year
     path: "/",
-    sameSite: !0,
+    sameSite: "lax",
     secrets: ["s3cret1"]
-    // secure: true,
+    // secure: process.env.NODE_ENV === "production",
   }
 });
 async function getAuthSessionToken(request) {
@@ -176,7 +176,7 @@ async function setToast({ request, headers = new Headers(), toast: toast4 }) {
 }
 async function nickToast({ request, headers = new Headers() }) {
   let session = await getSession(request.headers.get("Cookie")), toast4 = session.get("alert");
-  return headers.append("Set-Cookie", await commitSession(session)), { headers, toast: toast4 };
+  return toast4 && headers.append("Set-Cookie", await commitSession(session)), { headers, toast: toast4 };
 }
 function createFingerprint() {
   return randomUUID();
