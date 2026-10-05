@@ -99,6 +99,10 @@ export class ApiEndPoints {
         return `/v2/api/admin/contestant/with_image/${contestantId}`
     }
 
+    static get deleteContestants() {
+        return `/v2/api/admin/contestant`
+    }
+
     static editUserContestant(contestantId: string) {
         return `/v2/api/contestant/user/${contestantId}`
     }

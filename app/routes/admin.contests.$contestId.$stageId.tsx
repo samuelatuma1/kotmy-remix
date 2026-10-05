@@ -6,7 +6,7 @@ import { getFingerprint, setToast } from "~/lib/session.server"
 import { icons } from "~/assets/icons"
 import ContestantTable from "~/components/admin/contest/ContestantTable"
 import RoundCta from "~/components/reusables/RoundCta"
-import { editContestant, toggleEvictContestants } from "~/services/contestant/actions.server"
+import { deleteContestants, editContestant, toggleEvictContestants } from "~/services/contestant/actions.server"
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     const { contestId, stageId } = params
@@ -41,7 +41,7 @@ export async function action({ params, request }: LoaderFunctionArgs) {
         }, request)
     }
     if (intent === 'admit' || intent === 'evict') return await toggleEvictContestants(formData, request)
-    // if (intent === 'delete') return await deleteContest(formData, request)
+    if (intent === 'delete') return await deleteContestants(formData, request)
     console.log(...formData)
     const { headers } = await setToast({ request, toast: `error::This action is not yet supported::${Date.now()}` })
     return json(null, { headers })

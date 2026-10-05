@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node"
 
 import { getFingerprint, requireAuth, setToast } from "~/lib/session.server"
 import { contestantRepo } from "./contestant.server"
-import { IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
+import { IDeleteContestantsDTO, IEditContestantDTO, IGetTallyLinkDTO, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 
 
 export class ContestantServer{
@@ -42,6 +42,38 @@ export async function toggleEvictContestants(formData: FormData, request: Reques
     }
     const { headers } = await setToast({ request, toast: `success::The contestants' statuses have been updated::${Date.now()}` })
     return json(null, { headers })
+}
+
+export async function deleteContestants(formData: FormData, request: Request) {
+    await requireAuth(request)
+
+    const contestantIds = formData.getAll("contestant_ids").map(String).filter(Boolean)
+    const reason = String(formData.get("reason") ?? "").trim()
+    if (contestantIds.length === 0 || !reason) {
+        const message = contestantIds.length === 0
+            ? "Please select at least one contestant to delete"
+            : "Please provide a reason for deleting these contestants"
+        const { headers } = await setToast({ request, toast: `error::${message}::${Date.now()}` })
+        return json({ error: message }, { headers, status: 400 })
+    }
+
+    const dto: IDeleteContestantsDTO = {
+        contestant_ids: contestantIds,
+        reason,
+        delete_finally: true
+    }
+    const { data, error } = await contestantRepo.deleteContestants(dto, request)
+
+    if (error) {
+        const errorDetail = typeof error.detail === "string"
+            ? error.detail
+            : "Sorry, we could not delete the selected contestants"
+        const { headers } = await setToast({ request, toast: `error::${errorDetail}::${Date.now()}` })
+        return json({ error: errorDetail }, { headers, status: 400 })
+    }
+
+    const { headers } = await setToast({ request, toast: `success::${data ?? "The selected contestants have been deleted"}::${Date.now()}` })
+    return json({ data }, { headers })
 }
 
 export async function registerContestant(formData: FormData, request: Request, cookies: string | Request) {

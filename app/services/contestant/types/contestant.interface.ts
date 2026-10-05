@@ -204,3 +204,9 @@ export interface StageContestantsQuery extends IBasePaginationQuery{
 export interface PagedContestantsStageResponse extends IPaginatedResponse<IContestant>, IStageWContestant{
   
 }
+
+export interface IDeleteContestantsDTO {
+  contestant_ids: string[];
+  reason: string;
+  delete_finally: boolean;
+}

@@ -13,7 +13,7 @@ export default function ContestantTableActions({ table }: { table: Table<IContes
     const contestant = contestants.at(0) ?? {} as IContestant
     return <div className="flex gap-4 items-center px-3 mb-3">
         <EditContestantDialog disabled={!singleRowSelected} contestant={contestant} />
-        <DeleteContestantDialog disabled={!rowsSelected} />
+        <DeleteContestantDialog disabled={!rowsSelected} contestants={contestants} />
         <EvictContestantDialog disabled={!rowsSelected} contestants={contestants} />
         <AdmitContestantDialog disabled={!rowsSelected} contestants={contestants} />
     </div>

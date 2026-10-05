@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface"
-import { IContestant, IContestantBiodataWContest, IContestantRepository, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
+import { IContestant, IContestantBiodataWContest, IContestantRepository, IDeleteContestantsDTO, IEditContestantDTO, IGetTallyLinkDTO, ILeanContestant, IToggleEvictContestantDTO, IVoteContestantDto, IVoteContestantFromWalletPayload, IVoteContestantWithGivaahCredits } from "./types/contestant.interface"
 import { ApiCall } from "~/lib/api/fetcher"
 import { MethodsEnum } from "~/lib/api/types/methods.interface"
 import { ApiEndPoints } from "~/lib/api/endpoints"
@@ -9,6 +9,14 @@ import { IContestWFinalResult, IContestWStageWContestant } from "../contest/type
 // const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NWZjNTg0ZDdiNmI5Y2RlODI2MTg3MCIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaXNfc3RhZmYiOnRydWUsImlzX3N1cGVydXNlciI6dHJ1ZSwiaXNfYWN0aXZlIjp0cnVlLCJyb2xlcyI6WyJ1c2VyIl0sInBlcm1pc3Npb25zIjpbIm1hbmFnZSB1c2VycyIsIm1hbmFnZSBjb250ZW50IiwibWFuYWdlIGJsb2ciLCJtYW5hZ2UgcGF5bWVudCIsIm1hbmFnZSBjb250ZXN0IiwibWFuYWdlIHZvdGVzIl0sImV4cCI6MTgwMTIyOTgyMH0.hvXKQTbFqe1roaqPJQAJrngxPRS5kbyu_UHgJkq2Hy8"
 
 export class ContestantRepository implements IContestantRepository {
+    async deleteContestants(dto: IDeleteContestantsDTO, token: string | Request): Promise<TFetcherResponse<string>> {
+        return await ApiCall.call<string, IDeleteContestantsDTO>({
+            method: MethodsEnum.DELETE,
+            url: ApiEndPoints.deleteContestants,
+            data: dto
+        }, token)
+    }
+
     async callTallyWebhook(dto: unknown): Promise<TFetcherResponse<unknown>> {
         let res = await ApiCall.call({
             method: MethodsEnum.POST,
