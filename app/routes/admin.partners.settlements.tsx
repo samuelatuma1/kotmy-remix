@@ -3,6 +3,7 @@ import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/re
 import { ChevronRight, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Pagination from "~/components/reusables/Pagination";
+import { formatMoney } from "~/lib/utils";
 import { requireAuth, setToast } from "~/lib/session.server";
 import { partnerServer } from "~/services/partner/partner.server";
 import {
@@ -121,10 +122,6 @@ function buildSettlementsQuery(searchParams: URLSearchParams): ISearchPartnerSet
   }
 
   return query;
-}
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 function formatDate(value: string) {

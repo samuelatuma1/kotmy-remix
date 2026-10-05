@@ -11,6 +11,7 @@ import {
 import { PackageSearch, Search, ShieldCheck, ShieldX, ShoppingBag } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import Pagination from "~/components/reusables/Pagination";
+import { formatMoney } from "~/lib/utils";
 import {
   Dialog,
   DialogClose,
@@ -105,10 +106,6 @@ function buildEmptyOrders(pageSize = 20): IPaginatedResponse<OrderResponse> {
     last_key_id: null,
     first_key_id: null,
   };
-}
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 function formatDate(value: string) {

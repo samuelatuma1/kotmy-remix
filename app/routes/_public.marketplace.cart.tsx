@@ -2,6 +2,7 @@ import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-r
 import { Link, useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
 import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { noImage } from "~/assets/images";
+import { formatMoney } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
 import type { Cart, ICartItemUpsertDTO, IUpsertCartItemsDTO } from "~/services/partner/types/partner.interface";
 
@@ -14,10 +15,6 @@ type CartRouteActionData = {
   cart?: Cart | null;
   error?: string | null;
 };
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
-}
 
 function parseCartItemPayload(formData: FormData): ICartItemUpsertDTO {
   const productId = String(formData.get("product_id") ?? "").trim();

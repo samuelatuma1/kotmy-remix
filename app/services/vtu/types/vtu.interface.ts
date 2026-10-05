@@ -56,6 +56,11 @@ export enum VTUPurchaseStatus {
   FAILED = "failed",
   MANUAL_REVIEW = "manual_review",
   AWAITING_PROVIDER_WALLET_FUNDS = "awaiting_provider_funds",
+  REFUND_INITIATED = "refund_initiated",
+  REFUND_STATUS_UNKNOWN = "refund_status_unknown",
+  REFUND_FAILED = "refund_failed",
+  REFUND_PROCESSING = "refund_processing",
+  REFUNDED = "refunded"
 }
 
 export enum VTURetailPriceType {
@@ -220,6 +225,8 @@ export interface GetDiscountedDataPrice{
 export interface VTUPurchaseResponse {
   _id: string;
   str_id: string
+  created_at: string;
+
   vtu_product_id: string;
   owner_id?: string;
   owner_type?: ProfileOwnerType;
@@ -266,9 +273,23 @@ export interface VTUAirtimeProductFromBank {
 }
 
 export interface VTUPurchaseResponsePaged extends IPaginatedResponse<VTUPurchaseResponse>{
+  last_created_at: string;
+  first_created_at: string;
 
 }
 
 export interface IQueryVTUPurchases extends IBasePaginationQuery {
-  
+  status?: VTUPurchaseStatus;
+  email?: string;
+  type?: VTUType;
+  phone_number?: string;
+  reference?: string;
+  last_created_at?: string;
+  first_created_at?: string;
+}
+
+export interface InitiateVTUPurchaseRefundDTO{
+    reference: string
+    reason: string
+
 }

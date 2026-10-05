@@ -3,6 +3,7 @@ import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } 
 import { ArrowLeft, PackageSearch, ShoppingBag, Star } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Pagination from "~/components/reusables/Pagination";
+import { formatMoney } from "~/lib/utils";
 import {
   Dialog,
   DialogClose,
@@ -119,10 +120,6 @@ function emptyPaginatedOrders(pageSize = 10): IPaginatedResponse<OrderResponse> 
     last_key_id: null,
     first_key_id: null,
   };
-}
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 function formatDate(value: string) {

@@ -13,6 +13,19 @@ import type { VTUPurchaseResponse } from "~/services/vtu/types/vtu.interface";
 
 const DEFAULT_PAGE_SIZE = 20;
 
+function syncCreatedAtParams(lastCreatedAt?: string | null, firstCreatedAt?: string | null) {
+  const url = new URL(window.location.href);
+  const timestamps = { last_created_at: lastCreatedAt, first_created_at: firstCreatedAt };
+  let changed = false;
+  for (const [key, value] of Object.entries(timestamps)) {
+    if (value && url.searchParams.get(key) !== value) {
+      url.searchParams.set(key, value);
+      changed = true;
+    }
+  }
+  if (changed) window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
 export async function loader({ request }: LoaderFunctionArgs) {
   await requireAuth(request);
 
@@ -20,12 +33,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const pageSizeValue = Number(url.searchParams.get("page_size") ?? DEFAULT_PAGE_SIZE);
   const pageSize = Number.isFinite(pageSizeValue) && pageSizeValue > 0 ? pageSizeValue : DEFAULT_PAGE_SIZE;
   const directionValue = url.searchParams.get("direction");
+  const lastCreatedAt = url.searchParams.get("last_created_at");
+  const firstCreatedAt = url.searchParams.get("first_created_at");
 
   const response = await vtuServer.getVTUPurchaseResponsePaged({
     page_size: pageSize,
     last_key_id: url.searchParams.get("last_key_id") ?? undefined,
     first_key_id: url.searchParams.get("first_key_id") ?? undefined,
     direction: directionValue === "previous" ? "previous" : "next",
+    last_created_at: lastCreatedAt ?? undefined,
+    first_created_at: firstCreatedAt ?? undefined,
   }, request);
 
   if (response.error || !response.data) {
@@ -117,6 +134,10 @@ function PurchaseSkeleton() {
 
 export default function VTUPurchasesPage() {
   const data = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    syncCreatedAtParams(data.purchases?.last_created_at, data.purchases?.first_created_at);
+  }, [data.purchases?.last_created_at, data.purchases?.first_created_at]);
 
   useEffect(() => {
     if (data.error) {

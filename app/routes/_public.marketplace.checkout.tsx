@@ -3,6 +3,7 @@ import { Form, Link, useActionData, useFetcher, useLoaderData, useNavigation } f
 import { ArrowLeft, CheckCircle2, CreditCard, Loader2, MapPin, Package, Plus } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { noImage } from "~/assets/images";
+import { formatMoney } from "~/lib/utils";
 import { setToast } from "~/lib/session.server";
 import { partnerServer } from "~/services/partner/partner.server";
 import { PaymentOptionKey } from "~/services/partner/types/partner.interface";
@@ -27,10 +28,6 @@ type CheckoutActionData = {
   error?: string | null;
   delivery_details?: DeliveryDetails | null;
 };
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
-}
 
 function buildDeliveryDetailsPayload(formData: FormData): CreateDeliveryDetails {
   const name = String(formData.get("name") ?? "").trim();

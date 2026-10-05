@@ -10,7 +10,7 @@ import { ArrowLeft, CreditCard, PackageSearch, Phone, ShieldCheck, SquarePen } f
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/reusables/Dialog";
 import { setToast } from "~/lib/session.server";
-import { cn } from "~/lib/utils";
+import { cn, formatMoney } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
 import { IOrderData, OrderItem, OrderProductStatus, OrderResponse } from "~/services/partner/types/partner.interface";
 
@@ -31,10 +31,6 @@ type OrderMutationResponse =
     };
 
 const actionableStatuses: OrderProductStatus[] = [OrderProductStatus.Pending, OrderProductStatus.Active];
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
-}
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-NG", {

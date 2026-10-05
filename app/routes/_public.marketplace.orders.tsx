@@ -2,6 +2,7 @@ import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 import { ArrowLeft, PackageSearch, ShoppingBag } from "lucide-react";
 import Pagination from "~/components/reusables/Pagination";
+import { formatMoney } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
 import type {
   CustomerOrdersQuery,
@@ -93,10 +94,6 @@ function emptyPaginatedOrders(pageSize = 10): IPaginatedResponse<OrderResponse> 
     last_key_id: null,
     first_key_id: null,
   };
-}
-
-function formatMoney(currency: string, value: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(value)}`;
 }
 
 function formatDate(value: string) {

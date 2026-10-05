@@ -23,6 +23,7 @@ const navsWSubs = [
             { label: 'Contest Registrations', url: 'transactions/contest-registrations' , acceptedRoles: [] },
             { label: 'Income History', url: 'transactions/income-history', acceptedRoles: []  },
              { label: 'Affiliate Leaderboard', url: 'transactions/affiliate-board', acceptedRoles: [] },
+            { label: 'VTU Purchases', url: 'vtupurchases', acceptedRoles: [] },
         ]
     },
     {

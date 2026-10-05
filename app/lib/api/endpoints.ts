@@ -480,4 +480,11 @@ export class ApiEndPoints {
     static get getVtuPurchases(){
         return `/v2/api/vtu/purchases`
     }
+
+    static get adminGetVtuPurchases(){
+        return `/v2/api/admin/vtu/purchases`
+    }
+    static get adminInitiateVTURefund(){
+        return `/v2/api/admin/vtu/purchases/refund`
+    }
 }

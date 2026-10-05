@@ -28,6 +28,10 @@ export function formatAmount(amount?: number) {
   return typeof amount === "number" ? amount.toLocaleString() : "—"
 }
 
+export function formatMoney(currency: string, value: number, maximumFractionDigits = 0): string {
+  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits }).format(value)}`
+}
+
 export function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
 }

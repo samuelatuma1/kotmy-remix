@@ -25,7 +25,7 @@ export type PaymentResponseDTO = {
     amount: number;
     app_fee: number;
     created_at: string;
-    payment_status: 'PENDING'  | 'revoked' | 'PROCESSING' | 'SUCCESS' | 'FOR_REFUND' |'REFUNDED' | 'FAILED';
+    payment_status: 'PENDING'  | 'revoked' | 'PROCESSING' | 'SUCCESS' | 'FOR_REFUND' |'REFUNDED' | 'FAILED' | 'ABANDONED' | "PROCESSING_REFUND" | "REFUND_INITIATED_FOR_PROVIDER" | "REFUND_INITIATION_UNKNOWN"|"REFUND_FAILED";
     payment_method: string;
     customer: {
         name: string;

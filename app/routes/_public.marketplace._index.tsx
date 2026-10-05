@@ -4,6 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { noImage } from "~/assets/images";
 import Pagination from "~/components/reusables/Pagination";
+import { formatMoney } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
 import type {
   Cart,
@@ -189,10 +190,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 }
 
-function formatPrice(currency: string, price: number) {
-  return `${currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(price)}`;
-}
-
 function getProductLocationId(product: PartnerProduct): string | null {
   const primaryLocation = product.product_locations?.find(location => location.is_primary);
   return primaryLocation?.str_id ?? product.product_locations?.[0]?.str_id ?? null;
@@ -211,8 +208,8 @@ function ProductCard({
   const priceLabel = product.price_min === 0 && product.price_max === 0
     ? "Free"
     : hasRange
-      ? `${formatPrice(product.currency, product.price_min)} - ${formatPrice(product.currency, product.price_max)}`
-      : formatPrice(product.currency, product.price_min);
+      ? `${formatMoney(product.currency, product.price_min)} - ${formatMoney(product.currency, product.price_max)}`
+      : formatMoney(product.currency, product.price_min);
   const locationCount = product.product_locations?.length ?? 0;
   const buttonLabel = isSubmitting ? "Adding..." : "Add to cart";
 
@@ -291,8 +288,8 @@ function ProductCardx({
   const priceLabel = product.price_min === 0 && product.price_max === 0
     ? "Free"
     : hasRange
-      ? `${formatPrice(product.currency, product.price_min)} - ${formatPrice(product.currency, product.price_max)}`
-      : formatPrice(product.currency, product.price_min);
+      ? `${formatMoney(product.currency, product.price_min)} - ${formatMoney(product.currency, product.price_max)}`
+      : formatMoney(product.currency, product.price_min);
   const locationCount = product.product_locations?.length ?? 0;
   const buttonLabel = isSubmitting ? "Adding..." : "Add to cart";
 
