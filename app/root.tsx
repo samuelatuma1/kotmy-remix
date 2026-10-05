@@ -36,6 +36,36 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { toast, headers } = await nickToast({ request })
   return json({ toast }, { headers })
 }
+const isPlainObject = (val: object) => {
+  return typeof val === 'object' && val !== null && !Array.isArray(val);
+}
+function formatToastMessage(message: string) {
+  try {
+    const parsed: object = JSON.parse(message)
+    if (isPlainObject(parsed)) {
+      let body = ""
+      
+      for (const key in parsed) {
+          let value = parsed[key as keyof typeof parsed];
+          if(`${value}`.toLowerCase().includes("baseexception") || !`${value}`.trim()) {
+          } else{
+
+            body += `${key}: ${parsed[key as keyof typeof parsed]}\n`
+          }
+
+      }
+      return body.trim()
+    }
+
+    return Object.values(parsed).map((value) => {
+      if (typeof value === "string") return value
+      if (value === undefined) return "undefined"
+      return JSON.stringify(value)
+    }).join("; ")
+  } catch {
+    return message
+  }
+}
 
 function Document({ children }: { children: React.ReactNode }) {
   return (
@@ -66,7 +96,7 @@ export default function App() {
       toast({
         title: type === "success" ? "Success!" : "Oops! There seems to be a problem",
         variant: type === "success" ? "default" : "destructive",
-        description: message,
+        description: formatToastMessage(message),
       })
     }
   }, [toastMsg])
