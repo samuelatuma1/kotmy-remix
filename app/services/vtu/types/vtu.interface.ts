@@ -150,6 +150,7 @@ export interface VTUProductBase  {
   minumum_discount_limit?: number; 
   maximum_discount_limit?: number;
   retail_price?: number;
+  retail_price_after_discount?: number
 }
 
 export interface VTUAirtimeProduct extends VTUProductBase {

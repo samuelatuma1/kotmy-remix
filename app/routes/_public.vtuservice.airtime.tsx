@@ -359,7 +359,7 @@ function FixedPlanCard({ plan, onPreview }: { plan: VTUAirtimeProduct; onPreview
   return (
     <button className="group rounded-[1.5rem] border border-brand-grey bg-white p-5 text-left shadow-[0_12px_36px_rgba(14,42,77,0.06)] transition hover:-translate-y-1 hover:border-brand-pink hover:shadow-[0_18px_44px_rgba(14,42,77,0.12)]" onClick={() => onPreview(plan, String(plan.retail_price ?? ""))} type="button">
       <p className="text-2xl font-black text-brand-navy">{plan.retail_price_currency}{formatAmount(plan.retail_price)}</p>
-      <p className="mt-3 text-sm font-semibold text-brand-slate">Pay {plan.retail_price_currency}{formatAmount(plan.discount_value)}</p>
+      <p className="mt-3 text-sm font-semibold text-brand-slate">Pay {plan.retail_price_currency}{formatAmount(plan.retail_price_after_discount) ?? formatAmount(plan.retail_price)}</p>
       <span className="mt-4 inline-block text-xs font-bold uppercase tracking-[0.16em] text-brand-pink transition group-hover:translate-x-1">Select plan →</span>
     </button>
   );
@@ -383,7 +383,7 @@ function Plans({ plans, onPreview }: { plans: VTUAirtimePlanDTO; onPreview: (pro
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-slate">Quick selection</p>
           <h2 className="mt-1 text-2xl font-black text-brand-navy">Fixed airtime plans</h2>
         </div>
-        {fixedPlans.length > 0 ? <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{fixedPlans.map((plan) => <FixedPlanCard key={plan.str_id} onPreview={onPreview} plan={plan} />)}</div> : <p className="rounded-2xl bg-secondary p-5 text-sm text-brand-slate">No fixed airtime plans are available for this number.</p>}
+        {fixedPlans.length > 0 ? <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3">{fixedPlans.map((plan) => <FixedPlanCard key={plan.str_id} onPreview={onPreview} plan={plan} />)}</div> : <p className="rounded-2xl bg-secondary p-5 text-sm text-brand-slate">No fixed airtime plans are available for this number.</p>}
       </section>
     </div>
   );

@@ -195,7 +195,12 @@ function DataPlanCard({ plan, onPreview }: { plan: VTUProduct; onPreview: (plan:
       <p className="text-2xl font-black text-brand-navy">{formatAmount(plan.size)}{plan.size_unit}</p>
       <p className="mt-2 text-sm font-semibold text-brand-slate">Valid for {plan.validity} {plan.validity_unit}</p>
       <p className="mt-5 border-t border-slate-100 pt-4 text-lg font-black text-brand-pink">
-        {plan.retail_price_currency}{formatAmount(plan.retail_price)}
+        {plan.retail_price_currency}{plan.retail_price_after_discount != null && plan.retail_price_after_discount !== plan.retail_price ? (
+          <>
+            <span className="mr-2 text-sm font-semibold text-brand-slate line-through">{formatAmount(plan.retail_price)}</span>
+            {formatAmount(plan.retail_price_after_discount)}
+          </>
+        ) : formatAmount(plan.retail_price)}
       </p>
     </button>
   );
