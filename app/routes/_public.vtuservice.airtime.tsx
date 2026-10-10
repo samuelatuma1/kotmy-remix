@@ -359,7 +359,7 @@ function FixedPlanCard({ plan, onPreview }: { plan: VTUAirtimeProduct; onPreview
   return (
     <button className="group rounded-[1.5rem] border border-brand-grey bg-white p-5 text-left shadow-[0_12px_36px_rgba(14,42,77,0.06)] transition hover:-translate-y-1 hover:border-brand-pink hover:shadow-[0_18px_44px_rgba(14,42,77,0.12)]" onClick={() => onPreview(plan, String(plan.retail_price ?? ""))} type="button">
       <p className="text-2xl font-black text-brand-navy">{plan.retail_price_currency}{formatAmount(plan.retail_price)}</p>
-      <p className="mt-3 text-sm font-semibold text-brand-slate">Pay {plan.retail_price_currency}{formatAmount(plan.retail_price_after_discount) ?? formatAmount(plan.retail_price)}</p>
+      <p className="mt-3 text-sm font-semibold text-brand-slate">Pay {plan.retail_price_currency}{formatAmount(plan.discounted_retail_price) ?? formatAmount(plan.retail_price)}</p>
       <span className="mt-4 inline-block text-xs font-bold uppercase tracking-[0.16em] text-brand-pink transition group-hover:translate-x-1">Select plan →</span>
     </button>
   );
