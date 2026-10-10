@@ -31,6 +31,11 @@ const primaryNavs = [
             { label: 'Partners Orders', url: 'partners/orders', acceptedRoles: [] }
         ]
     },
+    {
+        label: 'VTU Products', icon: icons.adminFinanceIcon, acceptedRoles: [], subitems: [
+            { label: 'VTU Data', url: 'vtudata', acceptedRoles: [] }
+        ]
+    }
 ]
 const secondaryNavs = [
     { label: 'Profile', icon: icons.profileIcon, url: '/user/profile' },

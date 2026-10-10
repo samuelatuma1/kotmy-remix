@@ -134,6 +134,7 @@ export interface PurchaseVTUAirtimeProductFromPaymentGatewayData extends Purchas
 
 
 export interface VTUProductBase  {
+  _id: string;
   str_id: string;
   description?: string;
   network: string;
@@ -146,7 +147,7 @@ export interface VTUProductBase  {
   is_discounted: boolean;
   discount_type?: VTUDiscountType;
   discount_value?: number;
-  minumum_discount_limit?: number; // Note: Kept the spelling exactly as it is in the Python model
+  minumum_discount_limit?: number; 
   maximum_discount_limit?: number;
   retail_price?: number;
 }
@@ -292,4 +293,59 @@ export interface InitiateVTUPurchaseRefundDTO{
     reference: string
     reason: string
 
+}
+
+export interface BaseVTUProviderOffer  {
+  _id: string;
+  str_id: string;
+  created_at: string;
+  provider: string;
+  network: string;
+  description?: string;
+  vtu_product_id?: string;
+  status: VTUProviderOfferStatus;
+  priority: number;
+  offer_identifier: string; // Default: ""
+}
+
+export interface VTUProviderOffer extends BaseVTUProviderOffer {
+  /** Mapped to VTU category string */
+  category: string;
+  validity: number;
+  validity_unit: string;
+  type: VTUType;
+  size: number;
+  size_unit: VTUDataSizeUnit;
+  cost_price: number;
+  cost_price_currency: WalletCurrency;
+  provider_plan_id: string;
+}
+
+export interface VTUAirtimeProviderOffer extends BaseVTUProviderOffer {
+  minimum_retail_price: number;
+  maximum_retail_price: number;
+  proposed_cost_price_discount_percent: number;
+}
+export interface SearchVTUProduct extends IBasePaginationQuery {
+  description?: string;
+  network?: string;
+  category?: VTUProductCategory;
+  status?: VTUProductStatus;
+}
+
+export interface VTUProductResponseDTO extends VTUProduct{
+  _id: string;
+  providers_offers: VTUProviderOffer[]
+}
+export interface VTUProductResponseDTOPagedModel extends IPaginatedResponse<VTUProductResponseDTO>{
+}
+
+
+
+export interface UpdateVTUProductDTO {
+  description?: string;
+  is_discounted?: boolean;
+  discount_type?: VTUDiscountType;
+  discount_value?: number;
+  retail_price?: number;
 }

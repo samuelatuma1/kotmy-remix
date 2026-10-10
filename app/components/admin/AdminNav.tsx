@@ -33,6 +33,11 @@ const navsWSubs = [
             { label: 'Partners Orders', url: 'partners/orders', acceptedRoles: [] }
         ]
     },
+    {
+        label: 'VTU Products', icon: icons.adminFinanceIcon, acceptedRoles: [], subitems: [
+            { label: 'VTU Data', url: 'vtudata', acceptedRoles: [] }
+        ]
+    },
 ]
 
 export default function AdminNavigation({ show }: { show: boolean }) {

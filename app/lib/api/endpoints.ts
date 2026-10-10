@@ -484,7 +484,16 @@ export class ApiEndPoints {
     static get adminGetVtuPurchases(){
         return `/v2/api/admin/vtu/purchases`
     }
+
     static get adminInitiateVTURefund(){
         return `/v2/api/admin/vtu/purchases/refund`
+    }
+
+    static get adminVTUDataProducts(){
+        return `/v2/api/admin/vtu_products`
+    }
+
+    static adminUpdateVTUDataProducts(productId: string){
+        return `/v2/api/admin/vtu_products/${productId}`
     }
 }

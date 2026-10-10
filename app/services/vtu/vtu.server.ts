@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse, PurchaseDataProductFromWallet, PurchaseDataProductFromBank, InitiateVTUPurchaseRefundDTO } from "./types/vtu.interface";
+import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse, PurchaseDataProductFromWallet, PurchaseDataProductFromBank, InitiateVTUPurchaseRefundDTO, SearchVTUProduct, VTUProductResponseDTOPagedModel, UpdateVTUProductDTO, VTUProductResponseDTO } from "./types/vtu.interface";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { PaymentResponseDTO } from "../admin/types/admin.interface";
@@ -140,8 +140,31 @@ export class VTUServer {
         }, cookies);
         if (error) return { error };
         return { data };
-    
   }
+
+  async adminGetVTUProductsPaged(query: SearchVTUProduct, cookies: Request): Promise<TFetcherResponse<VTUProductResponseDTOPagedModel>>  {
+        const params = this.buildQueryString(query);
+        const url = `${ApiEndPoints.adminVTUDataProducts}?${params}`;
+        const { data, error } = await ApiCall.call<VTUProductResponseDTOPagedModel, unknown>({
+        url,
+        method: "GET",
+        }, cookies);
+        if (error) return { error };
+        return { data };
+  }
+
+  async adminUpdateVTUProductDTO(productId: string, form: UpdateVTUProductDTO, cookies: Request): Promise<TFetcherResponse<VTUProductResponseDTO>>  {
+        const url = ApiEndPoints.adminUpdateVTUDataProducts(productId);
+        const { data, error } = await ApiCall.call<VTUProductResponseDTO, UpdateVTUProductDTO>({
+        url,
+        method: "PATCH",
+        data: form
+        }, cookies);
+        if (error) return { error };
+        return { data };
+  }
+
+  
 
   async adminInitiateRefund(form: InitiateVTUPurchaseRefundDTO, cookies: Request):  Promise<TFetcherResponse<VTUPurchaseResponse>>{
     const { data, error } = await ApiCall.call<VTUPurchaseResponse, InitiateVTUPurchaseRefundDTO>({

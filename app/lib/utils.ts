@@ -19,9 +19,25 @@ export function getErrorMessage(error: unknown, fallback = "An error occurred.")
   if (error && typeof error === "object" && "detail" in error) {
     const detail = (error as { detail?: unknown }).detail
     if (typeof detail === "string") return detail
+    if (Array.isArray(detail)) {
+      const messages = detail
+        .map(item => item && typeof item === "object" && "msg" in item ? item.msg : undefined)
+        .filter((message): message is string => typeof message === "string")
+      if (messages.length) return messages.join(", ")
+    }
   }
 
   return fallback
+}
+
+export function formatVTUDataProductDescription(
+  category: string,
+  size: number,
+  sizeUnit: string,
+  validity: number,
+  validityUnit: string,
+) {
+  return `${category} ${size} ${sizeUnit} Data valid for ${validity} ${validityUnit}`
 }
 
 export function formatAmount(amount?: number) {
