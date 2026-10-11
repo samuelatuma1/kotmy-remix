@@ -496,4 +496,8 @@ export class ApiEndPoints {
     static adminUpdateVTUDataProducts(productId: string){
         return `/v2/api/admin/vtu_products/${productId}`
     }
+
+    static get recentVTUBeneficiaries(){
+        return  `/v2/api/vtu/beneficiaries`
+    }
 }

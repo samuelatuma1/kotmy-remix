@@ -23,9 +23,26 @@ import { vtuServer } from "~/services/vtu/vtu.server";
 import type { DiscountedDataAmountResponse, VTUDataCategoryResponse, VTUDataPlansDTO, VTUProduct } from "~/services/vtu/types/vtu.interface";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const phoneNumber = normalizePhoneNumber(new URL(request.url).searchParams.get("phone_number") ?? "");
+  const url = new URL(request.url);
 
-  return json({ phoneNumber, plans: null, error: null });
+  if (url.searchParams.get("resource") === "recent-beneficiaries") {
+    let recentBeneficiaries: string[] = [];
+
+    if (await getAuthSessionToken(request)) {
+      try {
+        const response = await vtuServer.getRecentVTUBeneficiaries(request);
+        recentBeneficiaries = response.data?.recent ?? [];
+      } catch {
+        // Recent beneficiaries are optional; keep the phone input available if loading fails.
+      }
+    }
+
+    return json({ phoneNumber: "", recentBeneficiaries, plans: null, error: null });
+  }
+
+  const phoneNumber = normalizePhoneNumber(url.searchParams.get("phone_number") ?? "");
+
+  return json({ phoneNumber, recentBeneficiaries: [], plans: null, error: null });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -389,6 +406,7 @@ export function useDataController() {
   const initialData = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const previewFetcher = useFetcher<typeof action>();
+  const recentBeneficiariesFetcher = useFetcher<typeof loader>();
   const { getUserStoreManager } = useUserManager();
   const [user, setUser] = useState<UserAtom | null>(null);
   const [phoneNumber, setPhoneNumber] = useState(initialData.phoneNumber);
@@ -404,6 +422,10 @@ export function useDataController() {
     const user = getUserStoreManager();
     setUser(user);
     if (user?.phone) setPhoneNumber(normalizePhoneNumber(user.phone));
+  }, []);
+
+  useEffect(() => {
+    recentBeneficiariesFetcher.load("/vtuservice/data?resource=recent-beneficiaries");
   }, []);
 
   useEffect(() => {
@@ -502,6 +524,9 @@ export function useDataController() {
 
   return {
     fetcher,
+    recentBeneficiaries: recentBeneficiariesFetcher.data && "recentBeneficiaries" in recentBeneficiariesFetcher.data
+      ? recentBeneficiariesFetcher.data.recentBeneficiaries
+      : [],
     phoneNumber,
     setPhoneNumber: (value: string) => setPhoneNumber(normalizePhoneNumber(value)),
     plans,
@@ -529,7 +554,7 @@ export function useDataController() {
 }
 
 export default function DataPage() {
-  const { fetcher, phoneNumber, setPhoneNumber, plans, user, paymentPreview, referrerCode, setReferrerCode, walletPaymentOpen, walletPin, setWalletPin, completeWalletPurchase, openWalletPayment, bankPaymentOpen, bankEmail, setBankEmail, openBankPayment, startBankPayment, requestPaymentPreview, closePaymentPreview, hasValidPhoneNumber, isLoading, isPurchaseProcessing, isBankPaymentProcessing } = useDataController();
+  const { fetcher, recentBeneficiaries, phoneNumber, setPhoneNumber, plans, user, paymentPreview, referrerCode, setReferrerCode, walletPaymentOpen, walletPin, setWalletPin, completeWalletPurchase, openWalletPayment, bankPaymentOpen, bankEmail, setBankEmail, openBankPayment, startBankPayment, requestPaymentPreview, closePaymentPreview, hasValidPhoneNumber, isLoading, isPurchaseProcessing, isBankPaymentProcessing } = useDataController();
 
   return (
     <main className="grow min-w-0 overflow-x-hidden bg-white text-brand-navy">
@@ -550,6 +575,20 @@ export default function DataPage() {
             <input name="intent" type="hidden" value="search_data_plans" />
             <label className="block text-sm font-bold text-brand-navy" htmlFor="data_phone_number">Phone number</label>
             <input autoComplete="tel" className="mt-3 h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-lg font-semibold outline-none transition placeholder:text-slate-400 focus:border-brand-pink focus:bg-white" id="data_phone_number" inputMode="numeric" name="phone_number" onChange={(event) => setPhoneNumber(event.target.value)} placeholder="080 1234 5678" type="tel" value={phoneNumber} />
+            {recentBeneficiaries.length > 0 && (
+              <div aria-label="Recent beneficiaries" className="mt-4 flex flex-wrap gap-2" role="group">
+                {recentBeneficiaries.map((beneficiary, index) => (
+                  <button
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-brand-navy transition hover:border-brand-pink hover:bg-brand-pink/5"
+                    key={`${beneficiary}-${index}`}
+                    onClick={() => setPhoneNumber(beneficiary)}
+                    type="button"
+                  >
+                    {beneficiary}
+                  </button>
+                ))}
+              </div>
+            )}
             <p className="mt-3 text-xs leading-5 text-brand-slate">Use an 11-digit Nigerian number starting with 0 or a 13-digit number starting with 234.</p>
             <button className="mt-5 h-14 w-full rounded-2xl bg-brand-pink px-6 font-bold text-white transition hover:bg-brand-pink/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" disabled={!hasValidPhoneNumber || isLoading} type="submit">
               {isLoading ? "Loading data plans…" : "Get Data Plans"}

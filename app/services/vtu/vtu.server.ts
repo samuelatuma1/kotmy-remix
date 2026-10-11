@@ -1,5 +1,5 @@
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
-import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse, PurchaseDataProductFromWallet, PurchaseDataProductFromBank, InitiateVTUPurchaseRefundDTO, SearchVTUProduct, VTUProductResponseDTOPagedModel, UpdateVTUProductDTO, VTUProductResponseDTO } from "./types/vtu.interface";
+import { DiscountedAirtimeAmountResponse, GetDiscountedAirtimePrice, PurchaseVTUAirtimeProductFromWallet, SearchAirtimePlansQuery, VTUAirtimeProductFromBank, VTUAirtimePlanDTO, VTUAirtimeProduct, VTUPurchaseResponse, IQueryVTUPurchases, VTUPurchaseResponsePaged, SearchDataPlansQuery, VTUDataPlansDTO, GetDiscountedDataPrice, DiscountedDataAmountResponse, PurchaseDataProductFromWallet, PurchaseDataProductFromBank, InitiateVTUPurchaseRefundDTO, SearchVTUProduct, VTUProductResponseDTOPagedModel, UpdateVTUProductDTO, VTUProductResponseDTO, RecentVTUBeneficiaries } from "./types/vtu.interface";
 import { ApiEndPoints } from "~/lib/api/endpoints";
 import { ApiCall } from "~/lib/api/fetcher";
 import { PaymentResponseDTO } from "../admin/types/admin.interface";
@@ -164,6 +164,16 @@ export class VTUServer {
         return { data };
   }
 
+  async getRecentVTUBeneficiaries(cookies: Request): Promise<TFetcherResponse<RecentVTUBeneficiaries>> {
+      const url = ApiEndPoints.recentVTUBeneficiaries;
+      const { data, error } = await ApiCall.call<RecentVTUBeneficiaries, unknown>({
+        url,
+        method: "GET",
+        }, cookies);
+        if (error) return { error };
+        return { data };
+      
+  }
   
 
   async adminInitiateRefund(form: InitiateVTUPurchaseRefundDTO, cookies: Request):  Promise<TFetcherResponse<VTUPurchaseResponse>>{

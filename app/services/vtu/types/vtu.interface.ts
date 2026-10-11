@@ -350,3 +350,9 @@ export interface UpdateVTUProductDTO {
   discount_value?: number;
   retail_price?: number;
 }
+
+export interface RecentVTUBeneficiaries{
+  recent: string[];
+  phone_number?: string
+}
+    

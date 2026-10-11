@@ -24,9 +24,26 @@ import type { DiscountedAirtimeAmountResponse, VTUAirtimePlanDTO, VTUAirtimeProd
 
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const phoneNumber = normalizePhoneNumber(new URL(request.url).searchParams.get("phone_number") ?? "");
+  const url = new URL(request.url);
 
-  return json({ phoneNumber, plans: null, error: null });
+  if (url.searchParams.get("resource") === "recent-beneficiaries") {
+    let recentBeneficiaries: string[] = [];
+
+    if (await getAuthSessionToken(request)) {
+      try {
+        const response = await vtuServer.getRecentVTUBeneficiaries(request);
+        recentBeneficiaries = response.data?.recent ?? [];
+      } catch {
+        // Recent beneficiaries are optional; keep the phone input available if loading fails.
+      }
+    }
+
+    return json({ phoneNumber: "", recentBeneficiaries, plans: null, error: null });
+  }
+
+  const phoneNumber = normalizePhoneNumber(url.searchParams.get("phone_number") ?? "");
+
+  return json({ phoneNumber, recentBeneficiaries: [], plans: null, error: null });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -393,6 +410,7 @@ export function useAirtimeController() {
   const initialData = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const previewFetcher = useFetcher<typeof action>();
+  const recentBeneficiariesFetcher = useFetcher<typeof loader>();
   const { getUserStoreManager } = useUserManager();
   const [user, setUser] = useState<UserAtom | null>(null);
   const [phoneNumber, setPhoneNumber] = useState(initialData.phoneNumber);
@@ -408,6 +426,10 @@ export function useAirtimeController() {
     const user = getUserStoreManager();
     setUser(user);
     if (user?.phone) setPhoneNumber(normalizePhoneNumber(user.phone));
+  }, []);
+
+  useEffect(() => {
+    recentBeneficiariesFetcher.load("/vtuservice/airtime?resource=recent-beneficiaries");
   }, []);
 
   useEffect(() => {
@@ -531,6 +553,9 @@ export function useAirtimeController() {
   return {
     fetcher,
     user,
+    recentBeneficiaries: recentBeneficiariesFetcher.data && "recentBeneficiaries" in recentBeneficiariesFetcher.data
+      ? recentBeneficiariesFetcher.data.recentBeneficiaries
+      : [],
     phoneNumber,
     setPhoneNumber: (value: string) => setPhoneNumber(normalizePhoneNumber(value)),
     plans,
@@ -559,6 +584,7 @@ export default function AirtimePage() {
   const {
     fetcher,
     user,
+    recentBeneficiaries,
     phoneNumber,
     setPhoneNumber,
     plans,
@@ -593,6 +619,20 @@ export default function AirtimePage() {
         <section className="mb-8 rounded-[1.75rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:mb-10 sm:p-7">
           <label className="block text-sm font-bold text-brand-navy" htmlFor="phone_number">Phone number</label>
           <input autoComplete="tel" className="mt-3 h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-lg font-semibold outline-none transition placeholder:text-slate-400 focus:border-brand-pink focus:bg-white" id="phone_number" inputMode="numeric" name="phone_number" onChange={(event) => setPhoneNumber(event.target.value)} placeholder="080 1234 5678" type="tel" value={phoneNumber} />
+          {recentBeneficiaries.length > 0 && (
+            <div aria-label="Recent beneficiaries" className="mt-4 flex flex-wrap gap-2" role="group">
+              {recentBeneficiaries.map((beneficiary, index) => (
+                <button
+                  className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-brand-navy transition hover:border-brand-pink hover:bg-brand-pink/5"
+                  key={`${beneficiary}-${index}`}
+                  onClick={() => setPhoneNumber(beneficiary)}
+                  type="button"
+                >
+                  {beneficiary}
+                </button>
+              ))}
+            </div>
+          )}
           <p className="mt-3 text-xs leading-5 text-brand-slate">Use an 11-digit Nigerian number starting with 0 or a 13-digit number starting with 234.</p>
           <button className="mt-5 h-14 w-full rounded-2xl bg-brand-pink px-6 font-bold text-white transition hover:bg-brand-pink/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60" disabled={isLoading} type="submit">{isLoading ? "Loading plans…" : "Get airtime plans"}</button>
         </section>
