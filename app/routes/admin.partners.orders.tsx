@@ -93,7 +93,7 @@ const adminResolveStatusOptions: Array<{ label: string; value: OrderProductStatu
 
 const refundTypeOptions: Array<{ label: string; value: OrderRefundType }> = [
   { label: "Wallet", value: OrderRefundType.wallet },
-  { label: "Customer bank", value: OrderRefundType.customer_bank },
+  { label: "Customer bank", value: OrderRefundType.provider },
 ];
 
 function buildEmptyOrders(pageSize = 20): IPaginatedResponse<OrderResponse> {

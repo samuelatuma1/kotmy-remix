@@ -577,7 +577,7 @@ export interface ICustomerDisputeOrderFulfilledDTO {
 
 export enum OrderRefundType{
   wallet = "wallet",
-  customer_bank = "customer_bank"
+  provider = "provider"
 
 }
 export interface IAdminResolveOrderDispute{
