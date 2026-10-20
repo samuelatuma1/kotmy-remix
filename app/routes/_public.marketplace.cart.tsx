@@ -1,10 +1,11 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData, useLocation, useNavigation } from "@remix-run/react";
 import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { noImage } from "~/assets/images";
 import { formatMoney } from "~/lib/utils";
 import { partnerServer } from "~/services/partner/partner.server";
 import type { Cart, ICartItemUpsertDTO, IUpsertCartItemsDTO } from "~/services/partner/types/partner.interface";
+import { getMarketplacePaths } from "~/lib/feature-routes";
 
 type CartRouteLoaderData = {
   cart?: Cart | null;
@@ -91,7 +92,7 @@ function CartLineItem({
     if (item.product_location_id) {
       formData.set("product_location_id", item.product_location_id);
     }
-    fetcher.submit(formData, { method: "post", action: "/marketplace/cart" });
+    fetcher.submit(formData, { method: "post" });
   };
 
   return (
@@ -193,6 +194,8 @@ function CartSkeleton() {
 }
 
 export default function MarketplaceCart() {
+  const { pathname } = useLocation();
+  const paths = getMarketplacePaths(pathname);
   const { cart, cartError } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
@@ -209,7 +212,7 @@ export default function MarketplaceCart() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl space-y-4">
             <Link
-              to="/marketplace"
+              to={paths.shop}
               className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -261,7 +264,7 @@ export default function MarketplaceCart() {
               {cartItems.length > 0 ? `${cartItems.length} line item${cartItems.length === 1 ? "" : "s"}` : "No items in cart yet"}
             </p>
           </div>
-          <Link to="/marketplace" className="text-sm font-bold text-accent">
+          <Link to={paths.shop} className="text-sm font-bold text-accent">
             Continue shopping
           </Link>
         </div>
@@ -282,7 +285,7 @@ export default function MarketplaceCart() {
               Add products from the marketplace and they will appear here.
             </p>
             <Link
-              to="/marketplace"
+              to={paths.shop}
               className="mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
             >
               Browse products
@@ -300,7 +303,7 @@ export default function MarketplaceCart() {
             </p>
           </div>
           <Link
-            to="/marketplace/checkout"
+            to={paths.checkout}
             className="inline-flex items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
           >
             Checkout

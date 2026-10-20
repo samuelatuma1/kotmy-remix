@@ -1,5 +1,5 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useActionData, useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import { Form, Link, useActionData, useFetcher, useLoaderData, useLocation, useNavigation } from "@remix-run/react";
 import { ArrowLeft, CheckCircle2, CreditCard, Loader2, MapPin, Package, Plus } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { noImage } from "~/assets/images";
@@ -16,6 +16,7 @@ import type {
   PlaceOrderDTO,
   OrderResponse,
 } from "~/services/partner/types/partner.interface";
+import { getMarketplacePaths } from "~/lib/feature-routes";
 
 type CheckoutLoaderData = {
   cart: Cart | null;
@@ -85,6 +86,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const paths = getMarketplacePaths(new URL(request.url).pathname);
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "");
   const cookieHeader = request.headers.get("Cookie") ?? undefined;
@@ -143,13 +145,7 @@ export async function action({ request }: ActionFunctionArgs) {
     };
 
     if (payment_option === PaymentOptionKey.prepay) {
-      if(request){
-        payload.prepay_redirect_url = new URL("/user/orders", request.url).toString();
-      }
-      else{
-        payload.prepay_redirect_url = new URL("/marketplace/orders", request.url).toString();
-
-      }
+      payload.prepay_redirect_url = new URL(paths.orders, request.url).toString();
     }
 
     const ordersRes = await partnerServer.placeOrder(payload, request);
@@ -173,7 +169,7 @@ export async function action({ request }: ActionFunctionArgs) {
       toast: `success::Your order has been placed successfully::${Date.now()}`,
     });
 
-    return redirect("/marketplace/orders", { headers });
+    return redirect(paths.orders, { headers });
   }
 
   return json<CheckoutActionData>({ error: "Unsupported checkout action" }, { status: 400 });
@@ -444,6 +440,8 @@ function DeliveryDetailsForm({
 }
 
 export default function MarketplaceCheckout() {
+  const { pathname } = useLocation();
+  const paths = getMarketplacePaths(pathname);
   const { cart, saved_delivery_details, payment_options, error } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -486,7 +484,7 @@ export default function MarketplaceCheckout() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl space-y-4">
             <Link
-              to="/marketplace/cart"
+              to={paths.cart}
               className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -554,7 +552,7 @@ export default function MarketplaceCheckout() {
                     Add products from the marketplace before continuing to checkout.
                   </p>
                   <Link
-                    to="/marketplace"
+                    to={paths.shop}
                     className="mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
                   >
                     Browse products

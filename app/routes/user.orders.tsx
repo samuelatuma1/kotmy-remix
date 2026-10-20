@@ -1,5 +1,5 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useFetcher, useLoaderData, useNavigation, useRevalidator } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData, useLocation, useNavigation, useRevalidator } from "@remix-run/react";
 import { ArrowLeft, PackageSearch, ShoppingBag, Star } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Pagination from "~/components/reusables/Pagination";
@@ -26,6 +26,7 @@ import type {
 } from "~/services/partner/types/partner.interface";
 import { OrderProductStatus } from "~/services/partner/types/partner.interface";
 import type { IPaginatedResponse } from "~/services/common/types/paginated_data";
+import { getMarketplacePaths } from "~/lib/feature-routes";
 
 type OrdersLoaderData = {
   orders: IPaginatedResponse<OrderResponse>;
@@ -745,6 +746,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function MarketplaceOrders() {
+  const { pathname } = useLocation();
+  const paths = getMarketplacePaths(pathname);
   const { orders, query, error } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
@@ -756,7 +759,7 @@ export default function MarketplaceOrders() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl space-y-4">
             <Link
-              to="/marketplace"
+              to={paths.shop}
               className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -838,7 +841,7 @@ export default function MarketplaceOrders() {
               Search
             </button>
             <Link
-              to="/marketplace/orders"
+              to={paths.orders}
               className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
             >
               Reset
@@ -879,7 +882,7 @@ export default function MarketplaceOrders() {
               Once you place an order, it will appear here for tracking and payment follow-up.
             </p>
             <Link
-              to="/marketplace"
+              to={paths.shop}
               className="mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
             >
               Browse products

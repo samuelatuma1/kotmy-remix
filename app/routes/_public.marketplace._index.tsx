@@ -1,5 +1,5 @@
 import { json, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, Link, useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData, useLocation, useNavigation } from "@remix-run/react";
 import { ShoppingCart } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { noImage } from "~/assets/images";
@@ -14,6 +14,7 @@ import type {
   PartnerProduct,
 } from "~/services/partner/types/partner.interface";
 import type { IPaginatedResponse } from "~/services/common/types/paginated_data";
+import { getMarketplacePaths } from "~/lib/feature-routes";
 
 type MarketplaceLoaderData = {
   products?: IPaginatedResponse<PartnerProduct>;
@@ -376,6 +377,8 @@ function MarketplaceSkeleton() {
 }
 
 export default function MarketplaceHome() {
+  const { pathname } = useLocation();
+  const paths = getMarketplacePaths(pathname);
   const { products, query, productError } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const cartSummaryFetcher = useFetcher<MarketplaceLoaderData>();
@@ -384,7 +387,7 @@ export default function MarketplaceHome() {
   const [cartHydrated, setCartHydrated] = useState(false);
 
   useEffect(() => {
-    cartSummaryFetcher.load("/marketplace?intent=cart");
+    cartSummaryFetcher.load(`${paths.shop}?intent=cart`);
   }, []);
 
   useEffect(() => {
@@ -398,9 +401,9 @@ export default function MarketplaceHome() {
     if (cartMutationFetcher.data?.cart !== undefined) {
       setCartState(cartMutationFetcher.data.cart ?? null);
       setCartHydrated(true);
-      cartSummaryFetcher.load("/marketplace?intent=cart");
+      cartSummaryFetcher.load(`${paths.shop}?intent=cart`);
     }
-  }, [cartMutationFetcher.data]);
+  }, [cartMutationFetcher.data, paths.shop]);
 
   const cartItemCount = useMemo(() => {
 
@@ -428,7 +431,7 @@ export default function MarketplaceHome() {
     if (locationId) {
       formData.set("product_location_id", locationId);
     }
-    cartMutationFetcher.submit(formData, { method: "post", action: "/marketplace" });
+    cartMutationFetcher.submit(formData, { method: "post", action: paths.shop });
   };
 
   return (
@@ -451,7 +454,7 @@ export default function MarketplaceHome() {
 
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                to="/marketplace/cart"
+                to={paths.cart}
                 className="inline-flex items-center gap-3 rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
               >
                 <ShoppingCart className="h-4 w-4" />
@@ -461,7 +464,7 @@ export default function MarketplaceHome() {
                 </span>
               </Link>
               <Link
-                to="/marketplace"
+                to={paths.shop}
                 className="inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
               >
                 Refresh Catalog
@@ -491,7 +494,7 @@ export default function MarketplaceHome() {
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 The cart summary loads after the page paints, so browsing stays fast.
               </p>
-              <Link to="/marketplace/cart" className="mt-4 inline-flex text-sm font-bold text-accent">
+              <Link to={paths.cart} className="mt-4 inline-flex text-sm font-bold text-accent">
                 Open cart
               </Link>
             </div>
@@ -507,7 +510,7 @@ export default function MarketplaceHome() {
         </div>
 
         <Link
-          to="/marketplace/cart"
+          to={paths.cart}
           aria-label="View cart"
           className="absolute right-5 top-5 hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 sm:inline-flex"
         >
@@ -549,7 +552,7 @@ export default function MarketplaceHome() {
               Search
             </button>
             <Link
-              to="/marketplace"
+              to={paths.shop}
               className="inline-flex h-12 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
             >
               Clear

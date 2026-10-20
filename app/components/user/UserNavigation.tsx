@@ -4,14 +4,7 @@ import { icons } from '~/assets/icons'
 import Svg from '../reusables/Svg'
 import Toggletip from '../reusables/ToggleTip'
 import { cn } from '~/lib/utils'
-
-const navs = [
-    { label: 'Home', icon: icons.adminHomeIcon, url: '/user/all-tournaments' },
-    { label: 'Winners', icon: icons.adminContestIcon, url: '/winners' },
-    { label: 'Results', icon: icons.adminUsersIcon, url: '/results' },
-   
-    
-]
+import { userPrimaryNavigation } from './userPrimaryNavigation'
 
 const navsWSubs = [
     {
@@ -42,11 +35,11 @@ export default function UserNavigation({ show }: { show: boolean }) {
             <nav className='py-6'>
                 <span className='inline-block mb-2 px-6 py-3 font-satoshi-bold'>Navigation Menu</span>
                 <ul className='grid gap-2 font-bold'>
-                    {navs.map(navItem => (
-                        <li key={navItem.label}><NavLink to={navItem.url}
+                    {userPrimaryNavigation.map(({ label, icon: Icon, url, end }) => (
+                        <li key={label}><NavLink to={url} end={end}
                             className={({ isActive }) => `${isActive ? 'text-brand-pink bg-secondary border-brand-pink' : 'border-transparent text-brand-charcoal'} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-secondary`}
                         >
-                            <Svg src={navItem.icon} />{navItem.label}
+                            <Icon aria-hidden="true" className="h-5 w-5" />{label}
                         </NavLink></li>
                     ))}
                 </ul>

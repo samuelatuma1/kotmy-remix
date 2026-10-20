@@ -1,5 +1,5 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 
 import { icons } from "~/assets/icons";
@@ -21,6 +21,7 @@ import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { walletRepo } from "~/services/wallet/wallet.server";
 import { vtuServer } from "~/services/vtu/vtu.server";
 import type { DiscountedAirtimeAmountResponse, VTUAirtimePlanDTO, VTUAirtimeProduct } from "~/services/vtu/types/vtu.interface";
+import { getVtuPaths } from "~/lib/feature-routes";
 
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -47,6 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const paths = getVtuPaths(new URL(request.url).pathname);
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "search_airtime_plans");
 
@@ -135,7 +137,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }, { status: 400 });
     }
 
-    return redirect(`/vtuservice/vtupurchase/${encodeURIComponent(purchaseResponse.data.reference)}`);
+    return redirect(paths.purchase(purchaseResponse.data.reference));
   }
 
   if (intent === "purchase_bank") {
@@ -163,7 +165,7 @@ export async function action({ request }: ActionFunctionArgs) {
       airtime_amount: airtimeAmount,
       amount_paid: amountPaid,
       email,
-      redirect_url: new URL("/vtuservice/provider_payment_redirect", request.url).toString(),
+      redirect_url: new URL(paths.paymentReturn, request.url).toString(),
       referrer_code: isAuthenticated ? null : (referrerCode || null),
     }, request);
 
@@ -421,6 +423,8 @@ export function useAirtimeController() {
   const [walletPin, setWalletPin] = useState("");
   const [referrerCode, setReferrerCode] = useState("");
   const pendingPayment = useRef<{ productId: string; amount: number } | null>(null);
+  const { pathname } = useLocation();
+  const paths = getVtuPaths(pathname);
 
   useEffect(() => {
     const user = getUserStoreManager();
@@ -429,8 +433,8 @@ export function useAirtimeController() {
   }, []);
 
   useEffect(() => {
-    recentBeneficiariesFetcher.load("/vtuservice/airtime?resource=recent-beneficiaries");
-  }, []);
+    recentBeneficiariesFetcher.load(`${paths.airtime}?resource=recent-beneficiaries`);
+  }, [paths.airtime]);
 
   useEffect(() => {
     if (fetcher.data?.error) {

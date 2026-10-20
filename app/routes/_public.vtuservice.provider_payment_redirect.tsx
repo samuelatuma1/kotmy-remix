@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { useEffect } from "react";
 
 import { toast } from "~/components/reusables/use-toast";
+import { getVtuPaths } from "~/lib/feature-routes";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const reference = new URL(request.url).searchParams.get("tx_ref")?.trim();
@@ -11,7 +12,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return json({ error: "Payment reference is missing." }, { status: 400 });
   }
 
-  return redirect(`/vtuservice/vtupurchase/${encodeURIComponent(reference)}`);
+  const paths = getVtuPaths(new URL(request.url).pathname);
+  return redirect(paths.purchase(reference));
 }
 
 export default function ProviderPaymentRedirectPage() {

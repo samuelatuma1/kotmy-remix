@@ -4504,10 +4504,31 @@ __export(public_vtuservice_provider_payment_redirect_exports, {
 import { json as json7, redirect as redirect6 } from "@remix-run/node";
 import { useLoaderData as useLoaderData5 } from "@remix-run/react";
 import { useEffect as useEffect15 } from "react";
+
+// app/lib/feature-routes.ts
+function getMarketplacePaths(pathname) {
+  return pathname === "/user/shop" || pathname.startsWith("/user/cart") || pathname.startsWith("/user/checkout") || pathname.startsWith("/user/orders") ? { shop: "/user/shop", cart: "/user/cart", checkout: "/user/cart/checkout", orders: "/user/orders" } : { shop: "/marketplace", cart: "/marketplace/cart", checkout: "/marketplace/checkout", orders: "/marketplace/orders" };
+}
+function getVtuPaths(pathname) {
+  let base = pathname.startsWith("/user/vtu") ? "/user/vtu" : "/vtuservice";
+  return {
+    base,
+    airtime: `${base}/airtime`,
+    data: `${base}/data`,
+    purchases: `${base}/purchases`,
+    purchase: (reference) => `${base}/purchase/${encodeURIComponent(reference)}`,
+    paymentReturn: `${base}/payment-return`
+  };
+}
+
+// app/routes/_public.vtuservice.provider_payment_redirect.tsx
 import { jsx as jsx40, jsxs as jsxs31 } from "react/jsx-runtime";
 async function loader6({ request }) {
   let reference = new URL(request.url).searchParams.get("tx_ref")?.trim();
-  return reference ? redirect6(`/vtuservice/vtupurchase/${encodeURIComponent(reference)}`) : json7({ error: "Payment reference is missing." }, { status: 400 });
+  if (!reference)
+    return json7({ error: "Payment reference is missing." }, { status: 400 });
+  let paths = getVtuPaths(new URL(request.url).pathname);
+  return redirect6(paths.purchase(reference));
 }
 function ProviderPaymentRedirectPage() {
   let data = useLoaderData5();
@@ -7476,7 +7497,7 @@ __export(public_vtuservice_vtupurchases_exports, {
   loader: () => loader21
 });
 import { json as json20 } from "@remix-run/node";
-import { Link as Link16, useLoaderData as useLoaderData17 } from "@remix-run/react";
+import { Link as Link16, useLoaderData as useLoaderData17, useLocation as useLocation8 } from "@remix-run/react";
 import { useEffect as useEffect22 } from "react";
 import { Fragment as Fragment10, jsx as jsx71, jsxs as jsxs58 } from "react/jsx-runtime";
 var DEFAULT_PAGE_SIZE = 20;
@@ -7506,7 +7527,7 @@ function statusColor(status) {
   let normalizedStatus = status.toLowerCase();
   return normalizedStatus.includes("success") || normalizedStatus.includes("fulfilled") ? "green" : normalizedStatus.includes("pending") || normalizedStatus.includes("initiated") || normalizedStatus.includes("awaiting") || normalizedStatus.includes("review") ? "yellow" : normalizedStatus.includes("fail") || normalizedStatus.includes("revers") ? "red" : "gray";
 }
-function PurchaseCard({ purchase }) {
+function PurchaseCard({ purchase, paths }) {
   let purchaseDate = purchase.last_retried_at ?? purchase.first_retried_at;
   return /* @__PURE__ */ jsxs58("article", { className: "rounded-[1.75rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-6", children: [
     /* @__PURE__ */ jsxs58("div", { className: "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between", children: [
@@ -7553,7 +7574,7 @@ function PurchaseCard({ purchase }) {
       Link16,
       {
         className: "mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-brand-pink px-4 text-sm font-bold text-brand-pink transition hover:bg-brand-pink/5",
-        to: `/vtuservice/vtupurchase/${encodeURIComponent(purchase.reference)}`,
+        to: paths.purchase(purchase.reference),
         children: "View purchase details"
       }
     )
@@ -7563,7 +7584,7 @@ function PurchaseSkeleton2() {
   return /* @__PURE__ */ jsx71("div", { "aria-hidden": "true", className: "animate-pulse space-y-4", children: [1, 2, 3].map((item) => /* @__PURE__ */ jsx71("div", { className: "h-64 rounded-[1.75rem] bg-slate-200" }, item)) });
 }
 function VTUPurchasesPage() {
-  let data = useLoaderData17();
+  let { pathname } = useLocation8(), paths = getVtuPaths(pathname), data = useLoaderData17();
   useEffect22(() => {
     syncCreatedAtParams(data.purchases?.last_created_at, data.purchases?.first_created_at);
   }, [data.purchases?.last_created_at, data.purchases?.first_created_at]), useEffect22(() => {
@@ -7591,12 +7612,12 @@ function VTUPurchasesPage() {
       /* @__PURE__ */ jsx71("h2", { className: "text-xl font-black", children: "We could not load your purchases" }),
       /* @__PURE__ */ jsx71("p", { className: "mt-2 text-sm", children: data.error })
     ] }) : data.purchases && purchases.length > 0 ? /* @__PURE__ */ jsxs58(Fragment10, { children: [
-      /* @__PURE__ */ jsx71("div", { className: "grid gap-5", children: purchases.map((purchase) => /* @__PURE__ */ jsx71(PurchaseCard, { purchase }, purchase._id)) }),
+      /* @__PURE__ */ jsx71("div", { className: "grid gap-5", children: purchases.map((purchase) => /* @__PURE__ */ jsx71(PurchaseCard, { purchase, paths }, purchase._id)) }),
       /* @__PURE__ */ jsx71(Pagination, { firstKey: data.purchases.first_key_id, lastKey: data.purchases.last_key_id, pageSize: data.purchases.items_per_page || data.pageSize })
     ] }) : data.purchases ? /* @__PURE__ */ jsxs58("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-14 text-center", children: [
       /* @__PURE__ */ jsx71("h2", { className: "text-xl font-black", children: "No VTU purchases yet" }),
       /* @__PURE__ */ jsx71("p", { className: "mt-2 text-sm text-brand-slate", children: "Your completed airtime and data purchases will appear here." }),
-      /* @__PURE__ */ jsx71(Link16, { className: "mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white", to: "/vtuservice/airtime", children: "Buy airtime" })
+      /* @__PURE__ */ jsx71(Link16, { className: "mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white", to: paths.airtime, children: "Buy airtime" })
     ] }) : /* @__PURE__ */ jsx71(PurchaseSkeleton2, {})
   ] }) });
 }
@@ -8188,7 +8209,7 @@ __export(public_marketplace_checkout_exports, {
   loader: () => loader25
 });
 import { json as json23, redirect as redirect23 } from "@remix-run/node";
-import { Form as Form18, Link as Link17, useActionData as useActionData8, useFetcher as useFetcher11, useLoaderData as useLoaderData20, useNavigation as useNavigation10 } from "@remix-run/react";
+import { Form as Form18, Link as Link17, useActionData as useActionData8, useFetcher as useFetcher11, useLoaderData as useLoaderData20, useLocation as useLocation9, useNavigation as useNavigation10 } from "@remix-run/react";
 import { ArrowLeft, CheckCircle2, CreditCard, Loader2, MapPin, Package, Plus } from "lucide-react";
 import { useEffect as useEffect25, useRef as useRef9, useState as useState32 } from "react";
 import { Fragment as Fragment12, jsx as jsx78, jsxs as jsxs65 } from "react/jsx-runtime";
@@ -8227,7 +8248,7 @@ async function loader25({ request }) {
   ) : json23(buildLoaderData(checkoutRes.data));
 }
 async function action13({ request }) {
-  let formData = await request.formData(), intent = String(formData.get("intent") ?? ""), cookieHeader = request.headers.get("Cookie") ?? void 0;
+  let paths = getMarketplacePaths(new URL(request.url).pathname), formData = await request.formData(), intent = String(formData.get("intent") ?? ""), cookieHeader = request.headers.get("Cookie") ?? void 0;
   if (intent === "create-delivery-details") {
     let payload = buildDeliveryDetailsPayload(formData);
     if (!payload.phone_number)
@@ -8263,7 +8284,7 @@ async function action13({ request }) {
       delivery_details_id,
       payment_option
     };
-    payment_option === "prepay" /* prepay */ && (request ? payload.prepay_redirect_url = new URL("/user/orders", request.url).toString() : payload.prepay_redirect_url = new URL("/marketplace/orders", request.url).toString());
+    payment_option === "prepay" /* prepay */ && (payload.prepay_redirect_url = new URL(paths.orders, request.url).toString());
     let ordersRes = await partnerServer.placeOrder(payload, request);
     if (ordersRes.error)
       return json23(
@@ -8279,7 +8300,7 @@ async function action13({ request }) {
       request,
       toast: `success::Your order has been placed successfully::${Date.now()}`
     });
-    return redirect23("/marketplace/orders", { headers });
+    return redirect23(paths.orders, { headers });
   }
   return json23({ error: "Unsupported checkout action" }, { status: 400 });
 }
@@ -8468,7 +8489,7 @@ function DeliveryDetailsForm({
   ] });
 }
 function MarketplaceCheckout() {
-  let { cart, saved_delivery_details, payment_options, error } = useLoaderData20(), actionData = useActionData8(), navigation = useNavigation10(), deliveryFetcher = useFetcher11(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
+  let { pathname } = useLocation9(), paths = getMarketplacePaths(pathname), { cart, saved_delivery_details, payment_options, error } = useLoaderData20(), actionData = useActionData8(), navigation = useNavigation10(), deliveryFetcher = useFetcher11(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
   return useEffect25(() => {
     saved_delivery_details.length > 0 && deliveryDetails.length === 0 && (setDeliveryDetails(saved_delivery_details), setSelectedDeliveryDetailsId(saved_delivery_details[0]?.str_id ?? ""));
   }, [deliveryDetails.length, saved_delivery_details]), useEffect25(() => {
@@ -8480,7 +8501,7 @@ function MarketplaceCheckout() {
           /* @__PURE__ */ jsxs65(
             Link17,
             {
-              to: "/marketplace/cart",
+              to: paths.cart,
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
                 /* @__PURE__ */ jsx78(ArrowLeft, { className: "h-4 w-4" }),
@@ -8530,7 +8551,7 @@ function MarketplaceCheckout() {
             /* @__PURE__ */ jsx78(
               Link17,
               {
-                to: "/marketplace",
+                to: paths.shop,
                 className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
                 children: "Browse products"
               }
@@ -9072,6 +9093,13 @@ function Tournament() {
     /* @__PURE__ */ jsx86("section", { className: "my-12", children: /* @__PURE__ */ jsx86(ContestTable, { data: contests }) })
   ] });
 }
+
+// app/routes/user.vtu.purchase.$reference.tsx
+var user_vtu_purchase_reference_exports = {};
+__export(user_vtu_purchase_reference_exports, {
+  default: () => VTUPurchaseReferencePage,
+  loader: () => loader10
+});
 
 // app/routes/partners.orders.leaderboard.tsx
 var partners_orders_leaderboard_exports = {};
@@ -10385,7 +10413,7 @@ __export(public_marketplace_index_exports, {
   loader: () => loader31
 });
 import { json as json29 } from "@remix-run/node";
-import { Form as Form24, Link as Link21, useFetcher as useFetcher15, useLoaderData as useLoaderData26, useNavigation as useNavigation15 } from "@remix-run/react";
+import { Form as Form24, Link as Link21, useFetcher as useFetcher15, useLoaderData as useLoaderData26, useLocation as useLocation10, useNavigation as useNavigation15 } from "@remix-run/react";
 import { ShoppingCart } from "lucide-react";
 import { useEffect as useEffect29, useMemo as useMemo7, useState as useState37 } from "react";
 import { jsx as jsx91, jsxs as jsxs78 } from "react/jsx-runtime";
@@ -10571,19 +10599,19 @@ function MarketplaceSkeleton() {
   ] }, index)) });
 }
 function MarketplaceHome() {
-  let { products, query, productError } = useLoaderData26(), navigation = useNavigation15(), cartSummaryFetcher = useFetcher15(), cartMutationFetcher = useFetcher15(), [cartState, setCartState] = useState37(null), [cartHydrated, setCartHydrated] = useState37(!1);
+  let { pathname } = useLocation10(), paths = getMarketplacePaths(pathname), { products, query, productError } = useLoaderData26(), navigation = useNavigation15(), cartSummaryFetcher = useFetcher15(), cartMutationFetcher = useFetcher15(), [cartState, setCartState] = useState37(null), [cartHydrated, setCartHydrated] = useState37(!1);
   useEffect29(() => {
-    cartSummaryFetcher.load("/marketplace?intent=cart");
+    cartSummaryFetcher.load(`${paths.shop}?intent=cart`);
   }, []), useEffect29(() => {
     cartSummaryFetcher.data && ("cart" in cartSummaryFetcher.data || "cartError" in cartSummaryFetcher.data) && (setCartState(cartSummaryFetcher.data.cart ?? null), setCartHydrated(!0));
   }, [cartSummaryFetcher.data]), useEffect29(() => {
-    cartMutationFetcher.data?.cart !== void 0 && (setCartState(cartMutationFetcher.data.cart ?? null), setCartHydrated(!0), cartSummaryFetcher.load("/marketplace?intent=cart"));
-  }, [cartMutationFetcher.data]);
+    cartMutationFetcher.data?.cart !== void 0 && (setCartState(cartMutationFetcher.data.cart ?? null), setCartHydrated(!0), cartSummaryFetcher.load(`${paths.shop}?intent=cart`));
+  }, [cartMutationFetcher.data, paths.shop]);
   let cartItemCount = useMemo7(() => cartState?.cart_items?.length ?? 0, [cartState]), totalItems = products?.total_items ?? 0, totalPages = products?.total_pages ?? 0, pageSize = query?.page_size ?? products?.items_per_page ?? 20, showSkeleton = navigation.state === "loading" && navigation.formMethod === "get", pendingProductId = cartMutationFetcher.state === "submitting" ? String(cartMutationFetcher.formData?.get("product_id") ?? "") : "", cartError = cartSummaryFetcher.data?.cartError ?? null, mutationError = cartMutationFetcher.data?.error ?? null, handleAddToCart = (product) => {
     let formData = new FormData();
     formData.set("intent", "add-to-cart"), formData.set("product_id", product._id), formData.set("quantity", "1");
     let locationId = getProductLocationId(product);
-    locationId && formData.set("product_location_id", locationId), cartMutationFetcher.submit(formData, { method: "post", action: "/marketplace" });
+    locationId && formData.set("product_location_id", locationId), cartMutationFetcher.submit(formData, { method: "post", action: paths.shop });
   };
   return /* @__PURE__ */ jsxs78("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs78("section", { className: "relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
@@ -10598,7 +10626,7 @@ function MarketplaceHome() {
           /* @__PURE__ */ jsxs78(
             Link21,
             {
-              to: "/marketplace/cart",
+              to: paths.cart,
               className: "inline-flex items-center gap-3 rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
               children: [
                 /* @__PURE__ */ jsx91(ShoppingCart, { className: "h-4 w-4" }),
@@ -10610,7 +10638,7 @@ function MarketplaceHome() {
           /* @__PURE__ */ jsx91(
             Link21,
             {
-              to: "/marketplace",
+              to: paths.shop,
               className: "inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
               children: "Refresh Catalog"
             }
@@ -10621,7 +10649,7 @@ function MarketplaceHome() {
       /* @__PURE__ */ jsxs78(
         Link21,
         {
-          to: "/marketplace/cart",
+          to: paths.cart,
           "aria-label": "View cart",
           className: "absolute right-5 top-5 hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 sm:inline-flex",
           children: [
@@ -10671,7 +10699,7 @@ function MarketplaceHome() {
         /* @__PURE__ */ jsx91(
           Link21,
           {
-            to: "/marketplace",
+            to: paths.shop,
             className: "inline-flex h-12 items-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
             children: "Clear"
           }
@@ -10716,12 +10744,22 @@ function MarketplaceHome() {
 // app/routes/_public.marketplace.orders.tsx
 var public_marketplace_orders_exports = {};
 __export(public_marketplace_orders_exports, {
+  action: () => action17,
+  default: () => MarketplaceOrders,
+  loader: () => loader32
+});
+
+// app/routes/user.orders.tsx
+var user_orders_exports = {};
+__export(user_orders_exports, {
+  action: () => action17,
   default: () => MarketplaceOrders,
   loader: () => loader32
 });
 import { json as json30 } from "@remix-run/node";
-import { Form as Form25, Link as Link22, useLoaderData as useLoaderData27, useNavigation as useNavigation16 } from "@remix-run/react";
-import { ArrowLeft as ArrowLeft2, PackageSearch, ShoppingBag } from "lucide-react";
+import { Form as Form25, Link as Link22, useFetcher as useFetcher16, useLoaderData as useLoaderData27, useLocation as useLocation11, useNavigation as useNavigation16, useRevalidator } from "@remix-run/react";
+import { ArrowLeft as ArrowLeft2, PackageSearch, ShoppingBag, Star } from "lucide-react";
+import { useEffect as useEffect30, useRef as useRef12, useState as useState38 } from "react";
 import { jsx as jsx92, jsxs as jsxs79 } from "react/jsx-runtime";
 var orderStatusOptions = [
   { label: "All statuses", value: "" },
@@ -10792,6 +10830,43 @@ function formatDate3(value) {
     timeStyle: "short"
   }).format(new Date(value));
 }
+function formatStatusLabel(value) {
+  return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
+}
+function getErrorMessage2(error, fallback) {
+  return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
+}
+async function verifyOrderForMutation({
+  orderId,
+  orderItemId,
+  orderCode,
+  request,
+  requirePrepaid
+}) {
+  let orderRes = await partnerServer.getCustomerOrderById(orderId, request);
+  if (orderRes.error || !orderRes.data)
+    return json30(
+      {
+        ok: !1,
+        error: getErrorMessage2(orderRes.error, "Unable to verify this order")
+      },
+      { status: 404 }
+    );
+  let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
+  return item ? item.status !== "Fulfilled" /* Fulfilled */ ? json30(
+    {
+      ok: !1,
+      error: `This order item cannot be processed from ${formatStatusLabel(item.status)} status`
+    },
+    { status: 400 }
+  ) : requirePrepaid && order.payment_details?.payment_option !== "prepay" ? json30(
+    {
+      ok: !1,
+      error: "Disputes are only available for prepaid orders"
+    },
+    { status: 400 }
+  ) : order.order_code !== orderCode ? json30({ ok: !1, error: "The order code does not match this order" }, { status: 400 }) : { order, item } : json30({ ok: !1, error: "Order item not found" }, { status: 404 });
+}
 function OrdersSkeleton() {
   return /* @__PURE__ */ jsx92("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs79("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
     /* @__PURE__ */ jsx92("div", { className: "h-4 w-28 rounded-full bg-slate-200" }),
@@ -10800,21 +10875,241 @@ function OrdersSkeleton() {
     /* @__PURE__ */ jsx92("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
   ] }, index)) });
 }
-function OrderItemRow({
+function FulfillmentConfirmDialog({
+  order,
   item
 }) {
-  let hasRange = item.min_amount_total !== item.max_amount_total;
-  return /* @__PURE__ */ jsx92("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxs79("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+  let fetcher = useFetcher16(), revalidator = useRevalidator(), [open, setOpen] = useState38(!1), handledSuccessRef = useRef12(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  return useEffect30(() => {
+    fetcher.state === "submitting" && (handledSuccessRef.current = !1);
+  }, [fetcher.state]), useEffect30(() => {
+    !fetcher.data || !fetcher.data.ok || handledSuccessRef.current || (handledSuccessRef.current = !0, setOpen(!1), revalidator.revalidate(), toast({
+      title: "Success",
+      description: fetcher.data.message
+    }));
+  }, [fetcher.data, revalidator]), /* @__PURE__ */ jsxs79(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsx92(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx92(
+      "button",
+      {
+        type: "button",
+        className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
+        children: "Confirm Fulfillment"
+      }
+    ) }),
+    /* @__PURE__ */ jsxs79(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+      /* @__PURE__ */ jsxs79(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+        /* @__PURE__ */ jsx92(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Confirm order receipt" }),
+        /* @__PURE__ */ jsx92(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the order code below to confirm you have received this item. You can also leave an optional rating and remark." })
+      ] }),
+      /* @__PURE__ */ jsxs79(fetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "intent", value: "confirm_fulfillment" }),
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "order_id", value: order._id }),
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
+        /* @__PURE__ */ jsxs79("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
+          /* @__PURE__ */ jsx92("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
+          /* @__PURE__ */ jsx92("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code })
+        ] }),
+        /* @__PURE__ */ jsxs79("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx92("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
+          /* @__PURE__ */ jsx92(
+            "input",
+            {
+              name: "order_code",
+              required: !0,
+              autoComplete: "off",
+              placeholder: "Type the displayed order code",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs79("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsxs79("span", { className: "flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: [
+            /* @__PURE__ */ jsx92(Star, { className: "h-3.5 w-3.5" }),
+            "Rating"
+          ] }),
+          /* @__PURE__ */ jsxs79(
+            "select",
+            {
+              name: "rating",
+              defaultValue: "",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950",
+              children: [
+                /* @__PURE__ */ jsx92("option", { value: "", children: "Optional rating" }),
+                Array.from({ length: 5 }).map((_, index) => {
+                  let rating = index + 1;
+                  return /* @__PURE__ */ jsxs79("option", { value: rating, children: [
+                    rating,
+                    " star",
+                    rating > 1 ? "s" : ""
+                  ] }, rating);
+                })
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs79("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx92("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
+          /* @__PURE__ */ jsx92(
+            "textarea",
+            {
+              name: "remark",
+              rows: 4,
+              placeholder: "Optional remark about the product or delivery",
+              className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        errorMessage ? /* @__PURE__ */ jsx92("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
+        /* @__PURE__ */ jsxs79(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+          /* @__PURE__ */ jsx92(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx92(
+            "button",
+            {
+              type: "button",
+              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Back"
+            }
+          ) }),
+          /* @__PURE__ */ jsx92(
+            "button",
+            {
+              type: "submit",
+              disabled: isSubmitting,
+              className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70",
+              children: isSubmitting ? "Working..." : "Confirm fulfillment"
+            }
+          )
+        ] })
+      ] })
+    ] })
+  ] });
+}
+function DisputeFulfillmentDialog({
+  order,
+  item
+}) {
+  let fetcher = useFetcher16(), revalidator = useRevalidator(), [open, setOpen] = useState38(!1), handledResponseRef = useRef12(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null, isPrepaid = order.payment_details?.payment_option === "prepay";
+  useEffect30(() => {
+    fetcher.state === "submitting" && (handledResponseRef.current = !1);
+  }, [fetcher.state]), useEffect30(() => {
+    if (!(!fetcher.data || handledResponseRef.current)) {
+      if (handledResponseRef.current = !0, fetcher.data.ok) {
+        setOpen(!1), revalidator.revalidate(), toast({
+          title: "Success",
+          description: fetcher.data.message
+        });
+        return;
+      }
+      toast({
+        variant: "destructive",
+        title: "Dispute failed",
+        description: fetcher.data.error
+      });
+    }
+  }, [fetcher.data, revalidator]);
+  let handleSubmit = (event) => {
+    let formData = new FormData(event.currentTarget);
+    String(formData.get("order_code") ?? "").trim() !== order.order_code && (event.preventDefault(), toast({
+      variant: "destructive",
+      title: "Order code mismatch",
+      description: "The order code you entered does not match this order."
+    }));
+  };
+  return isPrepaid ? /* @__PURE__ */ jsxs79(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsx92(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx92(
+      "button",
+      {
+        type: "button",
+        className: "inline-flex h-11 items-center justify-center rounded-full border border-rose-200 bg-white px-4 text-sm font-bold text-rose-700 transition hover:-translate-y-0.5 hover:border-rose-300 hover:bg-rose-50",
+        children: "Dispute Order"
+      }
+    ) }),
+    /* @__PURE__ */ jsxs79(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
+      /* @__PURE__ */ jsxs79(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
+        /* @__PURE__ */ jsx92(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Dispute order fulfillment" }),
+        /* @__PURE__ */ jsx92(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Use this if the order was not fulfilled as expected. Your report will be sent for admin review." })
+      ] }),
+      /* @__PURE__ */ jsxs79(fetcher.Form, { method: "post", className: "space-y-5 p-6", onSubmit: handleSubmit, children: [
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "intent", value: "dispute_fulfillment" }),
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "order_id", value: order._id }),
+        /* @__PURE__ */ jsx92("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
+        /* @__PURE__ */ jsxs79("div", { className: "rounded-2xl border border-rose-100 bg-rose-50 p-4", children: [
+          /* @__PURE__ */ jsx92("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-rose-500", children: "Order code" }),
+          /* @__PURE__ */ jsx92("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code }),
+          /* @__PURE__ */ jsx92("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the exact order code to confirm this dispute request." })
+        ] }),
+        /* @__PURE__ */ jsxs79("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx92("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
+          /* @__PURE__ */ jsx92(
+            "input",
+            {
+              name: "order_code",
+              required: !0,
+              autoComplete: "off",
+              placeholder: "Enter the order code",
+              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs79("label", { className: "grid gap-2", children: [
+          /* @__PURE__ */ jsx92("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
+          /* @__PURE__ */ jsx92(
+            "textarea",
+            {
+              name: "remark",
+              required: !0,
+              rows: 4,
+              placeholder: "Explain what was not fulfilled as expected",
+              className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
+            }
+          )
+        ] }),
+        errorMessage ? /* @__PURE__ */ jsx92("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
+        /* @__PURE__ */ jsxs79(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
+          /* @__PURE__ */ jsx92(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx92(
+            "button",
+            {
+              type: "button",
+              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
+              children: "Back"
+            }
+          ) }),
+          /* @__PURE__ */ jsx92(
+            "button",
+            {
+              type: "submit",
+              disabled: isSubmitting,
+              className: "inline-flex h-11 items-center justify-center rounded-full bg-rose-600 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-rose-500 disabled:cursor-not-allowed disabled:opacity-70",
+              children: isSubmitting ? "Working..." : "Submit dispute"
+            }
+          )
+        ] })
+      ] })
+    ] })
+  ] }) : null;
+}
+function OrderItemRow({
+  order,
+  item
+}) {
+  let hasRange = item.min_amount_total !== item.max_amount_total, isFulfilled = item.status === "Fulfilled" /* Fulfilled */, isPrepaid = order.payment_details?.payment_option === "prepay";
+  return /* @__PURE__ */ jsx92("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxs79("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
     /* @__PURE__ */ jsxs79("div", { children: [
       /* @__PURE__ */ jsx92("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }),
       /* @__PURE__ */ jsxs79("div", { className: "mt-1 text-xs text-slate-500", children: [
         "Qty ",
         item.quantity,
-        " \xB7 ",
+        " \xB7",
+        " ",
         hasRange ? `${formatMoney(item.currency, item.min_amount_total)} - ${formatMoney(item.currency, item.max_amount_total)}` : formatMoney(item.currency, item.min_amount_total)
       ] })
     ] }),
-    /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: item.status.replace(/_/g, " ") })
+    /* @__PURE__ */ jsxs79("div", { className: "flex flex-col items-start gap-3 sm:flex-row sm:items-center", children: [
+      /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel(item.status) }),
+      isFulfilled ? /* @__PURE__ */ jsxs79("div", { className: "flex flex-col gap-2 sm:flex-row", children: [
+        /* @__PURE__ */ jsx92(FulfillmentConfirmDialog, { order, item }),
+        isPrepaid ? /* @__PURE__ */ jsx92(DisputeFulfillmentDialog, { order, item }) : null
+      ] }) : null
+    ] })
   ] }) });
 }
 function OrderCard({ order }) {
@@ -10824,7 +11119,7 @@ function OrderCard({ order }) {
       /* @__PURE__ */ jsxs79("div", { className: "space-y-2", children: [
         /* @__PURE__ */ jsxs79("div", { className: "flex flex-wrap items-center gap-2", children: [
           /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
-          /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: order.status.replace(/_/g, " ") }),
+          /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel(order.status) }),
           isPrepaid ? /* @__PURE__ */ jsx92("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }) : null
         ] }),
         /* @__PURE__ */ jsxs79("div", { children: [
@@ -10850,7 +11145,7 @@ function OrderCard({ order }) {
     /* @__PURE__ */ jsxs79("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
       /* @__PURE__ */ jsxs79("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsx92("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }),
-        /* @__PURE__ */ jsx92("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsx92(OrderItemRow, { item }, item.order_item_id)) })
+        /* @__PURE__ */ jsx92("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsx92(OrderItemRow, { order, item }, item.order_item_id)) })
       ] }),
       /* @__PURE__ */ jsxs79("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsx92("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }),
@@ -10874,7 +11169,6 @@ function OrderCard({ order }) {
           ] }),
           /* @__PURE__ */ jsxs79("div", { children: [
             "Reference: ",
-            /* @__PURE__ */ jsx92("br", {}),
             /* @__PURE__ */ jsx92("span", { className: "font-semibold text-slate-900 break-all", children: order.payment_details?.reference })
           ] }),
           paymentLink ? /* @__PURE__ */ jsx92(
@@ -10893,7 +11187,7 @@ function OrderCard({ order }) {
   ] });
 }
 async function loader32({ request }) {
-  let url = new URL(request.url), cookieHeader = request.headers.get("Cookie") ?? void 0, query = buildCustomerOrdersQuery(url.searchParams), ordersRes = await partnerServer.getCustomerOrders(query, request);
+  let url = new URL(request.url), query = buildCustomerOrdersQuery(url.searchParams), ordersRes = await partnerServer.getCustomerOrders(query, request);
   return ordersRes.error ? json30({
     orders: emptyPaginatedOrders(query.page_size ?? 10),
     query,
@@ -10903,8 +11197,72 @@ async function loader32({ request }) {
     query
   });
 }
+async function action17({ request }) {
+  let formData = await request.formData(), intent = String(formData.get("intent") ?? ""), orderId = String(formData.get("order_id") ?? "").trim(), orderItemId = String(formData.get("order_item_id") ?? "").trim(), orderCode = String(formData.get("order_code") ?? "").trim(), ratingValue = String(formData.get("rating") ?? "").trim(), remark = String(formData.get("remark") ?? "").trim();
+  if (intent !== "confirm_fulfillment" && intent !== "dispute_fulfillment")
+    return json30({ ok: !1, error: "Unsupported order action" }, { status: 400 });
+  if (!orderId || !orderItemId)
+    return json30({ ok: !1, error: "Missing order details" }, { status: 400 });
+  if (!orderCode)
+    return json30({ ok: !1, error: "Order code is required" }, { status: 400 });
+  let verification = await verifyOrderForMutation({
+    orderId,
+    orderItemId,
+    orderCode,
+    request,
+    requirePrepaid: intent === "dispute_fulfillment"
+  });
+  if (verification instanceof Response)
+    return verification;
+  let { order, item } = verification;
+  if (intent === "confirm_fulfillment") {
+    let payload2 = {
+      order_id: order._id,
+      order_code: order.order_code,
+      order_item_id: item.order_item_id
+    };
+    if (ratingValue) {
+      let rating = Number(ratingValue);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5)
+        return json30({ ok: !1, error: "Rating must be between 1 and 5" }, { status: 400 });
+      payload2.rating = rating;
+    }
+    remark && (payload2.remark = remark);
+    let mutationRes2 = await partnerServer.customerConfirmOrder(payload2, request);
+    return mutationRes2.error ? json30(
+      {
+        ok: !1,
+        error: getErrorMessage2(mutationRes2.error, "Unable to confirm this order item")
+      },
+      { status: 400 }
+    ) : json30({
+      ok: !0,
+      message: "Order fulfillment confirmed successfully",
+      order: mutationRes2.data ?? order
+    });
+  }
+  if (!remark)
+    return json30({ ok: !1, error: "Remark is required for dispute submission" }, { status: 400 });
+  let payload = {
+    order_id: order._id,
+    order_code: order.order_code,
+    order_item_id: item.order_item_id,
+    remark
+  }, mutationRes = await partnerServer.customerDispute(payload, request);
+  return mutationRes.error ? json30(
+    {
+      ok: !1,
+      error: getErrorMessage2(mutationRes.error, "Unable to submit this dispute")
+    },
+    { status: 400 }
+  ) : json30({
+    ok: !0,
+    message: "Order dispute submitted successfully",
+    order: mutationRes.data ?? order
+  });
+}
 function MarketplaceOrders() {
-  let { orders, query, error } = useLoaderData27(), isLoading = useNavigation16().state === "loading", hasOrders = orders.items.length > 0;
+  let { pathname } = useLocation11(), paths = getMarketplacePaths(pathname), { orders, query, error } = useLoaderData27(), isLoading = useNavigation16().state === "loading", hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxs79("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs79("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs79("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -10912,7 +11270,7 @@ function MarketplaceOrders() {
           /* @__PURE__ */ jsxs79(
             Link22,
             {
-              to: "/marketplace",
+              to: paths.shop,
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
                 /* @__PURE__ */ jsx92(ArrowLeft2, { className: "h-4 w-4" }),
@@ -10980,7 +11338,7 @@ function MarketplaceOrders() {
         /* @__PURE__ */ jsx92(
           Link22,
           {
-            to: "/marketplace/orders",
+            to: paths.orders,
             className: "inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
             children: "Reset"
           }
@@ -11006,21 +11364,14 @@ function MarketplaceOrders() {
         /* @__PURE__ */ jsx92(
           Link22,
           {
-            to: "/marketplace",
+            to: paths.shop,
             className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
             children: "Browse products"
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx92("section", { className: "mt-8", children: /* @__PURE__ */ jsx92(
-      Pagination,
-      {
-        lastKey: orders.last_key_id,
-        firstKey: orders.first_key_id,
-        pageSize: orders.items_per_page
-      }
-    ) })
+    /* @__PURE__ */ jsx92("section", { className: "mt-8", children: /* @__PURE__ */ jsx92(Pagination, { lastKey: orders.last_key_id, firstKey: orders.first_key_id, pageSize: orders.items_per_page }) })
   ] });
 }
 
@@ -11030,20 +11381,20 @@ __export(public_results_contestId_exports, {
   default: () => ContestResult,
   loader: () => loader33
 });
-import { redirect as redirect27 } from "@remix-run/node";
+import { redirect as redirect28 } from "@remix-run/node";
 import { Link as Link23, useLoaderData as useLoaderData28 } from "@remix-run/react";
 import { jsx as jsx93, jsxs as jsxs80 } from "react/jsx-runtime";
 async function loader33({ params }) {
   let { contestId } = params;
   if (!contestId)
-    return redirect27("/results");
+    return redirect28("/results");
   let { data: contest, error } = await getFinalResultForContest(contestId);
-  return error && redirect27("/results"), { contest };
+  return error && redirect28("/results"), { contest };
 }
 function ContestResult() {
   let { contest } = useLoaderData28();
   if (!contest)
-    throw redirect27("/results");
+    throw redirect28("/results");
   let color = contest.status === "registering" ? "yellow" : contest.status === "ongoing" ? "green" : contest.status === "completed" ? "red" : "gray", headings = [], table_results = [];
   return contest?.final_result_scores && (headings = contest.final_result_headings, table_results = contest.final_result_scores.map((res) => res.table_data)), /* @__PURE__ */ jsx93("main", { className: "min-h-screen w-full overflow-x-hidden bg-white", children: /* @__PURE__ */ jsxs80("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: [
     /* @__PURE__ */ jsx93("header", { className: "overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]", children: /* @__PURE__ */ jsxs80("div", { className: "bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12", children: [
@@ -11110,14 +11461,14 @@ function ContestResult() {
 // app/routes/_public.vtuservice.airtime.tsx
 var public_vtuservice_airtime_exports = {};
 __export(public_vtuservice_airtime_exports, {
-  action: () => action17,
+  action: () => action18,
   default: () => AirtimePage,
   loader: () => loader34,
   useAirtimeController: () => useAirtimeController
 });
-import { json as json32, redirect as redirect28 } from "@remix-run/node";
-import { useFetcher as useFetcher16, useLoaderData as useLoaderData29 } from "@remix-run/react";
-import { useEffect as useEffect30, useRef as useRef12, useState as useState38 } from "react";
+import { json as json32, redirect as redirect29 } from "@remix-run/node";
+import { useFetcher as useFetcher17, useLoaderData as useLoaderData29, useLocation as useLocation12 } from "@remix-run/react";
+import { useEffect as useEffect31, useRef as useRef13, useState as useState39 } from "react";
 
 // app/components/public/vtu/VtuPaymentPreviewDetails.tsx
 import { jsx as jsx94, jsxs as jsxs81 } from "react/jsx-runtime";
@@ -11194,8 +11545,8 @@ async function loader34({ request }) {
   let phoneNumber = normalizePhoneNumber(url.searchParams.get("phone_number") ?? "");
   return json32({ phoneNumber, recentBeneficiaries: [], plans: null, error: null });
 }
-async function action17({ request }) {
-  let formData = await request.formData(), intent = String(formData.get("intent") ?? "search_airtime_plans");
+async function action18({ request }) {
+  let paths = getVtuPaths(new URL(request.url).pathname), formData = await request.formData(), intent = String(formData.get("intent") ?? "search_airtime_plans");
   if (intent === "preview_airtime_payment") {
     let airtimeProductId = String(formData.get("airtime_product_id") ?? "").trim(), amount = Number(formData.get("amount"));
     if (!airtimeProductId || !Number.isFinite(amount) || amount <= 0)
@@ -11241,7 +11592,7 @@ async function action17({ request }) {
     return purchaseResponse.error || !purchaseResponse.data?.reference ? json32({
       intent,
       error: getErrorMessage(purchaseResponse.error, "Unable to complete the airtime purchase.")
-    }, { status: 400 }) : redirect28(`/vtuservice/vtupurchase/${encodeURIComponent(purchaseResponse.data.reference)}`);
+    }, { status: 400 }) : redirect29(paths.purchase(purchaseResponse.data.reference));
   }
   if (intent === "purchase_bank") {
     let airtimeProductId = String(formData.get("vtu_airtime_product_id") ?? "").trim(), phoneNumber2 = normalizePhoneNumber(String(formData.get("phone_number") ?? "")), airtimeAmount = Number(formData.get("airtime_amount")), amountPaid = Number(formData.get("amount_paid")), email = String(formData.get("email") ?? "").trim(), referrerCode = String(formData.get("referrer_code") ?? "").trim(), isAuthenticated = Boolean(await getAuthSessionToken(request));
@@ -11253,13 +11604,13 @@ async function action17({ request }) {
       airtime_amount: airtimeAmount,
       amount_paid: amountPaid,
       email,
-      redirect_url: new URL("/vtuservice/provider_payment_redirect", request.url).toString(),
+      redirect_url: new URL(paths.paymentReturn, request.url).toString(),
       referrer_code: isAuthenticated ? null : referrerCode || null
     }, request);
     if (purchaseResponse.error)
       return json32({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to start bank payment.") }, { status: 400 });
     let paymentLink = purchaseResponse.data?.payment_link?.trim();
-    return paymentLink ? redirect28(paymentLink) : json32({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+    return paymentLink ? redirect29(paymentLink) : json32({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
   }
   let phoneNumber = normalizePhoneNumber(String(formData.get("phone_number") ?? ""));
   if (!isValidNigerianPhoneNumber(phoneNumber))
@@ -11378,7 +11729,7 @@ function PaymentPreviewModal({
   ] }) });
 }
 function CustomPlan({ plan, onPreview }) {
-  let placeholder = `${formatAmount(plan.minimum_retail_price)} - ${formatAmount(plan.maximum_retail_price)}`, [amount, setAmount] = useState38("");
+  let placeholder = `${formatAmount(plan.minimum_retail_price)} - ${formatAmount(plan.maximum_retail_price)}`, [amount, setAmount] = useState39("");
   return /* @__PURE__ */ jsxs82("section", { className: "rounded-[1.75rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-7", children: [
     /* @__PURE__ */ jsx95("p", { className: "text-xs font-bold uppercase tracking-[0.2em] text-brand-slate", children: "Choose an amount" }),
     /* @__PURE__ */ jsxs82("div", { className: "mt-4 flex flex-col gap-3 sm:flex-row sm:items-end", children: [
@@ -11428,19 +11779,19 @@ function Plans({ plans, onPreview }) {
   ] });
 }
 function useAirtimeController() {
-  let initialData = useLoaderData29(), fetcher = useFetcher16(), previewFetcher = useFetcher16(), recentBeneficiariesFetcher = useFetcher16(), { getUserStoreManager } = useUserManager(), [user, setUser] = useState38(null), [phoneNumber, setPhoneNumber] = useState38(initialData.phoneNumber), [paymentPreview, setPaymentPreview] = useState38(null), [walletPaymentOpen, setWalletPaymentOpen] = useState38(!1), [bankPaymentOpen, setBankPaymentOpen] = useState38(!1), [bankEmail, setBankEmail] = useState38(""), [walletPin, setWalletPin] = useState38(""), [referrerCode, setReferrerCode] = useState38(""), pendingPayment = useRef12(null);
-  useEffect30(() => {
+  let initialData = useLoaderData29(), fetcher = useFetcher17(), previewFetcher = useFetcher17(), recentBeneficiariesFetcher = useFetcher17(), { getUserStoreManager } = useUserManager(), [user, setUser] = useState39(null), [phoneNumber, setPhoneNumber] = useState39(initialData.phoneNumber), [paymentPreview, setPaymentPreview] = useState39(null), [walletPaymentOpen, setWalletPaymentOpen] = useState39(!1), [bankPaymentOpen, setBankPaymentOpen] = useState39(!1), [bankEmail, setBankEmail] = useState39(""), [walletPin, setWalletPin] = useState39(""), [referrerCode, setReferrerCode] = useState39(""), pendingPayment = useRef13(null), { pathname } = useLocation12(), paths = getVtuPaths(pathname);
+  useEffect31(() => {
     let user2 = getUserStoreManager();
     setUser(user2), user2?.phone && setPhoneNumber(normalizePhoneNumber(user2.phone));
-  }, []), useEffect30(() => {
-    recentBeneficiariesFetcher.load("/vtuservice/airtime?resource=recent-beneficiaries");
-  }, []), useEffect30(() => {
+  }, []), useEffect31(() => {
+    recentBeneficiariesFetcher.load(`${paths.airtime}?resource=recent-beneficiaries`);
+  }, [paths.airtime]), useEffect31(() => {
     fetcher.data?.error && toast({
       variant: "destructive",
       title: "Airtime plans unavailable",
       description: fetcher.data.error
     });
-  }, [fetcher.data?.error]), useEffect30(() => {
+  }, [fetcher.data?.error]), useEffect31(() => {
     let data = previewFetcher.data;
     if (data?.intent === "preview_airtime_payment" && "preview" in data && data.preview) {
       let selectedPayment = pendingPayment.current;
@@ -11606,31 +11957,32 @@ __export(public_vtuservices_index_exports, {
   default: () => VtuServices,
   useVtuServicesController: () => useVtuServicesController
 });
-import { Link as Link24, useNavigation as useNavigation17 } from "@remix-run/react";
-import { useEffect as useEffect31, useState as useState39 } from "react";
+import { Link as Link24, useLocation as useLocation13, useNavigation as useNavigation17 } from "@remix-run/react";
+import { useEffect as useEffect32, useState as useState40 } from "react";
 import { jsx as jsx96, jsxs as jsxs83 } from "react/jsx-runtime";
 var services = [
   {
     name: "Airtime",
     description: "Buy airtime from all networks in Nigeria",
     icon: "airtime",
-    to: "/vtuservice/airtime"
+    path: "airtime"
   },
   {
     name: "Data",
     description: "Best data offers available at kidmonth",
     icon: "data",
-    to: "/vtuservice/data"
+    path: "data"
   }
 ];
 function useVtuServicesController() {
-  let navigation = useNavigation17(), { getUserStoreManager } = useUserManager(), [isSignedIn, setIsSignedIn] = useState39(!1);
-  return useEffect31(() => {
+  let navigation = useNavigation17(), { pathname } = useLocation13(), paths = getVtuPaths(pathname), { getUserStoreManager } = useUserManager(), [isSignedIn, setIsSignedIn] = useState40(!1);
+  return useEffect32(() => {
     setIsSignedIn(Boolean(getUserStoreManager()));
   }, []), {
     isLoading: navigation.state === "loading",
     isSignedIn,
-    services
+    services: services.map((service) => ({ ...service, to: paths[service.path] })),
+    purchasesPath: paths.purchases
   };
 }
 function ServiceIcon({ icon }) {
@@ -11660,7 +12012,7 @@ function VtuServicesSkeleton() {
   )) });
 }
 function VtuServices() {
-  let { isLoading, isSignedIn, services: vtuServices } = useVtuServicesController();
+  let { isLoading, isSignedIn, services: vtuServices, purchasesPath } = useVtuServicesController();
   return /* @__PURE__ */ jsx96("main", { className: "grow min-w-0 overflow-x-hidden", children: /* @__PURE__ */ jsx96("section", { className: "mx-auto w-full max-w-[1280px] px-4 py-10 sm:w-[90%] sm:px-0 sm:py-16 lg:py-24", children: isLoading ? /* @__PURE__ */ jsx96(VtuServicesSkeleton, {}) : /* @__PURE__ */ jsxs83("section", { className: "grid min-w-0 gap-6 sm:grid-cols-2", children: [
     vtuServices.map((service) => /* @__PURE__ */ jsxs83(
       Link24,
@@ -11678,7 +12030,7 @@ function VtuServices() {
     isSignedIn && /* @__PURE__ */ jsxs83(
       Link24,
       {
-        to: "/vtuservice/vtupurchases",
+        to: purchasesPath,
         className: "group min-w-0 overflow-hidden rounded-[2rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(14,42,77,0.14)] sm:p-8",
         children: [
           /* @__PURE__ */ jsx96("div", { className: "flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-pink/10 text-brand-pink transition duration-300 group-hover:scale-105", children: /* @__PURE__ */ jsx96(Svg, { "aria-label": "My VTU purchases", className: "h-12 w-12", role: "img", src: icons.noteIcon }) }),
@@ -11693,11 +12045,11 @@ function VtuServices() {
 // app/routes/admin.partners.details.$id.tsx
 var admin_partners_details_id_exports = {};
 __export(admin_partners_details_id_exports, {
-  action: () => action18,
+  action: () => action19,
   default: () => PartnerDetailsPage,
   loader: () => loader35
 });
-import { json as json33, redirect as redirect29 } from "@remix-run/node";
+import { json as json33, redirect as redirect30 } from "@remix-run/node";
 import { Form as Form26, useLoaderData as useLoaderData30, useNavigation as useNavigation18, useNavigate as useNavigate19, Link as Link25 } from "@remix-run/react";
 import { jsx as jsx97, jsxs as jsxs84 } from "react/jsx-runtime";
 var statusColors = {
@@ -11730,25 +12082,25 @@ async function loader35({ params, request }) {
   let validateAuth = await requireAuth(request), id = params.id ?? "";
   if (!id) {
     let { headers } = await setToast({ request, toast: `error::Missing partner id::${Date.now()}` });
-    return redirect29("/admin/partners", { headers });
+    return redirect30("/admin/partners", { headers });
   }
   let response = await partnerServer.getBusinessDetails(id, request);
   if (response.authRequired)
-    return redirect29("/login");
+    return redirect30("/login");
   if (response.error || !response.data) {
     let { headers } = await setToast({
       request,
       toast: `error::${response.error?.detail?.toString() ?? "Could not load business details"}::${Date.now()}`
     });
-    return redirect29("/admin/partners", { headers });
+    return redirect30("/admin/partners", { headers });
   }
   return json33({ business: response.data });
 }
-async function action18({ params, request }) {
+async function action19({ params, request }) {
   let validateAuth = await requireAuth(request), id = params.id ?? "", formData = await request.formData(), intent = formData.get("intent")?.toString();
   if (!id || !intent) {
     let { headers } = await setToast({ request, toast: `error::Invalid business request::${Date.now()}` });
-    return redirect29(`/admin/partners/details/${id}`, { headers });
+    return redirect30(`/admin/partners/details/${id}`, { headers });
   }
   if (intent === "update_status") {
     let dto = {
@@ -11759,19 +12111,19 @@ async function action18({ params, request }) {
       referral_percentage: parseReferralPercentage(formData.get("referral_percentage"))
     }, response = await partnerServer.updateBusinessStatus(dto, request);
     if (response.authRequired)
-      return redirect29("/login");
+      return redirect30("/login");
     if (response.error) {
       let { headers: headers2 } = await setToast({
         request,
         toast: `error::${response.error.detail?.toString() ?? "Could not update business"}::${Date.now()}`
       });
-      return redirect29(`/admin/partners/details/${id}`, { headers: headers2 });
+      return redirect30(`/admin/partners/details/${id}`, { headers: headers2 });
     }
     let { headers } = await setToast({
       request,
       toast: `success::Business updated successfully::${Date.now()}`
     });
-    return redirect29(`/admin/partners/details/${id}`, { headers });
+    return redirect30(`/admin/partners/details/${id}`, { headers });
   } else if (intent === "add_owner") {
     let dto = {
       business_id: formData.get("business_id")?.toString() || id,
@@ -11783,22 +12135,22 @@ async function action18({ params, request }) {
       password: formData.get("password")?.toString() ?? ""
     }, response = await partnerServer.addBusinessOwner(dto, request);
     if (response.authRequired)
-      return redirect29("/login");
+      return redirect30("/login");
     if (response.error) {
       let { headers: headers2 } = await setToast({
         request,
         toast: `error::${response.error.detail?.toString() ?? "Could not update business"}::${Date.now()}`
       });
-      return redirect29(`/admin/partners/details/${id}`, { headers: headers2 });
+      return redirect30(`/admin/partners/details/${id}`, { headers: headers2 });
     }
     let { headers } = await setToast({
       request,
       toast: `success::Business updated successfully::${Date.now()}`
     });
-    return redirect29(`/admin/partners/details/${id}`, { headers });
+    return redirect30(`/admin/partners/details/${id}`, { headers });
   } else {
     let { headers } = await setToast({ request, toast: `error::Unsupported action::${Date.now()}` });
-    return redirect29(`/admin/partners/details/${id}`, { headers });
+    return redirect30(`/admin/partners/details/${id}`, { headers });
   }
 }
 function DetailCard({ label, value }) {
@@ -11949,14 +12301,14 @@ function PartnerDetailsPage() {
 // app/routes/admin.partners.settlements.tsx
 var admin_partners_settlements_exports = {};
 __export(admin_partners_settlements_exports, {
-  action: () => action19,
+  action: () => action20,
   default: () => PartnerSettlementsIndex2,
   loader: () => loader36
 });
-import { json as json34, redirect as redirect30 } from "@remix-run/node";
+import { json as json34, redirect as redirect31 } from "@remix-run/node";
 import { Form as Form27, useActionData as useActionData11, useLoaderData as useLoaderData31, useNavigation as useNavigation19 } from "@remix-run/react";
 import { ChevronRight as ChevronRight2, Search as Search4, X as X2 } from "lucide-react";
-import { useEffect as useEffect32, useMemo as useMemo8, useState as useState40 } from "react";
+import { useEffect as useEffect33, useMemo as useMemo8, useState as useState41 } from "react";
 import { jsx as jsx98, jsxs as jsxs85 } from "react/jsx-runtime";
 var selectableStatuses2 = /* @__PURE__ */ new Set([
   "pending" /* pending */,
@@ -12227,8 +12579,8 @@ function PaymentModal2({
   selectedIds,
   actionError
 }) {
-  let [paymentOption, setPaymentOption] = useState40("provider" /* provider */);
-  return useEffect32(() => {
+  let [paymentOption, setPaymentOption] = useState41("provider" /* provider */);
+  return useEffect33(() => {
     open && setPaymentOption("provider" /* provider */);
   }, [open]), open ? /* @__PURE__ */ jsx98("div", { className: "fixed inset-0 z-40 flex items-end justify-center bg-slate-950/40 p-4 backdrop-blur-sm sm:items-center", children: /* @__PURE__ */ jsxs85("div", { className: "w-full max-w-lg rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-2xl", children: [
     /* @__PURE__ */ jsxs85("div", { className: "flex items-start justify-between gap-4", children: [
@@ -12331,7 +12683,7 @@ function PaymentModal2({
 }
 async function loader36({ request }) {
   let validateAuth = await requireAuth(request), query = buildSettlementsQuery2(new URL(request.url).searchParams), settlementsRes = await partnerServer.adminSearchPartnerSettlements(query, request);
-  return settlementsRes.authRequired ? redirect30("/login") : settlementsRes.error ? json34({
+  return settlementsRes.authRequired ? redirect31("/login") : settlementsRes.error ? json34({
     settlements: buildEmptySettlements2(query.page_size ?? 20),
     query,
     error: typeof settlementsRes.error.detail == "string" ? settlementsRes.error.detail : "Unable to load settlements"
@@ -12340,7 +12692,7 @@ async function loader36({ request }) {
     query
   });
 }
-async function action19({ request }) {
+async function action20({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), settlementIdsRaw = String(formData.get("settlement_ids") ?? "").trim(), paymentOptionRaw = String(formData.get("payment_option") ?? "").trim();
   if (String(formData.get("intent") ?? "") !== "pay-settlements") {
     let { headers: headers2 } = await setToast({ request, toast: `error::Unsupported settlement action::${Date.now()}` });
@@ -12383,7 +12735,7 @@ async function action19({ request }) {
       request,
       toast: `success::You will be redirected to complete your settlement payment::${Date.now()}`
     });
-    return redirect30(paymentLink, { headers: headers2 });
+    return redirect31(paymentLink, { headers: headers2 });
   }
   let response = await partnerServer.settlementsWalletPayment(payload, request), failedStatus = String(response.data?.status ?? "").toLowerCase();
   if (response.error || failedStatus.includes("fail") || failedStatus.includes("error")) {
@@ -12394,10 +12746,10 @@ async function action19({ request }) {
     request,
     toast: `success::${response.data?.message ?? "Settlement payment completed successfully"}::${Date.now()}`
   }), currentUrl = new URL(request.url);
-  return redirect30(`${currentUrl.pathname}${currentUrl.search}`, { headers });
+  return redirect31(`${currentUrl.pathname}${currentUrl.search}`, { headers });
 }
 function PartnerSettlementsIndex2() {
-  let { settlements, query, error } = useLoaderData31(), actionData = useActionData11(), navigation = useNavigation19(), [selectedSettlementIds, setSelectedSettlementIds] = useState40([]), [activeSettlementId, setActiveSettlementId] = useState40(null), [paymentModalOpen, setPaymentModalOpen] = useState40(!1), activeSettlement = useMemo8(
+  let { settlements, query, error } = useLoaderData31(), actionData = useActionData11(), navigation = useNavigation19(), [selectedSettlementIds, setSelectedSettlementIds] = useState41([]), [activeSettlementId, setActiveSettlementId] = useState41(null), [paymentModalOpen, setPaymentModalOpen] = useState41(!1), activeSettlement = useMemo8(
     () => settlements.items.find((settlement) => settlement._id === activeSettlementId) ?? null,
     [activeSettlementId, settlements.items]
   ), selectedSettlements = useMemo8(
@@ -12407,7 +12759,7 @@ function PartnerSettlementsIndex2() {
     () => selectedSettlements.reduce((sum, settlement) => sum + settlement.settlement_amount, 0),
     [selectedSettlements]
   );
-  useEffect32(() => {
+  useEffect33(() => {
     setSelectedSettlementIds(
       (current) => current.filter((id) => settlements.items.some((settlement) => settlement._id === id))
     );
@@ -12562,19 +12914,19 @@ function MetricCard2({
 // app/routes/admin.tournaments.$ID.edit.tsx
 var admin_tournaments_ID_edit_exports = {};
 __export(admin_tournaments_ID_edit_exports, {
-  action: () => action20,
+  action: () => action21,
   default: () => EditTournament,
   loader: () => loader37
 });
-import { json as json35, redirect as redirect31 } from "@remix-run/node";
+import { json as json35, redirect as redirect32 } from "@remix-run/node";
 import { useLoaderData as useLoaderData32, useNavigate as useNavigate20 } from "@remix-run/react";
 
 // app/components/admin/tournament/EditTournamentForm.tsx
 import { Form as Form28 } from "@remix-run/react";
-import { useState as useState41 } from "react";
+import { useState as useState42 } from "react";
 import { jsx as jsx99, jsxs as jsxs86 } from "react/jsx-runtime";
 function EditTournamentForm({ tournament }) {
-  let [fileList, setFileList] = useState41(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
+  let [fileList, setFileList] = useState42(null), { filePreview, clearFilePreview, fileName } = useFilePreview(fileList);
   return /* @__PURE__ */ jsxs86(Form28, { className: "max-w-xl mx-auto grid gap-6 sm:gap-12 text-sm", method: "post", encType: "multipart/form-data", children: [
     /* @__PURE__ */ jsx99("h1", { className: "text-xl xs:text-2xl font-bold text-primary", children: "Edit Tournament" }),
     /* @__PURE__ */ jsxs86("div", { className: "grid gap-3 sm:gap-6", children: [
@@ -12610,23 +12962,23 @@ async function loader37({ params, request }) {
   let { data: tournament, error } = await tournamentRepo.getTournamentById(params.ID);
   if (!tournament) {
     let { headers } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
-    return redirect31("/admin/tournaments", { headers });
+    return redirect32("/admin/tournaments", { headers });
   }
   return json35({ tournament });
 }
-async function action20({ request }) {
+async function action21({ request }) {
   let formData = await request.formData(), payload = prepareTournamentDto(formData);
   console.log("###############"), console.log(Object.fromEntries(payload.entries()));
   let validateAuth = await requireAuth(request), { data, error } = await tournamentRepo.updateTournament({ id: formData.get("tournamentId"), dto: payload }, request);
   if (data) {
     let { headers: headers2 } = await setToast({ request, toast: `success::The tournament has been updated::${Date.now()}` });
-    return redirect31("/admin/tournaments", { headers: headers2 });
+    return redirect32("/admin/tournaments", { headers: headers2 });
   } else if (error) {
     let { headers: headers2 } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` });
     return json35(error, { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `error::Sorry, this tournament no longer exists::${Date.now()}` });
-  return redirect31("/admin/tournaments", { headers });
+  return redirect32("/admin/tournaments", { headers });
 }
 function EditTournament() {
   let { tournament } = useLoaderData32(), navigate = useNavigate20();
@@ -12642,16 +12994,16 @@ function EditTournament() {
 // app/routes/partners.setwithdrawalpin.tsx
 var partners_setwithdrawalpin_exports = {};
 __export(partners_setwithdrawalpin_exports, {
-  action: () => action21,
+  action: () => action22,
   default: () => SetWithdrawalPin,
   loader: () => loader38
 });
-import { json as json36, redirect as redirect32 } from "@remix-run/node";
+import { json as json36, redirect as redirect33 } from "@remix-run/node";
 import { Form as Form29, Link as Link26, useActionData as useActionData12, useLoaderData as useLoaderData33, useNavigation as useNavigation20 } from "@remix-run/react";
-import { useState as useState42, useEffect as useEffect33 } from "react";
+import { useState as useState43, useEffect as useEffect34 } from "react";
 import { User, X as X3, Mail } from "lucide-react";
 import { jsx as jsx101, jsxs as jsxs88 } from "react/jsx-runtime";
-async function action21({ request }) {
+async function action22({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "request-token") {
     let { data: data2, error: error2, authRequired: authRequired2 } = await walletRepo.requestPartnerWithdrawalToken(request);
@@ -12671,13 +13023,13 @@ async function loader38({ request }) {
   let validateAuth = await requireAuth(request);
   var businessWallets = await walletRepo.getBusinessWallets(request);
   if (!businessWallets.data || businessWallets.data.length === 0)
-    return redirect32("/login");
+    return redirect33("/login");
   var userWalltetsPinNotSet = businessWallets.data.find((w) => !w.business_withdrawal_pin_set);
-  return userWalltetsPinNotSet ? json36({}) : redirect32("/partners/wallet");
+  return userWalltetsPinNotSet ? json36({}) : redirect33("/partners/wallet");
 }
 function useSetWithdrawalPinController() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState42(null), [showTokenModal, setShowTokenModal] = useState42(!0), actionData = useActionData12(), loader_ = useLoaderData33(), navigation = useNavigation20(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
-  return useEffect33(() => {
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState43(null), [showTokenModal, setShowTokenModal] = useState43(!0), actionData = useActionData12(), loader_ = useLoaderData33(), navigation = useNavigation20(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
+  return useEffect34(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
     user,
@@ -12691,7 +13043,7 @@ function useSetWithdrawalPinController() {
 }
 function SetWithdrawalPin() {
   let { loader_, actionData, setUserStoreManager, showTokenModal, setShowTokenModal, isRequestingToken } = useSetWithdrawalPinController();
-  return useEffect33(() => {
+  return useEffect34(() => {
     if (console.log({ actionData }), actionData?.intent === "request-token") {
       actionData?.error && toast({
         variant: "destructive",
@@ -12828,12 +13180,12 @@ function SetWithdrawalPin() {
 // app/routes/_public.marketplace.cart.tsx
 var public_marketplace_cart_exports = {};
 __export(public_marketplace_cart_exports, {
-  action: () => action22,
+  action: () => action23,
   default: () => MarketplaceCart,
   loader: () => loader39
 });
 import { json as json37 } from "@remix-run/node";
-import { Link as Link27, useFetcher as useFetcher17, useLoaderData as useLoaderData34, useNavigation as useNavigation21 } from "@remix-run/react";
+import { Link as Link27, useFetcher as useFetcher18, useLoaderData as useLoaderData34, useLocation as useLocation14, useNavigation as useNavigation21 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft3, Minus, Plus as Plus2, ShoppingCart as ShoppingCart2, Trash2 } from "lucide-react";
 import { jsx as jsx102, jsxs as jsxs89 } from "react/jsx-runtime";
 function parseCartItemPayload2(formData) {
@@ -12858,7 +13210,7 @@ async function loader39({ request }) {
     cart: cartRes.data ?? null
   });
 }
-async function action22({ request }) {
+async function action23({ request }) {
   let formData = await request.formData(), cookieHeader = request.headers.get("Cookie") ?? void 0, payload = buildCartPayload2(formData), cartRes = await partnerServer.upsertCartItems(payload, request);
   return cartRes.error ? json37(
     {
@@ -12872,9 +13224,9 @@ async function action22({ request }) {
 function CartLineItem({
   item
 }) {
-  let fetcher = useFetcher17(), product = item.product, imageSrc = product.main_image_url || product.image_urls?.[0] || no_image_default, locationLabel = product.product_locations?.find((location) => location.str_id === item.product_location_id)?.name ?? product.product_locations?.find((location) => location.is_primary)?.name ?? product.product_locations?.[0]?.name ?? "Default location", isSubmitting = fetcher.state !== "idle", submitQuantity = (quantity) => {
+  let fetcher = useFetcher18(), product = item.product, imageSrc = product.main_image_url || product.image_urls?.[0] || no_image_default, locationLabel = product.product_locations?.find((location) => location.str_id === item.product_location_id)?.name ?? product.product_locations?.find((location) => location.is_primary)?.name ?? product.product_locations?.[0]?.name ?? "Default location", isSubmitting = fetcher.state !== "idle", submitQuantity = (quantity) => {
     let formData = new FormData();
-    formData.set("product_id", item.product_id), formData.set("quantity", String(Math.max(0, quantity))), item.product_location_id && formData.set("product_location_id", item.product_location_id), fetcher.submit(formData, { method: "post", action: "/marketplace/cart" });
+    formData.set("product_id", item.product_id), formData.set("quantity", String(Math.max(0, quantity))), item.product_location_id && formData.set("product_location_id", item.product_location_id), fetcher.submit(formData, { method: "post" });
   };
   return /* @__PURE__ */ jsxs89("article", { className: "grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr_auto] sm:p-5", children: [
     /* @__PURE__ */ jsx102("div", { className: "overflow-hidden rounded-2xl bg-slate-100", children: /* @__PURE__ */ jsx102("img", { src: imageSrc, alt: product.name, className: "aspect-square h-full w-full object-cover", loading: "lazy" }) }),
@@ -12950,7 +13302,7 @@ function CartSkeleton() {
   ] }, index)) });
 }
 function MarketplaceCart() {
-  let { cart, cartError } = useLoaderData34(), isLoading = useNavigation21().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
+  let { pathname } = useLocation14(), paths = getMarketplacePaths(pathname), { cart, cartError } = useLoaderData34(), isLoading = useNavigation21().state === "loading", cartItems = cart?.cart_items ?? [], itemCount = cartItems.reduce((total, item) => total + item.quantity, 0), distinctItems = cartItems.length, minimumTotal = cart?.minimum_total_amount ?? 0, maximumTotal = cart?.maximum_total_amount ?? 0, currency = cart?.currency ?? "NGN";
   return /* @__PURE__ */ jsxs89("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs89("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs89("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -12958,7 +13310,7 @@ function MarketplaceCart() {
           /* @__PURE__ */ jsxs89(
             Link27,
             {
-              to: "/marketplace",
+              to: paths.shop,
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
                 /* @__PURE__ */ jsx102(ArrowLeft3, { className: "h-4 w-4" }),
@@ -12995,7 +13347,7 @@ function MarketplaceCart() {
           /* @__PURE__ */ jsx102("h2", { className: "text-2xl font-black text-slate-950", children: "Your cart" }),
           /* @__PURE__ */ jsx102("p", { className: "text-sm text-slate-500", children: cartItems.length > 0 ? `${cartItems.length} line item${cartItems.length === 1 ? "" : "s"}` : "No items in cart yet" })
         ] }),
-        /* @__PURE__ */ jsx102(Link27, { to: "/marketplace", className: "text-sm font-bold text-accent", children: "Continue shopping" })
+        /* @__PURE__ */ jsx102(Link27, { to: paths.shop, className: "text-sm font-bold text-accent", children: "Continue shopping" })
       ] }),
       isLoading ? /* @__PURE__ */ jsx102(CartSkeleton, {}) : cartItems.length > 0 ? /* @__PURE__ */ jsx102("div", { className: "space-y-4", children: cartItems.map((item) => /* @__PURE__ */ jsx102(CartLineItem, { item }, `${item.product_id}-${item.product_location_id ?? "default"}`)) }) : /* @__PURE__ */ jsxs89("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
         /* @__PURE__ */ jsx102(ShoppingCart2, { className: "mx-auto h-10 w-10 text-slate-300" }),
@@ -13004,7 +13356,7 @@ function MarketplaceCart() {
         /* @__PURE__ */ jsx102(
           Link27,
           {
-            to: "/marketplace",
+            to: paths.shop,
             className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
             children: "Browse products"
           }
@@ -13019,7 +13371,7 @@ function MarketplaceCart() {
       /* @__PURE__ */ jsx102(
         Link27,
         {
-          to: "/marketplace/checkout",
+          to: paths.checkout,
           className: "inline-flex items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
           children: "Checkout"
         }
@@ -13094,7 +13446,7 @@ function PillStat({ label, value }) {
 // app/routes/admin.tournaments._index.tsx
 var admin_tournaments_index_exports = {};
 __export(admin_tournaments_index_exports, {
-  action: () => action23,
+  action: () => action24,
   default: () => Tournaments,
   loader: () => loader41
 });
@@ -13105,10 +13457,10 @@ import { useLoaderData as useLoaderData36 } from "@remix-run/react";
 import { Link as Link28 } from "@remix-run/react";
 
 // app/components/admin/tournament/DeleteTournamentDialog.tsx
-import { useFetcher as useFetcher18 } from "@remix-run/react";
+import { useFetcher as useFetcher19 } from "@remix-run/react";
 import { jsx as jsx104, jsxs as jsxs91 } from "react/jsx-runtime";
 function DeleteTournamentDialog({ tournament, disabled }) {
-  let fetcher = useFetcher18();
+  let fetcher = useFetcher19();
   return /* @__PURE__ */ jsxs91(Dialog, { children: [
     /* @__PURE__ */ jsx104(
       DialogTrigger,
@@ -13211,7 +13563,7 @@ async function loader41({}) {
     throw new Error(error.detail);
   return json38({ tournaments });
 }
-async function action23({ request }) {
+async function action24({ request }) {
   let formData = await request.formData(), intent = formData.get("intent"), validateAuth = await requireAuth(request);
   if (intent === "delete") {
     let tournamentId = formData.get("tournamentId"), { data, error } = await tournamentRepo.deleteTournament(tournamentId, request);
@@ -13262,20 +13614,20 @@ function Tournaments() {
 // app/routes/partners.orders.$orderId.tsx
 var partners_orders_orderId_exports = {};
 __export(partners_orders_orderId_exports, {
-  action: () => action24,
+  action: () => action25,
   default: () => PartnerOrderDetailPage,
   loader: () => loader42
 });
 import { json as json39 } from "@remix-run/node";
 import {
   Link as Link29,
-  useFetcher as useFetcher19,
+  useFetcher as useFetcher20,
   useLoaderData as useLoaderData37,
   useNavigation as useNavigation22,
-  useRevalidator
+  useRevalidator as useRevalidator2
 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft4, CreditCard as CreditCard2, PackageSearch as PackageSearch2, Phone, ShieldCheck, SquarePen } from "lucide-react";
-import { useEffect as useEffect34, useRef as useRef13, useState as useState43 } from "react";
+import { useEffect as useEffect35, useRef as useRef14, useState as useState44 } from "react";
 import { Fragment as Fragment16, jsx as jsx108, jsxs as jsxs95 } from "react/jsx-runtime";
 var actionableStatuses = ["Pending" /* Pending */, "Active" /* Active */];
 function formatDateTime(value) {
@@ -13284,10 +13636,10 @@ function formatDateTime(value) {
     timeStyle: "short"
   }).format(new Date(value));
 }
-function formatStatusLabel(value) {
+function formatStatusLabel2(value) {
   return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
 }
-function getErrorMessage2(error, fallback) {
+function getErrorMessage3(error, fallback) {
   return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
 }
 function OrderPageSkeleton() {
@@ -13328,10 +13680,10 @@ function OrderMutationDialog({
   triggerClassName,
   actionLabel
 }) {
-  let fetcher = useFetcher19(), revalidator = useRevalidator(), [open, setOpen] = useState43(!1), handledSuccessRef = useRef13(!1), isSubmitting = fetcher.state !== "idle";
-  useEffect34(() => {
+  let fetcher = useFetcher20(), revalidator = useRevalidator2(), [open, setOpen] = useState44(!1), handledSuccessRef = useRef14(!1), isSubmitting = fetcher.state !== "idle";
+  useEffect35(() => {
     fetcher.state === "submitting" && (handledSuccessRef.current = !1);
-  }, [fetcher.state]), useEffect34(() => {
+  }, [fetcher.state]), useEffect35(() => {
     let response = fetcher.data;
     !response || !response.ok || handledSuccessRef.current || (handledSuccessRef.current = !0, setOpen(!1), revalidator.revalidate());
   }, [fetcher.data, revalidator]);
@@ -13397,7 +13749,7 @@ function OrderItemCard({ order, item }) {
   return /* @__PURE__ */ jsx108("article", { className: "rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white", children: /* @__PURE__ */ jsxs95("div", { className: "flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between", children: [
     /* @__PURE__ */ jsxs95("div", { className: "space-y-3", children: [
       /* @__PURE__ */ jsxs95("div", { className: "flex flex-wrap items-center gap-2", children: [
-        /* @__PURE__ */ jsx108("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700", children: formatStatusLabel(item.status) }),
+        /* @__PURE__ */ jsx108("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700", children: formatStatusLabel2(item.status) }),
         /* @__PURE__ */ jsxs95("span", { className: "rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white", children: [
           "Qty ",
           item.quantity
@@ -13466,12 +13818,12 @@ async function loader42({ params, request }) {
   return error ? json39(
     {
       order: null,
-      error: getErrorMessage2(error, "Unable to load order details")
+      error: getErrorMessage3(error, "Unable to load order details")
     },
     { status: 404 }
   ) : json39({ order: data ?? null });
 }
-async function action24({ params, request }) {
+async function action25({ params, request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", orderId = params.orderId;
   if (!orderId)
     return json39({ ok: !1, error: "Missing order id" }, { status: 400 });
@@ -13487,7 +13839,7 @@ async function action24({ params, request }) {
     return json39(
       {
         ok: !1,
-        error: getErrorMessage2(orderRes.error, "Unable to verify this order")
+        error: getErrorMessage3(orderRes.error, "Unable to verify this order")
       },
       { status: 404 }
     );
@@ -13499,7 +13851,7 @@ async function action24({ params, request }) {
     return json39({ ok: !1, error: "Order item not found" }, { status: 404 });
   if (!actionableStatuses.includes(item.status))
     return json39(
-      { ok: !1, error: `This order item cannot be updated from ${formatStatusLabel(item.status)} status` },
+      { ok: !1, error: `This order item cannot be updated from ${formatStatusLabel2(item.status)} status` },
       { status: 400 }
     );
   let payload = {
@@ -13511,7 +13863,7 @@ async function action24({ params, request }) {
     return json39(
       {
         ok: !1,
-        error: getErrorMessage2(mutationRes.error, `Unable to ${intent} this order item`)
+        error: getErrorMessage3(mutationRes.error, `Unable to ${intent} this order item`)
       },
       { status: 400 }
     );
@@ -13582,7 +13934,7 @@ function PartnerOrderDetailPage() {
       /* @__PURE__ */ jsxs95("div", { className: "grid gap-4 sm:grid-cols-2 lg:w-[420px] lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs95("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
           /* @__PURE__ */ jsx108("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Status" }),
-          /* @__PURE__ */ jsx108("div", { className: "mt-2 text-2xl font-black text-slate-950", children: formatStatusLabel(order.status) })
+          /* @__PURE__ */ jsx108("div", { className: "mt-2 text-2xl font-black text-slate-950", children: formatStatusLabel2(order.status) })
         ] }),
         /* @__PURE__ */ jsxs95("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
           /* @__PURE__ */ jsx108("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }),
@@ -13703,14 +14055,14 @@ function Contests() {
 // app/routes/_public.vtuservice.data.tsx
 var public_vtuservice_data_exports = {};
 __export(public_vtuservice_data_exports, {
-  action: () => action25,
+  action: () => action26,
   default: () => DataPage,
   loader: () => loader44,
   useDataController: () => useDataController
 });
-import { json as json41, redirect as redirect35 } from "@remix-run/node";
-import { useFetcher as useFetcher20, useLoaderData as useLoaderData39 } from "@remix-run/react";
-import { useEffect as useEffect35, useState as useState44 } from "react";
+import { json as json41, redirect as redirect36 } from "@remix-run/node";
+import { useFetcher as useFetcher21, useLoaderData as useLoaderData39, useLocation as useLocation15 } from "@remix-run/react";
+import { useEffect as useEffect36, useState as useState45 } from "react";
 import { Fragment as Fragment17, jsx as jsx110, jsxs as jsxs97 } from "react/jsx-runtime";
 async function loader44({ request }) {
   let url = new URL(request.url);
@@ -13726,8 +14078,8 @@ async function loader44({ request }) {
   let phoneNumber = normalizePhoneNumber(url.searchParams.get("phone_number") ?? "");
   return json41({ phoneNumber, recentBeneficiaries: [], plans: null, error: null });
 }
-async function action25({ request }) {
-  let formData = await request.formData(), intent = String(formData.get("intent") ?? "search_data_plans");
+async function action26({ request }) {
+  let paths = getVtuPaths(new URL(request.url).pathname), formData = await request.formData(), intent = String(formData.get("intent") ?? "search_data_plans");
   if (intent === "preview_data_payment") {
     let dataProductId = String(formData.get("data_product_id") ?? "").trim(), amount = Number(formData.get("amount"));
     if (!dataProductId || !Number.isFinite(amount) || amount <= 0)
@@ -13758,7 +14110,7 @@ async function action25({ request }) {
       pin,
       ...referrerCode ? { referrer_code: referrerCode } : {}
     }, request);
-    return purchaseResponse.error || !purchaseResponse.data?.reference ? json41({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to complete the data purchase.") }, { status: 400 }) : redirect35(`/vtuservice/vtupurchase/${encodeURIComponent(purchaseResponse.data.reference)}`);
+    return purchaseResponse.error || !purchaseResponse.data?.reference ? json41({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to complete the data purchase.") }, { status: 400 }) : redirect36(paths.purchase(purchaseResponse.data.reference));
   }
   if (intent === "purchase_data_bank") {
     let productId = String(formData.get("vtu_product_id") ?? "").trim(), phoneNumber2 = normalizePhoneNumber(String(formData.get("phone_number") ?? "")), amount = Number(formData.get("amount")), email = String(formData.get("email") ?? "").trim(), referrerCode = String(formData.get("referrer_code") ?? "").trim();
@@ -13769,13 +14121,13 @@ async function action25({ request }) {
       phone_number: phoneNumber2,
       amount,
       email,
-      redirect_url: new URL("/vtuservice/provider_payment_redirect", request.url).toString(),
+      redirect_url: new URL(paths.paymentReturn, request.url).toString(),
       ...referrerCode ? { referrer_code: referrerCode } : {}
     }, request);
     if (purchaseResponse.error)
       return json41({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to start bank payment.") }, { status: 400 });
     let paymentLink = purchaseResponse.data?.payment_link?.trim();
-    return paymentLink ? redirect35(paymentLink) : json41({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+    return paymentLink ? redirect36(paymentLink) : json41({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
   }
   if (intent !== "search_data_plans")
     return json41({ intent, plans: null, error: "Unsupported data-plan action." }, { status: 400 });
@@ -13832,8 +14184,8 @@ function DataPlanCard({ plan, onPreview }) {
   );
 }
 function DataPlans({ plans, onPreview }) {
-  let categories = plans.categories ?? [], [activeCategoryId, setActiveCategoryId] = useState44(categories[0]?.category_id ?? "");
-  useEffect35(() => {
+  let categories = plans.categories ?? [], [activeCategoryId, setActiveCategoryId] = useState45(categories[0]?.category_id ?? "");
+  useEffect36(() => {
     setActiveCategoryId(categories[0]?.category_id ?? "");
   }, [plans]);
   let activeCategory = categories.find((category) => category.category_id === activeCategoryId) ?? categories[0], activePlans = activeCategory?.plans ?? [];
@@ -13953,19 +14305,19 @@ function DataPaymentPreviewModal({
   ] }) });
 }
 function useDataController() {
-  let initialData = useLoaderData39(), fetcher = useFetcher20(), previewFetcher = useFetcher20(), recentBeneficiariesFetcher = useFetcher20(), { getUserStoreManager } = useUserManager(), [user, setUser] = useState44(null), [phoneNumber, setPhoneNumber] = useState44(initialData.phoneNumber), [paymentPreview, setPaymentPreview] = useState44(null), [referrerCode, setReferrerCode] = useState44(""), [walletPaymentOpen, setWalletPaymentOpen] = useState44(!1), [walletPin, setWalletPin] = useState44(""), [bankPaymentOpen, setBankPaymentOpen] = useState44(!1), [bankEmail, setBankEmail] = useState44(""), selectedPlan = useState44(null);
-  useEffect35(() => {
+  let initialData = useLoaderData39(), fetcher = useFetcher21(), previewFetcher = useFetcher21(), recentBeneficiariesFetcher = useFetcher21(), { getUserStoreManager } = useUserManager(), [user, setUser] = useState45(null), [phoneNumber, setPhoneNumber] = useState45(initialData.phoneNumber), [paymentPreview, setPaymentPreview] = useState45(null), [referrerCode, setReferrerCode] = useState45(""), [walletPaymentOpen, setWalletPaymentOpen] = useState45(!1), [walletPin, setWalletPin] = useState45(""), [bankPaymentOpen, setBankPaymentOpen] = useState45(!1), [bankEmail, setBankEmail] = useState45(""), selectedPlan = useState45(null), { pathname } = useLocation15(), paths = getVtuPaths(pathname);
+  useEffect36(() => {
     let user2 = getUserStoreManager();
     setUser(user2), user2?.phone && setPhoneNumber(normalizePhoneNumber(user2.phone));
-  }, []), useEffect35(() => {
-    recentBeneficiariesFetcher.load("/vtuservice/data?resource=recent-beneficiaries");
-  }, []), useEffect35(() => {
+  }, []), useEffect36(() => {
+    recentBeneficiariesFetcher.load(`${paths.data}?resource=recent-beneficiaries`);
+  }, [paths.data]), useEffect36(() => {
     fetcher.data?.error && toast({
       variant: "destructive",
       title: "Data plans unavailable",
       description: fetcher.data.error
     });
-  }, [fetcher.data?.error]), useEffect35(() => {
+  }, [fetcher.data?.error]), useEffect36(() => {
     let data = previewFetcher.data;
     data?.intent === "preview_data_payment" && "preview" in data && data.preview && selectedPlan[0] && setPaymentPreview({
       preview: data.preview,
@@ -14084,7 +14436,7 @@ __export(admin_accounts_allusers_exports, {
   default: () => Accounts,
   loader: () => loader45
 });
-import { json as json42, redirect as redirect36 } from "@remix-run/node";
+import { json as json42, redirect as redirect37 } from "@remix-run/node";
 import { useLoaderData as useLoaderData40, Form as Form30, useNavigation as useNavigation23 } from "@remix-run/react";
 
 // app/components/reusables/ToggleBtn.tsx
@@ -14221,7 +14573,7 @@ async function loader45({ request }) {
     query[k] = v;
   Object.keys(query).length;
   let pagedUsersRes = await adminRepo.queryUsers(request, query);
-  return pagedUsersRes.authRequired ? redirect36("/login") : json42({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect37("/login") : json42({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts() {
   let { headings, tableData, pagedUserData, query } = useLoaderData40(), navigation = useNavigation23();
@@ -14281,20 +14633,20 @@ __export(user_contestantprofiles_exports, {
   default: () => UserContestantProfiles,
   loader: () => loader46
 });
-import { useEffect as useEffect36, useState as useState45 } from "react";
+import { useEffect as useEffect37, useState as useState46 } from "react";
 import { Link as Link30, useLoaderData as useLoaderData41, useNavigation as useNavigation24 } from "@remix-run/react";
-import { json as json43, redirect as redirect37 } from "@remix-run/node";
+import { json as json43, redirect as redirect38 } from "@remix-run/node";
 import { jsx as jsx114, jsxs as jsxs100 } from "react/jsx-runtime";
 async function loader46({ request }) {
   await requireAuth(request);
   let { data, error, authRequired } = await contestantRepo.getContestantProfiles(request);
-  return authRequired ? redirect37("/login") : json43({ data, error, authRequired });
+  return authRequired ? redirect38("/login") : json43({ data, error, authRequired });
 }
 function useContestantProfilesController() {
-  let { data, error } = useLoaderData41(), navigation = useNavigation24(), [profiles, setProfiles] = useState45([]);
-  useEffect36(() => {
+  let { data, error } = useLoaderData41(), navigation = useNavigation24(), [profiles, setProfiles] = useState46([]);
+  useEffect37(() => {
     data && setProfiles(data);
-  }, [data]), useEffect36(() => {
+  }, [data]), useEffect37(() => {
     error && toast({
       variant: "destructive",
       title: "An error occurred",
@@ -14392,32 +14744,39 @@ function EmptyState2() {
   ] });
 }
 
+// app/routes/user.vtu.payment-return.tsx
+var user_vtu_payment_return_exports = {};
+__export(user_vtu_payment_return_exports, {
+  default: () => ProviderPaymentRedirectPage,
+  loader: () => loader6
+});
+
 // app/routes/user.withdraw.$walletid.tsx
 var user_withdraw_walletid_exports = {};
 __export(user_withdraw_walletid_exports, {
-  action: () => action26,
+  action: () => action27,
   default: () => AddWithdrawalAccountPage4,
   loader: () => loader47,
   useAddWithdrawalAccountPage: () => useAddWithdrawalAccountPage4
 });
-import { redirect as redirect38 } from "@remix-run/node";
+import { redirect as redirect39 } from "@remix-run/node";
 import { Form as Form31, useNavigate as useNavigate21, useNavigation as useNavigation25 } from "@remix-run/react";
-import { useMemo as useMemo9, useRef as useRef14, useState as useState46 } from "react";
+import { useMemo as useMemo9, useRef as useRef15, useState as useState47 } from "react";
 import { useLoaderData as useLoaderData42, useActionData as useActionData13 } from "@remix-run/react";
 import { json as json44 } from "@remix-run/node";
-import { useEffect as useEffect37 } from "react";
+import { useEffect as useEffect38 } from "react";
 import { jsx as jsx115, jsxs as jsxs101 } from "react/jsx-runtime";
 async function loader47({ request, params }) {
   let validateAuth = await requireAuth(request), walletid = params.walletid;
   if (!walletid)
-    return redirect38("/user/wallet");
+    return redirect39("/user/wallet");
   let [wallet, withdrawalAccounts] = await Promise.all([walletRepo.getUserWalletById(walletid, request), walletRepo.getWalletWithdrawalAccounts(walletid, request)]);
-  if (wallet.authRequired && redirect38("/login"), !wallet.data)
-    return redirect38("/user/wallet");
+  if (wallet.authRequired && redirect39("/login"), !wallet.data)
+    return redirect39("/user/wallet");
   let walletAccount = wallet.data, walletCurrencyBanksResponse = await walletRepo.getBanksForCurrency(walletAccount.wallet_currency, request);
   return console.log("User wallets", { walletAccount, walletCurrencyBanks: walletCurrencyBanksResponse }), { error: wallet.error, walletAccount, walletCurrencyBanks: walletCurrencyBanksResponse.data, withdrawalAccounts: withdrawalAccounts.data, authRequired: wallet.authRequired };
 }
-async function action26({ request }) {
+async function action27({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), intent = formData.get("intent");
   switch (intent) {
     case "getCharge":
@@ -14444,14 +14803,14 @@ async function action26({ request }) {
   return json44({ success: !0 });
 }
 function useAddWithdrawalAccountPage4() {
-  let navigate = useNavigate21(), { error, walletAccount, walletCurrencyBanks, withdrawalAccounts, authRequired } = useLoaderData42(), { toast: toast4 } = useToast(), actionData = useActionData13(), [banks, setBanks] = useState46([]), [wallet, setWallet] = useState46(), [accountDetails, setAccountDetails] = useState46(null), [withdrawalCharges, setWithdrawalCharges] = useState46(null);
-  return useEffect37(() => {
+  let navigate = useNavigate21(), { error, walletAccount, walletCurrencyBanks, withdrawalAccounts, authRequired } = useLoaderData42(), { toast: toast4 } = useToast(), actionData = useActionData13(), [banks, setBanks] = useState47([]), [wallet, setWallet] = useState47(), [accountDetails, setAccountDetails] = useState47(null), [withdrawalCharges, setWithdrawalCharges] = useState47(null);
+  return useEffect38(() => {
     error && toast4({
       variant: "destructive",
       title: "An error occured",
       description: error?.detail.toString() ?? "Error occured"
     });
-  }, [error]), useEffect37(() => {
+  }, [error]), useEffect38(() => {
     if (actionData?.intent === "getCharge" && actionData?.data && setWithdrawalCharges(actionData.data), actionData?.intent === "addAccountDetails" && actionData?.data) {
       toast4({ title: "Success", description: "Recipient added successfully." }), navigate("/user/wallet");
       return;
@@ -14465,15 +14824,15 @@ function useAddWithdrawalAccountPage4() {
       title: "An error occured",
       description: actionData?.error?.detail.toString() ?? "Error occured"
     });
-  }, [actionData, actionData?.data]), useEffect37(() => {
+  }, [actionData, actionData?.data]), useEffect38(() => {
     walletCurrencyBanks && setBanks(walletCurrencyBanks), walletAccount && setWallet(walletAccount);
   }, [walletAccount, walletCurrencyBanks]), { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges };
 }
 function AddWithdrawalAccountPage4() {
-  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage4(), isSubmitting = useNavigation25().state === "submitting", [searchTerm, setSearchTerm] = useState46(""), [isOpen, setIsOpen] = useState46(!1), [selectedBank, setSelectedBank] = useState46(null), [withdrawalAccount, setWithdrawalAccount] = useState46(null), [amount, setAmount] = useState46(0), dropdownRef = useRef14(null), filteredBanks = useMemo9(() => banks.filter(
+  let { banks, wallet, accountDetails, withdrawalAccounts, setAccountDetails, withdrawalCharges, setWithdrawalCharges } = useAddWithdrawalAccountPage4(), isSubmitting = useNavigation25().state === "submitting", [searchTerm, setSearchTerm] = useState47(""), [isOpen, setIsOpen] = useState47(!1), [selectedBank, setSelectedBank] = useState47(null), [withdrawalAccount, setWithdrawalAccount] = useState47(null), [amount, setAmount] = useState47(0), dropdownRef = useRef15(null), filteredBanks = useMemo9(() => banks.filter(
     (bank) => bank.name.toLowerCase().includes(searchTerm.toLowerCase())
   ), [banks, searchTerm]);
-  useEffect37(() => {
+  useEffect38(() => {
     let handleClickOutside = (event) => {
       dropdownRef.current && !dropdownRef.current.contains(event.target) && setIsOpen(!1);
     };
@@ -14760,20 +15119,20 @@ function Results() {
 // app/routes/admin.accounts.$userId.tsx
 var admin_accounts_userId_exports = {};
 __export(admin_accounts_userId_exports, {
-  action: () => action27,
+  action: () => action28,
   default: () => EditAdminUser,
   loader: () => loader50
 });
 import { Form as Form32, useActionData as useActionData14, useLoaderData as useLoaderData44, useNavigate as useNavigate22, useNavigation as useNavigation26 } from "@remix-run/react";
-import { redirect as redirect39 } from "@remix-run/node";
+import { redirect as redirect40 } from "@remix-run/node";
 
 // app/components/admin/RolesFormControl.tsx
-import { useRef as useRef15, useState as useState47 } from "react";
+import { useRef as useRef16, useState as useState48 } from "react";
 import cn9 from "classnames";
 import { CounterClockwiseClockIcon as Restore } from "@radix-ui/react-icons";
 import { jsx as jsx117, jsxs as jsxs103 } from "react/jsx-runtime";
 function RolesFormControl({ roles, defaultRoles, ...props }) {
-  let [open, setOpen] = useState47(!1), fieldset = useRef15(null);
+  let [open, setOpen] = useState48(!1), fieldset = useRef16(null);
   function resetFieldset(e) {
     e.currentTarget.form?.roles.forEach((item) => {
       item.checked = item.defaultChecked;
@@ -14822,20 +15181,20 @@ function RolesFormControl({ roles, defaultRoles, ...props }) {
 }
 
 // app/routes/admin.accounts.$userId.tsx
-import { useEffect as useEffect38 } from "react";
+import { useEffect as useEffect39 } from "react";
 import { jsx as jsx118, jsxs as jsxs104 } from "react/jsx-runtime";
 async function loader50({ params, request }) {
   let validateAuth = await requireAuth(request), rolesResponse = await adminRepo.getAllRoles(request);
   if (rolesResponse.authRequired)
-    return redirect39("/login");
+    return redirect40("/login");
   let userId = params.userId ?? "", user = await adminRepo.getAdminUser(request, userId);
   if (!user || !user.data) {
     let { headers } = await setToast({ request, toast: `error::Admin user not found::${Date.now()}` });
-    return redirect39("/admin/accounts", { headers });
+    return redirect40("/admin/accounts", { headers });
   }
   return { permissions, user: user.data, roles: rolesResponse.data };
 }
-async function action27({ params, request }) {
+async function action28({ params, request }) {
   let cookieHeader = request.headers.get("Cookie"), formData = await request.formData(), userId = params.userId ?? "", dto = {
     fullName: `${formData.get("firstName")} ${formData.get("lastName")}`,
     email: formData.get("email"),
@@ -14854,7 +15213,7 @@ function EditAdminUser() {
   for (let roleName in roles ?? [])
     rolesNames.push(roleName);
   let navigate = useNavigate22(), actionData = useActionData14();
-  useEffect38(() => {
+  useEffect39(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Create action failed",
@@ -14904,7 +15263,7 @@ __export(partners_orders_Index_exports, {
   loader: () => loader51
 });
 import { json as json47 } from "@remix-run/node";
-import { Form as Form33, Link as Link32, useLoaderData as useLoaderData45, useLocation as useLocation8, useNavigation as useNavigation27 } from "@remix-run/react";
+import { Form as Form33, Link as Link32, useLoaderData as useLoaderData45, useLocation as useLocation16, useNavigation as useNavigation27 } from "@remix-run/react";
 import { PackageSearch as PackageSearch3, Search as Search5, ShoppingBag as ShoppingBag2 } from "lucide-react";
 import { jsx as jsx119, jsxs as jsxs105 } from "react/jsx-runtime";
 var orderStatusOptions2 = [
@@ -14984,7 +15343,7 @@ function formatDate5(value) {
     timeStyle: "short"
   }).format(new Date(value));
 }
-function formatStatusLabel2(value) {
+function formatStatusLabel3(value) {
   return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
 }
 function OrdersSkeleton2() {
@@ -15009,7 +15368,7 @@ function OrderItemRow2({
       hasRange ? `${formatMoney(item.currency, item.min_amount_total)} - ${formatMoney(item.currency, item.max_amount_total)}` : formatMoney(item.currency, item.min_amount_total)
     ] }),
     /* @__PURE__ */ jsxs105("div", { className: "flex flex-wrap gap-2", children: [
-      /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: formatStatusLabel2(item.status) }),
+      /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: formatStatusLabel3(item.status) }),
       item.location_name ? /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-white px-3 py-1 text-[11px] font-semibold text-slate-600", children: item.location_name }) : null
     ] })
   ] }) }) });
@@ -15021,7 +15380,7 @@ function OrderCard2({ order }) {
       /* @__PURE__ */ jsxs105("div", { className: "space-y-3", children: [
         /* @__PURE__ */ jsxs105("div", { className: "flex flex-wrap items-center gap-2", children: [
           /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
-          /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel2(order.status) }),
+          /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(order.status) }),
           order.is_prepaid ? /* @__PURE__ */ jsx119("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }) : null,
           /* @__PURE__ */ jsx119(
             Link32,
@@ -15108,7 +15467,7 @@ async function loader51({ request }) {
   });
 }
 function PartnerOrdersPage() {
-  let { orders, query, error } = useLoaderData45(), navigation = useNavigation27(), location = useLocation8(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
+  let { orders, query, error } = useLoaderData45(), navigation = useNavigation27(), location = useLocation16(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, hasOrders = orders.items.length > 0;
   return /* @__PURE__ */ jsxs105("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs105("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs105("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -15251,7 +15610,7 @@ __export(admin_accounts_index_exports, {
   default: () => Accounts2,
   loader: () => loader52
 });
-import { json as json48, redirect as redirect40 } from "@remix-run/node";
+import { json as json48, redirect as redirect41 } from "@remix-run/node";
 import { useLoaderData as useLoaderData46, Form as Form34, useNavigation as useNavigation28 } from "@remix-run/react";
 import { jsx as jsx120, jsxs as jsxs106 } from "react/jsx-runtime";
 async function loader52({ request }) {
@@ -15260,7 +15619,7 @@ async function loader52({ request }) {
     query[k] = v;
   query.has_admin_access = "1";
   let pagedUsersRes = await adminRepo.queryUsers(request, query);
-  return pagedUsersRes.authRequired ? redirect40("/login") : json48({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect41("/login") : json48({ headings, tableData: adminUsers, pagedUserData: pagedUsersRes.data, query });
 }
 function Accounts2() {
   let { headings, tableData, pagedUserData, query } = useLoaderData46(), navigation = useNavigation28();
@@ -15317,7 +15676,7 @@ function Accounts2() {
 // app/routes/admin.contests._index.tsx
 var admin_contests_index_exports = {};
 __export(admin_contests_index_exports, {
-  action: () => action28,
+  action: () => action29,
   default: () => Contests2,
   loader: () => loader53
 });
@@ -15330,7 +15689,7 @@ async function loader53({}) {
     throw new Error(error.detail);
   return json49({ contests });
 }
-async function action28({ request }) {
+async function action29({ request }) {
   let formData = await request.formData(), intent = formData.get("intent");
   if (intent === "delete")
     return await deleteContest(formData, request);
@@ -15368,7 +15727,7 @@ __export(admin_partners_index_exports, {
 });
 import { json as json50 } from "@remix-run/node";
 import { useLoaderData as useLoaderData48, useNavigation as useNavigation29, Form as Form35 } from "@remix-run/react";
-import { useState as useState48 } from "react";
+import { useState as useState49 } from "react";
 import { ArrowRight, Building2, Globe, Search as Search6, Store, Users } from "lucide-react";
 import { Fragment as Fragment18, jsx as jsx122, jsxs as jsxs108 } from "react/jsx-runtime";
 var statusColors2 = {
@@ -15579,7 +15938,7 @@ function LoadingSkeleton() {
   ] });
 }
 function PartnersIndex() {
-  let data = useLoaderData48(), navigation = useNavigation29(), [search, setSearch] = useState48(data.query?.legal_business_name || "");
+  let data = useLoaderData48(), navigation = useNavigation29(), [search, setSearch] = useState49(data.query?.legal_business_name || "");
   if ("redirect" in data && typeof window < "u")
     return window.location.href = data.redirect, null;
   let { partnersRes, query } = data, isBusy = navigation.state !== "idle";
@@ -15617,7 +15976,7 @@ function PartnersIndex() {
 // app/routes/admin.partners.orders.tsx
 var admin_partners_orders_exports = {};
 __export(admin_partners_orders_exports, {
-  action: () => action29,
+  action: () => action30,
   default: () => AdminPartnerOrdersPage,
   loader: () => loader55
 });
@@ -15625,14 +15984,14 @@ import { json as json51 } from "@remix-run/node";
 import {
   Form as Form36,
   Link as Link33,
-  useFetcher as useFetcher21,
+  useFetcher as useFetcher22,
   useLoaderData as useLoaderData49,
-  useLocation as useLocation9,
+  useLocation as useLocation17,
   useNavigation as useNavigation30,
-  useRevalidator as useRevalidator2
+  useRevalidator as useRevalidator3
 } from "@remix-run/react";
 import { PackageSearch as PackageSearch4, Search as Search7, ShieldCheck as ShieldCheck2, ShieldX, ShoppingBag as ShoppingBag3 } from "lucide-react";
-import { useEffect as useEffect39, useMemo as useMemo10, useRef as useRef16, useState as useState49 } from "react";
+import { useEffect as useEffect40, useMemo as useMemo10, useRef as useRef17, useState as useState50 } from "react";
 import { jsx as jsx123, jsxs as jsxs109 } from "react/jsx-runtime";
 var adminOrderStatusOptions = [
   { label: "All statuses", value: "" },
@@ -15688,7 +16047,7 @@ function formatDate6(value) {
 function formatLabel3(value) {
   return value ? value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim() : "N/A";
 }
-function getErrorMessage3(error, fallback) {
+function getErrorMessage4(error, fallback) {
   return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
 }
 function buildAdminOrdersQuery(searchParams) {
@@ -15827,10 +16186,10 @@ function ResolveDisputeModal({
   open,
   onOpenChange
 }) {
-  let fetcher = useFetcher21(), revalidator = useRevalidator2(), handledResponseRef = useRef16(!1), [updatedStatus, setUpdatedStatus] = useState49("FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */), [confirmationCode, setConfirmationCode] = useState49(""), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
-  useEffect39(() => {
+  let fetcher = useFetcher22(), revalidator = useRevalidator3(), handledResponseRef = useRef17(!1), [updatedStatus, setUpdatedStatus] = useState50("FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */), [confirmationCode, setConfirmationCode] = useState50(""), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
+  useEffect40(() => {
     fetcher.state === "submitting" && (handledResponseRef.current = !1);
-  }, [fetcher.state]), useEffect39(() => {
+  }, [fetcher.state]), useEffect40(() => {
     if (!(!fetcher.data || handledResponseRef.current)) {
       if (handledResponseRef.current = !0, fetcher.data.ok) {
         toast({
@@ -15845,7 +16204,7 @@ function ResolveDisputeModal({
         description: fetcher.data.error
       });
     }
-  }, [fetcher.data, onOpenChange, revalidator]), useEffect39(() => {
+  }, [fetcher.data, onOpenChange, revalidator]), useEffect40(() => {
     open || (setUpdatedStatus("FulfillmentConfirmedByAdmin" /* FulfillmentConfirmedByAdmin */), setConfirmationCode(""));
   }, [open, row?.order.order_code]);
   let requiresRefund = updatedStatus === "ReturnedAndRefunded" /* ReturnedAndRefunded */;
@@ -16076,13 +16435,13 @@ async function loader55({ request }) {
   return ordersRes.error ? json51({
     orders: buildEmptyOrders(query.page_size ?? 20),
     query,
-    error: getErrorMessage3(ordersRes.error, "Unable to load admin orders")
+    error: getErrorMessage4(ordersRes.error, "Unable to load admin orders")
   }) : json51({
     orders: ordersRes.data ?? buildEmptyOrders(query.page_size ?? 20),
     query
   });
 }
-async function action29({ request }) {
+async function action30({ request }) {
   let validateAuth = await requireAuth(request), formData = await request.formData();
   if (String(formData.get("intent") ?? "") !== "resolve_dispute")
     return json51({ ok: !1, error: "Unsupported admin order action" }, { status: 400 });
@@ -16104,7 +16463,7 @@ async function action29({ request }) {
   let orderRes = await partnerServer.getOrderById(orderId, request);
   if (orderRes.error || !orderRes.data)
     return json51(
-      { ok: !1, error: getErrorMessage3(orderRes.error, "Unable to verify this order") },
+      { ok: !1, error: getErrorMessage4(orderRes.error, "Unable to verify this order") },
       { status: 404 }
     );
   let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
@@ -16128,7 +16487,7 @@ async function action29({ request }) {
       remark
     }, response2 = await partnerServer.adminResolveDispute(payload2, request);
     return response2.error || !response2.data ? json51(
-      { ok: !1, error: getErrorMessage3(response2.error, "Unable to resolve dispute") },
+      { ok: !1, error: getErrorMessage4(response2.error, "Unable to resolve dispute") },
       { status: 400 }
     ) : json51({
       ok: !0,
@@ -16144,7 +16503,7 @@ async function action29({ request }) {
     remark
   }, response = await partnerServer.adminResolveDispute(payload, request);
   return response.error || !response.data ? json51(
-    { ok: !1, error: getErrorMessage3(response.error, "Unable to resolve dispute") },
+    { ok: !1, error: getErrorMessage4(response.error, "Unable to resolve dispute") },
     { status: 400 }
   ) : json51({
     ok: !0,
@@ -16153,7 +16512,7 @@ async function action29({ request }) {
   });
 }
 function AdminPartnerOrdersPage() {
-  let { orders, query, error } = useLoaderData49(), navigation = useNavigation30(), location = useLocation9(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, rows = useMemo10(
+  let { orders, query, error } = useLoaderData49(), navigation = useNavigation30(), location = useLocation17(), isLoading = navigation.state === "loading" && navigation.location?.pathname === location.pathname, rows = useMemo10(
     () => orders.items.flatMap(
       (order) => order.orders.map((item) => ({
         order,
@@ -16161,7 +16520,7 @@ function AdminPartnerOrdersPage() {
       }))
     ),
     [orders.items]
-  ), [detailsRow, setDetailsRow] = useState49(null), [resolveRow, setResolveRow] = useState49(null);
+  ), [detailsRow, setDetailsRow] = useState50(null), [resolveRow, setResolveRow] = useState50(null);
   return /* @__PURE__ */ jsxs109("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
     /* @__PURE__ */ jsxs109("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
       /* @__PURE__ */ jsxs109("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
@@ -16308,10 +16667,10 @@ function AdminPartnerOrdersPage() {
 // app/routes/admin.tournaments.add.tsx
 var admin_tournaments_add_exports = {};
 __export(admin_tournaments_add_exports, {
-  action: () => action30,
+  action: () => action31,
   default: () => AddTournament
 });
-import { json as json52, redirect as redirect42 } from "@remix-run/node";
+import { json as json52, redirect as redirect43 } from "@remix-run/node";
 import { useNavigate as useNavigate23 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateTournamentForm.tsx
@@ -16332,14 +16691,14 @@ function CreateTournamentForm() {
 
 // app/routes/admin.tournaments.add.tsx
 import { jsx as jsx125, jsxs as jsxs111 } from "react/jsx-runtime";
-async function action30({ request }) {
+async function action31({ request }) {
   let validateAuth = await requireAuth(request), formData = await request.formData(), payload = prepareTournamentDto(formData), { error } = await tournamentRepo.createTournament(payload, request);
   if (error) {
     let { headers: headers2 } = await setToast({ request, toast: `error::${error?.detail}::${Date.now()}` });
     return json52(error, { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `success::A new tournament has been created::${Date.now()}` });
-  return redirect42("/admin/tournaments", { headers });
+  return redirect43("/admin/tournaments", { headers });
 }
 function AddTournament() {
   let navigate = useNavigate23();
@@ -16355,13 +16714,13 @@ function AddTournament() {
 // app/routes/user.setwithdrawalpin.tsx
 var user_setwithdrawalpin_exports = {};
 __export(user_setwithdrawalpin_exports, {
-  action: () => action31,
+  action: () => action32,
   default: () => SetWithdrawalPin2,
   loader: () => loader56
 });
-import { json as json53, redirect as redirect43 } from "@remix-run/node";
+import { json as json53, redirect as redirect44 } from "@remix-run/node";
 import { Form as Form38, Link as Link34, useActionData as useActionData15, useLoaderData as useLoaderData50, useNavigation as useNavigation31 } from "@remix-run/react";
-import { useState as useState50, useEffect as useEffect40 } from "react";
+import { useState as useState51, useEffect as useEffect41 } from "react";
 import { User as User2, X as X4, Mail as Mail2 } from "lucide-react";
 
 // app/services/auth/auth.server.ts
@@ -16453,7 +16812,7 @@ var AuthServer = class {
 
 // app/routes/user.setwithdrawalpin.tsx
 import { jsx as jsx126, jsxs as jsxs112 } from "react/jsx-runtime";
-async function action31({ request }) {
+async function action32({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData(), intent = formData.get("intent");
   if (intent === "request-token") {
     let { data: data2, error: error2, authRequired: authRequired2 } = await walletRepo.requestWithdrawalToken(request);
@@ -16471,11 +16830,11 @@ async function action31({ request }) {
 async function loader56({ request }) {
   console.log("SEtting");
   let validateAuth = await requireAuth(request), { data, error, authRequired } = await authServer.getMe(request);
-  return authRequired ? redirect43("/login") : data && data.withdrawal_pin_set ? redirect43("/user/wallet") : json53({ data, error });
+  return authRequired ? redirect44("/login") : data && data.withdrawal_pin_set ? redirect44("/user/wallet") : json53({ data, error });
 }
 function useSetWithdrawalPinController2() {
-  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState50(null), [showTokenModal, setShowTokenModal] = useState50(!0), actionData = useActionData15(), loader_ = useLoaderData50(), navigation = useNavigation31(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
-  return useEffect40(() => {
+  let { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState51(null), [showTokenModal, setShowTokenModal] = useState51(!0), actionData = useActionData15(), loader_ = useLoaderData50(), navigation = useNavigation31(), isRequestingToken = navigation.state === "submitting" && navigation.formData?.get("intent") === "request-token";
+  return useEffect41(() => {
     let _user = getUserStoreManager();
   }, [getUserStoreManager]), {
     user,
@@ -16489,7 +16848,7 @@ function useSetWithdrawalPinController2() {
 }
 function SetWithdrawalPin2() {
   let { loader_, actionData, setUserStoreManager, showTokenModal, setShowTokenModal, isRequestingToken } = useSetWithdrawalPinController2();
-  return useEffect40(() => {
+  return useEffect41(() => {
     if (console.log({ actionData }), actionData?.intent === "request-token") {
       actionData?.error && toast({
         variant: "destructive",
@@ -16626,19 +16985,19 @@ function SetWithdrawalPin2() {
 // app/routes/completeregistration.tsx
 var completeregistration_exports = {};
 __export(completeregistration_exports, {
-  action: () => action32,
+  action: () => action33,
   default: () => CompleteRegistration,
   loader: () => loader57
 });
 import { Form as Form39, Link as Link35, useActionData as useActionData16, useNavigate as useNavigate24, useNavigation as useNavigation32, useSearchParams as useSearchParams3 } from "@remix-run/react";
 import { json as json54 } from "@remix-run/node";
-import { useEffect as useEffect41, useRef as useRef17, useState as useState51 } from "react";
+import { useEffect as useEffect42, useRef as useRef18, useState as useState52 } from "react";
 import { jsx as jsx127, jsxs as jsxs113 } from "react/jsx-runtime";
 var RESEND_LOCK_KEY = "kotmy_resend_lock", RESEND_LOCK_DURATION = 60;
 async function loader57({ request }) {
   return null;
 }
-async function action32({ request }) {
+async function action33({ request }) {
   let formData = await request.formData();
   if (formData.get("intent") === "resend") {
     let email = formData.get("email"), { error: error2 } = await authServer.resend_complete_registration_token(email);
@@ -16684,11 +17043,11 @@ function getResendLockRemaining() {
   return remaining === 0 && localStorage.removeItem(RESEND_LOCK_KEY), remaining;
 }
 function useCompleteRegistrationController() {
-  let actionData = useActionData16(), [searchQuery] = useSearchParams3(), { setUserStoreManager } = useUserManager(), { toast: toast4 } = useToast(), navigate = useNavigate24(), user_id = searchQuery.get("user_id") ?? "", email = searchQuery.get("email") ?? "", prefilledToken = searchQuery.get("token") ?? "", [resendCountdown, setResendCountdown] = useState51(0), countdownRef = useRef17(null);
-  return useEffect41(() => {
+  let actionData = useActionData16(), [searchQuery] = useSearchParams3(), { setUserStoreManager } = useUserManager(), { toast: toast4 } = useToast(), navigate = useNavigate24(), user_id = searchQuery.get("user_id") ?? "", email = searchQuery.get("email") ?? "", prefilledToken = searchQuery.get("token") ?? "", [resendCountdown, setResendCountdown] = useState52(0), countdownRef = useRef18(null);
+  return useEffect42(() => {
     let remaining = getResendLockRemaining();
     remaining > 0 && setResendCountdown(remaining);
-  }, []), useEffect41(() => {
+  }, []), useEffect42(() => {
     if (resendCountdown <= 0) {
       countdownRef.current && (clearInterval(countdownRef.current), countdownRef.current = null), localStorage.removeItem(RESEND_LOCK_KEY);
       return;
@@ -16701,7 +17060,7 @@ function useCompleteRegistrationController() {
     }, 1e3)), () => {
       countdownRef.current && (clearInterval(countdownRef.current), countdownRef.current = null);
     };
-  }, [resendCountdown]), useEffect41(() => {
+  }, [resendCountdown]), useEffect42(() => {
     if (actionData) {
       if (actionData.error) {
         toast4({
@@ -16818,13 +17177,13 @@ __export(user_pending_uploads_exports, {
   loader: () => loader59,
   useUserPendingsUploadController: () => useUserPendingsUploadController
 });
-import { useEffect as useEffect42, useState as useState52 } from "react";
+import { useEffect as useEffect43, useState as useState53 } from "react";
 import { Link as Link36, useLoaderData as useLoaderData52 } from "@remix-run/react";
-import { json as json56, redirect as redirect44 } from "@remix-run/node";
+import { json as json56, redirect as redirect45 } from "@remix-run/node";
 import { jsx as jsx129, jsxs as jsxs115 } from "react/jsx-runtime";
 async function loader59({ request }) {
   let validateAuth = await requireAuth(request), { data, error, authRequired } = await userServer.getPendingUploads(request);
-  return console.log({ data, error }), authRequired ? redirect44("/login") : json56({ data, error, authRequired });
+  return console.log({ data, error }), authRequired ? redirect45("/login") : json56({ data, error, authRequired });
 }
 var PendingUploadCard = ({
   contestImageUrl,
@@ -16867,12 +17226,12 @@ var PendingUploadCard = ({
   }
 );
 function useUserPendingsUploadController() {
-  let { data, error, authRequired } = useLoaderData52(), [pendingUploads, setPendingUploads] = useState52([]);
+  let { data, error, authRequired } = useLoaderData52(), [pendingUploads, setPendingUploads] = useState53([]);
   return error && toast({
     variant: "destructive",
     title: "An error occured",
     description: error?.detail.toString() ?? "Error occured"
-  }), useEffect42(() => {
+  }), useEffect43(() => {
     if (data) {
       let flattenedUploads = contestantHelper.enrichContestsContestantsData(data);
       setPendingUploads(flattenedUploads), console.log({ flattenedUploads });
@@ -17031,7 +17390,7 @@ function GivaahCreditsPage() {
           /* @__PURE__ */ jsxs116("p", { className: "mt-1", children: [
             "Visit the",
             " ",
-            /* @__PURE__ */ jsx130(Link37, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
+            /* @__PURE__ */ jsx130(Link37, { to: "/user/shop", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
             " ",
             "to explore available packages."
           ] })
@@ -17092,7 +17451,7 @@ function GivaahCreditsPage() {
         /* @__PURE__ */ jsxs116("p", { className: "mt-2 text-sm text-slate-600", children: [
           "Try a different phone number and order code, or purchase more credits from the",
           " ",
-          /* @__PURE__ */ jsx130(Link37, { to: "/marketplace", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
+          /* @__PURE__ */ jsx130(Link37, { to: "/user/shop", className: "font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950", children: "marketplace" }),
           "."
         ] })
       ] }) })
@@ -17103,20 +17462,20 @@ function GivaahCreditsPage() {
 // app/routes/admin.accounts.add.tsx
 var admin_accounts_add_exports = {};
 __export(admin_accounts_add_exports, {
-  action: () => action33,
+  action: () => action34,
   default: () => AddAdminUser,
   loader: () => loader61,
   useAddAdminUser: () => useAddAdminUser
 });
 import { Form as Form41, useActionData as useActionData17, useLoaderData as useLoaderData54, useNavigate as useNavigate25, useNavigation as useNavigation34 } from "@remix-run/react";
-import { redirect as redirect46 } from "@remix-run/node";
-import { useEffect as useEffect43 } from "react";
+import { redirect as redirect47 } from "@remix-run/node";
+import { useEffect as useEffect44 } from "react";
 import { jsx as jsx131, jsxs as jsxs117 } from "react/jsx-runtime";
 async function loader61({ request }) {
   let validateAuth = await requireAuth(request), rolesResponse = await adminRepo.getAllRoles(request);
-  return rolesResponse.authRequired ? redirect46("/login") : { roles: rolesResponse.data, permissions };
+  return rolesResponse.authRequired ? redirect47("/login") : { roles: rolesResponse.data, permissions };
 }
-async function action33({ request }) {
+async function action34({ request }) {
   let formData = await request.formData(), cookieHeader = request.headers.get("Cookie"), dto = {
     fullName: `${formData.get("firstName")} ${formData.get("lastName")}`,
     email: formData.get("email"),
@@ -17135,7 +17494,7 @@ function useAddAdminUser() {
   for (let roleName in roles)
     rolesNames.push(roleName);
   let isSubmitting = useNavigation34().state === "submitting", actionData = useActionData17();
-  return useEffect43(() => {
+  return useEffect44(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Create action failed",
@@ -17184,11 +17543,11 @@ function AddAdminUser() {
 // app/routes/admin.contests.add.tsx
 var admin_contests_add_exports = {};
 __export(admin_contests_add_exports, {
-  action: () => action34,
+  action: () => action35,
   default: () => AddContest,
   loader: () => loader62
 });
-import { json as json58, redirect as redirect47 } from "@remix-run/node";
+import { json as json58, redirect as redirect48 } from "@remix-run/node";
 import { useLoaderData as useLoaderData55, useNavigate as useNavigate26 } from "@remix-run/react";
 
 // app/components/admin/tournament/CreateContestForm.tsx
@@ -17237,11 +17596,11 @@ async function loader62({}) {
   let { data: tournaments = [] } = await tournamentRepo.getTournaments();
   return json58({ tournaments });
 }
-async function action34({ request }) {
+async function action35({ request }) {
   let payload = prepareContestPayload(await request.formData()), validateAuth = await requireAuth(request), { data, error } = await contestRepo.createContest(payload, request);
   if (data) {
     let { headers: headers2 } = await setToast({ request, toast: `success::A new contest has been created::${Date.now()}` });
-    return redirect47("/admin/contests", { headers: headers2 });
+    return redirect48("/admin/contests", { headers: headers2 });
   }
   let { headers } = await setToast({ request, toast: `error::${error.detail}::${Date.now()}` });
   return json58(null, { headers });
@@ -17260,14 +17619,14 @@ function AddContest() {
 // app/routes/admin.vtupurchases.tsx
 var admin_vtupurchases_exports = {};
 __export(admin_vtupurchases_exports, {
-  action: () => action35,
+  action: () => action36,
   default: () => AdminVTUPurchases,
   loader: () => loader63,
   useVTUPurchasesController: () => useVTUPurchasesController
 });
 import { json as json59 } from "@remix-run/node";
-import { Form as Form43, useFetcher as useFetcher22, useLoaderData as useLoaderData56, useNavigation as useNavigation35, useRevalidator as useRevalidator3 } from "@remix-run/react";
-import { useEffect as useEffect44, useState as useState53 } from "react";
+import { Form as Form43, useFetcher as useFetcher23, useLoaderData as useLoaderData56, useNavigation as useNavigation35, useRevalidator as useRevalidator4 } from "@remix-run/react";
+import { useEffect as useEffect45, useState as useState54 } from "react";
 import { Fragment as Fragment19, jsx as jsx134, jsxs as jsxs120 } from "react/jsx-runtime";
 var statuses = Object.values(VTUPurchaseStatus), types = Object.values(VTUType);
 function buildQuery2(params) {
@@ -17292,7 +17651,7 @@ function syncCreatedAtParams2(lastCreatedAt, firstCreatedAt) {
     value && url.searchParams.get(key) !== value && (url.searchParams.set(key, value), changed = !0);
   changed && window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
 }
-function getErrorMessage4(error) {
+function getErrorMessage5(error) {
   if (typeof error == "string")
     return error;
   if (error && typeof error == "object" && "detail" in error) {
@@ -17347,9 +17706,9 @@ function PurchaseInfo({ purchase }) {
 async function loader63({ request }) {
   await requireAuth(request);
   let query = buildQuery2(new URL(request.url).searchParams), result = await vtuServer.adminGetVTUPurchaseResponsePaged(query, request);
-  return result.error ? json59({ purchases: emptyPage(query.page_size), query, error: getErrorMessage4(result.error) }) : json59({ purchases: result.data ?? emptyPage(query.page_size), query });
+  return result.error ? json59({ purchases: emptyPage(query.page_size), query, error: getErrorMessage5(result.error) }) : json59({ purchases: result.data ?? emptyPage(query.page_size), query });
 }
-async function action35({ request }) {
+async function action36({ request }) {
   await requireAuth(request);
   let formData = await request.formData();
   if (String(formData.get("intent") ?? "") !== "initiate_refund")
@@ -17360,14 +17719,14 @@ async function action35({ request }) {
   if (!reason)
     return json59({ ok: !1, error: "Please provide a reason for the refund" }, { status: 400 });
   let result = await vtuServer.adminInitiateRefund({ reference, reason }, request);
-  return result.error || !result.data ? json59({ ok: !1, error: getErrorMessage4(result.error) }, { status: 400 }) : json59({ ok: !0, purchase: result.data });
+  return result.error || !result.data ? json59({ ok: !1, error: getErrorMessage5(result.error) }, { status: 400 }) : json59({ ok: !0, purchase: result.data });
 }
 function useVTUPurchasesController() {
-  let { purchases, query, error } = useLoaderData56(), navigation = useNavigation35(), { revalidate } = useRevalidator3(), refundFetcher = useFetcher22(), [selectedPurchase, setSelectedPurchase] = useState53(null), isLoading = navigation.state !== "idle" && navigation.location?.pathname === "/admin/vtupurchases";
-  return useEffect44(() => {
+  let { purchases, query, error } = useLoaderData56(), navigation = useNavigation35(), { revalidate } = useRevalidator4(), refundFetcher = useFetcher23(), [selectedPurchase, setSelectedPurchase] = useState54(null), isLoading = navigation.state !== "idle" && navigation.location?.pathname === "/admin/vtupurchases";
+  return useEffect45(() => {
     let data = refundFetcher.data;
     data && (data.ok ? (toast({ title: "Refund initiated", description: `VTU purchase refund initiated successfully. New status: ${data.purchase.status}.` }), setSelectedPurchase(null), revalidate()) : toast({ variant: "destructive", title: "Unable to initiate refund", description: data.error }));
-  }, [refundFetcher.data, revalidate]), useEffect44(() => {
+  }, [refundFetcher.data, revalidate]), useEffect45(() => {
     syncCreatedAtParams2(purchases.last_created_at, purchases.first_created_at);
   }, [purchases.last_created_at, purchases.first_created_at]), { purchases, query, error, isLoading, refundFetcher, selectedPurchase, setSelectedPurchase };
 }
@@ -17505,13 +17864,28 @@ function AdminVTUPurchases() {
   ] });
 }
 
+// app/routes/user.cart.checkout.tsx
+var user_cart_checkout_exports = {};
+__export(user_cart_checkout_exports, {
+  action: () => action13,
+  default: () => MarketplaceCheckout,
+  loader: () => loader25
+});
+
+// app/routes/user.vtu.purchases.tsx
+var user_vtu_purchases_exports = {};
+__export(user_vtu_purchases_exports, {
+  default: () => VTUPurchasesPage,
+  loader: () => loader21
+});
+
 // app/routes/partners.location.tsx
 var partners_location_exports = {};
 __export(partners_location_exports, {
   default: () => PartnerProducts,
   loader: () => loader64
 });
-import { json as json60, redirect as redirect48 } from "@remix-run/node";
+import { json as json60, redirect as redirect49 } from "@remix-run/node";
 import { Form as Form44, useLoaderData as useLoaderData57, useNavigation as useNavigation36 } from "@remix-run/react";
 import { ArrowRight as ArrowRight2, Globe as Globe2, MapPin as MapPin2, Navigation2, Search as Search8 } from "lucide-react";
 import { jsx as jsx135, jsxs as jsxs121 } from "react/jsx-runtime";
@@ -17521,7 +17895,7 @@ async function loader64({ request }) {
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerLocations(query, request);
-  return pagedUsersRes.authRequired ? redirect48("/login") : json60({ data: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect49("/login") : json60({ data: pagedUsersRes.data, query });
 }
 function Banner2({
   data
@@ -17710,6 +18084,30 @@ function PartnerProducts() {
     ) })
   ] });
 }
+
+// app/routes/user.cart._index.tsx
+var user_cart_index_exports = {};
+__export(user_cart_index_exports, {
+  action: () => action23,
+  default: () => MarketplaceCart,
+  loader: () => loader39
+});
+
+// app/routes/user.shop._index.tsx
+var user_shop_index_exports = {};
+__export(user_shop_index_exports, {
+  action: () => action16,
+  default: () => MarketplaceHome,
+  loader: () => loader31
+});
+
+// app/routes/user.vtu.airtime.tsx
+var user_vtu_airtime_exports = {};
+__export(user_vtu_airtime_exports, {
+  action: () => action18,
+  default: () => AirtimePage,
+  loader: () => loader34
+});
 
 // app/routes/_public.privacy.tsx
 var public_privacy_exports = {};
@@ -18160,7 +18558,7 @@ __export(public_winners_exports, {
   loader: () => loader65
 });
 import { Link as Link38, useLoaderData as useLoaderData58 } from "@remix-run/react";
-import { useEffect as useEffect45, useState as useState54 } from "react";
+import { useEffect as useEffect46, useState as useState55 } from "react";
 import { jsx as jsx137, jsxs as jsxs123 } from "react/jsx-runtime";
 async function loader65({ params }) {
   let { data: winners, error } = await contestRepo.getWinners();
@@ -18220,10 +18618,10 @@ var WinnerCard = ({
   }
 );
 function Winners() {
-  let { winners, error } = useLoaderData58(), [searchWinners, setSearchWinners] = useState54(""), [winnersFiltered, setWinnersFiltered] = useState54(winners ?? []);
-  return useEffect45(() => {
+  let { winners, error } = useLoaderData58(), [searchWinners, setSearchWinners] = useState55(""), [winnersFiltered, setWinnersFiltered] = useState55(winners ?? []);
+  return useEffect46(() => {
     setWinnersFiltered(winners ?? []);
-  }, [winners]), useEffect45(() => {
+  }, [winners]), useEffect46(() => {
     let updated = (winners ?? []).filter(
       (winner) => winner.full_name.toLowerCase().includes(searchWinners.trim().toLowerCase()) || winner.contest_name.toLowerCase().includes(searchWinners.trim().toLowerCase())
     );
@@ -18291,13 +18689,13 @@ var partner_account_exports = {};
 __export(partner_account_exports, {
   default: () => PartnerLoginOrRequestPartnerShip
 });
-import { Link as Link39, useLocation as useLocation10 } from "@remix-run/react";
-import { useEffect as useEffect46 } from "react";
+import { Link as Link39, useLocation as useLocation18 } from "@remix-run/react";
+import { useEffect as useEffect47 } from "react";
 import { jsx as jsx138, jsxs as jsxs124 } from "react/jsx-runtime";
 function PartnerLoginOrRequestPartnerShip() {
   let { setUserStoreManager, getUserStoreManager } = useUserManager();
   var user = getUserStoreManager();
-  let location = useLocation10();
+  let location = useLocation18();
   if (!user || !(user.is_partner_account || user.business_id))
     return /* @__PURE__ */ jsxs124("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
       /* @__PURE__ */ jsx138(Link39, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx138(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
@@ -18335,7 +18733,7 @@ function PartnerLoginOrRequestPartnerShip() {
         ] })
       ] })
     ] });
-  useEffect46(() => {
+  useEffect47(() => {
     window.location.replace("/partners/home");
   }, []);
 }
@@ -18343,19 +18741,19 @@ function PartnerLoginOrRequestPartnerShip() {
 // app/routes/partner.partner.tsx
 var partner_partner_exports = {};
 __export(partner_partner_exports, {
-  action: () => action36,
+  action: () => action37,
   default: () => PartnerOnboarding,
   loader: () => loader66
 });
 import { json as json61 } from "@remix-run/node";
 import { useActionData as useActionData19, Form as Form46, useNavigate as useNavigate28, useNavigation as useNavigation37, useSearchParams as useSearchParams5 } from "@remix-run/react";
-import { useState as useState56 } from "react";
-import { useEffect as useEffect47 } from "react";
+import { useState as useState57 } from "react";
+import { useEffect as useEffect48 } from "react";
 import { jsx as jsx139, jsxs as jsxs125 } from "react/jsx-runtime";
 async function loader66({}) {
   return json61({});
 }
-async function action36({ request }) {
+async function action37({ request }) {
   let formData = await request.formData(), business_locations = [
     {
       street: formData.get("location_street"),
@@ -18404,13 +18802,13 @@ var Label2 = ({ children, required }) => /* @__PURE__ */ jsxs125("label", { clas
   required && /* @__PURE__ */ jsx139("span", { className: "text-red-500", children: "*" })
 ] }), inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-gray-400 bg-white";
 function usePartnerOnboardingController() {
-  let navigation = useNavigation37(), [searchParams] = useSearchParams5(), [section, setSection] = useState56(0), [form, setForm] = useState56({
+  let navigation = useNavigation37(), [searchParams] = useSearchParams5(), [section, setSection] = useState57(0), [form, setForm] = useState57({
     estimated_weekly_volume_currency: "USD",
     referral_percentage: 10,
     country_of_incorporation: "Nigeria",
     referred_by_code: searchParams.get("referred_by_code") ?? ""
   }), actionData = useActionData19(), isSuccess = !!actionData?.data && !actionData?.error, businessName = form.legal_business_name ?? "Partner", navigate = useNavigate28();
-  return useEffect47(() => {
+  return useEffect48(() => {
     actionData?.error && (console.log(actionData.error), toast({
       variant: "destructive",
       title: "Submission failed",
@@ -18710,13 +19108,13 @@ function PartnerOnboarding() {
 // app/routes/partners.wallet.tsx
 var partners_wallet_exports = {};
 __export(partners_wallet_exports, {
-  action: () => action37,
+  action: () => action38,
   default: () => WalletPage2,
   loader: () => loader67
 });
-import { json as json62, redirect as redirect49 } from "@remix-run/node";
-import { Link as Link40, useActionData as useActionData20, useLoaderData as useLoaderData61, useFetcher as useFetcher23 } from "@remix-run/react";
-import { useState as useState57, useMemo as useMemo12, useEffect as useEffect48 } from "react";
+import { json as json62, redirect as redirect50 } from "@remix-run/node";
+import { Link as Link40, useActionData as useActionData20, useLoaderData as useLoaderData61, useFetcher as useFetcher24 } from "@remix-run/react";
+import { useState as useState58, useMemo as useMemo12, useEffect as useEffect49 } from "react";
 import { jsx as jsx140, jsxs as jsxs126 } from "react/jsx-runtime";
 async function loader67({ request }) {
   let validateAuth = await requireAuth(request), url = new URL(request.url), page_size = Number(url.searchParams.get("page_size") ?? "10"), last_key_id = url.searchParams.get("last_key_id"), first_key_id = url.searchParams.get("first_key_id"), wallet_id_param = url.searchParams.get("wallet_id"), walletsResponse = await walletRepo.getBusinessWallets(request), wallets = [];
@@ -18740,7 +19138,7 @@ async function loader67({ request }) {
     }
   return json62({ wallets });
 }
-async function action37({ request }) {
+async function action38({ request }) {
   let formData = await request.formData(), intent = String(formData.get("intent") ?? "");
   if (intent === "fund-business-wallet") {
     let amount = Number(String(formData.get("amount") ?? "").trim()), walletId = String(formData.get("wallet_id") ?? "").trim();
@@ -18757,7 +19155,7 @@ async function action37({ request }) {
     if (response.error)
       return json62({ intent, error: getWalletErrorMessage(response.error) }, { status: 400 });
     let paymentLink = response.data?.payment_link?.trim();
-    return paymentLink ? redirect49(paymentLink) : json62({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+    return paymentLink ? redirect50(paymentLink) : json62({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
   }
   let cleaned = {};
   formData.forEach((value, key) => {
@@ -18800,25 +19198,25 @@ function getWalletErrorMessage(error) {
   return "Unable to fund the business wallet. Please try again.";
 }
 function useWalletController2() {
-  let { wallets } = useLoaderData61(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState57(null), [activeWalletId, setActiveWalletId] = useState57(
+  let { wallets } = useLoaderData61(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState58(null), [activeWalletId, setActiveWalletId] = useState58(
     wallets.length > 0 ? wallets[0].wallet._id : null
   );
-  useEffect48(() => {
+  useEffect49(() => {
     let _user = getUserStoreManager();
     _user && setUser(_user);
   }, [getUserStoreManager]);
   let activeData = useMemo12(() => wallets.find((w) => w.wallet._id === activeWalletId) || null, [activeWalletId, wallets]), formatCurrency2 = (amount, currency) => new Intl.NumberFormat("en-US", {
     style: "currency",
     currency
-  }).format(amount), [searchOpen, setSearchOpen] = useState57(!1), fetcher = useFetcher23(), fundFetcher = useFetcher23(), isSubmitting = fetcher.state === "submitting", isFunding = fundFetcher.state !== "idle", [fundWalletOpen, setFundWalletOpen] = useState57(!1), actionData = useActionData20();
-  useEffect48(() => {
+  }).format(amount), [searchOpen, setSearchOpen] = useState58(!1), fetcher = useFetcher24(), fundFetcher = useFetcher24(), isSubmitting = fetcher.state === "submitting", isFunding = fundFetcher.state !== "idle", [fundWalletOpen, setFundWalletOpen] = useState58(!1), actionData = useActionData20();
+  useEffect49(() => {
     let data = fundFetcher.data;
     data?.intent === "fund-business-wallet" && data.error && toast({ variant: "destructive", title: "Business wallet funding failed", description: data.error });
   }, [fundFetcher.data]);
-  let [walletsState, setWalletsState] = useState57(wallets);
-  return useEffect48(() => {
+  let [walletsState, setWalletsState] = useState58(wallets);
+  return useEffect49(() => {
     (fetcher.data?.wallets ?? actionData?.wallets) || setWalletsState(wallets);
-  }, [wallets, fetcher.data, actionData]), useEffect48(() => {
+  }, [wallets, fetcher.data, actionData]), useEffect49(() => {
     let fw = fetcher.data?.wallets ?? actionData?.wallets;
     fw && Array.isArray(fw) && setWalletsState(fw);
   }, [fetcher.data, actionData]), {
@@ -19081,15 +19479,21 @@ function StatusBadge4({ status }) {
   ] });
 }
 
+// app/routes/user.vtu._index.tsx
+var user_vtu_index_exports = {};
+__export(user_vtu_index_exports, {
+  default: () => VtuServices
+});
+
 // app/routes/_public._index.tsx
 var public_index_exports = {};
 __export(public_index_exports, {
-  action: () => action38,
+  action: () => action39,
   default: () => LandingPage
 });
 import { json as json63 } from "@remix-run/node";
 import { useActionData as useActionData21 } from "@remix-run/react";
-import { useEffect as useEffect49 } from "react";
+import { useEffect as useEffect50 } from "react";
 
 // app/components/public/landingpage/ContactForm.tsx
 import { Form as Form48, useNavigation as useNavigation38 } from "@remix-run/react";
@@ -19228,7 +19632,7 @@ var whyUsData = [
 
 // app/routes/_public._index.tsx
 import { jsx as jsx144, jsxs as jsxs130 } from "react/jsx-runtime";
-async function action38({ request }) {
+async function action39({ request }) {
   let formData = await request.formData(), payload = {
     email: String(formData.get("email") ?? ""),
     full_name: String(formData.get("full_name") ?? ""),
@@ -19243,7 +19647,7 @@ async function action38({ request }) {
 }
 function LandingPage() {
   let actionData = useActionData21(), { toast: toast4 } = useToast();
-  useEffect49(() => {
+  useEffect50(() => {
     actionData?.error && toast4({
       variant: "destructive",
       title: "Message not sent",
@@ -19598,13 +20002,13 @@ function Home() {
 // app/routes/forgotpassword.tsx
 var forgotpassword_exports = {};
 __export(forgotpassword_exports, {
-  action: () => action39,
+  action: () => action40,
   default: () => ForgotPassword,
   loader: () => loader69
 });
 import { json as json65 } from "@remix-run/node";
 import { Form as Form49, Link as Link41, useActionData as useActionData22, useLoaderData as useLoaderData63, useNavigation as useNavigation39 } from "@remix-run/react";
-import { useEffect as useEffect50, useMemo as useMemo13, useState as useState58 } from "react";
+import { useEffect as useEffect51, useMemo as useMemo13, useState as useState59 } from "react";
 import { jsx as jsx151, jsxs as jsxs135 } from "react/jsx-runtime";
 async function loader69({ request }) {
   let url = new URL(request.url);
@@ -19613,7 +20017,7 @@ async function loader69({ request }) {
     resetPath: "/resetpassword"
   });
 }
-async function action39({ request }) {
+async function action40({ request }) {
   let formData = await request.formData(), dto = {
     email: String(formData.get("email") ?? ""),
     redirect_link: String(formData.get("redirect_link") ?? "")
@@ -19628,8 +20032,8 @@ async function action39({ request }) {
   });
 }
 function ForgotPassword() {
-  let { baseUrl, resetPath } = useLoaderData63(), actionData = useActionData22(), navigation = useNavigation39(), { toast: pushToast } = useToast(), [email, setEmail] = useState58(""), [message, setMessage] = useState58(""), redirectLink = useMemo13(() => `${baseUrl.replace(/\/$/, "")}${resetPath}`, [baseUrl, resetPath]), isValidEmail2 = /\S+@\S+\.\S+/.test(email.trim()), isSubmitting = navigation.state !== "idle";
-  return useEffect50(() => {
+  let { baseUrl, resetPath } = useLoaderData63(), actionData = useActionData22(), navigation = useNavigation39(), { toast: pushToast } = useToast(), [email, setEmail] = useState59(""), [message, setMessage] = useState59(""), redirectLink = useMemo13(() => `${baseUrl.replace(/\/$/, "")}${resetPath}`, [baseUrl, resetPath]), isValidEmail2 = /\S+@\S+\.\S+/.test(email.trim()), isSubmitting = navigation.state !== "idle";
+  return useEffect51(() => {
     actionData?.error && pushToast({
       variant: "destructive",
       title: "Request failed",
@@ -19680,9 +20084,9 @@ __export(user_affiliate_exports, {
   default: () => AffiliateDashboard,
   loader: () => loader70
 });
-import { json as json66, redirect as redirect51 } from "@remix-run/node";
+import { json as json66, redirect as redirect52 } from "@remix-run/node";
 import { Form as Form50, useLoaderData as useLoaderData64, useNavigation as useNavigation40 } from "@remix-run/react";
-import { useState as useState59 } from "react";
+import { useState as useState60 } from "react";
 import { Building2 as Building22, Coins, Search as Search9, Trophy as Trophy3, Users as Users2 } from "lucide-react";
 import { jsx as jsx152, jsxs as jsxs136 } from "react/jsx-runtime";
 function toDateInputValue(date) {
@@ -19743,7 +20147,7 @@ async function loader70({ request }) {
     query
   );
   if (res.authRequired)
-    throw redirect51("/login");
+    throw redirect52("/login");
   if (res.error) {
     let errorMsg = typeof res.error.detail == "string" ? res.error.detail : "Unable to load affiliate referrals.", { headers } = await setToast({
       request,
@@ -19801,7 +20205,7 @@ function HeroBanner({
   ] });
 }
 function SearchForm({ query }) {
-  let [localError, setLocalError] = useState59(null), isBusy = useNavigation40().state !== "idle";
+  let [localError, setLocalError] = useState60(null), isBusy = useNavigation40().state !== "idle";
   return /* @__PURE__ */ jsxs136("div", { children: [
     /* @__PURE__ */ jsxs136("div", { className: "mb-4 flex items-center gap-2 text-slate-500", children: [
       /* @__PURE__ */ jsx152(Search9, { className: "h-4 w-4" }),
@@ -20622,14 +21026,14 @@ function TermsAndConditions() {
 // app/routes/admin.vtudata.tsx
 var admin_vtudata_exports = {};
 __export(admin_vtudata_exports, {
-  action: () => action40,
+  action: () => action41,
   default: () => AdminVTUData,
   loader: () => loader71,
   useVTUDataController: () => useVTUDataController
 });
 import { json as json67 } from "@remix-run/node";
-import { Form as Form51, useFetcher as useFetcher24, useLoaderData as useLoaderData65, useNavigation as useNavigation41, useRevalidator as useRevalidator4 } from "@remix-run/react";
-import { useEffect as useEffect51, useState as useState60 } from "react";
+import { Form as Form51, useFetcher as useFetcher25, useLoaderData as useLoaderData65, useNavigation as useNavigation41, useRevalidator as useRevalidator5 } from "@remix-run/react";
+import { useEffect as useEffect52, useState as useState61 } from "react";
 import { Fragment as Fragment20, jsx as jsx154, jsxs as jsxs138 } from "react/jsx-runtime";
 function buildQuery4(params) {
   let query = {}, description = params.get("description")?.trim(), network = params.get("network")?.trim(), category = params.get("category"), status = params.get("status");
@@ -20647,7 +21051,7 @@ async function loader71({ request }) {
   let query = buildQuery4(new URL(request.url).searchParams), result = await vtuServer.adminGetVTUProductsPaged(query, request);
   return result.error ? json67({ products: emptyPage2(query.page_size), query, error: getErrorMessage(result.error, "Unable to load VTU data products.") }) : json67({ products: result.data ?? emptyPage2(query.page_size), query });
 }
-async function action40({ request }) {
+async function action41({ request }) {
   await requireAuth(request);
   let formData = await request.formData();
   if (formData.get("intent") !== "update_product")
@@ -20755,10 +21159,10 @@ function ProductCard2({ product, onEdit }) {
   ] });
 }
 function useVTUDataController() {
-  let { products, query, error } = useLoaderData65(), navigation = useNavigation41(), updateFetcher = useFetcher24(), { revalidate } = useRevalidator4(), [selectedProduct, setSelectedProduct] = useState60(null), isLoading = navigation.state !== "idle" && navigation.location?.pathname === "/admin/vtudata";
-  return useEffect51(() => {
+  let { products, query, error } = useLoaderData65(), navigation = useNavigation41(), updateFetcher = useFetcher25(), { revalidate } = useRevalidator5(), [selectedProduct, setSelectedProduct] = useState61(null), isLoading = navigation.state !== "idle" && navigation.location?.pathname === "/admin/vtudata";
+  return useEffect52(() => {
     error && toast({ variant: "destructive", title: "Unable to load VTU data products", description: error });
-  }, [error]), useEffect51(() => {
+  }, [error]), useEffect52(() => {
     let data = updateFetcher.data;
     data && (data.ok ? (toast({ title: "Product updated", description: "The VTU data product was updated successfully." }), setSelectedProduct(null), revalidate()) : toast({ variant: "destructive", title: "Unable to update product", description: data.error }));
   }, [updateFetcher.data, revalidate]), { products, query, error, isLoading, updateFetcher, selectedProduct, setSelectedProduct, validateAndSubmitUpdate: (event) => {
@@ -20887,7 +21291,7 @@ __export(partners_home_exports, {
   default: () => PartnerProducts2,
   loader: () => loader72
 });
-import { json as json68, redirect as redirect52 } from "@remix-run/node";
+import { json as json68, redirect as redirect53 } from "@remix-run/node";
 import { Form as Form52, useLoaderData as useLoaderData66, useNavigation as useNavigation42 } from "@remix-run/react";
 import { ArrowRight as ArrowRight3, Package as Package2, Search as Search10, Tag, Store as Store2 } from "lucide-react";
 import { jsx as jsx155, jsxs as jsxs139 } from "react/jsx-runtime";
@@ -20897,7 +21301,7 @@ async function loader72({ request }) {
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
   let pagedUsersRes = await partnerServer.getPartnerProducts(query, request);
-  return pagedUsersRes.authRequired ? redirect52("/login") : json68({ data: pagedUsersRes.data, query });
+  return pagedUsersRes.authRequired ? redirect53("/login") : json68({ data: pagedUsersRes.data, query });
 }
 function formatPriceRange(product) {
   let minimum = `${product.currency} ${product.price_min}`;
@@ -21115,13 +21519,13 @@ function PartnerProducts2() {
 // app/routes/resetpassword.tsx
 var resetpassword_exports = {};
 __export(resetpassword_exports, {
-  action: () => action41,
+  action: () => action42,
   default: () => ResetPassword,
   loader: () => loader73
 });
 import { json as json69 } from "@remix-run/node";
 import { Link as Link42, useActionData as useActionData23, useLoaderData as useLoaderData67, useNavigate as useNavigate29, useNavigation as useNavigation43 } from "@remix-run/react";
-import { useEffect as useEffect52, useMemo as useMemo14, useState as useState61 } from "react";
+import { useEffect as useEffect53, useMemo as useMemo14, useState as useState62 } from "react";
 import { jsx as jsx156, jsxs as jsxs140 } from "react/jsx-runtime";
 async function loader73({ request }) {
   let url = new URL(request.url);
@@ -21130,7 +21534,7 @@ async function loader73({ request }) {
     token: url.searchParams.get("token") ?? ""
   });
 }
-async function action41({ request }) {
+async function action42({ request }) {
   let formData = await request.formData(), dto = {
     email: String(formData.get("email") ?? ""),
     token: String(formData.get("token") ?? ""),
@@ -21147,14 +21551,14 @@ async function action41({ request }) {
   });
 }
 function ResetPassword() {
-  let { email, token } = useLoaderData67(), actionData = useActionData23(), navigation = useNavigation43(), navigate = useNavigate29(), { toast: pushToast } = useToast(), [password, setPassword] = useState61(""), [confirmPassword, setConfirmPassword] = useState61(""), [redirecting, setRedirecting] = useState61(!1), decodedEmail = useMemo14(() => {
+  let { email, token } = useLoaderData67(), actionData = useActionData23(), navigation = useNavigation43(), navigate = useNavigate29(), { toast: pushToast } = useToast(), [password, setPassword] = useState62(""), [confirmPassword, setConfirmPassword] = useState62(""), [redirecting, setRedirecting] = useState62(!1), decodedEmail = useMemo14(() => {
     try {
       return decodeURIComponent(email);
     } catch {
       return email;
     }
   }, [email]), isSubmitting = navigation.state !== "idle" || redirecting, passwordsMatch = password.length > 0 && password === confirmPassword, canSubmit = Boolean(decodedEmail && token && passwordsMatch && password.length >= 6);
-  return useEffect52(() => {
+  return useEffect53(() => {
     if (actionData?.error && pushToast({
       variant: "destructive",
       title: "Reset failed",
@@ -21232,26 +21636,34 @@ function ResetPassword() {
   ] }) }) });
 }
 
+// app/routes/user.vtu.data.tsx
+var user_vtu_data_exports = {};
+__export(user_vtu_data_exports, {
+  action: () => action26,
+  default: () => DataPage,
+  loader: () => loader44
+});
+
 // app/routes/admin._index.tsx
 var admin_index_exports = {};
 __export(admin_index_exports, {
   loader: () => loader74
 });
-import { redirect as redirect53 } from "@remix-run/node";
+import { redirect as redirect54 } from "@remix-run/node";
 function loader74() {
-  return redirect53("/admin/overview");
+  return redirect54("/admin/overview");
 }
 
 // app/routes/partners.add.tsx
 var partners_add_exports = {};
 __export(partners_add_exports, {
-  action: () => action42,
+  action: () => action43,
   default: () => AddPartnerProduct,
   loader: () => loader75
 });
 import {
   json as json70,
-  redirect as redirect54
+  redirect as redirect55
 } from "@remix-run/node";
 import {
   Form as Form53,
@@ -21261,7 +21673,7 @@ import {
   useNavigation as useNavigation44
 } from "@remix-run/react";
 import { ArrowLeft as ArrowLeft5, ArrowRight as ArrowRight4, Package as Package3, Sparkles, Upload } from "lucide-react";
-import { useEffect as useEffect53, useState as useState62 } from "react";
+import { useEffect as useEffect54, useState as useState63 } from "react";
 import { jsx as jsx157, jsxs as jsxs141 } from "react/jsx-runtime";
 async function loader75({ request }) {
   await requireAuth(request);
@@ -21269,11 +21681,11 @@ async function loader75({ request }) {
     { page_size: 1e3 },
     request
   );
-  return locationsRes.authRequired ? redirect54("/login") : json70({
+  return locationsRes.authRequired ? redirect55("/login") : json70({
     locations: locationsRes.data?.items ?? []
   });
 }
-async function action42({ request }) {
+async function action43({ request }) {
   await requireAuth(request);
   let formData = await request.formData(), dto = {
     name: formData.get("name"),
@@ -21328,8 +21740,8 @@ function SectionHeading({
   ] });
 }
 function AddPartnerProduct() {
-  let { locations } = useLoaderData68(), actionData = useActionData24(), isSubmitting = useNavigation44().state === "submitting", navigate = useNavigate30(), [tags, setTags] = useState62("");
-  return useEffect53(() => {
+  let { locations } = useLoaderData68(), actionData = useActionData24(), isSubmitting = useNavigation44().state === "submitting", navigate = useNavigate30(), [tags, setTags] = useState63("");
+  return useEffect54(() => {
     actionData?.error && toast({
       variant: "destructive",
       title: "Add product failed",
@@ -21559,25 +21971,25 @@ function AddPartnerProduct() {
 // app/routes/user.profile.tsx
 var user_profile_exports = {};
 __export(user_profile_exports, {
-  action: () => action43,
+  action: () => action44,
   default: () => UserProfilePage,
   loader: () => loader76
 });
 import { Form as Form54, useLoaderData as useLoaderData69, useActionData as useActionData25, useNavigate as useNavigate31 } from "@remix-run/react";
-import { json as json71, redirect as redirect55 } from "@remix-run/node";
-import { useEffect as useEffect54, useRef as useRef19, useState as useState63 } from "react";
+import { json as json71, redirect as redirect56 } from "@remix-run/node";
+import { useEffect as useEffect55, useRef as useRef20, useState as useState64 } from "react";
 import { Fragment as Fragment21, jsx as jsx158, jsxs as jsxs142 } from "react/jsx-runtime";
 async function loader76({ request }) {
   let validateAuth = await requireAuth(request), { data, error, authRequired } = await authServer.getMe(request);
-  return authRequired ? redirect55("/login") : json71({ data, error });
+  return authRequired ? redirect56("/login") : json71({ data, error });
 }
-async function action43({ request }) {
+async function action44({ request }) {
   let cookieHeader = request.headers.get("Cookie"), formData = await request.formData(), updateData = authServer.prepareUpdateUserPayload(formData), { data, error } = await authServer.updateProfile(updateData, request);
   return json71({ data, error });
 }
 function useUserProfileController() {
-  let { toast: toast4 } = useToast(), loaderData = useLoaderData69(), actionData = useActionData25(), navigate = useNavigate31(), [profile, setProfile] = useState63(loaderData?.data?.user_profile || null), [email, setEmail] = useState63(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState63(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState63(profile?.image_url), fileInputRef = useRef19(null);
-  return useEffect54(() => {
+  let { toast: toast4 } = useToast(), loaderData = useLoaderData69(), actionData = useActionData25(), navigate = useNavigate31(), [profile, setProfile] = useState64(loaderData?.data?.user_profile || null), [email, setEmail] = useState64(loaderData?.data?.email || ""), [referralCode, setReferralCode] = useState64(loaderData?.data?.referral_code || ""), [imagePreview, setImagePreview] = useState64(profile?.image_url), fileInputRef = useRef20(null);
+  return useEffect55(() => {
     actionData?.error && toast4({
       variant: "destructive",
       title: "Update Failed",
@@ -21593,8 +22005,8 @@ function useUserProfileController() {
   }, referralCode };
 }
 function UserProfilePage() {
-  let { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController(), isLoading = !profile && !email, [signupReferralLink, setSignupReferralLink] = useState63(""), [partnerReferralLink, setPartnerReferralLink] = useState63("");
-  return useEffect54(() => {
+  let { profile, email, imagePreview, fileInputRef, handleImageChange, referralCode } = useUserProfileController(), isLoading = !profile && !email, [signupReferralLink, setSignupReferralLink] = useState64(""), [partnerReferralLink, setPartnerReferralLink] = useState64("");
+  return useEffect55(() => {
     let origin = window.location.origin, referralParam = encodeURIComponent(referralCode || "");
     setSignupReferralLink(`${origin}/signup?referred_by_code=${referralParam}`), setPartnerReferralLink(`${origin}/partner/partner?referred_by_code=${referralParam}`);
   }, [referralCode]), /* @__PURE__ */ jsx158("div", { className: "min-h-screen bg-white text-brand-navy", children: /* @__PURE__ */ jsx158("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: /* @__PURE__ */ jsxs142("div", { className: "grid gap-6 lg:grid-cols-[360px_minmax(0,1fr)]", children: [
@@ -22289,644 +22701,18 @@ function FaqPage() {
   ] });
 }
 
-// app/routes/user.orders.tsx
-var user_orders_exports = {};
-__export(user_orders_exports, {
-  action: () => action44,
-  default: () => MarketplaceOrders2,
-  loader: () => loader77
-});
-import { json as json72 } from "@remix-run/node";
-import { Form as Form55, Link as Link43, useFetcher as useFetcher25, useLoaderData as useLoaderData70, useNavigation as useNavigation45, useRevalidator as useRevalidator5 } from "@remix-run/react";
-import { ArrowLeft as ArrowLeft6, PackageSearch as PackageSearch5, ShoppingBag as ShoppingBag4, Star } from "lucide-react";
-import { useEffect as useEffect55, useRef as useRef20, useState as useState64 } from "react";
-import { jsx as jsx160, jsxs as jsxs144 } from "react/jsx-runtime";
-var orderStatusOptions3 = [
-  { label: "All statuses", value: "" },
-  { label: "Pending pre-payment", value: "PendingPrePayment" },
-  { label: "Pending", value: "Pending" },
-  { label: "Processing", value: "Processing" },
-  { label: "Paid pending fulfillment", value: "PaidPendingFulfillment" },
-  { label: "Partially fulfilled", value: "PartiallyFulfilled" },
-  { label: "Fully fulfilled", value: "FullyFulfilled" },
-  { label: "Completed", value: "Completed" },
-  { label: "Cancelled", value: "Cancelled" },
-  { label: "Disputed", value: "IsDisputed" }
-], orderProductStatusOptions3 = [
-  { label: "All item statuses", value: "" },
-  { label: "Pending", value: "Pending" },
-  { label: "Active", value: "Active" },
-  { label: "Cancelled", value: "Cancelled" },
-  { label: "Fulfilled", value: "Fulfilled" },
-  { label: "Returned", value: "Returned" },
-  { label: "Fulfillment confirmed", value: "FulfillmentConfirmedByCustomer" },
-  { label: "Disputed", value: "Disputed" },
-  { label: "Refund triggered", value: "RefundTriggered" },
-  { label: "Returned and refunded", value: "ReturnedAndRefunded" },
-  { label: "Fulfillment confirmed by admin", value: "FulfillmentConfirmedByAdmin" }
-];
-function buildCustomerOrdersQuery2(searchParams) {
-  let query = {};
-  for (let [key, value] of searchParams.entries())
-    if (value) {
-      if (key === "page_size") {
-        query.page_size = Number(value);
-        continue;
-      }
-      if (key === "direction") {
-        query.direction = value === "previous" ? "previous" : "next";
-        continue;
-      }
-      if (key === "last_key_id") {
-        query.last_key_id = value;
-        continue;
-      }
-      if (key === "first_key_id") {
-        query.first_key_id = value;
-        continue;
-      }
-      if (key === "order_status") {
-        query.order_status = value;
-        continue;
-      }
-      key === "order_product_status" && (query.order_product_status = value);
-    }
-  return query;
-}
-function emptyPaginatedOrders3(pageSize = 10) {
-  return {
-    current_page: 1,
-    total_pages: 0,
-    total_items: 0,
-    items_per_page: pageSize,
-    items: [],
-    last_key_id: null,
-    first_key_id: null
-  };
-}
-function formatDate7(value) {
-  return new Intl.DateTimeFormat("en-NG", {
-    dateStyle: "medium",
-    timeStyle: "short"
-  }).format(new Date(value));
-}
-function formatStatusLabel3(value) {
-  return value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/\s+/g, " ").trim();
-}
-function getErrorMessage5(error, fallback) {
-  return typeof error == "string" ? error : error && typeof error == "object" && "detail" in error && typeof error.detail == "string" ? error.detail : fallback;
-}
-async function verifyOrderForMutation({
-  orderId,
-  orderItemId,
-  orderCode,
-  request,
-  requirePrepaid
-}) {
-  let orderRes = await partnerServer.getCustomerOrderById(orderId, request);
-  if (orderRes.error || !orderRes.data)
-    return json72(
-      {
-        ok: !1,
-        error: getErrorMessage5(orderRes.error, "Unable to verify this order")
-      },
-      { status: 404 }
-    );
-  let order = orderRes.data, item = order.orders.find((entry2) => entry2.order_item_id === orderItemId);
-  return item ? item.status !== "Fulfilled" /* Fulfilled */ ? json72(
-    {
-      ok: !1,
-      error: `This order item cannot be processed from ${formatStatusLabel3(item.status)} status`
-    },
-    { status: 400 }
-  ) : requirePrepaid && order.payment_details?.payment_option !== "prepay" ? json72(
-    {
-      ok: !1,
-      error: "Disputes are only available for prepaid orders"
-    },
-    { status: 400 }
-  ) : order.order_code !== orderCode ? json72({ ok: !1, error: "The order code does not match this order" }, { status: 400 }) : { order, item } : json72({ ok: !1, error: "Order item not found" }, { status: 404 });
-}
-function OrdersSkeleton4() {
-  return /* @__PURE__ */ jsx160("div", { className: "space-y-4", children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxs144("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsx160("div", { className: "h-4 w-28 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx160("div", { className: "mt-4 h-6 w-2/3 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx160("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx160("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
-  ] }, index)) });
-}
-function FulfillmentConfirmDialog({
-  order,
-  item
-}) {
-  let fetcher = useFetcher25(), revalidator = useRevalidator5(), [open, setOpen] = useState64(!1), handledSuccessRef = useRef20(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null;
-  return useEffect55(() => {
-    fetcher.state === "submitting" && (handledSuccessRef.current = !1);
-  }, [fetcher.state]), useEffect55(() => {
-    !fetcher.data || !fetcher.data.ok || handledSuccessRef.current || (handledSuccessRef.current = !0, setOpen(!1), revalidator.revalidate(), toast({
-      title: "Success",
-      description: fetcher.data.message
-    }));
-  }, [fetcher.data, revalidator]), /* @__PURE__ */ jsxs144(Dialog, { open, onOpenChange: setOpen, children: [
-    /* @__PURE__ */ jsx160(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx160(
-      "button",
-      {
-        type: "button",
-        className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-4 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
-        children: "Confirm Fulfillment"
-      }
-    ) }),
-    /* @__PURE__ */ jsxs144(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
-      /* @__PURE__ */ jsxs144(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
-        /* @__PURE__ */ jsx160(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Confirm order receipt" }),
-        /* @__PURE__ */ jsx160(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the order code below to confirm you have received this item. You can also leave an optional rating and remark." })
-      ] }),
-      /* @__PURE__ */ jsxs144(fetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "intent", value: "confirm_fulfillment" }),
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "order_id", value: order._id }),
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
-        /* @__PURE__ */ jsxs144("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: [
-          /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order code" }),
-          /* @__PURE__ */ jsx160("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code })
-        ] }),
-        /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
-          /* @__PURE__ */ jsx160(
-            "input",
-            {
-              name: "order_code",
-              required: !0,
-              autoComplete: "off",
-              placeholder: "Type the displayed order code",
-              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsxs144("span", { className: "flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: [
-            /* @__PURE__ */ jsx160(Star, { className: "h-3.5 w-3.5" }),
-            "Rating"
-          ] }),
-          /* @__PURE__ */ jsxs144(
-            "select",
-            {
-              name: "rating",
-              defaultValue: "",
-              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition focus:border-slate-950",
-              children: [
-                /* @__PURE__ */ jsx160("option", { value: "", children: "Optional rating" }),
-                Array.from({ length: 5 }).map((_, index) => {
-                  let rating = index + 1;
-                  return /* @__PURE__ */ jsxs144("option", { value: rating, children: [
-                    rating,
-                    " star",
-                    rating > 1 ? "s" : ""
-                  ] }, rating);
-                })
-              ]
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
-          /* @__PURE__ */ jsx160(
-            "textarea",
-            {
-              name: "remark",
-              rows: 4,
-              placeholder: "Optional remark about the product or delivery",
-              className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
-            }
-          )
-        ] }),
-        errorMessage ? /* @__PURE__ */ jsx160("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
-        /* @__PURE__ */ jsxs144(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
-          /* @__PURE__ */ jsx160(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx160(
-            "button",
-            {
-              type: "button",
-              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-              children: "Back"
-            }
-          ) }),
-          /* @__PURE__ */ jsx160(
-            "button",
-            {
-              type: "submit",
-              disabled: isSubmitting,
-              className: "inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70",
-              children: isSubmitting ? "Working..." : "Confirm fulfillment"
-            }
-          )
-        ] })
-      ] })
-    ] })
-  ] });
-}
-function DisputeFulfillmentDialog({
-  order,
-  item
-}) {
-  let fetcher = useFetcher25(), revalidator = useRevalidator5(), [open, setOpen] = useState64(!1), handledResponseRef = useRef20(!1), isSubmitting = fetcher.state !== "idle", errorMessage = fetcher.data && !fetcher.data.ok ? fetcher.data.error : null, isPrepaid = order.payment_details?.payment_option === "prepay";
-  useEffect55(() => {
-    fetcher.state === "submitting" && (handledResponseRef.current = !1);
-  }, [fetcher.state]), useEffect55(() => {
-    if (!(!fetcher.data || handledResponseRef.current)) {
-      if (handledResponseRef.current = !0, fetcher.data.ok) {
-        setOpen(!1), revalidator.revalidate(), toast({
-          title: "Success",
-          description: fetcher.data.message
-        });
-        return;
-      }
-      toast({
-        variant: "destructive",
-        title: "Dispute failed",
-        description: fetcher.data.error
-      });
-    }
-  }, [fetcher.data, revalidator]);
-  let handleSubmit = (event) => {
-    let formData = new FormData(event.currentTarget);
-    String(formData.get("order_code") ?? "").trim() !== order.order_code && (event.preventDefault(), toast({
-      variant: "destructive",
-      title: "Order code mismatch",
-      description: "The order code you entered does not match this order."
-    }));
-  };
-  return isPrepaid ? /* @__PURE__ */ jsxs144(Dialog, { open, onOpenChange: setOpen, children: [
-    /* @__PURE__ */ jsx160(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx160(
-      "button",
-      {
-        type: "button",
-        className: "inline-flex h-11 items-center justify-center rounded-full border border-rose-200 bg-white px-4 text-sm font-bold text-rose-700 transition hover:-translate-y-0.5 hover:border-rose-300 hover:bg-rose-50",
-        children: "Dispute Order"
-      }
-    ) }),
-    /* @__PURE__ */ jsxs144(DialogContent, { className: "max-w-xl border-slate-200 bg-white p-0 shadow-[0_24px_70px_rgba(15,23,42,0.16)]", children: [
-      /* @__PURE__ */ jsxs144(DialogHeader, { className: "border-b border-slate-100 p-6 text-left", children: [
-        /* @__PURE__ */ jsx160(DialogTitle, { className: "text-2xl font-black text-slate-950", children: "Dispute order fulfillment" }),
-        /* @__PURE__ */ jsx160(DialogDescription, { className: "mt-2 text-sm leading-6 text-slate-600", children: "Use this if the order was not fulfilled as expected. Your report will be sent for admin review." })
-      ] }),
-      /* @__PURE__ */ jsxs144(fetcher.Form, { method: "post", className: "space-y-5 p-6", onSubmit: handleSubmit, children: [
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "intent", value: "dispute_fulfillment" }),
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "order_id", value: order._id }),
-        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "order_item_id", value: item.order_item_id }),
-        /* @__PURE__ */ jsxs144("div", { className: "rounded-2xl border border-rose-100 bg-rose-50 p-4", children: [
-          /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-rose-500", children: "Order code" }),
-          /* @__PURE__ */ jsx160("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.order_code }),
-          /* @__PURE__ */ jsx160("p", { className: "mt-2 text-sm leading-6 text-slate-600", children: "Type the exact order code to confirm this dispute request." })
-        ] }),
-        /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Confirm order code" }),
-          /* @__PURE__ */ jsx160(
-            "input",
-            {
-              name: "order_code",
-              required: !0,
-              autoComplete: "off",
-              placeholder: "Enter the order code",
-              className: "h-12 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-          /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Remark" }),
-          /* @__PURE__ */ jsx160(
-            "textarea",
-            {
-              name: "remark",
-              required: !0,
-              rows: 4,
-              placeholder: "Explain what was not fulfilled as expected",
-              className: "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium outline-none transition placeholder:text-slate-400 focus:border-slate-950"
-            }
-          )
-        ] }),
-        errorMessage ? /* @__PURE__ */ jsx160("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700", children: errorMessage }) : null,
-        /* @__PURE__ */ jsxs144(DialogFooter, { className: "gap-3 border-t border-slate-100 pt-5 sm:justify-end", children: [
-          /* @__PURE__ */ jsx160(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx160(
-            "button",
-            {
-              type: "button",
-              className: "inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-              children: "Back"
-            }
-          ) }),
-          /* @__PURE__ */ jsx160(
-            "button",
-            {
-              type: "submit",
-              disabled: isSubmitting,
-              className: "inline-flex h-11 items-center justify-center rounded-full bg-rose-600 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-rose-500 disabled:cursor-not-allowed disabled:opacity-70",
-              children: isSubmitting ? "Working..." : "Submit dispute"
-            }
-          )
-        ] })
-      ] })
-    ] })
-  ] }) : null;
-}
-function OrderItemRow3({
-  order,
-  item
-}) {
-  let hasRange = item.min_amount_total !== item.max_amount_total, isFulfilled = item.status === "Fulfilled" /* Fulfilled */, isPrepaid = order.payment_details?.payment_option === "prepay";
-  return /* @__PURE__ */ jsx160("div", { className: "rounded-2xl border border-slate-200 bg-slate-50 p-4", children: /* @__PURE__ */ jsxs144("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-    /* @__PURE__ */ jsxs144("div", { children: [
-      /* @__PURE__ */ jsx160("div", { className: "text-sm font-bold text-slate-950", children: item.product_name }),
-      /* @__PURE__ */ jsxs144("div", { className: "mt-1 text-xs text-slate-500", children: [
-        "Qty ",
-        item.quantity,
-        " \xB7",
-        " ",
-        hasRange ? `${formatMoney(item.currency, item.min_amount_total)} - ${formatMoney(item.currency, item.max_amount_total)}` : formatMoney(item.currency, item.min_amount_total)
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs144("div", { className: "flex flex-col items-start gap-3 sm:flex-row sm:items-center", children: [
-      /* @__PURE__ */ jsx160("span", { className: "rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(item.status) }),
-      isFulfilled ? /* @__PURE__ */ jsxs144("div", { className: "flex flex-col gap-2 sm:flex-row", children: [
-        /* @__PURE__ */ jsx160(FulfillmentConfirmDialog, { order, item }),
-        isPrepaid ? /* @__PURE__ */ jsx160(DisputeFulfillmentDialog, { order, item }) : null
-      ] }) : null
-    ] })
-  ] }) });
-}
-function OrderCard3({ order }) {
-  let paymentLink = order.payment_details?.payment_link, isPrepaid = order.payment_details?.payment_option === "prepay";
-  return /* @__PURE__ */ jsxs144("article", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_50px_rgba(15,23,42,0.1)]", children: [
-    /* @__PURE__ */ jsxs144("div", { className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between", children: [
-      /* @__PURE__ */ jsxs144("div", { className: "space-y-2", children: [
-        /* @__PURE__ */ jsxs144("div", { className: "flex flex-wrap items-center gap-2", children: [
-          /* @__PURE__ */ jsx160("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: order.order_code }),
-          /* @__PURE__ */ jsx160("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600", children: formatStatusLabel3(order.status) }),
-          isPrepaid ? /* @__PURE__ */ jsx160("span", { className: "rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700", children: "Prepaid" }) : null
-        ] }),
-        /* @__PURE__ */ jsxs144("div", { children: [
-          /* @__PURE__ */ jsx160("h2", { className: "text-xl font-black text-slate-950", children: order.business_name }),
-          /* @__PURE__ */ jsxs144("p", { className: "mt-1 text-sm leading-6 text-slate-500", children: [
-            order.business_contact_person_name,
-            " \xB7 ",
-            order.delivery_phone_number
-          ] })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs144("div", { className: "grid gap-3 sm:grid-cols-2 lg:text-right", children: [
-        /* @__PURE__ */ jsxs144("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Created" }),
-          /* @__PURE__ */ jsx160("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: formatDate7(order.created_at) })
-        ] }),
-        /* @__PURE__ */ jsxs144("div", { className: "rounded-2xl bg-slate-50 px-4 py-3", children: [
-          /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Total" }),
-          /* @__PURE__ */ jsx160("div", { className: "mt-1 text-sm font-semibold text-slate-900", children: order.min_total_amount === order.max_total_amount ? formatMoney(order.currency, order.min_total_amount) : `${formatMoney(order.currency, order.min_total_amount)} - ${formatMoney(order.currency, order.max_total_amount)}` })
-        ] })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs144("div", { className: "mt-5 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]", children: [
-      /* @__PURE__ */ jsxs144("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Order items" }),
-        /* @__PURE__ */ jsx160("div", { className: "space-y-3", children: order.orders.map((item) => /* @__PURE__ */ jsx160(OrderItemRow3, { order, item }, item.order_item_id)) })
-      ] }),
-      /* @__PURE__ */ jsxs144("div", { className: "space-y-3", children: [
-        /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery & payment" }),
-        /* @__PURE__ */ jsxs144("div", { className: "rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600", children: [
-          /* @__PURE__ */ jsx160("div", { className: "font-semibold text-slate-900", children: order.delivery_name || "Delivery details" }),
-          /* @__PURE__ */ jsx160("div", { children: order.delivery_street }),
-          /* @__PURE__ */ jsxs144("div", { children: [
-            order.delivery_city,
-            ", ",
-            order.delivery_state,
-            ", ",
-            order.delivery_country
-          ] }),
-          /* @__PURE__ */ jsxs144("div", { className: "mt-3", children: [
-            "Payment option: ",
-            /* @__PURE__ */ jsx160("span", { className: "font-semibold text-slate-900", children: order.payment_details?.payment_option })
-          ] }),
-          /* @__PURE__ */ jsxs144("div", { children: [
-            "Payment status: ",
-            /* @__PURE__ */ jsx160("span", { className: "font-semibold text-slate-900", children: order.payment_details?.status })
-          ] }),
-          /* @__PURE__ */ jsxs144("div", { children: [
-            "Reference: ",
-            /* @__PURE__ */ jsx160("span", { className: "font-semibold text-slate-900 break-all", children: order.payment_details?.reference })
-          ] }),
-          paymentLink ? /* @__PURE__ */ jsx160(
-            "a",
-            {
-              href: paymentLink,
-              target: "_blank",
-              rel: "noreferrer",
-              className: "mt-3 inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-              children: "Open payment link"
-            }
-          ) : null
-        ] })
-      ] })
-    ] })
-  ] });
-}
-async function loader77({ request }) {
-  let url = new URL(request.url), query = buildCustomerOrdersQuery2(url.searchParams), ordersRes = await partnerServer.getCustomerOrders(query, request);
-  return ordersRes.error ? json72({
-    orders: emptyPaginatedOrders3(query.page_size ?? 10),
-    query,
-    error: typeof ordersRes.error.detail == "string" ? ordersRes.error.detail : "Unable to load orders"
-  }) : json72({
-    orders: ordersRes.data ?? emptyPaginatedOrders3(query.page_size ?? 10),
-    query
-  });
-}
-async function action44({ request }) {
-  let formData = await request.formData(), intent = String(formData.get("intent") ?? ""), orderId = String(formData.get("order_id") ?? "").trim(), orderItemId = String(formData.get("order_item_id") ?? "").trim(), orderCode = String(formData.get("order_code") ?? "").trim(), ratingValue = String(formData.get("rating") ?? "").trim(), remark = String(formData.get("remark") ?? "").trim();
-  if (intent !== "confirm_fulfillment" && intent !== "dispute_fulfillment")
-    return json72({ ok: !1, error: "Unsupported order action" }, { status: 400 });
-  if (!orderId || !orderItemId)
-    return json72({ ok: !1, error: "Missing order details" }, { status: 400 });
-  if (!orderCode)
-    return json72({ ok: !1, error: "Order code is required" }, { status: 400 });
-  let verification = await verifyOrderForMutation({
-    orderId,
-    orderItemId,
-    orderCode,
-    request,
-    requirePrepaid: intent === "dispute_fulfillment"
-  });
-  if (verification instanceof Response)
-    return verification;
-  let { order, item } = verification;
-  if (intent === "confirm_fulfillment") {
-    let payload2 = {
-      order_id: order._id,
-      order_code: order.order_code,
-      order_item_id: item.order_item_id
-    };
-    if (ratingValue) {
-      let rating = Number(ratingValue);
-      if (!Number.isInteger(rating) || rating < 1 || rating > 5)
-        return json72({ ok: !1, error: "Rating must be between 1 and 5" }, { status: 400 });
-      payload2.rating = rating;
-    }
-    remark && (payload2.remark = remark);
-    let mutationRes2 = await partnerServer.customerConfirmOrder(payload2, request);
-    return mutationRes2.error ? json72(
-      {
-        ok: !1,
-        error: getErrorMessage5(mutationRes2.error, "Unable to confirm this order item")
-      },
-      { status: 400 }
-    ) : json72({
-      ok: !0,
-      message: "Order fulfillment confirmed successfully",
-      order: mutationRes2.data ?? order
-    });
-  }
-  if (!remark)
-    return json72({ ok: !1, error: "Remark is required for dispute submission" }, { status: 400 });
-  let payload = {
-    order_id: order._id,
-    order_code: order.order_code,
-    order_item_id: item.order_item_id,
-    remark
-  }, mutationRes = await partnerServer.customerDispute(payload, request);
-  return mutationRes.error ? json72(
-    {
-      ok: !1,
-      error: getErrorMessage5(mutationRes.error, "Unable to submit this dispute")
-    },
-    { status: 400 }
-  ) : json72({
-    ok: !0,
-    message: "Order dispute submitted successfully",
-    order: mutationRes.data ?? order
-  });
-}
-function MarketplaceOrders2() {
-  let { orders, query, error } = useLoaderData70(), isLoading = useNavigation45().state === "loading", hasOrders = orders.items.length > 0;
-  return /* @__PURE__ */ jsxs144("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxs144("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxs144("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-        /* @__PURE__ */ jsxs144("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxs144(
-            Link43,
-            {
-              to: "/marketplace",
-              className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
-              children: [
-                /* @__PURE__ */ jsx160(ArrowLeft6, { className: "h-4 w-4" }),
-                "Back to marketplace"
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs144("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsx160("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Orders" }),
-            /* @__PURE__ */ jsx160("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Track and search your marketplace orders." }),
-            /* @__PURE__ */ jsx160("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Use the filters below to narrow results by order status or item status." })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxs144("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-          /* @__PURE__ */ jsxs144("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Orders" }),
-            /* @__PURE__ */ jsx160("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.total_items })
-          ] }),
-          /* @__PURE__ */ jsxs144("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Page size" }),
-            /* @__PURE__ */ jsx160("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.items_per_page })
-          ] }),
-          /* @__PURE__ */ jsxs144("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx160("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Current page" }),
-            /* @__PURE__ */ jsx160("div", { className: "mt-2 text-3xl font-black text-slate-950", children: orders.current_page })
-          ] })
-        ] })
-      ] }),
-      error ? /* @__PURE__ */ jsx160("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null
-    ] }),
-    /* @__PURE__ */ jsx160("section", { className: "mt-6 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: /* @__PURE__ */ jsxs144(Form55, { method: "get", className: "grid gap-4 lg:grid-cols-[1fr_1fr_auto] lg:items-end", children: [
-      /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Order status" }),
-        /* @__PURE__ */ jsx160(
-          "select",
-          {
-            name: "order_status",
-            defaultValue: query.order_status ?? "",
-            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderStatusOptions3.map((option) => /* @__PURE__ */ jsx160("option", { value: option.value, children: option.label }, option.label))
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxs144("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx160("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Item status" }),
-        /* @__PURE__ */ jsx160(
-          "select",
-          {
-            name: "order_product_status",
-            defaultValue: query.order_product_status ?? "",
-            className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium outline-none transition focus:border-slate-950 focus:bg-white",
-            children: orderProductStatusOptions3.map((option) => /* @__PURE__ */ jsx160("option", { value: option.value, children: option.label }, option.label))
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsxs144("div", { className: "flex gap-3", children: [
-        /* @__PURE__ */ jsx160(
-          "button",
-          {
-            type: "submit",
-            className: "inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
-            children: "Search"
-          }
-        ),
-        /* @__PURE__ */ jsx160(
-          Link43,
-          {
-            to: "/marketplace/orders",
-            className: "inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50",
-            children: "Reset"
-          }
-        )
-      ] })
-    ] }) }),
-    /* @__PURE__ */ jsxs144("section", { className: "mt-8", children: [
-      /* @__PURE__ */ jsxs144("div", { className: "mb-4 flex flex-wrap items-end justify-between gap-3", children: [
-        /* @__PURE__ */ jsxs144("div", { children: [
-          /* @__PURE__ */ jsx160("h2", { className: "text-2xl font-black text-slate-950", children: "Orders" }),
-          /* @__PURE__ */ jsx160("p", { className: "text-sm text-slate-500", children: orders.total_items > 0 ? `${orders.total_items} order${orders.total_items === 1 ? "" : "s"} found` : "No orders found for the selected filters" })
-        ] }),
-        /* @__PURE__ */ jsxs144("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: [
-          /* @__PURE__ */ jsx160(PackageSearch5, { className: "h-4 w-4" }),
-          "Page ",
-          orders.current_page
-        ] })
-      ] }),
-      isLoading ? /* @__PURE__ */ jsx160(OrdersSkeleton4, {}) : hasOrders ? /* @__PURE__ */ jsx160("div", { className: "space-y-4", children: orders.items.map((order) => /* @__PURE__ */ jsx160(OrderCard3, { order }, order._id)) }) : /* @__PURE__ */ jsxs144("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm", children: [
-        /* @__PURE__ */ jsx160(ShoppingBag4, { className: "mx-auto h-10 w-10 text-slate-300" }),
-        /* @__PURE__ */ jsx160("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "No orders yet" }),
-        /* @__PURE__ */ jsx160("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Once you place an order, it will appear here for tracking and payment follow-up." }),
-        /* @__PURE__ */ jsx160(
-          Link43,
-          {
-            to: "/marketplace",
-            className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
-            children: "Browse products"
-          }
-        )
-      ] })
-    ] }),
-    /* @__PURE__ */ jsx160("section", { className: "mt-8", children: /* @__PURE__ */ jsx160(Pagination, { lastKey: orders.last_key_id, firstKey: orders.first_key_id, pageSize: orders.items_per_page }) })
-  ] });
-}
-
 // app/routes/user.wallet.tsx
 var user_wallet_exports = {};
 __export(user_wallet_exports, {
   action: () => action45,
   default: () => WalletPage3,
-  loader: () => loader78
+  loader: () => loader77
 });
-import { json as json73, redirect as redirect57 } from "@remix-run/node";
-import { Link as Link44, useActionData as useActionData26, useLoaderData as useLoaderData71, useFetcher as useFetcher26 } from "@remix-run/react";
+import { json as json72, redirect as redirect57 } from "@remix-run/node";
+import { Link as Link43, useActionData as useActionData26, useLoaderData as useLoaderData70, useFetcher as useFetcher26 } from "@remix-run/react";
 import { useState as useState65, useMemo as useMemo15, useEffect as useEffect56 } from "react";
-import { jsx as jsx161, jsxs as jsxs145 } from "react/jsx-runtime";
-async function loader78({ request }) {
+import { jsx as jsx160, jsxs as jsxs144 } from "react/jsx-runtime";
+async function loader77({ request }) {
   let validateAuth = await requireAuth(request), url = new URL(request.url), page_size = Number(url.searchParams.get("page_size") ?? "10"), last_key_id = url.searchParams.get("last_key_id"), first_key_id = url.searchParams.get("first_key_id"), wallet_id_param = url.searchParams.get("wallet_id"), walletsResponse = await walletRepo.getUserWallets(request), wallets = [];
   if (walletsResponse.data?.length)
     for (let _wallet of walletsResponse.data) {
@@ -22946,16 +22732,16 @@ async function loader78({ request }) {
       });
       pagedLedgers.data && wallets.push({ wallet: _wallet, pagedLedgers: pagedLedgers.data });
     }
-  return json73({ wallets });
+  return json72({ wallets });
 }
 async function action45({ request }) {
   let formData = await request.formData(), intent = String(formData.get("intent") ?? "");
   if (intent === "fund-wallet") {
     let amount = Number(String(formData.get("amount") ?? "").trim()), walletId = String(formData.get("wallet_id") ?? "").trim();
     if (!Number.isFinite(amount) || amount <= 0)
-      return json73({ intent, error: "Please enter a valid amount greater than zero." }, { status: 400 });
+      return json72({ intent, error: "Please enter a valid amount greater than zero." }, { status: 400 });
     if (!walletId)
-      return json73({ intent, error: "Please select a wallet to fund." }, { status: 400 });
+      return json72({ intent, error: "Please select a wallet to fund." }, { status: 400 });
     let response = await walletRepo.fundUserWallet({
       amount,
       wallet_id: walletId,
@@ -22963,9 +22749,9 @@ async function action45({ request }) {
       redirect_url: new URL("/user/wallet", request.url).toString()
     }, request);
     if (response.error)
-      return json73({ intent, error: getWalletErrorMessage2(response.error) }, { status: 400 });
+      return json72({ intent, error: getWalletErrorMessage2(response.error) }, { status: 400 });
     let paymentLink = response.data?.payment_link?.trim();
-    return paymentLink ? redirect57(paymentLink) : json73({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
+    return paymentLink ? redirect57(paymentLink) : json72({ intent, error: "Payment provider did not return a payment link." }, { status: 400 });
   }
   let cleaned = {};
   formData.forEach((value, key) => {
@@ -22976,10 +22762,10 @@ async function action45({ request }) {
   cleaned.transaction_type && (query.transaction_type = cleaned.transaction_type), cleaned.status && (query.status = cleaned.status), cleaned.min_amount && (query.min_amount = Number(cleaned.min_amount)), cleaned.max_amount && (query.max_amount = Number(cleaned.max_amount)), cleaned.min_created_at && (query.min_created_at = cleaned.min_created_at), cleaned.max_created_at && (query.max_created_at = cleaned.max_created_at), cleaned.user_id && (query.user_id = cleaned.user_id), cleaned.wallet_id && (query.wallet_id = cleaned.wallet_id), cleaned.currency && (query.currency = cleaned.currency), cleaned.payment_method && (query.payment_method = cleaned.payment_method), cleaned.contest_code && (query.contest_code = cleaned.contest_code);
   let walletResp = await walletRepo.wallet_search(query, request);
   if (walletResp.error)
-    return json73({ error: walletResp.error }, { status: 400 });
+    return json72({ error: walletResp.error }, { status: 400 });
   let ledgersResp = await walletRepo.getUserLedgersForWallet(request, query);
   if (ledgersResp.error)
-    return json73({ error: ledgersResp.error }, { status: 400 });
+    return json72({ error: ledgersResp.error }, { status: 400 });
   let walletsResp = await walletRepo.getUserWallets(request), wallets = [];
   if (walletsResp.data?.length) {
     let cleanedWallets = [];
@@ -22993,7 +22779,7 @@ async function action45({ request }) {
       }
     cleanedWallets.length && (wallets = cleanedWallets);
   }
-  return console.log("WALLET RESP", walletResp, wallets), json73({ wallets });
+  return console.log("WALLET RESP", walletResp, wallets), json72({ wallets });
 }
 function getWalletErrorMessage2(error) {
   if (typeof error == "string")
@@ -23008,7 +22794,7 @@ function getWalletErrorMessage2(error) {
   return "Unable to fund your wallet. Please try again.";
 }
 function useWalletController3() {
-  let { wallets } = useLoaderData71(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState65(null), [activeWalletId, setActiveWalletId] = useState65(
+  let { wallets } = useLoaderData70(), { setUserStoreManager, getUserStoreManager } = useUserManager(), [user, setUser] = useState65(null), [activeWalletId, setActiveWalletId] = useState65(
     wallets.length > 0 ? wallets[0].wallet._id : null
   );
   useEffect56(() => {
@@ -23050,23 +22836,23 @@ function useWalletController3() {
 function WalletPage3() {
   let { wallets, activeData, setActiveWalletId, formatCurrency: formatCurrency2, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher, fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen } = useWalletController3();
   if (!activeData)
-    return /* @__PURE__ */ jsx161("div", { className: "p-8", children: "No wallets found." });
+    return /* @__PURE__ */ jsx160("div", { className: "p-8", children: "No wallets found." });
   let activeDataLocal = walletsState.find((w) => w.wallet._id === activeData?.wallet._id) ?? activeData, { wallet, pagedLedgers } = activeDataLocal;
-  return /* @__PURE__ */ jsxs145("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
-    /* @__PURE__ */ jsx161("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }),
-    /* @__PURE__ */ jsxs145("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
-      /* @__PURE__ */ jsxs145("div", { className: "flex items-center justify-between mb-4", children: [
-        /* @__PURE__ */ jsxs145("div", { className: "flex items-center gap-2 text-gray-500", children: [
-          /* @__PURE__ */ jsx161("span", { className: "text-sm", children: "Wallet balances" }),
-          /* @__PURE__ */ jsx161("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" })
+  return /* @__PURE__ */ jsxs144("div", { className: "p-8 max-w-7xl mx-auto bg-[#F9FAFB] min-h-screen", children: [
+    /* @__PURE__ */ jsx160("h1", { className: "text-2xl font-semibold mb-6", children: "Wallet" }),
+    /* @__PURE__ */ jsxs144("div", { className: "bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8", children: [
+      /* @__PURE__ */ jsxs144("div", { className: "flex items-center justify-between mb-4", children: [
+        /* @__PURE__ */ jsxs144("div", { className: "flex items-center gap-2 text-gray-500", children: [
+          /* @__PURE__ */ jsx160("span", { className: "text-sm", children: "Wallet balances" }),
+          /* @__PURE__ */ jsx160("button", { className: "hover:bg-gray-100 p-1 rounded-full", children: "\u{1F441}\uFE0F" })
         ] }),
-        /* @__PURE__ */ jsx161(
+        /* @__PURE__ */ jsx160(
           "select",
           {
             className: "border rounded-full px-4 py-2 bg-gray-50 text-sm font-medium outline-none cursor-pointer",
             value: wallet._id,
             onChange: (e) => setActiveWalletId(e.target.value),
-            children: walletsState.map((w) => /* @__PURE__ */ jsxs145("option", { value: w.wallet._id, children: [
+            children: walletsState.map((w) => /* @__PURE__ */ jsxs144("option", { value: w.wallet._id, children: [
               w.wallet.wallet_currency,
               " - ",
               w.wallet.account_number
@@ -23074,48 +22860,48 @@ function WalletPage3() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx161("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs145("div", { children: [
-        /* @__PURE__ */ jsx161("div", { className: "text-4xl font-bold mb-1", children: formatCurrency2(wallet.withdrawable_balance, wallet.wallet_currency) }),
-        /* @__PURE__ */ jsx161("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name })
+      /* @__PURE__ */ jsx160("div", { className: "flex justify-between items-start", children: /* @__PURE__ */ jsxs144("div", { children: [
+        /* @__PURE__ */ jsx160("div", { className: "text-4xl font-bold mb-1", children: formatCurrency2(wallet.withdrawable_balance, wallet.wallet_currency) }),
+        /* @__PURE__ */ jsx160("div", { className: "text-gray-400 text-sm", children: wallet.wallet_name })
       ] }) }),
-      /* @__PURE__ */ jsxs145("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
-        /* @__PURE__ */ jsxs145(Dialog, { open: fundWalletOpen, onOpenChange: setFundWalletOpen, children: [
-          /* @__PURE__ */ jsx161(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx161("button", { type: "button", className: "bg-[#E91E63] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "+ Fund Wallet" }) }),
-          /* @__PURE__ */ jsxs145(DialogContent, { className: "max-w-md rounded-2xl bg-white p-0", children: [
-            /* @__PURE__ */ jsxs145(DialogHeader, { className: "border-b border-gray-100 p-6 text-left", children: [
-              /* @__PURE__ */ jsx161(DialogTitle, { className: "text-xl font-bold", children: "Fund Wallet" }),
-              /* @__PURE__ */ jsx161(DialogDescription, { className: "mt-2 text-sm text-gray-500", children: "Enter the amount you want to add to this wallet." })
+      /* @__PURE__ */ jsxs144("div", { className: "flex flex-col sm:flex-row gap-3 mt-8", children: [
+        /* @__PURE__ */ jsxs144(Dialog, { open: fundWalletOpen, onOpenChange: setFundWalletOpen, children: [
+          /* @__PURE__ */ jsx160(DialogTrigger, { asChild: !0, children: /* @__PURE__ */ jsx160("button", { type: "button", className: "bg-[#E91E63] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "+ Fund Wallet" }) }),
+          /* @__PURE__ */ jsxs144(DialogContent, { className: "max-w-md rounded-2xl bg-white p-0", children: [
+            /* @__PURE__ */ jsxs144(DialogHeader, { className: "border-b border-gray-100 p-6 text-left", children: [
+              /* @__PURE__ */ jsx160(DialogTitle, { className: "text-xl font-bold", children: "Fund Wallet" }),
+              /* @__PURE__ */ jsx160(DialogDescription, { className: "mt-2 text-sm text-gray-500", children: "Enter the amount you want to add to this wallet." })
             ] }),
-            /* @__PURE__ */ jsxs145(fundFetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
-              /* @__PURE__ */ jsx161("input", { type: "hidden", name: "intent", value: "fund-wallet" }),
-              /* @__PURE__ */ jsx161("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
-              /* @__PURE__ */ jsxs145("label", { className: "block text-sm font-medium text-gray-700", children: [
+            /* @__PURE__ */ jsxs144(fundFetcher.Form, { method: "post", className: "space-y-5 p-6", children: [
+              /* @__PURE__ */ jsx160("input", { type: "hidden", name: "intent", value: "fund-wallet" }),
+              /* @__PURE__ */ jsx160("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
+              /* @__PURE__ */ jsxs144("label", { className: "block text-sm font-medium text-gray-700", children: [
                 "Amount (",
                 wallet.wallet_currency,
                 ")",
-                /* @__PURE__ */ jsx161("input", { required: !0, min: "0.01", step: "0.01", type: "number", name: "amount", className: "mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]", placeholder: "0.00" })
+                /* @__PURE__ */ jsx160("input", { required: !0, min: "0.01", step: "0.01", type: "number", name: "amount", className: "mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]", placeholder: "0.00" })
               ] }),
-              /* @__PURE__ */ jsxs145("label", { className: "block text-sm font-medium text-gray-700", children: [
+              /* @__PURE__ */ jsxs144("label", { className: "block text-sm font-medium text-gray-700", children: [
                 "Narration ",
-                /* @__PURE__ */ jsx161("span", { className: "font-normal text-gray-400", children: "(optional)" }),
-                /* @__PURE__ */ jsx161("textarea", { name: "narration", rows: 3, className: "mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]", placeholder: "What is this funding for?" })
+                /* @__PURE__ */ jsx160("span", { className: "font-normal text-gray-400", children: "(optional)" }),
+                /* @__PURE__ */ jsx160("textarea", { name: "narration", rows: 3, className: "mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]", placeholder: "What is this funding for?" })
               ] }),
-              /* @__PURE__ */ jsxs145(DialogFooter, { className: "gap-3 sm:flex-row sm:justify-end", children: [
-                /* @__PURE__ */ jsx161(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx161("button", { type: "button", className: "rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700", children: "Cancel" }) }),
-                /* @__PURE__ */ jsx161("button", { type: "submit", disabled: isFunding, className: "rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50", children: isFunding ? "Preparing payment..." : "Continue to payment" })
+              /* @__PURE__ */ jsxs144(DialogFooter, { className: "gap-3 sm:flex-row sm:justify-end", children: [
+                /* @__PURE__ */ jsx160(DialogClose, { asChild: !0, children: /* @__PURE__ */ jsx160("button", { type: "button", className: "rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700", children: "Cancel" }) }),
+                /* @__PURE__ */ jsx160("button", { type: "submit", disabled: isFunding, className: "rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50", children: isFunding ? "Preparing payment..." : "Continue to payment" })
               ] })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx161(Link44, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ jsx161("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }) }),
-        user?.withdrawal_pin_set ? /* @__PURE__ */ jsx161(Link44, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ jsx161("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }) }) : /* @__PURE__ */ jsx161(Link44, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ jsx161("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }) }),
-        /* @__PURE__ */ jsx161("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" })
+        /* @__PURE__ */ jsx160(Link43, { to: `/user/withdraw/${wallet._id}`, children: /* @__PURE__ */ jsx160("button", { className: "bg-[#312E81] text-white px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity w-full sm:w-auto", children: "\u2197 Withdraw" }) }),
+        user?.withdrawal_pin_set ? /* @__PURE__ */ jsx160(Link43, { to: `/user/addwithdrawalaccount/${wallet._id}`, children: /* @__PURE__ */ jsx160("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "Add withdrawal account" }) }) : /* @__PURE__ */ jsx160(Link43, { to: "/user/setwithdrawalpin", children: /* @__PURE__ */ jsx160("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "+ Set withdrawal PIN" }) }),
+        /* @__PURE__ */ jsx160("button", { className: "bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto", children: "\u21C4 Transfer to another wallet" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs145("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxs145("div", { className: "flex items-center justify-between mb-3", children: [
-        /* @__PURE__ */ jsx161("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }),
-        /* @__PURE__ */ jsxs145(
+    /* @__PURE__ */ jsxs144("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs144("div", { className: "flex items-center justify-between mb-3", children: [
+        /* @__PURE__ */ jsx160("h2", { className: "text-lg font-medium text-gray-700", children: "Search" }),
+        /* @__PURE__ */ jsxs144(
           "button",
           {
             type: "button",
@@ -23123,8 +22909,8 @@ function WalletPage3() {
             className: "flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800",
             "aria-expanded": searchOpen,
             children: [
-              /* @__PURE__ */ jsx161("span", { children: searchOpen ? "Hide" : "Show" }),
-              /* @__PURE__ */ jsx161(
+              /* @__PURE__ */ jsx160("span", { children: searchOpen ? "Hide" : "Show" }),
+              /* @__PURE__ */ jsx160(
                 "svg",
                 {
                   className: `w-4 h-4 transition-transform ${searchOpen ? "rotate-180" : ""}`,
@@ -23132,75 +22918,75 @@ function WalletPage3() {
                   stroke: "currentColor",
                   viewBox: "0 0 24 24",
                   xmlns: "http://www.w3.org/2000/svg",
-                  children: /* @__PURE__ */ jsx161("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" })
+                  children: /* @__PURE__ */ jsx160("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" })
                 }
               )
             ]
           }
         )
       ] }),
-      /* @__PURE__ */ jsx161("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ jsx161("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs145(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Transaction type" }),
-          /* @__PURE__ */ jsxs145("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx161("option", { value: "", children: "All transaction types" }),
-            /* @__PURE__ */ jsx161("option", { value: "credit", children: "Credit" }),
-            /* @__PURE__ */ jsx161("option", { value: "debit", children: "Debit" })
+      /* @__PURE__ */ jsx160("div", { className: `transition-all ${searchOpen ? "overflow-scroll max-h-96" : "overflow-hidden max-h-0"}`, children: /* @__PURE__ */ jsx160("div", { className: "bg-white border border-gray-100 rounded-xl p-4 shadow-sm", children: /* @__PURE__ */ jsxs144(fetcher.Form, { method: "post", className: "grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm", children: [
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Transaction type" }),
+          /* @__PURE__ */ jsxs144("select", { id: "transaction_type", name: "transaction_type", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx160("option", { value: "", children: "All transaction types" }),
+            /* @__PURE__ */ jsx160("option", { value: "credit", children: "Credit" }),
+            /* @__PURE__ */ jsx160("option", { value: "debit", children: "Debit" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Status" }),
-          /* @__PURE__ */ jsxs145("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx161("option", { value: "", children: "Any status" }),
-            /* @__PURE__ */ jsx161("option", { value: "pending", children: "Pending" }),
-            /* @__PURE__ */ jsx161("option", { value: "completed", children: "Completed" }),
-            /* @__PURE__ */ jsx161("option", { value: "void", children: "Void" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Status" }),
+          /* @__PURE__ */ jsxs144("select", { id: "status", name: "status", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx160("option", { value: "", children: "Any status" }),
+            /* @__PURE__ */ jsx160("option", { value: "pending", children: "Pending" }),
+            /* @__PURE__ */ jsx160("option", { value: "completed", children: "Completed" }),
+            /* @__PURE__ */ jsx160("option", { value: "void", children: "Void" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Min amount" }),
-          /* @__PURE__ */ jsx161("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Min amount" }),
+          /* @__PURE__ */ jsx160("input", { id: "min_amount", name: "min_amount", type: "number", step: "0.01", placeholder: "Min amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Max amount" }),
-          /* @__PURE__ */ jsx161("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Max amount" }),
+          /* @__PURE__ */ jsx160("input", { id: "max_amount", name: "max_amount", type: "number", step: "0.01", placeholder: "Max amount", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "From date" }),
-          /* @__PURE__ */ jsx161("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "From date" }),
+          /* @__PURE__ */ jsx160("input", { id: "min_created_at", name: "min_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "To date" }),
-          /* @__PURE__ */ jsx161("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "To date" }),
+          /* @__PURE__ */ jsx160("input", { id: "max_created_at", name: "max_created_at", type: "date", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Payment method" }),
-          /* @__PURE__ */ jsxs145("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
-            /* @__PURE__ */ jsx161("option", { value: "", children: "Any payment method" }),
-            /* @__PURE__ */ jsx161("option", { value: "flutterwave", children: "Flutterwave" }),
-            /* @__PURE__ */ jsx161("option", { value: "bank", children: "Bank" }),
-            /* @__PURE__ */ jsx161("option", { value: "paystack", children: "Paystack" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Payment method" }),
+          /* @__PURE__ */ jsxs144("select", { id: "payment_method", name: "payment_method", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none", children: [
+            /* @__PURE__ */ jsx160("option", { value: "", children: "Any payment method" }),
+            /* @__PURE__ */ jsx160("option", { value: "flutterwave", children: "Flutterwave" }),
+            /* @__PURE__ */ jsx160("option", { value: "bank", children: "Bank" }),
+            /* @__PURE__ */ jsx160("option", { value: "paystack", children: "Paystack" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs145("label", { className: "flex flex-col text-xs text-gray-600", children: [
-          /* @__PURE__ */ jsx161("span", { className: "mb-1", children: "Contest code" }),
-          /* @__PURE__ */ jsx161("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
+        /* @__PURE__ */ jsxs144("label", { className: "flex flex-col text-xs text-gray-600", children: [
+          /* @__PURE__ */ jsx160("span", { className: "mb-1", children: "Contest code" }),
+          /* @__PURE__ */ jsx160("input", { id: "contest_code", name: "contest_code", className: "border rounded-md px-3 py-2 bg-gray-50 outline-none" })
         ] }),
-        /* @__PURE__ */ jsx161("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
-        /* @__PURE__ */ jsx161("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ jsx161("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }) })
+        /* @__PURE__ */ jsx160("input", { type: "hidden", name: "wallet_id", value: wallet._id }),
+        /* @__PURE__ */ jsx160("div", { className: "sm:col-span-3 flex justify-end mt-2", children: /* @__PURE__ */ jsx160("button", { type: "submit", disabled: isSubmitting, className: "px-4 py-2 bg-[#312E81] text-white rounded-lg text-sm disabled:opacity-50", children: isSubmitting ? "Searching..." : "Search" }) })
       ] }) }) })
     ] }),
-    /* @__PURE__ */ jsxs145("div", { className: "mb-6", children: [
-      /* @__PURE__ */ jsxs145("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
-        /* @__PURE__ */ jsx161("span", { children: "\u{1F4C1}" }),
-        /* @__PURE__ */ jsxs145("h2", { className: "font-medium", children: [
+    /* @__PURE__ */ jsxs144("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs144("div", { className: "flex items-center gap-2 text-gray-600 mb-4", children: [
+        /* @__PURE__ */ jsx160("span", { children: "\u{1F4C1}" }),
+        /* @__PURE__ */ jsxs144("h2", { className: "font-medium", children: [
           "Recent wallet activity (",
           wallet.wallet_currency,
           ")"
         ] })
       ] }),
-      /* @__PURE__ */ jsxs145("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
-        /* @__PURE__ */ jsx161(
+      /* @__PURE__ */ jsxs144("div", { className: "grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-12 mb-8 border-b border-gray-100 pb-6", children: [
+        /* @__PURE__ */ jsx160(
           MetricItem3,
           {
             label: "Net change this month",
@@ -23208,14 +22994,14 @@ function WalletPage3() {
             tooltip: !0
           }
         ),
-        /* @__PURE__ */ jsx161(
+        /* @__PURE__ */ jsx160(
           MetricItem3,
           {
             label: "Money in",
             value: formatCurrency2(wallet.metrics.money_in, wallet.wallet_currency)
           }
         ),
-        /* @__PURE__ */ jsx161(
+        /* @__PURE__ */ jsx160(
           MetricItem3,
           {
             label: "Money out",
@@ -23223,53 +23009,53 @@ function WalletPage3() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx161("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs145("table", { className: "w-full text-left text-sm", children: [
-        /* @__PURE__ */ jsx161("thead", { children: /* @__PURE__ */ jsxs145("tr", { className: "text-gray-400 border-b", children: [
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "S/N" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Date" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Ref ID" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Narration" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Beneficiary name" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Type" }),
-          /* @__PURE__ */ jsx161("th", { className: "pb-4 font-medium", children: "Amount" })
+      /* @__PURE__ */ jsx160("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsxs144("table", { className: "w-full text-left text-sm", children: [
+        /* @__PURE__ */ jsx160("thead", { children: /* @__PURE__ */ jsxs144("tr", { className: "text-gray-400 border-b", children: [
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "S/N" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Date" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Ref ID" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Narration" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Beneficiary name" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Type" }),
+          /* @__PURE__ */ jsx160("th", { className: "pb-4 font-medium", children: "Amount" })
         ] }) }),
-        /* @__PURE__ */ jsx161("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxs145("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
-          /* @__PURE__ */ jsx161("td", { className: "py-4 text-gray-500", children: idx + 1 }),
-          /* @__PURE__ */ jsxs145("td", { className: "py-4 text-gray-900 leading-tight", children: [
+        /* @__PURE__ */ jsx160("tbody", { className: "divide-y", children: pagedLedgers.items.map((item, idx) => /* @__PURE__ */ jsxs144("tr", { className: "hover:bg-gray-50/50 transition-colors", children: [
+          /* @__PURE__ */ jsx160("td", { className: "py-4 text-gray-500", children: idx + 1 }),
+          /* @__PURE__ */ jsxs144("td", { className: "py-4 text-gray-900 leading-tight", children: [
             new Date(item.completed_at || "").toLocaleDateString(),
-            /* @__PURE__ */ jsx161("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() })
+            /* @__PURE__ */ jsx160("div", { className: "text-xs text-gray-400", children: new Date(item.completed_at || "").toLocaleTimeString() })
           ] }),
-          /* @__PURE__ */ jsx161("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }),
-          /* @__PURE__ */ jsx161("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }),
-          /* @__PURE__ */ jsx161("td", { className: "py-4 text-gray-600  trunc_", children: item.wallet_name }),
-          /* @__PURE__ */ jsx161("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }),
-          /* @__PURE__ */ jsx161("td", { className: "py-4", children: /* @__PURE__ */ jsxs145("div", { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx161("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency2(item.amount, item.currency) }),
-            /* @__PURE__ */ jsx161(StatusBadge5, { status: item.status })
+          /* @__PURE__ */ jsx160("td", { className: "py-4 text-gray-600 font-mono text-xs", children: item.payment_ref }),
+          /* @__PURE__ */ jsx160("td", { className: "py-4 text-gray-600 max-w-xs", children: item.description }),
+          /* @__PURE__ */ jsx160("td", { className: "py-4 text-gray-600  trunc_", children: item.wallet_name }),
+          /* @__PURE__ */ jsx160("td", { className: "py-4 uppercase text-xs font-semibold", children: item.entry_type }),
+          /* @__PURE__ */ jsx160("td", { className: "py-4", children: /* @__PURE__ */ jsxs144("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx160("span", { className: `font-semibold ${item.entry_type === "credit" ? "text-green-600" : "text-gray-900"}`, children: formatCurrency2(item.amount, item.currency) }),
+            /* @__PURE__ */ jsx160(StatusBadge5, { status: item.status })
           ] }) })
         ] }, item._id)) })
       ] }) }),
-      /* @__PURE__ */ jsxs145("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
-        /* @__PURE__ */ jsxs145("div", { children: [
+      /* @__PURE__ */ jsxs144("div", { className: "mt-6 flex justify-between items-center text-sm text-gray-500", children: [
+        /* @__PURE__ */ jsxs144("div", { children: [
           "Showing ",
           pagedLedgers.items.length,
           " of ",
           pagedLedgers.total_items,
           " items"
         ] }),
-        /* @__PURE__ */ jsx161(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id })
+        /* @__PURE__ */ jsx160(Pagination, { lastKey: pagedLedgers.last_key_id, pageSize: pagedLedgers.items_per_page, firstKey: pagedLedgers.first_key_id })
       ] })
     ] })
   ] });
 }
 function MetricItem3({ label, value, tooltip = !1 }) {
-  return /* @__PURE__ */ jsxs145("div", { children: [
-    /* @__PURE__ */ jsxs145("div", { className: "text-xs text-gray-400 flex items-center gap-1 mb-1", children: [
+  return /* @__PURE__ */ jsxs144("div", { children: [
+    /* @__PURE__ */ jsxs144("div", { className: "text-xs text-gray-400 flex items-center gap-1 mb-1", children: [
       label,
       " ",
-      tooltip && /* @__PURE__ */ jsx161("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" })
+      tooltip && /* @__PURE__ */ jsx160("span", { className: "bg-gray-200 rounded-full w-3 h-3 text-[8px] flex items-center justify-center text-white", children: "i" })
     ] }),
-    /* @__PURE__ */ jsx161("div", { className: "text-lg font-bold text-gray-800", children: value })
+    /* @__PURE__ */ jsx160("div", { className: "text-lg font-bold text-gray-800", children: value })
   ] });
 }
 function StatusBadge5({ status }) {
@@ -23282,11 +23068,22 @@ function StatusBadge5({ status }) {
     Failed: "\u26A0\uFE0F",
     Completed: "\u2713"
   };
-  return /* @__PURE__ */ jsxs145("span", { className: `px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 ${styles[status] || ""}`, children: [
+  return /* @__PURE__ */ jsxs144("span", { className: `px-2 py-0.5 rounded-full text-[10px] font-medium border flex items-center gap-1 ${styles[status] || ""}`, children: [
     icons2[status],
     " ",
     status
   ] });
+}
+
+// app/routes/user.cart.tsx
+var user_cart_exports = {};
+__export(user_cart_exports, {
+  default: () => UserCartLayout
+});
+import { Outlet as Outlet3 } from "@remix-run/react";
+import { jsx as jsx161 } from "react/jsx-runtime";
+function UserCartLayout() {
+  return /* @__PURE__ */ jsx161(Outlet3, {});
 }
 
 // app/routes/partners.tsx
@@ -23296,31 +23093,31 @@ __export(partners_exports, {
   default: () => PartnerLayout,
   meta: () => meta
 });
-import { Outlet as Outlet3, useLocation as useLocation13 } from "@remix-run/react";
+import { Outlet as Outlet4, useLocation as useLocation21 } from "@remix-run/react";
 import { useEffect as useEffect59, useState as useState68 } from "react";
 
 // app/components/partner/PartnerPrimaryHeader.tsx
-import { Link as Link46 } from "@remix-run/react";
+import { Link as Link45 } from "@remix-run/react";
 
 // app/components/partner/PartnerToolBar.tsx
-import { Link as Link45, useNavigate as useNavigate32 } from "@remix-run/react";
+import { Link as Link44, useNavigate as useNavigate32 } from "@remix-run/react";
 import { useEffect as useEffect57, useState as useState66 } from "react";
-import { jsx as jsx162, jsxs as jsxs146 } from "react/jsx-runtime";
+import { jsx as jsx162, jsxs as jsxs145 } from "react/jsx-runtime";
 function PartnerToolbar() {
   let [user, setUser] = useState66(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate32();
   useEffect57(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs146(
+  let mainComponent = /* @__PURE__ */ jsxs145(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs146("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsxs145("div", { className: "flex gap-3 items-center", children: [
           /* @__PURE__ */ jsx162("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx162("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs146("span", { className: "grid", children: [
+          /* @__PURE__ */ jsxs145("span", { className: "grid", children: [
             /* @__PURE__ */ jsx162("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
             /* @__PURE__ */ jsx162("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
@@ -23329,17 +23126,17 @@ function PartnerToolbar() {
       ]
     }
   );
-  return /* @__PURE__ */ jsxs146(
+  return /* @__PURE__ */ jsxs145(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs146(Link45, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs145(Link44, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx162(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs146(Link45, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs145(Link44, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx162(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
@@ -23349,10 +23146,10 @@ function PartnerToolbar() {
 }
 
 // app/components/partner/PartnerPrimaryHeader.tsx
-import { jsx as jsx163, jsxs as jsxs147 } from "react/jsx-runtime";
+import { jsx as jsx163, jsxs as jsxs146 } from "react/jsx-runtime";
 function PartnerPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs147("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
-    /* @__PURE__ */ jsxs147("div", { className: "flex gap-6", children: [
+  return /* @__PURE__ */ jsxs146("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
+    /* @__PURE__ */ jsxs146("div", { className: "flex gap-6", children: [
       /* @__PURE__ */ jsx163(
         "button",
         {
@@ -23362,7 +23159,7 @@ function PartnerPrimaryHeader({ toggleNav }) {
           children: /* @__PURE__ */ jsx163(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsx163(Link46, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx163(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
+      /* @__PURE__ */ jsx163(Link45, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx163(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
     ] }),
     /* @__PURE__ */ jsx163(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
     /* @__PURE__ */ jsx163(PartnerToolbar, {})
@@ -23370,11 +23167,11 @@ function PartnerPrimaryHeader({ toggleNav }) {
 }
 
 // app/components/partner/PartnerMobileHeader.tsx
-import { Link as Link47 } from "@remix-run/react";
-import { jsx as jsx164, jsxs as jsxs148 } from "react/jsx-runtime";
+import { Link as Link46 } from "@remix-run/react";
+import { jsx as jsx164, jsxs as jsxs147 } from "react/jsx-runtime";
 function UserMobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs148("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsx164(Link47, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx164(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
+  return /* @__PURE__ */ jsxs147("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsx164(Link46, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx164(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
     /* @__PURE__ */ jsx164(
       "button",
       {
@@ -23388,9 +23185,9 @@ function UserMobileHeader({ toggleNav }) {
 }
 
 // app/components/partner/PartnerMobileNavigation.tsx
-import { NavLink, useLocation as useLocation11, useNavigate as useNavigate33 } from "@remix-run/react";
+import { NavLink, useLocation as useLocation19, useNavigate as useNavigate33 } from "@remix-run/react";
 import { useEffect as useEffect58, useRef as useRef21, useState as useState67 } from "react";
-import { jsx as jsx165, jsxs as jsxs149 } from "react/jsx-runtime";
+import { jsx as jsx165, jsxs as jsxs148 } from "react/jsx-runtime";
 var primaryNavs = [
   { label: "Manage Products", icon: icons.adminTournamentIcon, url: "/partners/home" },
   {
@@ -23410,27 +23207,27 @@ var primaryNavs = [
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
 function PartnerMobileNavigation({ show, onClose }) {
-  let mobileNav = useRef21(null), [user, setUser] = useState67(null), navigate = useNavigate33(), { getUserStoreManager } = useUserManager(), location = useLocation11(), path = `${location.pathname}${location.search}${location.hash}`;
+  let mobileNav = useRef21(null), [user, setUser] = useState67(null), navigate = useNavigate33(), { getUserStoreManager } = useUserManager(), location = useLocation19(), path = `${location.pathname}${location.search}${location.hash}`;
   useEffect58(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate(`/login?redirectTo=${encodeURIComponent(path)}`), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation11();
+  let { pathname } = useLocation19();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs149("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs148("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
     /* @__PURE__ */ jsx165(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs149(
+  return /* @__PURE__ */ jsxs148(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs149("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+        /* @__PURE__ */ jsxs148("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
           /* @__PURE__ */ jsx165("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
           /* @__PURE__ */ jsx165(
             "button",
@@ -23442,24 +23239,24 @@ function PartnerMobileNavigation({ show, onClose }) {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs149("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs149("header", { children: [
-            /* @__PURE__ */ jsxs149("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs149("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+        /* @__PURE__ */ jsxs148("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs148("header", { children: [
+            /* @__PURE__ */ jsxs148("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs148("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
                 /* @__PURE__ */ jsx165("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx165("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs149("span", { className: "grid", children: [
+                /* @__PURE__ */ jsxs148("span", { className: "grid", children: [
                   /* @__PURE__ */ jsx165("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
                   /* @__PURE__ */ jsx165("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx165(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx165("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs149(AccordionItem, { value: navItem.label, className: "group", children: [
+              /* @__PURE__ */ jsx165(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx165("ul", { className: "grid gap-2 font-bold", children: primaryNavs.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs148(AccordionItem, { value: navItem.label, className: "group", children: [
                 /* @__PURE__ */ jsx165(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs149("span", { className: "flex gap-3 items-center", children: [
+                    children: /* @__PURE__ */ jsxs148("span", { className: "flex gap-3 items-center", children: [
                       /* @__PURE__ */ jsx165(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
@@ -23474,7 +23271,7 @@ function PartnerMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx165("li", { children: /* @__PURE__ */ jsxs149(
+              ] }, navItem.label) : /* @__PURE__ */ jsx165("li", { children: /* @__PURE__ */ jsxs148(
                 NavLink,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
@@ -23487,7 +23284,7 @@ function PartnerMobileNavigation({ show, onClose }) {
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx165("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx165("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx165("li", { children: /* @__PURE__ */ jsxs149(
+            /* @__PURE__ */ jsx165("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx165("ul", { className: "grid font-bold", children: secondaryNavs.map((navItem) => /* @__PURE__ */ jsx165("li", { children: /* @__PURE__ */ jsxs148(
               NavLink,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
@@ -23500,12 +23297,12 @@ function PartnerMobileNavigation({ show, onClose }) {
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs149("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs149("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+          /* @__PURE__ */ jsxs148("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs148("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
               /* @__PURE__ */ jsx165(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs149(
+            /* @__PURE__ */ jsxs148(
               Toggletip,
               {
                 mainComponent,
@@ -23525,9 +23322,9 @@ function PartnerMobileNavigation({ show, onClose }) {
 }
 
 // app/components/partner/PartnerNavigation.tsx
-import { NavLink as NavLink2, useLocation as useLocation12 } from "@remix-run/react";
+import { NavLink as NavLink2, useLocation as useLocation20 } from "@remix-run/react";
 import { Accordion as Accordion2, AccordionContent as AccordionContent2, AccordionItem as AccordionItem2, AccordionTrigger as AccordionTrigger2 } from "@radix-ui/react-accordion";
-import { jsx as jsx166, jsxs as jsxs150 } from "react/jsx-runtime";
+import { jsx as jsx166, jsxs as jsxs149 } from "react/jsx-runtime";
 var navs = [
   { label: "Manage Products", icon: icons.adminTournamentIcon, url: "/partners/home" }
 ], navsWSubs = [
@@ -23545,18 +23342,18 @@ var navs = [
   }
 ];
 function PartnerNavigation({ show }) {
-  let { pathname } = useLocation12();
+  let { pathname } = useLocation20();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs150("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
+  let mainComponent = /* @__PURE__ */ jsxs149("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
     "System default",
     /* @__PURE__ */ jsx166(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs150("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxs150("nav", { className: "py-6", children: [
+  return show ? /* @__PURE__ */ jsxs149("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs149("nav", { className: "py-6", children: [
       /* @__PURE__ */ jsx166("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx166("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx166("li", { children: /* @__PURE__ */ jsxs150(
+      /* @__PURE__ */ jsx166("ul", { className: "grid gap-2 font-bold", children: navs.map((navItem) => /* @__PURE__ */ jsx166("li", { children: /* @__PURE__ */ jsxs149(
         NavLink2,
         {
           to: navItem.url,
@@ -23567,15 +23364,15 @@ function PartnerNavigation({ show }) {
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx166(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs150(AccordionItem2, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs150(
+      /* @__PURE__ */ jsx166(Accordion2, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs.map((item) => /* @__PURE__ */ jsxs149(AccordionItem2, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs149(
           AccordionTrigger2,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-secondary", {
               "text-brand-pink bg-secondary border-brand-pink": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs150("span", { className: "flex gap-3 items-center", children: [
+              /* @__PURE__ */ jsxs149("span", { className: "flex gap-3 items-center", children: [
                 /* @__PURE__ */ jsx166(Svg, { src: item.icon }),
                 item.label
               ] }),
@@ -23593,12 +23390,12 @@ function PartnerNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs150("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs150("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+    /* @__PURE__ */ jsxs149("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs149("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
         /* @__PURE__ */ jsx166(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs150(
+      /* @__PURE__ */ jsxs149(
         Toggletip,
         {
           mainComponent,
@@ -23615,7 +23412,7 @@ function PartnerNavigation({ show }) {
 }
 
 // app/routes/partners.tsx
-import { jsx as jsx167, jsxs as jsxs151 } from "react/jsx-runtime";
+import { jsx as jsx167, jsxs as jsxs150 } from "react/jsx-runtime";
 var meta = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
@@ -23624,7 +23421,7 @@ function Layout({ children }) {
   let [showNav, setShowNav] = useState68(!1);
   return useEffect59(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs151("div", { className: "bg-tertiary text-admin-pry", children: [
+  }, []), /* @__PURE__ */ jsxs150("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsx167(PartnerPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
@@ -23634,18 +23431,18 @@ function Layout({ children }) {
     /* @__PURE__ */ jsx167(PartnerMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs151("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+    /* @__PURE__ */ jsxs150("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
       /* @__PURE__ */ jsx167(PartnerNavigation, { show: showNav }),
       /* @__PURE__ */ jsx167("div", { className: "flex-grow overflow-y-auto", children })
     ] })
   ] });
 }
 function PartnerLayout() {
-  return /* @__PURE__ */ jsx167(Layout, { children: /* @__PURE__ */ jsx167(Outlet3, {}) });
+  return /* @__PURE__ */ jsx167(Layout, { children: /* @__PURE__ */ jsx167(Outlet4, {}) });
 }
 function ErrorBoundary2() {
-  let { pathname } = useLocation13();
-  return /* @__PURE__ */ jsx167(Layout, { children: /* @__PURE__ */ jsxs151("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+  let { pathname } = useLocation21();
+  return /* @__PURE__ */ jsx167(Layout, { children: /* @__PURE__ */ jsxs150("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
     /* @__PURE__ */ jsx167("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
     /* @__PURE__ */ jsx167("p", { children: "Apologies, something went wrong on our end. Please try again." }),
     /* @__PURE__ */ jsx167(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
@@ -23659,70 +23456,70 @@ __export(public_exports, {
   default: () => Index,
   meta: () => meta2
 });
-import { Outlet as Outlet4 } from "@remix-run/react";
+import { Outlet as Outlet5 } from "@remix-run/react";
 
 // app/components/public/Footer.tsx
-import { Link as Link48 } from "@remix-run/react";
-import { jsx as jsx168, jsxs as jsxs152 } from "react/jsx-runtime";
+import { Link as Link47 } from "@remix-run/react";
+import { jsx as jsx168, jsxs as jsxs151 } from "react/jsx-runtime";
 function Footer() {
-  return /* @__PURE__ */ jsx168("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs152("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
-    /* @__PURE__ */ jsx168("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs152("ul", { className: "flex gap-6", children: [
-      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link48, { to: "/contests", children: "Contests" }) }),
-      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link48, { to: "/#contact", children: "Contact" }) }),
-      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link48, { to: "/winners", children: "Winners" }) }),
-      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link48, { to: "/results", children: "Results" }) })
+  return /* @__PURE__ */ jsx168("footer", { className: "border-t border-primary py-8", children: /* @__PURE__ */ jsxs151("div", { className: "wrapper flex flex-wrap gap-6 gap-x-12 justify-between font-bold", children: [
+    /* @__PURE__ */ jsx168("nav", { className: "flex gap-6 items-center", children: /* @__PURE__ */ jsxs151("ul", { className: "flex gap-6", children: [
+      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link47, { to: "/contests", children: "Contests" }) }),
+      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link47, { to: "/#contact", children: "Contact" }) }),
+      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link47, { to: "/winners", children: "Winners" }) }),
+      /* @__PURE__ */ jsx168("li", { children: /* @__PURE__ */ jsx168(Link47, { to: "/results", children: "Results" }) })
     ] }) }),
-    /* @__PURE__ */ jsx168(Link48, { to: "/privacy", className: "hover:underline", children: "Privacy Policy" }),
+    /* @__PURE__ */ jsx168(Link47, { to: "/privacy", className: "hover:underline", children: "Privacy Policy" }),
     /* @__PURE__ */ jsx168("span", { className: "md:order-first", children: "Kidmonth \xA9 2026  All rights reserved" })
   ] }) });
 }
 
 // app/components/public/Navigation.tsx
 import { useEffect as useEffect61, useState as useState70 } from "react";
-import { Link as Link50, NavLink as NavLink4, useLocation as useLocation15 } from "@remix-run/react";
+import { Link as Link49, NavLink as NavLink4, useLocation as useLocation23 } from "@remix-run/react";
 
 // app/components/public/MobileNavigation.tsx
-import { Link as Link49, NavLink as NavLink3, useLocation as useLocation14 } from "@remix-run/react";
+import { Link as Link48, NavLink as NavLink3, useLocation as useLocation22 } from "@remix-run/react";
 import { useEffect as useEffect60, useRef as useRef22, useState as useState69 } from "react";
-import { jsx as jsx169, jsxs as jsxs153 } from "react/jsx-runtime";
+import { jsx as jsx169, jsxs as jsxs152 } from "react/jsx-runtime";
 function MobileNavigation({ show, onClose }) {
-  let { pathname } = useLocation14(), [user, setUser] = useState69(null), mobileNav = useRef22(null);
+  let { pathname } = useLocation22(), [user, setUser] = useState69(null), mobileNav = useRef22(null);
   mobileNav.current?.style.setProperty("--left", "0%");
   let { getUserStoreManager } = useUserManager();
   return useEffect60(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs153(
+  }, []), /* @__PURE__ */ jsxs152(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "sm:hidden fixed top-0 left-0 bg-primary w-full h-dvh z-10 flex flex-col justify-between mobileNav data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left",
       children: [
-        /* @__PURE__ */ jsxs153("header", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs153("div", { className: "flex justify-between items-center", children: [
-            /* @__PURE__ */ jsx169(Link49, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx169(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
+        /* @__PURE__ */ jsxs152("header", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs152("div", { className: "flex justify-between items-center", children: [
+            /* @__PURE__ */ jsx169(Link48, { to: "/", onClick: onClose, "aria-label": "home", children: /* @__PURE__ */ jsx169(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
             /* @__PURE__ */ jsx169("button", { onClick: onClose, title: "close menu", className: "flex gap-1 items-center rounded p-2 hover:outline outline-primary", children: /* @__PURE__ */ jsx169(Svg, { src: icons.closeIcon, width: 24, height: 24, className: "sm:hidden" }) })
           ] }),
-          /* @__PURE__ */ jsxs153("nav", { className: "", children: [
-            /* @__PURE__ */ jsxs153("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
-              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs153(NavLink3, { onClick: onClose, to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+          /* @__PURE__ */ jsxs152("nav", { className: "", children: [
+            /* @__PURE__ */ jsxs152("ul", { className: "grid gap-6 my-12 text-xl font-bold", children: [
+              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs152(NavLink3, { onClick: onClose, to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
                 pathname.includes("/partner/account") ? /* @__PURE__ */ jsx169(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Partner"
               ] }) }),
-              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs153(NavLink3, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs152(NavLink3, { onClick: onClose, to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
                 pathname.includes("/contests") ? /* @__PURE__ */ jsx169(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Contests"
               ] }) }),
-              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs153(NavLink3, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs152(NavLink3, { onClick: onClose, to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
                 pathname.includes("/winners") ? /* @__PURE__ */ jsx169(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Winners"
               ] }) }),
-              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs153(NavLink3, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs152(NavLink3, { onClick: onClose, to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
                 pathname.includes("/results") ? /* @__PURE__ */ jsx169(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Results"
               ] }) }),
-              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs153(NavLink3, { onClick: onClose, to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+              /* @__PURE__ */ jsx169("li", { children: /* @__PURE__ */ jsxs152(NavLink3, { onClick: onClose, to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
                 pathname.includes("/marketplace") ? /* @__PURE__ */ jsx169(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
                 " Shop"
               ] }) }),
@@ -23733,17 +23530,17 @@ function MobileNavigation({ show, onClose }) {
             /* @__PURE__ */ jsx169(Button, { element: "a", onClick: onClose, href: "/signup", className: "block w-full sm:w-auto", children: "Join Now" })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs153("aside", { className: "wrapper py-5", children: [
-          /* @__PURE__ */ jsxs153("div", { className: "mb-12", children: [
+        /* @__PURE__ */ jsxs152("aside", { className: "wrapper py-5", children: [
+          /* @__PURE__ */ jsxs152("div", { className: "mb-12", children: [
             /* @__PURE__ */ jsx169("span", { className: "block font-satoshi-black mb-2", children: "Follow Us" }),
-            /* @__PURE__ */ jsxs153("span", { className: "flex gap-4", children: [
+            /* @__PURE__ */ jsxs152("span", { className: "flex gap-4", children: [
               /* @__PURE__ */ jsx169(Svg, { src: icons.twitterXIcon, width: "24px", height: "24px" }),
               /* @__PURE__ */ jsx169(Svg, { src: icons.instagramIcon, width: "24px", height: "24px" }),
               /* @__PURE__ */ jsx169(Svg, { src: icons.facebookIcon, width: "24px", height: "24px" }),
               /* @__PURE__ */ jsx169(Svg, { src: icons.youtubeIcon, width: "24px", height: "24px" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs153("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
+          /* @__PURE__ */ jsxs152("div", { className: "flex gap-6 justify-between items-end font-satoshi-bold", children: [
             /* @__PURE__ */ jsx169("span", { className: "text-sm whitespace-nowrap", children: "KOTMY \xA9 2023  All rights reserved" }),
             /* @__PURE__ */ jsx169("span", { className: "text-xs whitespace-nowrap", children: "Privacy Policy" })
           ] })
@@ -23754,33 +23551,33 @@ function MobileNavigation({ show, onClose }) {
 }
 
 // app/components/public/Navigation.tsx
-import { jsx as jsx170, jsxs as jsxs154 } from "react/jsx-runtime";
+import { jsx as jsx170, jsxs as jsxs153 } from "react/jsx-runtime";
 function Navigation() {
-  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState70(!1), { pathname } = useLocation15(), [user, setUser] = useState70(null);
+  let { getUserStoreManager } = useUserManager(), [showNav, setShowNav] = useState70(!1), { pathname } = useLocation23(), [user, setUser] = useState70(null);
   return useEffect61(() => {
     let user2 = getUserStoreManager();
     setUser(user2);
-  }, []), /* @__PURE__ */ jsxs154("header", { className: "flex justify-between items-center wrapper py-5", children: [
-    /* @__PURE__ */ jsx170(Link50, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx170(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsxs154("nav", { className: "hidden md:flex gap-16 items-center", children: [
-      /* @__PURE__ */ jsxs154("ul", { className: "flex gap-6 text-xl font-bold", children: [
-        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs154(NavLink4, { to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+  }, []), /* @__PURE__ */ jsxs153("header", { className: "flex justify-between items-center wrapper py-5", children: [
+    /* @__PURE__ */ jsx170(Link49, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx170(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
+    /* @__PURE__ */ jsxs153("nav", { className: "hidden md:flex gap-16 items-center", children: [
+      /* @__PURE__ */ jsxs153("ul", { className: "flex gap-6 text-xl font-bold", children: [
+        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs153(NavLink4, { to: "/partner/account", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
           pathname.includes("/partner/account") ? /* @__PURE__ */ jsx170(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Partner"
         ] }) }),
-        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs154(NavLink4, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs153(NavLink4, { to: "/contests", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
           pathname.includes("/contests") ? /* @__PURE__ */ jsx170(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Contests"
         ] }) }),
-        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs154(NavLink4, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs153(NavLink4, { to: "/winners", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
           pathname.includes("/winners") ? /* @__PURE__ */ jsx170(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Winners"
         ] }) }),
-        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs154(NavLink4, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs153(NavLink4, { to: "/results", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
           pathname.includes("/results") ? /* @__PURE__ */ jsx170(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Results"
         ] }) }),
-        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs154(NavLink4, { to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
+        /* @__PURE__ */ jsx170("li", { children: /* @__PURE__ */ jsxs153(NavLink4, { to: "/marketplace", className: ({ isActive }) => isActive ? "text-accent flex gap-2 items-center" : "", children: [
           pathname.includes("/marketplace") ? /* @__PURE__ */ jsx170(Svg, { src: icons.activeDotIcon, width: ".5em" }) : null,
           " Shop"
         ] }) }),
@@ -23808,15 +23605,15 @@ function Navigation() {
 }
 
 // app/routes/_public.tsx
-import { jsx as jsx171, jsxs as jsxs155 } from "react/jsx-runtime";
+import { jsx as jsx171, jsxs as jsxs154 } from "react/jsx-runtime";
 var meta2 = () => [
   { title: "Kid of the Month & Year" },
   { name: "description", content: "Welcome to the best contest platform for children of all ages!" }
 ];
 function Index() {
-  return /* @__PURE__ */ jsxs155("div", { className: "min-h-screen bg-primary flex flex-col", children: [
+  return /* @__PURE__ */ jsxs154("div", { className: "min-h-screen bg-primary flex flex-col", children: [
     /* @__PURE__ */ jsx171(Navigation, {}),
-    /* @__PURE__ */ jsx171(Outlet4, {}),
+    /* @__PURE__ */ jsx171(Outlet5, {}),
     /* @__PURE__ */ jsx171(Footer, {})
   ] });
 }
@@ -23825,12 +23622,12 @@ function Index() {
 var logout_exports = {};
 __export(logout_exports, {
   default: () => Logout,
-  loader: () => loader79
+  loader: () => loader78
 });
-import { Link as Link51, useLoaderData as useLoaderData72 } from "@remix-run/react";
+import { Link as Link50, useLoaderData as useLoaderData71 } from "@remix-run/react";
 import { useEffect as useEffect62 } from "react";
-import { jsx as jsx172, jsxs as jsxs156 } from "react/jsx-runtime";
-async function loader79({ request }) {
+import { jsx as jsx172, jsxs as jsxs155 } from "react/jsx-runtime";
+async function loader78({ request }) {
   let { headers } = await clearAuthSession({ request });
   return null;
 }
@@ -23841,12 +23638,12 @@ function useLogoutController() {
   }, [deleteUserStoreManager]);
 }
 function Logout() {
-  let data = useLoaderData72();
-  return useLogoutController(), /* @__PURE__ */ jsxs156("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx172(Link51, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx172(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px] cursor-pointer" }) }),
-    /* @__PURE__ */ jsxs156("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
+  let data = useLoaderData71();
+  return useLogoutController(), /* @__PURE__ */ jsxs155("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx172(Link50, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx172(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px] cursor-pointer" }) }),
+    /* @__PURE__ */ jsxs155("main", { className: "h-dvh bg-secondary p-4 flex flex-col justify-center items-center", children: [
       /* @__PURE__ */ jsx172("h1", { className: "text-2xl font-satoshi-bold text-center", children: "You have been logged out" }),
-      /* @__PURE__ */ jsx172(Link51, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
+      /* @__PURE__ */ jsx172(Link50, { to: "/login", className: "mt-4 text-center underline", children: "Login again" })
     ] })
   ] });
 }
@@ -23856,25 +23653,25 @@ var signup_exports = {};
 __export(signup_exports, {
   action: () => action46,
   default: () => Signup,
-  loader: () => loader80
+  loader: () => loader79
 });
-import { Form as Form57, Link as Link52, useActionData as useActionData27, useSearchParams as useSearchParams6 } from "@remix-run/react";
-import { json as json74, redirect as redirect58 } from "@remix-run/node";
+import { Form as Form56, Link as Link51, useActionData as useActionData27, useSearchParams as useSearchParams6 } from "@remix-run/react";
+import { json as json73, redirect as redirect58 } from "@remix-run/node";
 import { useEffect as useEffect63 } from "react";
-import { jsx as jsx173, jsxs as jsxs157 } from "react/jsx-runtime";
-async function loader80({ request }) {
+import { jsx as jsx173, jsxs as jsxs156 } from "react/jsx-runtime";
+async function loader79({ request }) {
   return null;
 }
 async function action46({ request }) {
   let formData = await request.formData();
   if (formData.get("terms_acknowledged") !== "on")
-    return json74({ error: "Please confirm that you have read and agreed to the Terms and Conditions.", data: null });
+    return json73({ error: "Please confirm that you have read and agreed to the Terms and Conditions.", data: null });
   let signupData = authServer.prepareUserSignupPayload(formData), { error, data } = await authServer.signup(signupData);
   if (error)
-    return json74({ error: error.detail?.toString() || "An error occurred during signup.", data: null });
+    return json73({ error: error.detail?.toString() || "An error occurred during signup.", data: null });
   let userId = data?._id || data?.str_id, email = data?.email;
   if (!userId || !email)
-    return json74({ error: "Signup succeeded but user details were not returned.", data: null }, { status: 500 });
+    return json73({ error: "Signup succeeded but user details were not returned.", data: null }, { status: 500 });
   let redirectTo = new URL(request.url).searchParams.get("redirectTo"), params = new URLSearchParams({ user_id: userId, email });
   return redirectTo && params.set("redirectTo", redirectTo), redirect58(`/completeregistration?${params.toString()}`);
 }
@@ -23890,23 +23687,23 @@ function useSignupController() {
 }
 function Signup() {
   let { actionData } = useSignupController(), [searchQuery] = useSearchParams6(), referredByCode = searchQuery.get("referred_by_code") ?? "";
-  return /* @__PURE__ */ jsxs157("main", { className: "bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx173(Link52, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx173(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsx173("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs157(Form57, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+  return /* @__PURE__ */ jsxs156("main", { className: "bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx173(Link51, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx173(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
+    /* @__PURE__ */ jsx173("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs156(Form56, { method: "POST", encType: "multipart/form-data", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
       /* @__PURE__ */ jsx173("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx173("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx173("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
       /* @__PURE__ */ jsx173("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Create your account" }),
       /* @__PURE__ */ jsx173("hr", {}),
-      /* @__PURE__ */ jsxs157("p", { className: "text-center text-sm mt-2", children: [
+      /* @__PURE__ */ jsxs156("p", { className: "text-center text-sm mt-2", children: [
         "Already have an account? ",
-        /* @__PURE__ */ jsx173(Link52, { to: "/login", className: "text-primary underline", children: "Login" })
+        /* @__PURE__ */ jsx173(Link51, { to: "/login", className: "text-primary underline", children: "Login" })
       ] }),
-      /* @__PURE__ */ jsxs157("p", { className: "text-center text-sm text-gray-600", children: [
+      /* @__PURE__ */ jsxs156("p", { className: "text-center text-sm text-gray-600", children: [
         "By signing up, you agree to our",
         " ",
-        /* @__PURE__ */ jsx173(Link52, { to: "/terms", className: "text-primary underline font-medium", children: "Terms and Conditions" }),
+        /* @__PURE__ */ jsx173(Link51, { to: "/terms", className: "text-primary underline font-medium", children: "Terms and Conditions" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs157("div", { className: "my-2 flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsxs156("div", { className: "my-2 flex flex-col gap-3", children: [
         /* @__PURE__ */ jsx173(FormControl, { as: "input", id: "first_name", name: "first_name", placeholder: "First Name", labelText: "First Name", icon: icons.avatarIcon, required: !0 }),
         /* @__PURE__ */ jsx173(FormControl, { as: "input", id: "last_name", name: "last_name", placeholder: "Last Name", labelText: "Last Name", icon: icons.avatarIcon, required: !0 }),
         /* @__PURE__ */ jsx173(FormControl, { as: "input", id: "email", name: "email", placeholder: "Enter your email address", labelText: "Email", icon: icons.avatarIcon, required: !0 }),
@@ -23935,13 +23732,13 @@ function Signup() {
           }
         ),
         /* @__PURE__ */ jsx173(FormControl, { as: "input", id: "status", name: "status", placeholder: "Status (optional)", labelText: "Status", icon: icons.avatarIcon }),
-        /* @__PURE__ */ jsxs157("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
+        /* @__PURE__ */ jsxs156("label", { htmlFor: "image", className: "flex items-center gap-2 text-sm font-medium text-gray-700", children: [
           /* @__PURE__ */ jsx173(Svg, { src: icons.avatarIcon, className: "w-4 h-4" }),
           "Profile Image"
         ] }),
         /* @__PURE__ */ jsx173(DragnDrop, { className: "sm:col-span-2", name: "image", multiple: !1, labelText: "Upload profile photo" })
       ] }),
-      /* @__PURE__ */ jsxs157("label", { className: "flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700", children: [
+      /* @__PURE__ */ jsxs156("label", { className: "flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700", children: [
         /* @__PURE__ */ jsx173(
           "input",
           {
@@ -23951,10 +23748,10 @@ function Signup() {
             className: "mt-1 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
           }
         ),
-        /* @__PURE__ */ jsxs157("span", { children: [
+        /* @__PURE__ */ jsxs156("span", { children: [
           "I confirm that I have read and agree to the",
           " ",
-          /* @__PURE__ */ jsx173(Link52, { to: "/terms", className: "font-semibold text-primary underline", children: "Terms and Conditions" }),
+          /* @__PURE__ */ jsx173(Link51, { to: "/terms", className: "font-semibold text-primary underline", children: "Terms and Conditions" }),
           "."
         ] })
       ] }),
@@ -23970,13 +23767,13 @@ __export(admin_exports, {
   default: () => AdminLayout,
   meta: () => meta3
 });
-import { Outlet as Outlet5, useLocation as useLocation18 } from "@remix-run/react";
+import { Outlet as Outlet6, useLocation as useLocation26 } from "@remix-run/react";
 import { useEffect as useEffect67, useState as useState74 } from "react";
 
 // app/components/admin/AdminMobileNavigation.tsx
-import { NavLink as NavLink5, useLocation as useLocation16 } from "@remix-run/react";
+import { NavLink as NavLink5, useLocation as useLocation24 } from "@remix-run/react";
 import { useEffect as useEffect64, useRef as useRef23, useState as useState71 } from "react";
-import { jsx as jsx174, jsxs as jsxs158 } from "react/jsx-runtime";
+import { jsx as jsx174, jsxs as jsxs157 } from "react/jsx-runtime";
 var primaryNavs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts", acceptedRoles: ["manage user" /* manage user */] },
@@ -24022,7 +23819,7 @@ function AdminMobileNavigation({ show, onClose }) {
   useEffect64(() => {
     mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation16();
+  let { pathname } = useLocation24();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
@@ -24030,18 +23827,18 @@ function AdminMobileNavigation({ show, onClose }) {
   useEffect64(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
-  let mainComponent = /* @__PURE__ */ jsxs158("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs157("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
     /* @__PURE__ */ jsx174(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs158(
+  return /* @__PURE__ */ jsxs157(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs158("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+        /* @__PURE__ */ jsxs157("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
           /* @__PURE__ */ jsx174("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
           /* @__PURE__ */ jsx174(
             "button",
@@ -24053,24 +23850,24 @@ function AdminMobileNavigation({ show, onClose }) {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs158("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs158("header", { children: [
-            /* @__PURE__ */ jsxs158("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs158("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+        /* @__PURE__ */ jsxs157("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs157("header", { children: [
+            /* @__PURE__ */ jsxs157("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs157("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
                 /* @__PURE__ */ jsx174("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx174("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs158("span", { className: "grid", children: [
+                /* @__PURE__ */ jsxs157("span", { className: "grid", children: [
                   /* @__PURE__ */ jsx174("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
                   /* @__PURE__ */ jsx174("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx174(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx174("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs158(AccordionItem, { value: navItem.label, className: "group", children: [
+              /* @__PURE__ */ jsx174(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx174("ul", { className: "grid gap-2 font-bold", children: primaryNavs2.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs157(AccordionItem, { value: navItem.label, className: "group", children: [
                 /* @__PURE__ */ jsx174(
                   AccordionTrigger,
                   {
                     className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
                       "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
                     }),
-                    children: /* @__PURE__ */ jsxs158("span", { className: "flex gap-3 items-center", children: [
+                    children: /* @__PURE__ */ jsxs157("span", { className: "flex gap-3 items-center", children: [
                       /* @__PURE__ */ jsx174(Svg, { src: navItem.icon }),
                       navItem.label
                     ] })
@@ -24085,7 +23882,7 @@ function AdminMobileNavigation({ show, onClose }) {
                     children: subitem.label
                   }
                 ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx174("li", { children: /* @__PURE__ */ jsxs158(
+              ] }, navItem.label) : /* @__PURE__ */ jsx174("li", { children: /* @__PURE__ */ jsxs157(
                 NavLink5,
                 {
                   className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}${hasAcceptedRole(user, navItem.acceptedRoles ?? []) ? "" : " hidden "}`,
@@ -24098,7 +23895,7 @@ function AdminMobileNavigation({ show, onClose }) {
                 }
               ) }, navItem.label)) }) })
             ] }),
-            /* @__PURE__ */ jsx174("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx174("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx174("li", { children: /* @__PURE__ */ jsxs158(
+            /* @__PURE__ */ jsx174("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx174("ul", { className: "grid font-bold", children: secondaryNavs2.map((navItem) => /* @__PURE__ */ jsx174("li", { children: /* @__PURE__ */ jsxs157(
               NavLink5,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
@@ -24111,12 +23908,12 @@ function AdminMobileNavigation({ show, onClose }) {
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs158("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs158("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+          /* @__PURE__ */ jsxs157("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs157("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
               /* @__PURE__ */ jsx174(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs158(
+            /* @__PURE__ */ jsxs157(
               Toggletip,
               {
                 mainComponent,
@@ -24136,11 +23933,11 @@ function AdminMobileNavigation({ show, onClose }) {
 }
 
 // app/components/admin/MobileHeader.tsx
-import { Link as Link53 } from "@remix-run/react";
-import { jsx as jsx175, jsxs as jsxs159 } from "react/jsx-runtime";
+import { Link as Link52 } from "@remix-run/react";
+import { jsx as jsx175, jsxs as jsxs158 } from "react/jsx-runtime";
 function MobileHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs159("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsx175(Link53, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx175(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
+  return /* @__PURE__ */ jsxs158("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsx175(Link52, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx175(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
     /* @__PURE__ */ jsx175(
       "button",
       {
@@ -24154,10 +23951,10 @@ function MobileHeader({ toggleNav }) {
 }
 
 // app/components/admin/AdminNav.tsx
-import { NavLink as NavLink6, useLocation as useLocation17 } from "@remix-run/react";
+import { NavLink as NavLink6, useLocation as useLocation25 } from "@remix-run/react";
 import { Accordion as Accordion3, AccordionContent as AccordionContent3, AccordionItem as AccordionItem3, AccordionTrigger as AccordionTrigger3 } from "@radix-ui/react-accordion";
 import { useEffect as useEffect65, useState as useState72 } from "react";
-import { jsx as jsx176, jsxs as jsxs160 } from "react/jsx-runtime";
+import { jsx as jsx176, jsxs as jsxs159 } from "react/jsx-runtime";
 var navs2 = [
   { label: "Home", icon: icons.adminHomeIcon, url: "/admin/overview", acceptedRoles: [] },
   { label: "Admin Accounts", icon: icons.adminUsersIcon, url: "/admin/accounts", acceptedRoles: ["manage user" /* manage user */] },
@@ -24200,18 +23997,18 @@ function AdminNavigation({ show }) {
   useEffect65(() => {
     setUser(getUserStoreManager());
   }, [getUserStoreManager]);
-  let { pathname } = useLocation17();
+  let { pathname } = useLocation25();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs160("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
+  let mainComponent = /* @__PURE__ */ jsxs159("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
     "System default",
     /* @__PURE__ */ jsx176(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs160("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px]", children: [
-    /* @__PURE__ */ jsxs160("nav", { className: "py-6", children: [
+  return show ? /* @__PURE__ */ jsxs159("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px]", children: [
+    /* @__PURE__ */ jsxs159("nav", { className: "py-6", children: [
       /* @__PURE__ */ jsx176("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx176("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx176("li", { children: /* @__PURE__ */ jsxs160(
+      /* @__PURE__ */ jsx176("ul", { className: "grid gap-2 font-bold", children: navs2.map((navItem) => /* @__PURE__ */ jsx176("li", { children: /* @__PURE__ */ jsxs159(
         NavLink6,
         {
           to: navItem.url,
@@ -24222,15 +24019,15 @@ function AdminNavigation({ show }) {
           ]
         }
       ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx176(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs160(AccordionItem3, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs160(
+      /* @__PURE__ */ jsx176(Accordion3, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs2.map((item) => /* @__PURE__ */ jsxs159(AccordionItem3, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs159(
           AccordionTrigger3,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-secondary", {
               "text-brand-pink bg-secondary border-brand-pink": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs160("span", { className: "flex gap-3 items-center", children: [
+              /* @__PURE__ */ jsxs159("span", { className: "flex gap-3 items-center", children: [
                 /* @__PURE__ */ jsx176(Svg, { src: item.icon }),
                 item.label
               ] }),
@@ -24248,12 +24045,12 @@ function AdminNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs160("aside", { className: "border-t  px-6 py-3", children: [
-      /* @__PURE__ */ jsxs160("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+    /* @__PURE__ */ jsxs159("aside", { className: "border-t  px-6 py-3", children: [
+      /* @__PURE__ */ jsxs159("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
         /* @__PURE__ */ jsx176(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs160(
+      /* @__PURE__ */ jsxs159(
         Toggletip,
         {
           mainComponent,
@@ -24270,27 +24067,27 @@ function AdminNavigation({ show }) {
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { Link as Link55 } from "@remix-run/react";
+import { Link as Link54 } from "@remix-run/react";
 
 // app/components/admin/AdminToolbar.tsx
-import { Link as Link54, useNavigate as useNavigate35 } from "@remix-run/react";
+import { Link as Link53, useNavigate as useNavigate35 } from "@remix-run/react";
 import { useEffect as useEffect66, useState as useState73 } from "react";
-import { jsx as jsx177, jsxs as jsxs161 } from "react/jsx-runtime";
+import { jsx as jsx177, jsxs as jsxs160 } from "react/jsx-runtime";
 function AdminToolbar() {
   let [user, setUser] = useState73(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate35();
   useEffect66(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), currentUser?.is_staff || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs161(
+  let mainComponent = /* @__PURE__ */ jsxs160(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs161("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsxs160("div", { className: "flex gap-3 items-center", children: [
           /* @__PURE__ */ jsx177("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx177("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs161("span", { className: "grid", children: [
+          /* @__PURE__ */ jsxs160("span", { className: "grid", children: [
             /* @__PURE__ */ jsx177("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
             /* @__PURE__ */ jsx177("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
@@ -24299,17 +24096,17 @@ function AdminToolbar() {
       ]
     }
   );
-  return /* @__PURE__ */ jsxs161(
+  return /* @__PURE__ */ jsxs160(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs161(Link54, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs160(Link53, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx177(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs161(Link54, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs160(Link53, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx177(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
@@ -24319,10 +24116,10 @@ function AdminToolbar() {
 }
 
 // app/components/admin/PrimaryHeader.tsx
-import { jsx as jsx178, jsxs as jsxs162 } from "react/jsx-runtime";
+import { jsx as jsx178, jsxs as jsxs161 } from "react/jsx-runtime";
 function PrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs162("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
-    /* @__PURE__ */ jsxs162("div", { className: "flex gap-6", children: [
+  return /* @__PURE__ */ jsxs161("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
+    /* @__PURE__ */ jsxs161("div", { className: "flex gap-6", children: [
       /* @__PURE__ */ jsx178(
         "button",
         {
@@ -24332,7 +24129,7 @@ function PrimaryHeader({ toggleNav }) {
           children: /* @__PURE__ */ jsx178(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsx178(Link55, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx178(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
+      /* @__PURE__ */ jsx178(Link54, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx178(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
     ] }),
     /* @__PURE__ */ jsx178(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
     /* @__PURE__ */ jsx178(AdminToolbar, {})
@@ -24340,7 +24137,7 @@ function PrimaryHeader({ toggleNav }) {
 }
 
 // app/routes/admin.tsx
-import { jsx as jsx179, jsxs as jsxs163 } from "react/jsx-runtime";
+import { jsx as jsx179, jsxs as jsxs162 } from "react/jsx-runtime";
 var meta3 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
@@ -24349,7 +24146,7 @@ function Layout2({ children }) {
   let [showNav, setShowNav] = useState74(!1);
   return useEffect67(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs163("div", { className: "bg-tertiary text-admin-pry", children: [
+  }, []), /* @__PURE__ */ jsxs162("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsx179(PrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
@@ -24359,18 +24156,18 @@ function Layout2({ children }) {
     /* @__PURE__ */ jsx179(AdminMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs163("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+    /* @__PURE__ */ jsxs162("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
       /* @__PURE__ */ jsx179(AdminNavigation, { show: showNav }),
       children
     ] })
   ] });
 }
 function AdminLayout() {
-  return /* @__PURE__ */ jsx179(Layout2, { children: /* @__PURE__ */ jsx179(Outlet5, {}) });
+  return /* @__PURE__ */ jsx179(Layout2, { children: /* @__PURE__ */ jsx179(Outlet6, {}) });
 }
 function ErrorBoundary3() {
-  let { pathname } = useLocation18();
-  return /* @__PURE__ */ jsx179(Layout2, { children: /* @__PURE__ */ jsxs163("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+  let { pathname } = useLocation26();
+  return /* @__PURE__ */ jsx179(Layout2, { children: /* @__PURE__ */ jsxs162("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
     /* @__PURE__ */ jsx179("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
     /* @__PURE__ */ jsx179("p", { children: "Apologies, something went wrong on our end. Please try again." }),
     /* @__PURE__ */ jsx179(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
@@ -24383,13 +24180,13 @@ var login_exports = {};
 __export(login_exports, {
   action: () => action47,
   default: () => Login,
-  loader: () => loader81
+  loader: () => loader80
 });
-import { Form as Form58, Link as Link56, useActionData as useActionData28, useNavigate as useNavigate36, useSearchParams as useSearchParams7 } from "@remix-run/react";
-import { json as json75 } from "@remix-run/node";
+import { Form as Form57, Link as Link55, useActionData as useActionData28, useNavigate as useNavigate36, useSearchParams as useSearchParams7 } from "@remix-run/react";
+import { json as json74 } from "@remix-run/node";
 import { useEffect as useEffect68 } from "react";
-import { jsx as jsx180, jsxs as jsxs164 } from "react/jsx-runtime";
-async function loader81({ request }) {
+import { jsx as jsx180, jsxs as jsxs163 } from "react/jsx-runtime";
+async function loader80({ request }) {
   return null;
 }
 async function action47({ request }) {
@@ -24400,9 +24197,9 @@ async function action47({ request }) {
   if (error)
     return { error: error.detail?.toString() || "An error occurred during login.", data: null };
   if (!data?.token)
-    return json75({ error: "Login succeeded but no token was returned.", data: null }, { status: 500 });
+    return json74({ error: "Login succeeded but no token was returned.", data: null }, { status: 500 });
   let { headers } = await setAuthSession(request, data.token);
-  return json75({ data, error: null }, {
+  return json74({ data, error: null }, {
     headers
   });
 }
@@ -24426,17 +24223,17 @@ function useLoginController() {
 }
 function Login() {
   let { actionData } = useLoginController();
-  return /* @__PURE__ */ jsxs164("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
-    /* @__PURE__ */ jsx180(Link56, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx180(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
-    /* @__PURE__ */ jsx180("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs164(Form58, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
+  return /* @__PURE__ */ jsxs163("main", { className: "h-dvh bg-secondary p-4 flex flex-col", children: [
+    /* @__PURE__ */ jsx180(Link55, { to: "/", "aria-label": "home", children: /* @__PURE__ */ jsx180(Svg, { src: icons.logoIcon, className: "w-32 h-[52px] sm:w-40 sm:h-[65px]" }) }),
+    /* @__PURE__ */ jsx180("section", { className: "grow flex flex-col justify-center items-center", children: /* @__PURE__ */ jsxs163(Form57, { method: "POST", className: "w-full max-w-md p-4 sm:p-8 bg-white border rounded-3xl flex flex-col gap-3", children: [
       /* @__PURE__ */ jsx180("div", { className: "w-max mx-auto p-4 border border-disabled rounded-full bg-gradient-to-b from-slate-200 to-white", children: /* @__PURE__ */ jsx180("div", { className: "w-max p-4 border border-disabled rounded-full bg-white", children: /* @__PURE__ */ jsx180("img", { src: admin_avatar_default, alt: "person silhouette", width: 24, height: 24 }) }) }),
       /* @__PURE__ */ jsx180("h1", { className: "text-2xl font-satoshi-bold text-center", children: "Enter your details to login" }),
       /* @__PURE__ */ jsx180("hr", {}),
-      /* @__PURE__ */ jsxs164("p", { className: "text-center text-sm mt-2", children: [
+      /* @__PURE__ */ jsxs163("p", { className: "text-center text-sm mt-2", children: [
         "Don't have an account yet? ",
-        /* @__PURE__ */ jsx180(Link56, { to: "/signup", className: "text-primary underline", children: "Register" })
+        /* @__PURE__ */ jsx180(Link55, { to: "/signup", className: "text-primary underline", children: "Register" })
       ] }),
-      /* @__PURE__ */ jsxs164("div", { className: "my-2 flex flex-col gap-3", children: [
+      /* @__PURE__ */ jsxs163("div", { className: "my-2 flex flex-col gap-3", children: [
         /* @__PURE__ */ jsx180(
           FormControl,
           {
@@ -24463,9 +24260,9 @@ function Login() {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs164("div", { className: "flex items-center justify-between gap-3 text-sm", children: [
-        /* @__PURE__ */ jsx180(Link56, { to: "/forgotpassword", className: "text-primary underline", children: "Forgot Password?" }),
-        /* @__PURE__ */ jsx180(Link56, { to: "/signup", className: "text-primary underline sm:hidden", children: "Register" })
+      /* @__PURE__ */ jsxs163("div", { className: "flex items-center justify-between gap-3 text-sm", children: [
+        /* @__PURE__ */ jsx180(Link55, { to: "/forgotpassword", className: "text-primary underline", children: "Forgot Password?" }),
+        /* @__PURE__ */ jsx180(Link55, { to: "/signup", className: "text-primary underline sm:hidden", children: "Register" })
       ] }),
       /* @__PURE__ */ jsx180(Cta_default, { element: "button", type: "submit", className: "rounded-lg p-3", children: "Login" })
     ] }) })
@@ -24479,31 +24276,31 @@ __export(user_exports, {
   default: () => UserLayout,
   meta: () => meta4
 });
-import { Outlet as Outlet6, useLocation as useLocation21 } from "@remix-run/react";
+import { Outlet as Outlet7, useLocation as useLocation29 } from "@remix-run/react";
 import { useEffect as useEffect71, useState as useState77 } from "react";
 
 // app/components/user/UserPrimaryHeader.tsx
-import { Link as Link58 } from "@remix-run/react";
+import { Link as Link57 } from "@remix-run/react";
 
 // app/components/user/UserToolBar.tsx
-import { Link as Link57, useNavigate as useNavigate37 } from "@remix-run/react";
+import { Link as Link56, useNavigate as useNavigate37 } from "@remix-run/react";
 import { useEffect as useEffect69, useState as useState75 } from "react";
-import { jsx as jsx181, jsxs as jsxs165 } from "react/jsx-runtime";
+import { jsx as jsx181, jsxs as jsxs164 } from "react/jsx-runtime";
 function UserToolbar() {
   let [user, setUser] = useState75(null), { getUserStoreManager } = useUserManager(), navigate = useNavigate37();
   useEffect69(() => {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser);
   }, []);
-  let mainComponent = /* @__PURE__ */ jsxs165(
+  let mainComponent = /* @__PURE__ */ jsxs164(
     "div",
     {
       tabIndex: 0,
       className: "relative p-2 rounded-full border flex items-center gap-4 cursor-pointer bg-tertiary hover:bg-[#EEF0FF]",
       children: [
-        /* @__PURE__ */ jsxs165("div", { className: "flex gap-3 items-center", children: [
+        /* @__PURE__ */ jsxs164("div", { className: "flex gap-3 items-center", children: [
           /* @__PURE__ */ jsx181("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx181("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-          /* @__PURE__ */ jsxs165("span", { className: "grid", children: [
+          /* @__PURE__ */ jsxs164("span", { className: "grid", children: [
             /* @__PURE__ */ jsx181("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
             /* @__PURE__ */ jsx181("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
           ] })
@@ -24512,17 +24309,17 @@ function UserToolbar() {
       ]
     }
   );
-  return /* @__PURE__ */ jsxs165(
+  return /* @__PURE__ */ jsxs164(
     Toggletip,
     {
       mainComponent,
       childContainerClass: "top-[110%] right-0 bg-tertiary p-2 border  text-xs whitespace-nowrap",
       children: [
-        /* @__PURE__ */ jsxs165(Link57, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs164(Link56, { to: "/user/profile", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx181(Svg, { src: icons.profileIcon }),
           " Profile"
         ] }),
-        /* @__PURE__ */ jsxs165(Link57, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
+        /* @__PURE__ */ jsxs164(Link56, { to: "/logout", className: "p-2 flex items-center gap-2 hover:bg-[#EEF0FF] rounded-lg font-satoshi-medium", children: [
           /* @__PURE__ */ jsx181(Svg, { src: icons.signoutIcon }),
           " Sign Out"
         ] })
@@ -24532,10 +24329,10 @@ function UserToolbar() {
 }
 
 // app/components/user/UserPrimaryHeader.tsx
-import { jsx as jsx182, jsxs as jsxs166 } from "react/jsx-runtime";
+import { jsx as jsx182, jsxs as jsxs165 } from "react/jsx-runtime";
 function UserPrimaryHeader({ toggleNav }) {
-  return /* @__PURE__ */ jsxs166("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
-    /* @__PURE__ */ jsxs166("div", { className: "flex gap-6", children: [
+  return /* @__PURE__ */ jsxs165("header", { className: "h-[85px] hidden sm:flex justify-between items-center gap-4 px-6 py-3 bg-white border-b border-brand-grey", children: [
+    /* @__PURE__ */ jsxs165("div", { className: "flex gap-6", children: [
       /* @__PURE__ */ jsx182(
         "button",
         {
@@ -24545,7 +24342,7 @@ function UserPrimaryHeader({ toggleNav }) {
           children: /* @__PURE__ */ jsx182(Svg, { src: icons.adminHamburgerIcon, width: 40, height: 24 })
         }
       ),
-      /* @__PURE__ */ jsx182(Link58, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx182(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
+      /* @__PURE__ */ jsx182(Link57, { to: "/", className: "text-brand-navy flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx182(Svg, { src: icons.logoIcon, width: 128, height: 52 }) })
     ] }),
     /* @__PURE__ */ jsx182(FormControl, { as: "input", type: "search", className: "min-w-[280px] bg-white", placeholder: "Search..." }),
     /* @__PURE__ */ jsx182(UserToolbar, {})
@@ -24553,11 +24350,11 @@ function UserPrimaryHeader({ toggleNav }) {
 }
 
 // app/components/user/UserMobileHeader.tsx
-import { Link as Link59 } from "@remix-run/react";
-import { jsx as jsx183, jsxs as jsxs167 } from "react/jsx-runtime";
+import { Link as Link58 } from "@remix-run/react";
+import { jsx as jsx183, jsxs as jsxs166 } from "react/jsx-runtime";
 function UserMobileHeader2({ toggleNav }) {
-  return /* @__PURE__ */ jsxs167("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
-    /* @__PURE__ */ jsx183(Link59, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx183(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
+  return /* @__PURE__ */ jsxs166("div", { className: "flex sm:hidden items-center gap-4 p-4 border-b", children: [
+    /* @__PURE__ */ jsx183(Link58, { to: "/", className: "text-accent flex items-center whitespace-nowrap font-satoshi-black", children: /* @__PURE__ */ jsx183(Svg, { src: icons.logoIcon, width: 128, height: 52 }) }),
     /* @__PURE__ */ jsx183(
       "button",
       {
@@ -24571,27 +24368,35 @@ function UserMobileHeader2({ toggleNav }) {
 }
 
 // app/components/user/UserMobileNavigation.tsx
-import { NavLink as NavLink7, useLocation as useLocation19, useNavigate as useNavigate38 } from "@remix-run/react";
+import { NavLink as NavLink7, useLocation as useLocation27, useNavigate as useNavigate38 } from "@remix-run/react";
 import { useEffect as useEffect70, useRef as useRef24, useState as useState76 } from "react";
-import { jsx as jsx184, jsxs as jsxs168 } from "react/jsx-runtime";
-var primaryNavs3 = [
-  { label: "Contests", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
-  { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
-  { label: "Results", icon: icons.adminUsersIcon, url: "/results" },
-  {
-    label: "My Account",
-    icon: icons.adminFinanceIcon,
-    subitems: [
-      { label: "Pending Uploads", icon: icons.adminTournamentIcon, url: "/user/pending-uploads" },
-      { label: "Contestant Profiles", url: "/user/contestantprofiles" },
-      { label: "My Profile", url: "/user/profile" },
-      { label: "Affiliate Leaderboard", url: "/user/affiliate" },
-      { label: "Wallet", url: "/user/wallet" },
-      { label: "My Givaah Credits", url: "/user/givaah-credits" },
-      { label: "My Orders", url: "/user/orders" }
-    ]
-  }
-], secondaryNavs3 = [
+
+// app/components/user/userPrimaryNavigation.ts
+import { ChartNoAxesColumn, House, ShoppingBag as ShoppingBag4, ShoppingCart as ShoppingCart3, Smartphone, Trophy as Trophy4 } from "lucide-react";
+var userPrimaryNavigation = [
+  { label: "Home", icon: House, url: "/user/all-tournaments", end: !0 },
+  { label: "Winners", icon: Trophy4, url: "/winners", end: !1 },
+  { label: "Results", icon: ChartNoAxesColumn, url: "/results", end: !1 },
+  { label: "Shop", icon: ShoppingBag4, url: "/user/shop", end: !0 },
+  { label: "Cart", icon: ShoppingCart3, url: "/user/cart", end: !1 },
+  { label: "VTU Service", icon: Smartphone, url: "/user/vtu", end: !1 }
+];
+
+// app/components/user/UserMobileNavigation.tsx
+import { jsx as jsx184, jsxs as jsxs167 } from "react/jsx-runtime";
+var accountNavigation = {
+  label: "My Account",
+  icon: icons.adminFinanceIcon,
+  subitems: [
+    { label: "Pending Uploads", icon: icons.adminTournamentIcon, url: "/user/pending-uploads" },
+    { label: "Contestant Profiles", url: "/user/contestantprofiles" },
+    { label: "My Profile", url: "/user/profile" },
+    { label: "Affiliate Leaderboard", url: "/user/affiliate" },
+    { label: "Wallet", url: "/user/wallet" },
+    { label: "My Givaah Credits", url: "/user/givaah-credits" },
+    { label: "My Orders", url: "/user/orders" }
+  ]
+}, secondaryNavs3 = [
   { label: "Profile", icon: icons.profileIcon, url: "/user/profile" },
   { label: "Sign Out", icon: icons.signoutIcon, url: "/logout" }
 ];
@@ -24601,22 +24406,22 @@ function UserMobileNavigation({ show, onClose }) {
     let currentUser = getUserStoreManager();
     currentUser || navigate("/login"), setUser(currentUser), mobileNav.current?.style.setProperty("--left", "0%");
   }, []);
-  let { pathname } = useLocation19();
+  let { pathname } = useLocation27();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs168("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
+  let mainComponent = /* @__PURE__ */ jsxs167("div", { className: "flex justify-between items-center border rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-primary", children: [
     "System default",
     /* @__PURE__ */ jsx184(Svg, { src: icons.arrowDownIcon })
   ] });
-  return /* @__PURE__ */ jsxs168(
+  return /* @__PURE__ */ jsxs167(
     "div",
     {
       "data-show": show,
       ref: mobileNav,
       className: "mobileNav sm:hidden flex flex-col fixed w-full h-dvh top-0 z-10 data-[show=true]:animate-slide-in-left data-[show=false]:left-full data-[show=false]:animate-slide-out-left bg-secondary overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsxs168("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
+        /* @__PURE__ */ jsxs167("div", { className: "flex justify-between items-center py-4 px-6 border-b", children: [
           /* @__PURE__ */ jsx184("span", { className: "font-satoshi-bold", children: "NAVIGATION MENU" }),
           /* @__PURE__ */ jsx184(
             "button",
@@ -24628,52 +24433,56 @@ function UserMobileNavigation({ show, onClose }) {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs168("div", { className: "flex flex-col justify-between grow", children: [
-          /* @__PURE__ */ jsxs168("header", { children: [
-            /* @__PURE__ */ jsxs168("nav", { "aria-label": "primary navigation", children: [
-              /* @__PURE__ */ jsxs168("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
+        /* @__PURE__ */ jsxs167("div", { className: "flex flex-col justify-between grow", children: [
+          /* @__PURE__ */ jsxs167("header", { children: [
+            /* @__PURE__ */ jsxs167("nav", { "aria-label": "primary navigation", children: [
+              /* @__PURE__ */ jsxs167("div", { className: "flex gap-3 items-center bg-white px-6 py-2 border-b", children: [
                 /* @__PURE__ */ jsx184("span", { className: "p-2 border border-disabled rounded-full", children: /* @__PURE__ */ jsx184("img", { src: admin_avatar_default, alt: "cartoon head", width: 24, height: 24 }) }),
-                /* @__PURE__ */ jsxs168("span", { className: "grid", children: [
+                /* @__PURE__ */ jsxs167("span", { className: "grid", children: [
                   /* @__PURE__ */ jsx184("span", { className: "block text-sm font-satoshi-bold", children: user?.fullName }),
                   /* @__PURE__ */ jsx184("span", { className: "block text-xs font-satoshi-medium", children: user?.email })
                 ] })
               ] }),
-              /* @__PURE__ */ jsx184(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsx184("ul", { className: "grid gap-2 font-bold", children: primaryNavs3.map((navItem) => navItem.subitems ? /* @__PURE__ */ jsxs168(AccordionItem, { value: navItem.label, className: "group", children: [
-                /* @__PURE__ */ jsx184(
-                  AccordionTrigger,
-                  {
-                    className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
-                      "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(navItem.label)
-                    }),
-                    children: /* @__PURE__ */ jsxs168("span", { className: "flex gap-3 items-center", children: [
-                      /* @__PURE__ */ jsx184(Svg, { src: navItem.icon }),
-                      navItem.label
-                    ] })
-                  }
-                ),
-                /* @__PURE__ */ jsx184(AccordionContent, { children: /* @__PURE__ */ jsx184("ul", { className: "list-disc list-inside p-3 font-normal", children: navItem.subitems.map((subitem) => /* @__PURE__ */ jsx184("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx184(
+              /* @__PURE__ */ jsx184(Accordion, { type: "single", collapsible: !0, className: "w-full py-2 border-b", children: /* @__PURE__ */ jsxs167("ul", { className: "grid gap-2 font-bold", children: [
+                userPrimaryNavigation.map(({ label, icon: Icon2, url, end }) => /* @__PURE__ */ jsx184("li", { children: /* @__PURE__ */ jsxs167(
                   NavLink7,
                   {
-                    to: subitem.url,
+                    className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
+                    to: url,
+                    end,
                     onClick: onClose,
-                    className: ({ isActive }) => `${isActive ? "active" : ""}`,
-                    children: subitem.label
+                    children: [
+                      /* @__PURE__ */ jsx184(Icon2, { "aria-hidden": "true", className: "h-5 w-5" }),
+                      label
+                    ]
                   }
-                ) }, subitem.label)) }) })
-              ] }, navItem.label) : /* @__PURE__ */ jsx184("li", { children: /* @__PURE__ */ jsxs168(
-                NavLink7,
-                {
-                  className: ({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive ? "text-accent bg-[#EEF0FF] border-accent" : "border-transparent"}`,
-                  to: navItem.url,
-                  onClick: onClose,
-                  children: [
-                    /* @__PURE__ */ jsx184(Svg, { src: navItem.icon }),
-                    navItem.label
-                  ]
-                }
-              ) }, navItem.label)) }) })
+                ) }, label)),
+                /* @__PURE__ */ jsxs167(AccordionItem, { value: accountNavigation.label, className: "group", children: [
+                  /* @__PURE__ */ jsx184(
+                    AccordionTrigger,
+                    {
+                      className: cn("border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]", {
+                        "text-accent bg-[#EEF0FF] border-accent": isSublinkActive(accountNavigation.label)
+                      }),
+                      children: /* @__PURE__ */ jsxs167("span", { className: "flex gap-3 items-center", children: [
+                        /* @__PURE__ */ jsx184(Svg, { src: accountNavigation.icon }),
+                        accountNavigation.label
+                      ] })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx184(AccordionContent, { children: /* @__PURE__ */ jsx184("ul", { className: "list-disc list-inside p-3 font-normal", children: accountNavigation.subitems.map((subitem) => /* @__PURE__ */ jsx184("li", { className: "py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]", children: /* @__PURE__ */ jsx184(
+                    NavLink7,
+                    {
+                      to: subitem.url,
+                      onClick: onClose,
+                      className: ({ isActive }) => `${isActive ? "active" : ""}`,
+                      children: subitem.label
+                    }
+                  ) }, subitem.label)) }) })
+                ] })
+              ] }) })
             ] }),
-            /* @__PURE__ */ jsx184("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx184("ul", { className: "grid font-bold", children: secondaryNavs3.map((navItem) => /* @__PURE__ */ jsx184("li", { children: /* @__PURE__ */ jsxs168(
+            /* @__PURE__ */ jsx184("nav", { className: "my-1", "aria-label": "secondary navigation", children: /* @__PURE__ */ jsx184("ul", { className: "grid font-bold", children: secondaryNavs3.map((navItem) => /* @__PURE__ */ jsx184("li", { children: /* @__PURE__ */ jsxs167(
               NavLink7,
               {
                 className: "flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] border-transparent",
@@ -24686,12 +24495,12 @@ function UserMobileNavigation({ show, onClose }) {
               }
             ) }, navItem.label)) }) })
           ] }),
-          /* @__PURE__ */ jsxs168("aside", { className: "border-t px-6 py-4", children: [
-            /* @__PURE__ */ jsxs168("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
+          /* @__PURE__ */ jsxs167("aside", { className: "border-t px-6 py-4", children: [
+            /* @__PURE__ */ jsxs167("span", { className: "flex items-center gap-1 mb-4 font-satoshi-bold", children: [
               /* @__PURE__ */ jsx184(Svg, { src: icons.themeIcon }),
               "Theme"
             ] }),
-            /* @__PURE__ */ jsxs168(
+            /* @__PURE__ */ jsxs167(
               Toggletip,
               {
                 mainComponent,
@@ -24711,14 +24520,10 @@ function UserMobileNavigation({ show, onClose }) {
 }
 
 // app/components/user/UserNavigation.tsx
-import { NavLink as NavLink8, useLocation as useLocation20 } from "@remix-run/react";
+import { NavLink as NavLink8, useLocation as useLocation28 } from "@remix-run/react";
 import { Accordion as Accordion4, AccordionContent as AccordionContent4, AccordionItem as AccordionItem4, AccordionTrigger as AccordionTrigger4 } from "@radix-ui/react-accordion";
-import { jsx as jsx185, jsxs as jsxs169 } from "react/jsx-runtime";
-var navs3 = [
-  { label: "Home", icon: icons.adminHomeIcon, url: "/user/all-tournaments" },
-  { label: "Winners", icon: icons.adminContestIcon, url: "/winners" },
-  { label: "Results", icon: icons.adminUsersIcon, url: "/results" }
-], navsWSubs3 = [
+import { jsx as jsx185, jsxs as jsxs168 } from "react/jsx-runtime";
+var navsWSubs3 = [
   {
     label: "My Account",
     icon: icons.adminFinanceIcon,
@@ -24734,37 +24539,38 @@ var navs3 = [
   }
 ];
 function UserNavigation({ show }) {
-  let { pathname } = useLocation20();
+  let { pathname } = useLocation28();
   function isSublinkActive(url) {
     return new RegExp(url, "i").test(pathname);
   }
-  let mainComponent = /* @__PURE__ */ jsxs169("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
+  let mainComponent = /* @__PURE__ */ jsxs168("div", { className: "flex justify-between items-center border border-brand-grey rounded-lg p-2 text-sm cursor-pointer line-clamp-1 hover:outline outline-1 outline-brand-pink", children: [
     "System default",
     /* @__PURE__ */ jsx185(Svg, { src: icons.arrowDownIcon })
   ] });
-  return show ? /* @__PURE__ */ jsxs169("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
-    /* @__PURE__ */ jsxs169("nav", { className: "py-6", children: [
+  return show ? /* @__PURE__ */ jsxs168("header", { className: "bg-white border-r border-brand-grey hidden sm:flex flex-col justify-between min-w-[280px] h-full", children: [
+    /* @__PURE__ */ jsxs168("nav", { className: "py-6", children: [
       /* @__PURE__ */ jsx185("span", { className: "inline-block mb-2 px-6 py-3 font-satoshi-bold", children: "Navigation Menu" }),
-      /* @__PURE__ */ jsx185("ul", { className: "grid gap-2 font-bold", children: navs3.map((navItem) => /* @__PURE__ */ jsx185("li", { children: /* @__PURE__ */ jsxs169(
+      /* @__PURE__ */ jsx185("ul", { className: "grid gap-2 font-bold", children: userPrimaryNavigation.map(({ label, icon: Icon2, url, end }) => /* @__PURE__ */ jsx185("li", { children: /* @__PURE__ */ jsxs168(
         NavLink8,
         {
-          to: navItem.url,
+          to: url,
+          end,
           className: ({ isActive }) => `${isActive ? "text-brand-pink bg-secondary border-brand-pink" : "border-transparent text-brand-charcoal"} flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-secondary`,
           children: [
-            /* @__PURE__ */ jsx185(Svg, { src: navItem.icon }),
-            navItem.label
+            /* @__PURE__ */ jsx185(Icon2, { "aria-hidden": "true", className: "h-5 w-5" }),
+            label
           ]
         }
-      ) }, navItem.label)) }),
-      /* @__PURE__ */ jsx185(Accordion4, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs3.map((item) => /* @__PURE__ */ jsxs169(AccordionItem4, { value: item.label, className: "group", children: [
-        /* @__PURE__ */ jsxs169(
+      ) }, label)) }),
+      /* @__PURE__ */ jsx185(Accordion4, { type: "single", collapsible: !0, className: "w-full mt-2", children: navsWSubs3.map((item) => /* @__PURE__ */ jsxs168(AccordionItem4, { value: item.label, className: "group", children: [
+        /* @__PURE__ */ jsxs168(
           AccordionTrigger4,
           {
             className: cn("border-l-4 border-transparent group w-full flex gap-3 items-center justify-between px-6 py-3 font-semibold hover:bg-secondary", {
               "text-brand-pink bg-secondary border-brand-pink": isSublinkActive(item.label)
             }),
             children: [
-              /* @__PURE__ */ jsxs169("span", { className: "flex gap-3 items-center", children: [
+              /* @__PURE__ */ jsxs168("span", { className: "flex gap-3 items-center", children: [
                 /* @__PURE__ */ jsx185(Svg, { src: item.icon }),
                 item.label
               ] }),
@@ -24782,12 +24588,12 @@ function UserNavigation({ show }) {
         ) }, subitem.label)) }) })
       ] }, item.label)) })
     ] }),
-    /* @__PURE__ */ jsxs169("aside", { className: "border-t border-brand-grey px-6 py-3", children: [
-      /* @__PURE__ */ jsxs169("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
+    /* @__PURE__ */ jsxs168("aside", { className: "border-t border-brand-grey px-6 py-3", children: [
+      /* @__PURE__ */ jsxs168("span", { className: "flex items-center gap-1 mb-2 font-satoshi-bold", children: [
         /* @__PURE__ */ jsx185(Svg, { src: icons.themeIcon }),
         "Theme"
       ] }),
-      /* @__PURE__ */ jsxs169(
+      /* @__PURE__ */ jsxs168(
         Toggletip,
         {
           mainComponent,
@@ -24804,7 +24610,7 @@ function UserNavigation({ show }) {
 }
 
 // app/routes/user.tsx
-import { jsx as jsx186, jsxs as jsxs170 } from "react/jsx-runtime";
+import { jsx as jsx186, jsxs as jsxs169 } from "react/jsx-runtime";
 var meta4 = () => [
   { title: "KOTMY | Admin" },
   { name: "description", content: "KOTMY Admin application" }
@@ -24813,7 +24619,7 @@ function Layout3({ children }) {
   let [showNav, setShowNav] = useState77(!1);
   return useEffect71(() => {
     setShowNav(window.innerWidth >= 640);
-  }, []), /* @__PURE__ */ jsxs170("div", { className: "bg-tertiary text-admin-pry", children: [
+  }, []), /* @__PURE__ */ jsxs169("div", { className: "bg-tertiary text-admin-pry", children: [
     /* @__PURE__ */ jsx186(UserPrimaryHeader, { toggleNav: () => {
       setShowNav((prev) => !prev);
     } }),
@@ -24823,18 +24629,18 @@ function Layout3({ children }) {
     /* @__PURE__ */ jsx186(UserMobileNavigation, { onClose: () => {
       setShowNav(!1);
     }, show: showNav }),
-    /* @__PURE__ */ jsxs170("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
+    /* @__PURE__ */ jsxs169("div", { className: "sm:flex sm:h-[calc(100vh-85px)]", children: [
       /* @__PURE__ */ jsx186(UserNavigation, { show: showNav }),
       /* @__PURE__ */ jsx186("div", { className: "flex-grow overflow-y-auto", children })
     ] })
   ] });
 }
 function UserLayout() {
-  return /* @__PURE__ */ jsx186(Layout3, { children: /* @__PURE__ */ jsx186(Outlet6, {}) });
+  return /* @__PURE__ */ jsx186(Layout3, { children: /* @__PURE__ */ jsx186(Outlet7, {}) });
 }
 function ErrorBoundary4() {
-  let { pathname } = useLocation21();
-  return /* @__PURE__ */ jsx186(Layout3, { children: /* @__PURE__ */ jsxs170("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
+  let { pathname } = useLocation29();
+  return /* @__PURE__ */ jsx186(Layout3, { children: /* @__PURE__ */ jsxs169("div", { className: "w-full max-sm:h-[calc(100dvh-73px)] p-5 m-auto lg:max-w-3xl grid place-content-center text-center gap-5", children: [
     /* @__PURE__ */ jsx186("h2", { className: "text-xl font-bold text-red-500", children: "Something went wrong" }),
     /* @__PURE__ */ jsx186("p", { children: "Apologies, something went wrong on our end. Please try again." }),
     /* @__PURE__ */ jsx186(Cta_default, { element: "link", to: pathname, className: "px-4 py-1 rounded-md", children: "Reload page" }),
@@ -24843,7 +24649,7 @@ function ErrorBoundary4() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-ETP7RXPD.js", imports: ["/build/_shared/chunk-ZBBV32P5.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-NXO24PZO.js", imports: ["/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-56OMRNFL.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-J2WHHKQD.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-2I47VTWJ.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-QQAZ752H.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-7AYTMS2W.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-BTDN2SNS.js", imports: ["/build/_shared/chunk-QQAZ752H.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-3H3QLLTI.js", imports: ["/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-M6ETTDXR.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-QDQL4TH7.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-RN643W56.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-JCC76LRO.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-65VNFD3F.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-FBX7OY7X.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-5YF5NMQV.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-JKD3AJDZ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-3APRZYEN.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-6DD6LWVJ.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.airtime": { id: "routes/_public.vtuservice.airtime", parentId: "routes/_public", path: "vtuservice/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.airtime-WKBV6BCR.js", imports: ["/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.data": { id: "routes/_public.vtuservice.data", parentId: "routes/_public", path: "vtuservice/data", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.data-6ILNIITK.js", imports: ["/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.provider_payment_redirect": { id: "routes/_public.vtuservice.provider_payment_redirect", parentId: "routes/_public", path: "vtuservice/provider_payment_redirect", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.provider_payment_redirect-JG5RXI5X.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchase.$reference": { id: "routes/_public.vtuservice.vtupurchase.$reference", parentId: "routes/_public", path: "vtuservice/vtupurchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchase.$reference-G24RGVFB.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchases": { id: "routes/_public.vtuservice.vtupurchases", parentId: "routes/_public", path: "vtuservice/vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchases-LPV3STVU.js", imports: ["/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservices._index": { id: "routes/_public.vtuservices._index", parentId: "routes/_public", path: "vtuservices", index: !0, caseSensitive: void 0, module: "/build/routes/_public.vtuservices._index-WGZHQLDS.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-BG4JRLKU.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-OXIU3FUD.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-XSHOMM2P.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-YHTSMND2.js", imports: ["/build/_shared/chunk-4FFWOH2G.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-JB2QO5YK.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-PQXS76JE.js", imports: ["/build/_shared/chunk-4FFWOH2G.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-JFKQJSQ3.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-S32MXCCG.js", imports: ["/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-NDNZVFJM.js", imports: ["/build/_shared/chunk-5FFS3N27.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-2FA6LLHD.js", imports: ["/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-P5HNT3DD.js", imports: ["/build/_shared/chunk-5FFS3N27.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-QGKLJGDQ.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-GKW65SLQ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-ZLSHQVOI.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-YI7X3NEL.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-HBKMKAUZ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-EU56PPRL.js", imports: ["/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-PNQZ73F2.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-N5NRGZPH.js", imports: ["/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-VC72N3FP.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-KR26FWFR.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-3KNIUGGL.js", imports: ["/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-HVRI32RN.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-AFDVZIUL.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtudata": { id: "routes/admin.vtudata", parentId: "routes/admin", path: "vtudata", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtudata-VYNF7RGN.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtupurchases": { id: "routes/admin.vtupurchases", parentId: "routes/admin", path: "vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtupurchases-XR7LJZUM.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-ATFHL32E.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-AUH7LU2T.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-NPSXZJ7R.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-35PEXPVR.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-VUZRIKXW.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-LO6BQNS4.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-7DGOPD2S.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-VSPUETAZ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-ZJZCA6OY.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-7VX3STWA.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-N555TJNM.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-7WIWG7NC.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-2YIHMUPP.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-BCXYCSGX.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-HKWGUJD6.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-LMX4HPJI.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-NFGDPFVO.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-WKQVDY2J.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-IQ4FR4GI.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-ENG64IEQ.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-XSFAZZBG.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-GJAKJKLC.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-UPPUQYVN.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-BZ5IKV5J.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-GBIX2KJC.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-D5P27DHG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-NQ44IOTL.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MTFOBS3U.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-TGNQP3CC.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-KIIUXURR.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-VENZ5VQL.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-US4N3FF6.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-AJURNZ5X.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-GSKIAXPQ.js", imports: ["/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-V3YWBGTL.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-44BWHGM2.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-OI67FRDW.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-BYAZJR5I.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-YRK7IHWN.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-RBI2GWUI.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "f91fdda9", hmr: void 0, url: "/build/manifest-F91FDDA9.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-ETP7RXPD.js", imports: ["/build/_shared/chunk-ZBBV32P5.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-NXO24PZO.js", imports: ["/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-56OMRNFL.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-J2WHHKQD.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-2I47VTWJ.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-QQAZ752H.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-7AYTMS2W.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-BTDN2SNS.js", imports: ["/build/_shared/chunk-QQAZ752H.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-3H3QLLTI.js", imports: ["/build/_shared/chunk-KKV25P67.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-M6ETTDXR.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-QDQL4TH7.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-RN643W56.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-P2WGJMUW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-4E27XIWJ.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-LTJRP26C.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-EEW4UDVS.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-CC2OYTZ7.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-3APRZYEN.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-6DD6LWVJ.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.airtime": { id: "routes/_public.vtuservice.airtime", parentId: "routes/_public", path: "vtuservice/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.airtime-BZH5J5GA.js", imports: ["/build/_shared/chunk-O5IVV3JE.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.data": { id: "routes/_public.vtuservice.data", parentId: "routes/_public", path: "vtuservice/data", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.data-LXHXAWXC.js", imports: ["/build/_shared/chunk-OWR4JFMW.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.provider_payment_redirect": { id: "routes/_public.vtuservice.provider_payment_redirect", parentId: "routes/_public", path: "vtuservice/provider_payment_redirect", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.provider_payment_redirect-QI246J25.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchase.$reference": { id: "routes/_public.vtuservice.vtupurchase.$reference", parentId: "routes/_public", path: "vtuservice/vtupurchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchase.$reference-EZI2IDEY.js", imports: ["/build/_shared/chunk-6DNMIRSO.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchases": { id: "routes/_public.vtuservice.vtupurchases", parentId: "routes/_public", path: "vtuservice/vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchases-A2DJKDU2.js", imports: ["/build/_shared/chunk-23LF52JJ.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservices._index": { id: "routes/_public.vtuservices._index", parentId: "routes/_public", path: "vtuservices", index: !0, caseSensitive: void 0, module: "/build/routes/_public.vtuservices._index-WK74IHNT.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-BG4JRLKU.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-OXIU3FUD.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-XSHOMM2P.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-YHTSMND2.js", imports: ["/build/_shared/chunk-4FFWOH2G.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-JB2QO5YK.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-PQXS76JE.js", imports: ["/build/_shared/chunk-4FFWOH2G.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-JFKQJSQ3.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-S32MXCCG.js", imports: ["/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-NDNZVFJM.js", imports: ["/build/_shared/chunk-5FFS3N27.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-2FA6LLHD.js", imports: ["/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-P5HNT3DD.js", imports: ["/build/_shared/chunk-5FFS3N27.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-QGKLJGDQ.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-7WVU2YMU.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-ZLSHQVOI.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-VAUTAKFZ.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-FYLQIBYX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-EU56PPRL.js", imports: ["/build/_shared/chunk-43FQS5RX.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-PNQZ73F2.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-N5NRGZPH.js", imports: ["/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-VC72N3FP.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-KR26FWFR.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-3KNIUGGL.js", imports: ["/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-HVRI32RN.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-AFDVZIUL.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtudata": { id: "routes/admin.vtudata", parentId: "routes/admin", path: "vtudata", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtudata-VYNF7RGN.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtupurchases": { id: "routes/admin.vtupurchases", parentId: "routes/admin", path: "vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtupurchases-XR7LJZUM.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-ATFHL32E.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-AUH7LU2T.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-NPSXZJ7R.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-35PEXPVR.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-VUZRIKXW.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-LO6BQNS4.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-7DGOPD2S.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-MWSF47QZ.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-ZJZCA6OY.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-7VX3STWA.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-N555TJNM.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-6ICIMBHD.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-GCGJVZOW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-WHAMILAE.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-P6ENQFHX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-LPUXVPKK.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-NFGDPFVO.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-JOZYGFWF.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-3N3B25RV.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-ENG64IEQ.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-XSFAZZBG.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-GJAKJKLC.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-UPPUQYVN.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-KG2DS3WH.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-PSW22T2J.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-GBIX2KJC.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-D5P27DHG.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-NQ44IOTL.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MUXCLZ7C.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-TGNQP3CC.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart": { id: "routes/user.cart", parentId: "routes/user", path: "cart", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart-5B2K3KQ4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart._index": { id: "routes/user.cart._index", parentId: "routes/user.cart", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/user.cart._index-LHDTBH6D.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart.checkout": { id: "routes/user.cart.checkout", parentId: "routes/user.cart", path: "checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart.checkout-RMULUCEK.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-KIIUXURR.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-VENZ5VQL.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-US4N3FF6.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-AQVLMLDI.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-6J3KQXRV.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-V3YWBGTL.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-44BWHGM2.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-WIJIUDFX.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.shop._index": { id: "routes/user.shop._index", parentId: "routes/user", path: "shop", index: !0, caseSensitive: void 0, module: "/build/routes/user.shop._index-QVON5AUP.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu._index": { id: "routes/user.vtu._index", parentId: "routes/user", path: "vtu", index: !0, caseSensitive: void 0, module: "/build/routes/user.vtu._index-3OACGULK.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.airtime": { id: "routes/user.vtu.airtime", parentId: "routes/user", path: "vtu/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.airtime-NUQZZCDG.js", imports: ["/build/_shared/chunk-O5IVV3JE.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.data": { id: "routes/user.vtu.data", parentId: "routes/user", path: "vtu/data", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.data-SMIGN23A.js", imports: ["/build/_shared/chunk-OWR4JFMW.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.payment-return": { id: "routes/user.vtu.payment-return", parentId: "routes/user", path: "vtu/payment-return", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.payment-return-GBTDHHFD.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchase.$reference": { id: "routes/user.vtu.purchase.$reference", parentId: "routes/user", path: "vtu/purchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchase.$reference-L7VEXWLL.js", imports: ["/build/_shared/chunk-6DNMIRSO.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchases": { id: "routes/user.vtu.purchases", parentId: "routes/user", path: "vtu/purchases", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchases-ZHWRBJ6X.js", imports: ["/build/_shared/chunk-23LF52JJ.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-YRK7IHWN.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-RBI2GWUI.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "7cc520bb", hmr: void 0, url: "/build/manifest-7CC520BB.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
@@ -25071,6 +24877,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: admin_tournaments_ID_index_exports
   },
+  "routes/user.vtu.purchase.$reference": {
+    id: "routes/user.vtu.purchase.$reference",
+    parentId: "routes/user",
+    path: "vtu/purchase/:reference",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_vtu_purchase_reference_exports
+  },
   "routes/partners.orders.leaderboard": {
     id: "routes/partners.orders.leaderboard",
     parentId: "routes/partners",
@@ -25239,6 +25053,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: user_contestantprofiles_exports
   },
+  "routes/user.vtu.payment-return": {
+    id: "routes/user.vtu.payment-return",
+    parentId: "routes/user",
+    path: "vtu/payment-return",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_vtu_payment_return_exports
+  },
   "routes/user.withdraw.$walletid": {
     id: "routes/user.withdraw.$walletid",
     parentId: "routes/user",
@@ -25383,6 +25205,22 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: admin_vtupurchases_exports
   },
+  "routes/user.cart.checkout": {
+    id: "routes/user.cart.checkout",
+    parentId: "routes/user.cart",
+    path: "checkout",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_cart_checkout_exports
+  },
+  "routes/user.vtu.purchases": {
+    id: "routes/user.vtu.purchases",
+    parentId: "routes/user",
+    path: "vtu/purchases",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_vtu_purchases_exports
+  },
   "routes/partners.location": {
     id: "routes/partners.location",
     parentId: "routes/partners",
@@ -25390,6 +25228,30 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: partners_location_exports
+  },
+  "routes/user.cart._index": {
+    id: "routes/user.cart._index",
+    parentId: "routes/user.cart",
+    path: void 0,
+    index: !0,
+    caseSensitive: void 0,
+    module: user_cart_index_exports
+  },
+  "routes/user.shop._index": {
+    id: "routes/user.shop._index",
+    parentId: "routes/user",
+    path: "shop",
+    index: !0,
+    caseSensitive: void 0,
+    module: user_shop_index_exports
+  },
+  "routes/user.vtu.airtime": {
+    id: "routes/user.vtu.airtime",
+    parentId: "routes/user",
+    path: "vtu/airtime",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_vtu_airtime_exports
   },
   "routes/_public.privacy": {
     id: "routes/_public.privacy",
@@ -25430,6 +25292,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: partners_wallet_exports
+  },
+  "routes/user.vtu._index": {
+    id: "routes/user.vtu._index",
+    parentId: "routes/user",
+    path: "vtu",
+    index: !0,
+    caseSensitive: void 0,
+    module: user_vtu_index_exports
   },
   "routes/_public._index": {
     id: "routes/_public._index",
@@ -25495,6 +25365,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: resetpassword_exports
   },
+  "routes/user.vtu.data": {
+    id: "routes/user.vtu.data",
+    parentId: "routes/user",
+    path: "vtu/data",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_vtu_data_exports
+  },
   "routes/admin._index": {
     id: "routes/admin._index",
     parentId: "routes/admin",
@@ -25542,6 +25420,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: user_wallet_exports
+  },
+  "routes/user.cart": {
+    id: "routes/user.cart",
+    parentId: "routes/user",
+    path: "cart",
+    index: void 0,
+    caseSensitive: void 0,
+    module: user_cart_exports
   },
   "routes/partners": {
     id: "routes/partners",

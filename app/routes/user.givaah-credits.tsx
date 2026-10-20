@@ -166,7 +166,7 @@ export default function GivaahCreditsPage() {
               <p>Get more credit to vote your favourite contestant by purchasing from our partners.</p>
               <p className="mt-1">
                 Visit the{" "}
-                <Link to="/marketplace" className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950">
+                <Link to="/user/shop" className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950">
                   marketplace
                 </Link>{" "}
                 to explore available packages.
@@ -234,7 +234,7 @@ export default function GivaahCreditsPage() {
                 <p className="text-base font-semibold text-slate-950">No credit entries found.</p>
                 <p className="mt-2 text-sm text-slate-600">
                   Try a different phone number and order code, or purchase more credits from the{" "}
-                  <Link to="/marketplace" className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950">
+                  <Link to="/user/shop" className="font-semibold text-slate-950 underline decoration-slate-300 underline-offset-4 transition hover:decoration-slate-950">
                     marketplace
                   </Link>
                   .

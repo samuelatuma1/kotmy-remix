@@ -8,14 +8,10 @@ import { adminAvatar } from '~/assets/images'
 import { useEffect, useRef, useState } from 'react'
 import { useUserManager } from '~/lib/store/store_managers/tokenManager'
 import { UserAtom } from '~/lib/store/atoms/token'
+import { userPrimaryNavigation } from './userPrimaryNavigation'
 
 //TODO: Replace with user navs
-const primaryNavs = [
-    { label: 'Contests', icon: icons.adminHomeIcon, url: '/user/all-tournaments' },
-    { label: 'Winners', icon: icons.adminContestIcon, url: '/winners' },
-    { label: 'Results', icon: icons.adminUsersIcon, url: '/results' },
-    
-    {
+const accountNavigation = {
         label: 'My Account', icon: icons.adminFinanceIcon, subitems: [
             { label: 'Pending Uploads', icon: icons.adminTournamentIcon, url: '/user/pending-uploads' },
             { label: 'Contestant Profiles', url: '/user/contestantprofiles' },
@@ -26,8 +22,7 @@ const primaryNavs = [
             { label: 'My Orders', url: '/user/orders' },
             
         ]
-    },
-]
+    }
 const secondaryNavs = [
     { label: 'Profile', icon: icons.profileIcon, url: '/user/profile' },
     { label: 'Sign Out', icon: icons.signoutIcon, url: '/logout' },
@@ -79,38 +74,38 @@ export default function UserMobileNavigation({ show, onClose }: { show: boolean,
                     </div>
                     <Accordion type="single" collapsible className='w-full py-2 border-b'>
                         <ul className='grid gap-2 font-bold'>
-                            {primaryNavs.map(navItem => (!navItem.subitems
-                                ? <li key={navItem.label}><NavLink
+                            {userPrimaryNavigation.map(({ label, icon: Icon, url, end }) => (
+                                <li key={label}><NavLink
                                     className={({ isActive }) => `flex gap-3 items-center px-6 py-3 font-semibold border-l-4 hover:bg-[#EEF0FF] ${isActive
                                         ? 'text-accent bg-[#EEF0FF] border-accent'
                                         : 'border-transparent'}`}
-                                    to={navItem.url} onClick={onClose}>
-                                    <Svg src={navItem.icon} />{navItem.label}
+                                    to={url} end={end} onClick={onClose}>
+                                    <Icon aria-hidden="true" className="h-5 w-5" />{label}
                                 </NavLink></li>
-                                : <AccordionItem value={navItem.label} key={navItem.label} className='group'>
-                                    <AccordionTrigger
-                                        className={cn('border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]', {
-                                            'text-accent bg-[#EEF0FF] border-accent': isSublinkActive(navItem.label)
-                                        })}>
-                                        <span className="flex gap-3 items-center">
-                                            <Svg src={navItem.icon} />
-                                            {navItem.label}
-                                        </span>
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                        <ul className='list-disc list-inside p-3 font-normal'>
-                                            {navItem.subitems.map(subitem => (
-                                                <li key={subitem.label} className='py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'>
-                                                    <NavLink to={subitem.url} onClick={onClose}
-                                                        className={({ isActive }) => `${isActive ? 'active' : ''}`}>
-                                                        {subitem.label}
-                                                    </NavLink>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
                             ))}
+                            <AccordionItem value={accountNavigation.label} className='group'>
+                                <AccordionTrigger
+                                    className={cn('border-l-4 border-transparent px-6 py-3 font-semibold hover:bg-[#EEF0FF]', {
+                                        'text-accent bg-[#EEF0FF] border-accent': isSublinkActive(accountNavigation.label)
+                                    })}>
+                                    <span className="flex gap-3 items-center">
+                                        <Svg src={accountNavigation.icon} />
+                                        {accountNavigation.label}
+                                    </span>
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                    <ul className='list-disc list-inside p-3 font-normal'>
+                                        {accountNavigation.subitems.map(subitem => (
+                                            <li key={subitem.label} className='py-2 px-6 hover:bg-[#EEF0FF] rounded-lg has-[.active]:font-semibold has-[.active]:bg-[#EEF0FF]'>
+                                                <NavLink to={subitem.url} onClick={onClose}
+                                                    className={({ isActive }) => `${isActive ? 'active' : ''}`}>
+                                                    {subitem.label}
+                                                </NavLink>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
                         </ul>
                     </Accordion>
                 </nav>

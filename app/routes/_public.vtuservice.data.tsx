@@ -1,5 +1,5 @@
 import { json, redirect, type ActionFunctionArgs, type LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import { icons } from "~/assets/icons";
@@ -21,6 +21,7 @@ import { formatAmount, getErrorMessage, isValidEmail, isValidNigerianPhoneNumber
 import { walletRepo } from "~/services/wallet/wallet.server";
 import { vtuServer } from "~/services/vtu/vtu.server";
 import type { DiscountedDataAmountResponse, VTUDataCategoryResponse, VTUDataPlansDTO, VTUProduct } from "~/services/vtu/types/vtu.interface";
+import { getVtuPaths } from "~/lib/feature-routes";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -46,6 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const paths = getVtuPaths(new URL(request.url).pathname);
   const formData = await request.formData();
   const intent = String(formData.get("intent") ?? "search_data_plans");
 
@@ -118,7 +120,7 @@ export async function action({ request }: ActionFunctionArgs) {
       return json({ intent, error: getErrorMessage(purchaseResponse.error, "Unable to complete the data purchase.") }, { status: 400 });
     }
 
-    return redirect(`/vtuservice/vtupurchase/${encodeURIComponent(purchaseResponse.data.reference)}`);
+    return redirect(paths.purchase(purchaseResponse.data.reference));
   }
 
   if (intent === "purchase_data_bank") {
@@ -142,7 +144,7 @@ export async function action({ request }: ActionFunctionArgs) {
       phone_number: phoneNumber,
       amount,
       email,
-      redirect_url: new URL("/vtuservice/provider_payment_redirect", request.url).toString(),
+      redirect_url: new URL(paths.paymentReturn, request.url).toString(),
       ...(referrerCode ? { referrer_code: referrerCode } : {}),
     }, request);
 
@@ -417,6 +419,8 @@ export function useDataController() {
   const [bankPaymentOpen, setBankPaymentOpen] = useState(false);
   const [bankEmail, setBankEmail] = useState("");
   const selectedPlan = useState<VTUProduct | null>(null);
+  const { pathname } = useLocation();
+  const paths = getVtuPaths(pathname);
 
   useEffect(() => {
     const user = getUserStoreManager();
@@ -425,8 +429,8 @@ export function useDataController() {
   }, []);
 
   useEffect(() => {
-    recentBeneficiariesFetcher.load("/vtuservice/data?resource=recent-beneficiaries");
-  }, []);
+    recentBeneficiariesFetcher.load(`${paths.data}?resource=recent-beneficiaries`);
+  }, [paths.data]);
 
   useEffect(() => {
     if (fetcher.data?.error) {

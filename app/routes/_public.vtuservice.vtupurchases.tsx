@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useLocation } from "@remix-run/react";
 import { useEffect } from "react";
 
 import Pagination from "~/components/reusables/Pagination";
@@ -10,6 +10,7 @@ import { requireAuth } from "~/lib/session.server";
 import { formatAmount, getErrorMessage } from "~/lib/utils";
 import { vtuServer } from "~/services/vtu/vtu.server";
 import type { VTUPurchaseResponse } from "~/services/vtu/types/vtu.interface";
+import { getVtuPaths } from "~/lib/feature-routes";
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -65,7 +66,7 @@ function statusColor(status: string): "green" | "yellow" | "red" | "gray" {
   return "gray";
 }
 
-function PurchaseCard({ purchase }: { purchase: VTUPurchaseResponse }) {
+function PurchaseCard({ purchase, paths }: { purchase: VTUPurchaseResponse; paths: ReturnType<typeof getVtuPaths> }) {
   const purchaseDate = purchase.last_retried_at ?? purchase.first_retried_at;
 
   return (
@@ -116,7 +117,7 @@ function PurchaseCard({ purchase }: { purchase: VTUPurchaseResponse }) {
 
       <Link
         className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-brand-pink px-4 text-sm font-bold text-brand-pink transition hover:bg-brand-pink/5"
-        to={`/vtuservice/vtupurchase/${encodeURIComponent(purchase.reference)}`}
+        to={paths.purchase(purchase.reference)}
       >
         View purchase details
       </Link>
@@ -133,6 +134,8 @@ function PurchaseSkeleton() {
 }
 
 export default function VTUPurchasesPage() {
+  const { pathname } = useLocation();
+  const paths = getVtuPaths(pathname);
   const data = useLoaderData<typeof loader>();
 
   useEffect(() => {
@@ -170,14 +173,14 @@ export default function VTUPurchasesPage() {
           </div>
         ) : data.purchases && purchases.length > 0 ? (
           <>
-            <div className="grid gap-5">{purchases.map((purchase) => <PurchaseCard key={purchase._id} purchase={purchase} />)}</div>
+            <div className="grid gap-5">{purchases.map((purchase) => <PurchaseCard key={purchase._id} purchase={purchase} paths={paths} />)}</div>
             <Pagination firstKey={data.purchases.first_key_id} lastKey={data.purchases.last_key_id} pageSize={data.purchases.items_per_page || data.pageSize} />
           </>
         ) : data.purchases ? (
           <div className="rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-14 text-center">
             <h2 className="text-xl font-black">No VTU purchases yet</h2>
             <p className="mt-2 text-sm text-brand-slate">Your completed airtime and data purchases will appear here.</p>
-            <Link className="mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white" to="/vtuservice/airtime">Buy airtime</Link>
+            <Link className="mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white" to={paths.airtime}>Buy airtime</Link>
           </div>
         ) : (
           <PurchaseSkeleton />

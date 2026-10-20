@@ -1,0 +1,1 @@
+import{i as o}from"/build/_shared/chunk-ZBBV32P5.js";import{b as r}from"/build/_shared/chunk-GDLBX7ER.js";import{c as t}from"/build/_shared/chunk-Q3IECNXJ.js";var f=t(r(),1);function e(){return(0,f.jsx)(o,{})}export{e as default};

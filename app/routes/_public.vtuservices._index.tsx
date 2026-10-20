@@ -1,14 +1,15 @@
-import { Link, useNavigation } from "@remix-run/react";
+import { Link, useLocation, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import Svg from "~/components/reusables/Svg";
 import { icons } from "~/assets/icons";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager";
+import { getVtuPaths } from "~/lib/feature-routes";
 
 type VtuService = {
   name: "Airtime" | "Data";
   description: string;
   icon: "airtime" | "data";
-  to: string;
+  path: "airtime" | "data";
 };
 
 const services: VtuService[] = [
@@ -16,18 +17,20 @@ const services: VtuService[] = [
     name: "Airtime",
     description: "Buy airtime from all networks in Nigeria",
     icon: "airtime",
-    to: "/vtuservice/airtime",
+    path: "airtime",
   },
   {
     name: "Data",
     description: "Best data offers available at kidmonth",
     icon: "data",
-    to: "/vtuservice/data"
+    path: "data"
   },
 ];
 
 export function useVtuServicesController() {
   const navigation = useNavigation();
+  const { pathname } = useLocation();
+  const paths = getVtuPaths(pathname);
   const { getUserStoreManager } = useUserManager();
   const [isSignedIn, setIsSignedIn] = useState(false);
 
@@ -38,7 +41,8 @@ export function useVtuServicesController() {
   return {
     isLoading: navigation.state === "loading",
     isSignedIn,
-    services,
+    services: services.map(service => ({ ...service, to: paths[service.path] })),
+    purchasesPath: paths.purchases,
   };
 }
 
@@ -72,7 +76,7 @@ function VtuServicesSkeleton() {
 }
 
 export default function VtuServices() {
-  const { isLoading, isSignedIn, services: vtuServices } = useVtuServicesController();
+  const { isLoading, isSignedIn, services: vtuServices, purchasesPath } = useVtuServicesController();
 
   return (
     <main className="grow min-w-0 overflow-x-hidden">
@@ -96,7 +100,7 @@ export default function VtuServices() {
             ))}
             {isSignedIn && (
               <Link
-                to="/vtuservice/vtupurchases"
+                to={purchasesPath}
                 className="group min-w-0 overflow-hidden rounded-[2rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_56px_rgba(14,42,77,0.14)] sm:p-8"
               >
                 <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-pink/10 text-brand-pink transition duration-300 group-hover:scale-105">
