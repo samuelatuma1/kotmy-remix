@@ -55,6 +55,9 @@ export default function AccountTypePage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       <div className="max-w-4xl w-full text-center">
+        <Link to="/user/wallet" className="mb-8 block text-left text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+          ← Back to wallet
+        </Link>
         {/* Header Section */}
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
           What type of account <br /> would you like to add?

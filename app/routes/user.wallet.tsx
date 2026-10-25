@@ -346,7 +346,7 @@ export default function WalletPage() {
       <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm mb-8">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2 text-gray-500">
-            <span className="text-sm">Wallet balances</span>
+            <span className="text-sm">Account balance</span>
             <button className="hover:bg-gray-100 p-1 rounded-full">👁️</button>
           </div>
           
@@ -367,9 +367,19 @@ export default function WalletPage() {
         <div className="flex justify-between items-start">
           <div>
             <div className="text-4xl font-bold mb-1">
-              {formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency)}
+              {formatCurrency(wallet.account_balance, wallet.wallet_currency)}
             </div>
             <div className="text-gray-400 text-sm">{wallet.wallet_name}</div>
+            <dl className="mt-4 space-y-2 text-sm">
+              <div className="flex justify-between gap-6">
+                <dt className="text-gray-500">External-withdrawable</dt>
+                <dd className="font-medium text-gray-900">{formatCurrency(wallet.external_withdrawable_balance, wallet.wallet_currency)}</dd>
+              </div>
+              <div className="flex justify-between gap-6">
+                <dt className="text-gray-500">Platform-only</dt>
+                <dd className="font-medium text-gray-900">{formatCurrency(wallet.platform_only_balance, wallet.wallet_currency)}</dd>
+              </div>
+            </dl>
           </div>
         </div>
 

@@ -46,22 +46,41 @@ export async function action({ request }: ActionFunctionArgs) {
   const intent = formData.get("intent") as string
   switch (intent){
     
-    case "getCharge":
+    case "getCharge": {
       console.log("getCharge", formData.get("bank") as string)
+      const chargeWalletId = String(formData.get("wallet_id") ?? "");
+      const chargeAmount = Number(formData.get("amount"));
+      const chargeWallet = chargeWalletId ? await walletRepo.getUserWalletById(chargeWalletId, request) : undefined;
+      if (!Number.isFinite(chargeAmount) || chargeAmount <= 0) {
+        return json({ intent, error: { detail: "Enter a valid withdrawal amount." } }, { status: 400 });
+      }
+      if (!chargeWallet?.data || chargeAmount > chargeWallet.data.external_withdrawable_balance) {
+        return json({ intent, error: { detail: "The amount exceeds your external-withdrawable balance." } }, { status: 400 });
+      }
       var chargeDTO: IGetWithdrawalCharge = {
-        wallet_id: formData.get("wallet_id") as string,
+        wallet_id: chargeWalletId,
         withdrawal_account_id: formData.get("withdrawal_account_id") as string,
-        amount: parseFloat(formData.get("amount") as string),
+        amount: chargeAmount,
         withdrawal_pin: "",
         accepted_charges: 1
       }
       var withdrawalChargesResponse = await walletRepo.getWithdrawalCharges(chargeDTO, request)
       
       return json({...withdrawalChargesResponse, intent})
-    case "requestWithdrawal":
+    }
+    case "requestWithdrawal": {
+        const withdrawalWalletId = String(formData.get("wallet_id") ?? "");
+        const withdrawalAmount = Number(formData.get("amount"));
+        const withdrawalWallet = withdrawalWalletId ? await walletRepo.getUserWalletById(withdrawalWalletId, request) : undefined;
+        if (!Number.isFinite(withdrawalAmount) || withdrawalAmount <= 0) {
+            return json({ intent, error: { detail: "Enter a valid withdrawal amount." } }, { status: 400 });
+        }
+        if (!withdrawalWallet?.data || withdrawalAmount > withdrawalWallet.data.external_withdrawable_balance) {
+            return json({ intent, error: { detail: "The amount exceeds your external-withdrawable balance." } }, { status: 400 });
+        }
         var withdrawalDTO: IRequestWithdrawal = {
-            wallet_id: formData.get("wallet_id") as string,
-            amount: parseFloat(formData.get("amount") as string),
+            wallet_id: withdrawalWalletId,
+            amount: withdrawalAmount,
             withdrawal_account_id: formData.get("withdrawal_account_id") as string,
             withdrawal_pin: formData.get("withdrawal_pin") as string,
             narration: formData.get("narration") as string || "Withdrawal",
@@ -69,6 +88,7 @@ export async function action({ request }: ActionFunctionArgs) {
         }
         var withdrawalResponse = await walletRepo.requestWithdrawal(withdrawalDTO, request)
         return json({...withdrawalResponse, intent})
+    }
   }
   // Logic for adding a recipient would go here
   return json({ success: true });
@@ -178,7 +198,10 @@ export default function AddWithdrawalAccountPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center pt-16 px-4">
       <div className="max-w-md w-full flex flex-col items-center">
-        
+        <Link to="/user/wallet" className="mb-6 self-start text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+          ← Back to wallet
+        </Link>
+
         {/* Header Section */}
         <div className="flex flex-col items-center mb-10 text-center">
           <div className="w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100">
@@ -255,8 +278,16 @@ export default function AddWithdrawalAccountPage() {
                 placeholder="Amount"
                 required 
                 className={inputClasses}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
+                max={wallet?.external_withdrawable_balance}
+                step="0.01"
+                onChange={(e) => setAmount(e.target.value === "" ? 0 : Number(e.target.value))}
               />
+              <p className="mt-2 text-sm text-gray-500">
+                Available to withdraw: {wallet?.wallet_currency} {wallet?.external_withdrawable_balance.toLocaleString() ?? "0.00"}
+              </p>
+              {amount > (wallet?.external_withdrawable_balance ?? 0) && (
+                <p role="alert" className="mt-1 text-sm text-red-600">Amount exceeds your external-withdrawable balance.</p>
+              )}
             </div>
 
             <input type="hidden" name="intent" value="getCharge" />
@@ -268,11 +299,15 @@ export default function AddWithdrawalAccountPage() {
             <Cta 
               element="button" 
               type="submit" 
-              disabled={isSubmitting}
+              disabled={isSubmitting || !withdrawalAccount || !Number.isFinite(amount) || amount < 100 || amount > (wallet?.external_withdrawable_balance ?? 0)}
               className="mt-6 w-full h-14 rounded-2xl bg-brand-pink hover:bg-brand-pink/90 text-white font-semibold text-lg shadow-sm transition-transform active:scale-[0.98]"
             >
               {isSubmitting ? "Continuing..." : "Continue"}
             </Cta>
+
+            <Link to="/user/wallet" className="mb-6 self-start text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+              ← Back to wallet
+            </Link>
           </Form>
         ) : (
             <Form method="POST" className="w-full flex flex-col max-w-md mx-auto">
@@ -280,8 +315,8 @@ export default function AddWithdrawalAccountPage() {
       {/* 1. Sending Section */}
       <div className="mb-6">
         <label className="text-sm font-medium text-gray-500 mb-2 block">You withdraw exactly</label>
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 rounded-full">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+          <div className="flex shrink-0 items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-full sm:px-4">
             <span className="font-bold text-gray-900">{wallet?.wallet_currency || "USD"}</span>
           </div>
 
@@ -297,10 +332,10 @@ export default function AddWithdrawalAccountPage() {
                 value={amount}
                 required 
                 readOnly
-                className="text-right text-4xl font-bold bg-transparent outline-none w-full text-gray-900"
+                className="min-w-0 flex-1 bg-transparent text-right text-[clamp(1.125rem,7vw,2.25rem)] font-bold text-gray-900 outline-none"
               />
         </div>
-        <p className="text-sm text-gray-400 mt-2">Bal: {wallet?.withdrawable_balance.toLocaleString() || "0.00"}</p>
+        <p className="text-sm text-gray-400 mt-2">Available to withdraw: {wallet?.wallet_currency} {wallet?.external_withdrawable_balance.toLocaleString() || "0.00"}</p>
       </div>
 
       {/* 2. Breakdown Card (Inspired by the Screenshot) */}

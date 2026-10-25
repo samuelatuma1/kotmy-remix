@@ -167,7 +167,10 @@ export default function AddWithdrawalAccountPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center pt-16 px-4">
       <div className="max-w-md w-full flex flex-col items-center">
-        
+        <Link to="/partners/wallet" className="mb-6 self-start text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">
+          ← Back to wallet
+        </Link>
+
         {/* Header Section */}
         <div className="flex flex-col items-center mb-10 text-center">
           <div className="w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center mb-4 border border-slate-100">

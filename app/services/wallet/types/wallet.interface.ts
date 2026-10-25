@@ -29,7 +29,9 @@ export interface IWallet {
   daily_transaction_limit: number;
   withdrawable_balance: number;
   metrics: WalletMetrics;
-  business_withdrawal_pin_set?: boolean
+  business_withdrawal_pin_set?: boolean;
+  external_withdrawable_balance: number;
+  platform_only_balance: number;
 }
 
 export interface ILedgerEntry {
