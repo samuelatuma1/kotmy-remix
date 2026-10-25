@@ -141,3 +141,39 @@ export interface IUpdateAdminUser {
     username?: string;
     roles?: string[];
 }
+
+
+export enum SystemConfigurationValueType {
+  STR = "str",
+  FLOAT = "float",
+  DECIMAL = "decimal",
+  INT = "int",
+  BOOL = "bool",
+}
+
+export enum SystemConfigurationStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+
+export interface ISystemConfigurationQuery extends IBasePaginationQuery {
+  name?: string | null;
+  value?: string | null;
+  value_type?: SystemConfigurationValueType | null;
+  description?: string | null;
+  status?: SystemConfigurationStatus | null;
+}
+
+export interface IUpdateSystemConfiguration {
+    value?: string;
+}
+export interface SystemConfigurationResponse  {
+  _id: string;
+  str_id: string;
+  name: string;
+  value: string;
+  value_type: SystemConfigurationValueType;
+  description: string;
+  status: SystemConfigurationStatus;
+  updated_by: string | null;
+}

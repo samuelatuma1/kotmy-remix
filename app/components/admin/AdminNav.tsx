@@ -14,6 +14,7 @@ const navs = [
     { label: 'User Accounts', icon: icons.adminUsersIcon, url: '/admin/accounts/allusers' , acceptedRoles: [rolesEnum['manage user']] },
     { label: 'Tournaments', icon: icons.adminTournamentIcon, url: '/admin/tournaments', acceptedRoles: []  },
     { label: 'Contests', icon: icons.adminContestIcon, url: '/admin/contests', acceptedRoles: []  },
+    { label: 'System Configurations', icon: icons.adminFinanceIcon, url: '/admin/configurations', acceptedRoles: [] },
 ]
 
 const navsWSubs = [

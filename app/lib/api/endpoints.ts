@@ -209,6 +209,10 @@ export class ApiEndPoints {
         return `/v2/api/admin/payment/payments`
     }
 
+    static get adminSystemConfigurations(){
+        return `/v2/api/system-configuration`
+    }
+
     static get createBankPayment (){
         return `/v2/api/admin/create_payment`
     }
@@ -292,6 +296,10 @@ export class ApiEndPoints {
 
     static updateUser(id: string){
         return `/v2/api/users/update_user/${id}`
+    }
+
+    static updateSystemConfig(id: string){
+        return `/v2/api/admin/system-configuration/${id}`
     }
 
     static get pagedUsers(){

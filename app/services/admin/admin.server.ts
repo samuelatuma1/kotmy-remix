@@ -3,7 +3,7 @@ import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
-import { IGetPaymentsDTO, PaymentResponseDTO, ICreateBankTransaction, ICreateAdminUser, IUpdateAdminUser, IUserQueryDTO } from "./types/admin.interface";
+import { IGetPaymentsDTO, PaymentResponseDTO, ICreateBankTransaction, ICreateAdminUser, IUpdateAdminUser, IUserQueryDTO, ISystemConfigurationQuery, SystemConfigurationResponse, IUpdateSystemConfiguration } from "./types/admin.interface";
 
 
 
@@ -107,6 +107,39 @@ export class AdminRepository {
 
       if (data) return { data };
       return { error, authRequired };
+  }
+
+
+  async getSystemConfigs(cookies: string | Request, query: ISystemConfigurationQuery | null = null): Promise<TFetcherResponse<IPaginatedResponse<SystemConfigurationResponse>>> {
+    let url = ApiEndPoints.adminSystemConfigurations;
+    if (query) {
+      const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
+        if (v !== undefined && v !== null) acc[k] = String(v);
+        return acc;
+      }, {} as Record<string, string>));
+      const qs = params.toString();
+      if (qs) url = `${url}?${qs}`;
+    }
+
+    const { data, error, authRequired } = await ApiCall.call<IPaginatedResponse<SystemConfigurationResponse>, unknown>({
+      method: "GET",
+      url,
+    }, cookies);
+
+    if (data) return { data };
+    return { error, authRequired };
+  }
+
+  async updateSystemConfig(cookies: string | Request, configId: string, dto: IUpdateSystemConfiguration ):  Promise<TFetcherResponse<SystemConfigurationResponse>>{
+    const url = ApiEndPoints.updateSystemConfig(configId)
+    const { data, error, authRequired } = await ApiCall.call<SystemConfigurationResponse, unknown>({
+      method: "PUT",
+      url,
+      data: dto,
+    }, cookies);
+
+    if (data) return { data };
+    return { error, authRequired };
   }
 
 }
