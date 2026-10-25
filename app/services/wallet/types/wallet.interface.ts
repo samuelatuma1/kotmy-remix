@@ -1,5 +1,5 @@
 import { IBasePaginationQuery } from "~/services/admin/types/admin.interface";
-import { ILoginResponseDTO } from "~/services/auth/types/auth.dtos";
+import { ILoginResponseDTO, ProfileOwnerType } from "~/services/auth/types/auth.dtos";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
 import { IContestDto } from "~/services/contest/types/contest.interface";
 import { IContestant, IContestantBiodata } from "~/services/contestant/types/contestant.interface";
@@ -232,4 +232,75 @@ export interface FundWallet{
     narration?: string;
     wallet_id: string;
     redirect_url: string
+}
+
+export interface AccountNumberLookUp{
+  account_number: string,
+  currency: WalletCurrency
+}
+
+export interface AccountLookUpDetails {
+  wallet_id: string;
+  account_number: string;
+  wallet_name: string;
+  wallet_currency: string;
+  user_type: string;
+}
+
+export interface ITransferToKotmyWalletDTO {
+  transfer_to_wallet_id: string;
+  transfer_from_wallet_id: string;
+  amount: number;
+  narration?: string | null;
+  withdrawal_pin: string;
+}
+
+export enum MyTransactionStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  FOR_REFUND = "FOR_REFUND",
+  REFUNDED = "REFUNDED",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+}
+
+export enum TransactionType {
+  intra_app_transfer = "intra_app_transfer",
+  withdrawal = "withdrawal",
+}
+// 
+export interface TransactionResponse {
+  // BaseEntity fields
+  id: string;
+  str_id: string;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  deleted_at: string | null;
+
+  // TransactionEntity fields
+  reference: string;
+  amount: number;
+  gateway_transferred_amount: number;
+  gateway_charge: number;
+  charge: number;
+  charge_details: IWithdrawalChargeResponse | null;
+  user_id: string;
+  owner_type: ProfileOwnerType;
+  transaction_status: MyTransactionStatus;
+  wallet_id: string;
+  verified: boolean;
+  withdrawal_account_id: string | null;
+  gateway_status: string;
+  narration: string;
+  user_narration: string | null;
+  customer: Record<string, unknown> | null;
+  transaction_method: string;
+  total_amount: number;
+  currency: WalletCurrency;
+  processing_status: string;
+  processing_start_time: string | null;
+  processing_remark: string | null;
+  retry_count: number;
+  transaction_type: TransactionType;
 }

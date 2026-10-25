@@ -1,10 +1,10 @@
 import { ActionFunctionArgs, json, redirect, type LoaderFunctionArgs, type SerializeFrom } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData, useFetcher } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useFetcher, useRevalidator } from "@remix-run/react";
 import { useState, useMemo, useEffect } from "react";
 import { UserAtom } from "~/lib/store/atoms/token";
 import { useUserManager } from "~/lib/store/store_managers/tokenManager";
 import { IPaginatedResponse } from "~/services/common/types/paginated_data";
-import { ILedgerEntry, IUserLedgersQuery, IWallet } from "~/services/wallet/types/wallet.interface";
+import { AccountLookUpDetails, ILedgerEntry, IUserLedgersQuery, IWallet, TransactionResponse } from "~/services/wallet/types/wallet.interface";
 import { walletRepo } from "~/services/wallet/wallet.server";
 import Pagination from "~/components/reusables/Pagination";
 import { requireAuth } from "~/lib/session.server";
@@ -15,6 +15,14 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 type WalletWithLedger = {
   wallet: IWallet;
   pagedLedgers: IPaginatedResponse<ILedgerEntry>;
+};
+
+type WalletActionData = {
+  intent?: string;
+  error?: string;
+  recipient?: AccountLookUpDetails;
+  transaction?: TransactionResponse;
+  accountNumber?: string;
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -62,6 +70,64 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const intent = String(formData.get("intent") ?? "");
+
+    if (intent === "lookup-transfer-recipient") {
+      const accountNumber = String(formData.get("account_number") ?? "").trim();
+      const currency = String(formData.get("currency") ?? "").trim();
+      if (!/^\d{10}$/.test(accountNumber)) {
+        return json({ intent, error: "Enter a valid 10-digit account number." }, { status: 400 });
+      }
+      if (!currency) return json({ intent, error: "Select a wallet before looking up an account." }, { status: 400 });
+
+      const response = await walletRepo.lookupAccountDetails(request, { account_number: accountNumber, currency });
+      if (response.error || !response.data) {
+        return json({ intent, accountNumber, error: getWalletErrorMessage(response.error) }, { status: 400 });
+      }
+      return json({ intent, recipient: response.data });
+    }
+
+    if (intent === "transfer-to-wallet") {
+      const sourceWalletId = String(formData.get("source_wallet_id") ?? "").trim();
+      const recipientAccountNumber = String(formData.get("recipient_account_number") ?? "").trim();
+      const amount = Number(String(formData.get("amount") ?? "").trim());
+      const narration = String(formData.get("narration") ?? "").trim();
+      const withdrawalPin = String(formData.get("withdrawal_pin") ?? "");
+      if (!sourceWalletId) return json({ intent, error: "Select a wallet to transfer from." }, { status: 400 });
+      if (!/^\d{10}$/.test(recipientAccountNumber)) return json({ intent, error: "Look up a valid recipient account before continuing." }, { status: 400 });
+      if (!Number.isFinite(amount) || amount <= 0) return json({ intent, error: "Enter an amount greater than zero." }, { status: 400 });
+      if (!withdrawalPin.trim()) return json({ intent, error: "Enter your wallet PIN." }, { status: 400 });
+
+      const walletsResponse = await walletRepo.getUserWallets(request);
+      const sourceWallet = walletsResponse.data?.find((item) => item._id === sourceWalletId);
+      if (!sourceWallet) return json({ intent, error: "The selected wallet could not be found. Refresh and try again." }, { status: 400 });
+      if (amount > sourceWallet.withdrawable_balance) {
+        return json({ intent, error: "The amount exceeds your available wallet balance." }, { status: 400 });
+      }
+
+      // Re-resolve the destination on the server so a client cannot substitute another wallet ID.
+      const recipientResponse = await walletRepo.lookupAccountDetails(request, {
+        account_number: recipientAccountNumber,
+        currency: sourceWallet.wallet_currency,
+      });
+      const recipient = recipientResponse.data;
+      if (recipientResponse.error || !recipient) return json({ intent, error: getWalletErrorMessage(recipientResponse.error) }, { status: 400 });
+      if (recipient.wallet_id === sourceWallet._id) return json({ intent, error: "You cannot transfer to the same wallet." }, { status: 400 });
+      if (recipient.wallet_currency !== sourceWallet.wallet_currency) {
+        return json({ intent, error: "Transfers are only available between wallets with the same currency." }, { status: 400 });
+      }
+
+      const response = await walletRepo.transferToKidmonthWallet(request, {
+        transfer_to_wallet_id: recipient.wallet_id,
+        transfer_from_wallet_id: sourceWallet._id,
+        amount,
+        narration: narration || undefined,
+        withdrawal_pin: withdrawalPin,
+      });
+      if (response.error || !response.data) {
+        return json({ intent, error: getWalletErrorMessage(response.error) }, { status: 400 });
+      }
+      return json({ intent, transaction: response.data });
+    }
 
     if (intent === "fund-wallet") {
       const amount = Number(String(formData.get("amount") ?? "").trim());
@@ -158,7 +224,7 @@ function getWalletErrorMessage(error: unknown): string {
     if (typeof detail === "string") return detail;
     if (Array.isArray(detail)) return detail.map((item) => typeof item === "object" && item && "msg" in item ? String(item.msg) : String(item)).join(", ");
   }
-  return "Unable to fund your wallet. Please try again.";
+  return "Unable to complete this wallet request. Please try again.";
 }
 
 function useWalletController() {
@@ -198,6 +264,16 @@ function useWalletController() {
   const isSubmitting = fetcher.state === 'submitting';
   const isFunding = fundFetcher.state !== "idle";
   const [fundWalletOpen, setFundWalletOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const lookupFetcher = useFetcher<WalletActionData>();
+  const transferFetcher = useFetcher<WalletActionData>();
+  const revalidator = useRevalidator();
+  const revalidate = revalidator.revalidate;
+  const [accountNumber, setAccountNumber] = useState("");
+  const [transferStep, setTransferStep] = useState<"lookup" | "details" | "review" | "success" | "failed">("lookup");
+  const [transferAmount, setTransferAmount] = useState("");
+  const [transferNarration, setTransferNarration] = useState("");
+  const [withdrawalPin, setWithdrawalPin] = useState("");
   const actionData = useActionData<typeof action>();
 
   useEffect(() => {
@@ -206,6 +282,17 @@ function useWalletController() {
       toast({ variant: "destructive", title: "Wallet funding failed", description: data.error });
     }
   }, [fundFetcher.data]);
+
+  const lookedUpRecipient = lookupFetcher.data?.intent === "lookup-transfer-recipient" ? lookupFetcher.data.recipient : undefined;
+  const recipient = lookedUpRecipient?.account_number === accountNumber ? lookedUpRecipient : undefined;
+
+  useEffect(() => {
+    if (transferFetcher.data?.intent === "transfer-to-wallet" && transferFetcher.data.transaction) {
+      const failed = transferFetcher.data.transaction.transaction_status === "FAILED";
+      setTransferStep(failed ? "failed" : "success");
+      if (!failed) revalidate();
+    }
+  }, [transferFetcher.data?.intent, transferFetcher.data?.transaction?.id, revalidate]);
 
   // local wallets state so we can update UI when action/fetcher returns updated wallets
   const [walletsState, setWalletsState] = useState<WalletWithLedger[]>(wallets);
@@ -236,11 +323,14 @@ function useWalletController() {
     actionData,
     searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher,
     fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen
+    , transferOpen, setTransferOpen, lookupFetcher, transferFetcher, accountNumber, setAccountNumber,
+    transferStep, setTransferStep, transferAmount, setTransferAmount, transferNarration, setTransferNarration,
+    withdrawalPin, setWithdrawalPin, recipient
   };
 }
 
 export default function WalletPage() {
-   const { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher, fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen } = useWalletController();
+   const { wallets, activeData, setActiveWalletId, formatCurrency, user, searchOpen, isSubmitting, walletsState, setSearchOpen, fetcher, fundFetcher, isFunding, fundWalletOpen, setFundWalletOpen, transferOpen, setTransferOpen, lookupFetcher, transferFetcher, accountNumber, setAccountNumber, transferStep, setTransferStep, transferAmount, setTransferAmount, transferNarration, setTransferNarration, withdrawalPin, setWithdrawalPin, recipient } = useWalletController();
 
   if (!activeData) return <div className="p-8">No wallets found.</div>;
 
@@ -332,9 +422,72 @@ export default function WalletPage() {
               + Set withdrawal PIN
             </button></Link>
           )}
-          <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
-            ⇄ Transfer to another wallet
-          </button>
+          <Dialog open={transferOpen} onOpenChange={(open) => {
+            setTransferOpen(open);
+            if (!open) {
+              setAccountNumber(""); setTransferStep("lookup"); setTransferAmount(""); setTransferNarration(""); setWithdrawalPin("");
+            }
+          }}>
+            <DialogTrigger asChild>
+              <button type="button" className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
+                ⇄ Transfer to another wallet
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto rounded-2xl bg-white p-0">
+              <DialogHeader className="border-b border-gray-100 p-6 text-left">
+                <DialogTitle className="text-xl font-bold">{transferStep === "success" ? "Transfer receipt" : transferStep === "failed" ? "Transfer failed" : "Transfer to a Kotmy wallet"}</DialogTitle>
+                <DialogDescription className="mt-2 text-sm text-gray-500">
+                  {transferStep === "lookup" && "Enter the recipient’s 10-digit wallet account number."}
+                  {transferStep === "details" && "Enter the amount and your wallet PIN."}
+                  {transferStep === "review" && "Review the transfer details before confirming."}
+                  {transferStep === "success" && "Your transfer request was received."}
+                  {transferStep === "failed" && "The transfer could not be completed."}
+                </DialogDescription>
+              </DialogHeader>
+
+              {transferStep === "lookup" && <lookupFetcher.Form method="post" className="space-y-5 p-6">
+                <input type="hidden" name="intent" value="lookup-transfer-recipient" />
+                <input type="hidden" name="currency" value={wallet.wallet_currency} />
+                <label className="block text-sm font-medium text-gray-700">
+                  Account number
+                  <input required type="text" inputMode="numeric" autoComplete="off" maxLength={10} pattern="[0-9]{10}" name="account_number" value={accountNumber} onChange={(event) => { setAccountNumber(event.target.value.replace(/\D/g, "").slice(0, 10)); setTransferStep("lookup"); }} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="10-digit account number" />
+                </label>
+                {lookupFetcher.data?.intent === "lookup-transfer-recipient" && lookupFetcher.data.accountNumber === accountNumber && lookupFetcher.data.error && <p role="alert" className="text-sm text-red-600">{lookupFetcher.data.error}</p>}
+                {recipient && <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm"><p className="font-semibold text-gray-900">{recipient.wallet_name}</p><p className="mt-1 text-gray-500">{recipient.account_number} · {recipient.wallet_currency}</p></div>}
+                <DialogFooter className="gap-3 sm:flex-row sm:justify-end">
+                  <DialogClose asChild><button type="button" className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700">Cancel</button></DialogClose>
+                  {recipient ? <button type="button" onClick={() => setTransferStep("details")} className="rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white">Continue</button> : <button type="submit" disabled={!/^\d{10}$/.test(accountNumber) || lookupFetcher.state !== "idle"} className="rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">{lookupFetcher.state !== "idle" ? "Looking up…" : "Look up account"}</button>}
+                </DialogFooter>
+              </lookupFetcher.Form>}
+
+              {transferStep === "details" && recipient && <div className="space-y-5 p-6">
+                <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm"><p className="font-semibold text-gray-900">{recipient.wallet_name}</p><p className="mt-1 text-gray-500">{recipient.account_number}</p></div>
+                <label className="block text-sm font-medium text-gray-700">Amount ({wallet.wallet_currency})<input type="number" min="0.01" max={wallet.withdrawable_balance} step="0.01" value={transferAmount} onChange={(event) => setTransferAmount(event.target.value)} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="0.00" /><span className="mt-2 block text-xs font-normal text-gray-500">Available to transfer: {formatCurrency(wallet.withdrawable_balance, wallet.wallet_currency)}</span></label>
+                <label className="block text-sm font-medium text-gray-700">Narration <span className="font-normal text-gray-400">(optional)</span><textarea rows={2} value={transferNarration} onChange={(event) => setTransferNarration(event.target.value)} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="Add a note" /></label>
+                <label className="block text-sm font-medium text-gray-700">Wallet PIN<input type="password" inputMode="numeric" autoComplete="off" value={withdrawalPin} onChange={(event) => setWithdrawalPin(event.target.value)} className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 outline-none focus:border-[#E91E63]" placeholder="Enter your wallet PIN" /></label>
+                {transferFetcher.data?.intent === "transfer-to-wallet" && transferFetcher.data.error && <p role="alert" className="text-sm text-red-600">{transferFetcher.data.error}</p>}
+                <DialogFooter className="gap-3 sm:flex-row sm:justify-between"><button type="button" onClick={() => setTransferStep("lookup")} className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700">Back</button><button type="button" disabled={!Number.isFinite(Number(transferAmount)) || Number(transferAmount) <= 0 || Number(transferAmount) > wallet.withdrawable_balance || !withdrawalPin.trim()} onClick={() => setTransferStep("review")} className="rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">Review transfer</button></DialogFooter>
+              </div>}
+
+              {transferStep === "review" && recipient && <transferFetcher.Form method="post" className="space-y-5 p-6">
+                <input type="hidden" name="intent" value="transfer-to-wallet" /><input type="hidden" name="source_wallet_id" value={wallet._id} /><input type="hidden" name="recipient_account_number" value={recipient.account_number} /><input type="hidden" name="amount" value={transferAmount} /><input type="hidden" name="narration" value={transferNarration} /><input type="hidden" name="withdrawal_pin" value={withdrawalPin} />
+                <dl className="space-y-3 rounded-xl border border-gray-100 bg-gray-50 p-4 text-sm"><div className="flex justify-between gap-4"><dt className="text-gray-500">Recipient</dt><dd className="text-right font-medium text-gray-900">{recipient.wallet_name}<br />{recipient.account_number}</dd></div><div className="flex justify-between"><dt className="text-gray-500">Amount</dt><dd className="font-medium text-gray-900">{formatCurrency(Number(transferAmount), wallet.wallet_currency)}</dd></div><div className="flex justify-between"><dt className="text-gray-500">Currency</dt><dd className="font-medium text-gray-900">{wallet.wallet_currency}</dd></div><div className="flex justify-between"><dt className="text-gray-500">Transfer charge</dt><dd className="font-medium text-gray-900">{formatCurrency(0, wallet.wallet_currency)}</dd></div></dl>
+                {transferFetcher.data?.intent === "transfer-to-wallet" && transferFetcher.data.error && <p role="alert" className="text-sm text-red-600">{transferFetcher.data.error}</p>}
+                <DialogFooter className="gap-3 sm:flex-row sm:justify-between"><button type="button" onClick={() => setTransferStep("details")} className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700">Back</button><button type="submit" disabled={transferFetcher.state !== "idle"} className="rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50">{transferFetcher.state !== "idle" ? "Transferring…" : "Confirm transfer"}</button></DialogFooter>
+              </transferFetcher.Form>}
+
+              {transferStep === "success" && transferFetcher.data?.intent === "transfer-to-wallet" && transferFetcher.data.transaction && <div className="space-y-5 p-6">
+                {(() => { const transaction = transferFetcher.data.transaction!; return <dl className="space-y-3 rounded-xl border border-green-100 bg-green-50 p-4 text-sm"><div className="flex justify-between"><dt className="text-gray-600">Status</dt><dd className="font-semibold text-green-700">{transaction.transaction_status}</dd></div><div className="flex justify-between"><dt className="text-gray-600">Amount</dt><dd className="font-medium">{formatCurrency(transaction.amount, transaction.currency)}</dd></div><div className="flex justify-between gap-4"><dt className="text-gray-600">Reference</dt><dd className="break-all text-right font-medium">{transaction.reference}</dd></div><div className="flex justify-between"><dt className="text-gray-600">Date</dt><dd className="font-medium">{new Date(transaction.created_at).toLocaleString()}</dd></div>{transaction.narration && <div className="flex justify-between gap-4"><dt className="text-gray-600">Narration</dt><dd className="text-right">{transaction.narration}</dd></div>}</dl>; })()}
+                <DialogFooter><DialogClose asChild><button type="button" className="w-full rounded-xl bg-[#E91E63] px-5 py-2.5 text-sm font-medium text-white">Done</button></DialogClose></DialogFooter>
+              </div>}
+
+              {transferStep === "failed" && transferFetcher.data?.intent === "transfer-to-wallet" && transferFetcher.data.transaction && <div className="space-y-5 p-6">
+                <p role="alert" className="text-sm text-red-600">{transferFetcher.data.transaction.processing_remark || "Your transfer failed. Please try again."}</p>
+                <p className="text-sm text-gray-500">Reference: {transferFetcher.data.transaction.reference}</p>
+                <DialogFooter><DialogClose asChild><button type="button" className="w-full rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700">Done</button></DialogClose></DialogFooter>
+              </div>}
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

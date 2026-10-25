@@ -1,5 +1,5 @@
 import { ApiEndPoints } from "~/lib/api/endpoints";
-import { IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, IAffiliateLeaderboardResponse, IAffiliateLeaderboardSearch, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse } from "./types/wallet.interface";
+import { AccountLookUpDetails, AccountNumberLookUp, IAddAccountDetailsRequest, IAdminRefereeIncomeForReferrerPagedResponse, IAdminReferrerBoardQuery, IAffiliateLeaderboardResponse, IAffiliateLeaderboardSearch, ICreateWithdrawalPinDTO, ICurrencyBanks, IGetWithdrawalCharge, ILedgerEntry, IReferrerBoardQuery, IRequestWithdrawal, IRequestWithdrawalResponse, IResolveAccountDetailsResponse, IResolveAccountRequest, ITransferToKotmyWalletDTO, IUserLedgersQuery, IWallet, IWalletAccount, IWithdrawalChargeResponse, ReferrerBoardPagedResponse, TransactionResponse } from "./types/wallet.interface";
 import { FundWallet } from "~/lib/types/wallet.interface";
 import { ApiCall } from "~/lib/api/fetcher";
 import { TFetcherResponse } from "~/lib/api/types/fetcher.interface";
@@ -481,6 +481,38 @@ export class WalletRepository{
           return { error, authRequired };
       }
 
+    async lookupAccountDetails(cookies: Request, query: AccountNumberLookUp): Promise<TFetcherResponse<AccountLookUpDetails>>{
+        let url = ApiEndPoints.accountDetailsLookup;
+          if (query) {
+            const params = new URLSearchParams(Object.entries(query).reduce((acc, [k, v]) => {
+              if (v !== undefined && v !== null) acc[k] = String(v);
+              return acc;
+            }, {} as Record<string, string>));
+
+            const qs = params.toString();
+            console.log({qs})
+            if (qs) url = `${url}?${qs}`;
+          }
+    
+          const { data, error, authRequired } = await ApiCall.call<AccountLookUpDetails, unknown>({
+            method: "GET",
+            url,
+          }, cookies);
+    
+          if (data) return { data };
+          return { error, authRequired };
+    }
+    
+    async transferToKidmonthWallet(cookies: Request, dto: ITransferToKotmyWalletDTO):  Promise<TFetcherResponse<TransactionResponse>>{
+        const { data, error, authRequired } = await ApiCall.call<TransactionResponse, unknown>({
+            method: "POST",
+            url: ApiEndPoints.transferToKotmyWallet,
+            data: dto
+        }, cookies);
+
+        if (data) return { data };
+        return { error, authRequired };
+    }
     
 }
 

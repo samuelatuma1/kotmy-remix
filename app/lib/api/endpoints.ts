@@ -500,4 +500,12 @@ export class ApiEndPoints {
     static get recentVTUBeneficiaries(){
         return  `/v2/api/vtu/beneficiaries`
     }
+
+    static get accountDetailsLookup(){
+        return `/v2/api/wallet/lookup`
+    }
+
+    static get transferToKotmyWallet(){
+        return `/v2/api/wallet/transfer_to_kotmy_wallet`
+    }
 }

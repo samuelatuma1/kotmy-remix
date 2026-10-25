@@ -332,9 +332,9 @@ export default function WalletPage() {
               + Set withdrawal PIN
             </button></Link>
           )}
-          <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
+          {/* <button className="bg-white border text-gray-700 px-6 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium hover:bg-gray-50 w-full sm:w-auto">
             ⇄ Transfer to another wallet
-          </button>
+          </button> */}
         </div>
       </div>
 
