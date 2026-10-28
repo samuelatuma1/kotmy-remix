@@ -71,6 +71,7 @@ function useRegistrationForm({ contest }: { contest: IContest }){
 export default function RegistrationForm({ contest }: { contest: IContest }) {
     
     const {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, getReferralLink, path, getQueryParam,referralKey } = useRegistrationForm({contest})
+    const categories = contest.categories ?? []
     if(!user) {
         
         return (
@@ -156,18 +157,22 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                 <FormControl as="input" type="tel" labelText="Whatsapp Number" id="whatsapp_no" name="whatsapp_no"
                     placeholder="Enter your whatsapp number" required
                 />
-                <label htmlFor="category" className="font-bold flex flex-col"><span>Category<span className="text-red-400">*</span></span>
-                    <Select name="category" required={!!contest.categories.length}>
-                        <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
-                            <SelectValue placeholder={"Select a category"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {contest.categories.map((category) => (
-                                <SelectItem key={category} value={category} className="focus:bg-blue-700/25">{category}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </label>
+                {categories.length === 1 ? (
+                    <input type="hidden" name="category" value={categories[0]} />
+                ) : categories.length > 1 ? (
+                    <label htmlFor="category" className="font-bold flex flex-col"><span>Category<span className="text-red-400">*</span></span>
+                        <Select name="category" required>
+                            <SelectTrigger id="category" className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
+                                <SelectValue placeholder={"Select a category"} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((category) => (
+                                    <SelectItem key={category} value={category} className="focus:bg-blue-700/25">{category}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </label>
+                ) : null}
 
                 
             </div>
