@@ -172,16 +172,22 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                             </SelectContent>
                         </Select>
                     </label>
-                ) : null}
+                ) : (
+                    <FormControl as="input" labelText="Referral code (Optional)" id="referral_code" name="referral_code"
+                        placeholder="" defaultValue={`${getQueryParam(referralKey)}`}
+                    />
+                )}
 
                 
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
-                <FormControl as="input" labelClassNames="col-span-1 max-w-full text-gray-500" labelText="Referral code (Optional)" id="referral_code" name="referral_code"
-                    placeholder="" defaultValue={`${getQueryParam(referralKey)}`}
-                />
-            </div>
+            {categories.length > 1 && (
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <FormControl as="input" labelClassNames="col-span-1 max-w-full text-gray-500" labelText="Referral code (Optional)" id="referral_code" name="referral_code"
+                        placeholder="" defaultValue={`${getQueryParam(referralKey)}`}
+                    />
+                </div>
+            )}
 
             <FormControl as="textarea" labelClassNames="col-span-2 max-w-full" labelText="What would you like your voters to know?" id="info" name="info"
                     placeholder="" 
