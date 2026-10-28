@@ -111,13 +111,13 @@ export default function Signup() {
               // icon={icons.avatarIcon}
               defaultValue={""}
             />
-            <FormControl as="input" id="status" name="status" placeholder="Status (optional)" labelText="Status" icon={icons.avatarIcon} />
+            {/* <FormControl as="input" id="status" name="status" placeholder="Status (optional)" labelText="Status" icon={icons.avatarIcon} /> */}
 
-            <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            {/* <label htmlFor="image" className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Svg src={icons.avatarIcon} className="w-4 h-4" />
               Profile Image
             </label>
-            <DragnDrop className='sm:col-span-2' name='image' multiple={false} labelText="Upload profile photo" />
+            <DragnDrop className='sm:col-span-2' name='image' multiple={false} labelText="Upload profile photo" /> */}
           </div>
           <label className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
             <input
