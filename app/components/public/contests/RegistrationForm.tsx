@@ -72,6 +72,45 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
     
     const {user, navigate, copyReferalLink, getReferalLinkForWhatsAppShare, getReferralLink, path, getQueryParam,referralKey } = useRegistrationForm({contest})
     const categories = contest.categories ?? []
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+    const clearFieldError = (name: string) => {
+        setFieldErrors((currentErrors) => {
+            if (!currentErrors[name]) return currentErrors
+            const nextErrors = { ...currentErrors }
+            delete nextErrors[name]
+            return nextErrors
+        })
+    }
+    const handleInvalid = (event: React.InvalidEvent<HTMLFormElement>) => {
+        const controls = Array.from(event.currentTarget.elements).filter(
+            (element): element is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =>
+                (element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement) && !element.validity.valid
+        )
+        const fieldLabels: Record<string, string> = {
+            first_name: "First name",
+            last_name: "Last name",
+            email: "Email address",
+            dob: "Date of birth",
+            sex: "Gender",
+            state_of_residence: "State of residence",
+            whatsapp_no: "WhatsApp number",
+            category: "Category",
+            contestant_image: "Upload image",
+        }
+        const nextErrors = Object.fromEntries(controls
+            .filter((control) => control.name && fieldLabels[control.name])
+            .map((control) => [
+                control.name,
+                control.validity.valueMissing ? `${fieldLabels[control.name]} is required.` : control.validationMessage,
+            ]))
+        setFieldErrors(nextErrors)
+    }
+    const errorFor = (name: string) => fieldErrors[name]
+    const errorMessage = (name: string) => errorFor(name) && (
+        <span id={`${name}-error`} role="alert" className="mt-1 flex items-center gap-1.5 font-semibold leading-tight text-red-600">
+            <span aria-hidden="true" className="font-black">!</span>{errorFor(name)}
+        </span>
+    )
     if(!user) {
         
         return (
@@ -86,10 +125,16 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
         )
     };
     return (
-        <Form method="POST" encType="multipart/form-data" className="bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6">
+        <Form method="POST" encType="multipart/form-data" onInvalidCapture={handleInvalid} className="bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6">
             <p className="text-2xl font-satoshi-bold">
                 Participate by filling in your basic information below and clicking "Submit".
             </p>
+
+            {Object.keys(fieldErrors).length > 0 && (
+                <div role="alert" aria-live="assertive" className="rounded-lg border border-red-300 bg-red-50 p-4 text-red-800">
+                    Please correct the {Object.keys(fieldErrors).length} highlighted {Object.keys(fieldErrors).length === 1 ? "field" : "fields"} below.
+                </div>
+            )}
 
             <div>
                 Refer your friends to this contest and win big prices. <br/>
@@ -112,24 +157,24 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
                 <FormControl as="input" labelText="First Name" id="first_name" name="first_name"
-                    placeholder="Enter your first name" required
+                    placeholder="Enter your first name" required error={errorFor("first_name")} onChange={() => clearFieldError("first_name")}
                 />
                 <FormControl as="input" labelText="Last Name" id="last_name" name="last_name"
-                    placeholder="Enter your last name" required
+                    placeholder="Enter your last name" required error={errorFor("last_name")} onChange={() => clearFieldError("last_name")}
                 />
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
-                <FormControl as="input" labelText="Email Address" id="email" name="email" value={`${user?.email}`} readOnly
+                <FormControl as="input" labelText="Email Address" id="email" name="email" value={`${user?.email}`} readOnly error={errorFor("email")}
                     placeholder="Enter your email address" required
                 />
                 <FormControl as="input" type="date" labelText="Date of Birth" id="dob" name="dob"
-                    placeholder="dd/mm/yyyy" max={new Date().toISOString().split("T")[0]} required
+                    placeholder="dd/mm/yyyy" max={new Date().toISOString().split("T")[0]} required error={errorFor("dob")} onChange={() => clearFieldError("dob")}
                 />
             </div>
             <div className="grid gap-6 lg:grid-cols-2">
                 <label htmlFor="gender" className="font-bold flex flex-col"><span>Gender<span className="text-red-400">*</span></span>
-                    <Select name="sex" required>
-                        <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
+                    <Select name="sex" required onValueChange={() => clearFieldError("sex")}>
+                        <SelectTrigger id="sex" aria-invalid={!!errorFor("sex")} aria-describedby={errorFor("sex") ? "sex-error" : undefined} className={`h-10 font-normal rounded-lg shadow-none hover:border-accent ${errorFor("sex") ? "border-red-500 ring-1 ring-red-400" : ""}`}>
                             <SelectValue placeholder={"Gender"} />
                         </SelectTrigger>
                         <SelectContent>
@@ -137,10 +182,11 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                             <SelectItem value={"FEMALE"} className="focus:bg-blue-700/25">Female</SelectItem>
                         </SelectContent>
                     </Select>
+                    {errorMessage("sex")}
                 </label>
                 <label htmlFor="state_of_residence" className="font-bold flex flex-col"><span>State of Residence<span className="text-red-400">*</span></span>
-                    <Select name="state_of_residence" required>
-                        <SelectTrigger className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
+                    <Select name="state_of_residence" required onValueChange={() => clearFieldError("state_of_residence")}>
+                        <SelectTrigger id="state_of_residence" aria-invalid={!!errorFor("state_of_residence")} aria-describedby={errorFor("state_of_residence") ? "state_of_residence-error" : undefined} className={`h-10 font-normal rounded-lg shadow-none hover:border-accent ${errorFor("state_of_residence") ? "border-red-500 ring-1 ring-red-400" : ""}`}>
                             <SelectValue placeholder={"Select a state"} />
                         </SelectTrigger>
                         <SelectContent>
@@ -149,20 +195,21 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                             ))}
                         </SelectContent>
                     </Select>
+                    {errorMessage("state_of_residence")}
                 </label>
             </div>
             
             
             <div className="grid gap-6 lg:grid-cols-2">
                 <FormControl as="input" type="tel" labelText="Whatsapp Number" id="whatsapp_no" name="whatsapp_no"
-                    placeholder="Enter your whatsapp number" required
+                    placeholder="Enter your whatsapp number" required error={errorFor("whatsapp_no")} onChange={() => clearFieldError("whatsapp_no")}
                 />
                 {categories.length === 1 ? (
                     <input type="hidden" name="category" value={categories[0]} />
                 ) : categories.length > 1 ? (
                     <label htmlFor="category" className="font-bold flex flex-col"><span>Category<span className="text-red-400">*</span></span>
-                        <Select name="category" required>
-                            <SelectTrigger id="category" className="h-10 font-normal rounded-lg shadow-none hover:border-accent">
+                        <Select name="category" required onValueChange={() => clearFieldError("category")}>
+                            <SelectTrigger id="category" aria-invalid={!!errorFor("category")} aria-describedby={errorFor("category") ? "category-error" : undefined} className={`h-10 font-normal rounded-lg shadow-none hover:border-accent ${errorFor("category") ? "border-red-500 ring-1 ring-red-400" : ""}`}>
                                 <SelectValue placeholder={"Select a category"} />
                             </SelectTrigger>
                             <SelectContent>
@@ -171,6 +218,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
                                 ))}
                             </SelectContent>
                         </Select>
+                        {errorMessage("category")}
                     </label>
                 ) : (
                     <FormControl as="input" labelText="Referral code (Optional)" id="referral_code" name="referral_code"
@@ -196,7 +244,7 @@ export default function RegistrationForm({ contest }: { contest: IContest }) {
             
 
             
-            <DragnDrop labelText="Upload Image" name="contestant_image" multiple required />
+            <DragnDrop labelText="Upload Image" name="contestant_image" multiple required error={errorFor("contestant_image")} onFileChange={() => clearFieldError("contestant_image")} />
             <input type="hidden" name="contestId" value={contest._id} />
             <Button element="button" type="submit" name="intent" value="register" className="md:self-end">Submit</Button>
         </Form>
