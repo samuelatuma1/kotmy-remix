@@ -16969,9 +16969,9 @@ var AuthServer = class {
     let referredByCode = formData.get("referred_by_code");
     typeof referredByCode == "string" && referredByCode.trim() && signupData.append("referred_by_code", referredByCode.trim());
     let phone = formData.get("phone");
-    typeof phone == "string" && phone.trim() && signupData.append("phone", phone), formData.get("status") && signupData.append("status", formData.get("status"));
+    typeof phone == "string" && phone.trim() && signupData.append("phone", phone);
     let imageFile = formData.get("image");
-    return imageFile instanceof File && imageFile.size === 0 || signupData.append("image", formData.get("image")), signupData;
+    return typeof File < "u" && imageFile instanceof File && imageFile.size > 0 && signupData.append("image", imageFile), signupData;
   }
   prepareUpdateUserPayload(formData) {
     let updateData = new FormData();

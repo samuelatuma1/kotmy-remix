@@ -114,13 +114,10 @@ export default class AuthServer {
         if (typeof phone === "string" && phone.trim()) {
             signupData.append("phone", phone);
         }
-        if (formData.get("status")) {
-            signupData.append("status", formData.get("status") as string);
-        }
         const imageFile = formData.get("image");
-        if (!(imageFile instanceof File && imageFile.size === 0)) {
-            signupData.append("image", formData.get("image") as File);
-         }
+        if (typeof File !== "undefined" && imageFile instanceof File && imageFile.size > 0) {
+            signupData.append("image", imageFile);
+        }
 
         return signupData;
     }
