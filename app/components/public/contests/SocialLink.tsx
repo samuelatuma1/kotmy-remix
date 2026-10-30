@@ -107,6 +107,8 @@ export default React.forwardRef(function SocialLink(
             </Cta> */}
         </fetcher.Form>
         )
+        : type === "tally"
+        ? <VoteLink type={type} count={numberSlang(rest.contestant?.vote.tally ?? 0)} className={className} />
         : <Cta {...props} variant="outline" className={cn("p-2 flex items-center border rounded-full", {
             "border-facebook text-facebook bg-facebookBG hover:bg-facebook/15": type === "facebook",
             "border-instagram text-instagram bg-instagramBG hover:bg-instagram/15": type === "instagram",
