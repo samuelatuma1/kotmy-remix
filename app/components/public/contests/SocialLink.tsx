@@ -18,7 +18,8 @@ type Props = | {
     voted?: boolean,
     contestantId?: string,
     stageId?: string,
-    contestant?: IContestant
+    contestant?: IContestant,
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
 } | {
     type: Extract<keyof typeof socialIcons, "kotmy">,
     url?: string,
@@ -26,7 +27,8 @@ type Props = | {
     voted: boolean,
     contestantId: string,
     stageId: string,
-    contestant?: IContestant
+    contestant?: IContestant,
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export default React.forwardRef(function SocialLink(
@@ -108,7 +110,7 @@ export default React.forwardRef(function SocialLink(
         </fetcher.Form>
         )
         : type === "tally"
-        ? <VoteLink type={type} count={numberSlang(rest.contestant?.vote.tally ?? 0)} className={className} />
+        ? <VoteLink ref={ref} onClick={rest.onClick} type={type} count={numberSlang(rest.contestant?.vote.tally ?? 0)} className={className} />
         : <Cta {...props} variant="outline" className={cn("p-2 flex items-center border rounded-full", {
             "border-facebook text-facebook bg-facebookBG hover:bg-facebook/15": type === "facebook",
             "border-instagram text-instagram bg-instagramBG hover:bg-instagram/15": type === "instagram",
