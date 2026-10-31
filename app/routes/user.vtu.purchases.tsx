@@ -1,1 +1,1 @@
-export { loader, default } from "./_public.vtuservice.vtupurchases";
+export { loader, default } from "./_public.vtuservice.purchases";

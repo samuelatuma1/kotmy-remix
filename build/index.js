@@ -5318,15 +5318,419 @@ function ContestLayout() {
   return /* @__PURE__ */ jsx43(Outlet2, {});
 }
 
-// app/routes/_public.vtuservice.vtupurchase.$reference.tsx
-var public_vtuservice_vtupurchase_reference_exports = {};
-__export(public_vtuservice_vtupurchase_reference_exports, {
-  default: () => VTUPurchaseReferencePage,
+// app/routes/user.contestantprofilecontests.$profileId.tsx
+var user_contestantprofilecontests_profileId_exports = {};
+__export(user_contestantprofilecontests_profileId_exports, {
+  default: () => UserContestantProfileContests,
   loader: () => loader10
 });
-import { json as json11 } from "@remix-run/node";
-import { useLoaderData as useLoaderData7, useNavigation as useNavigation6 } from "@remix-run/react";
-import { useEffect as useEffect17 } from "react";
+import { useEffect as useEffect17, useState as useState20 } from "react";
+import { Link as Link10, useLoaderData as useLoaderData7, useNavigation as useNavigation6 } from "@remix-run/react";
+import { json as json11, redirect as redirect11 } from "@remix-run/node";
+import { jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
+async function loader10({ request, params }) {
+  await requireAuth(request);
+  let profileId = params.profileId;
+  if (!profileId)
+    throw new Error("Invalid profile id");
+  let { data, error, authRequired } = await contestantRepo.getContestsForContestantProfile(profileId, request);
+  return authRequired ? redirect11("/login") : json11({ data, error, authRequired });
+}
+function useContestantProfileContestsController() {
+  let { data, error } = useLoaderData7(), navigation = useNavigation6(), [contests, setContests] = useState20([]);
+  useEffect17(() => {
+    data && setContests(data);
+  }, [data]), useEffect17(() => {
+    error && toast({
+      variant: "destructive",
+      title: "An error occurred",
+      description: error?.detail?.toString() ?? "Error occurred"
+    });
+  }, [error]);
+  let isLoading = navigation.state === "loading" && contests.length === 0;
+  return { contests, isLoading };
+}
+function UserContestantProfileContests() {
+  let { contests, isLoading } = useContestantProfileContestsController();
+  return /* @__PURE__ */ jsx44("div", { className: "min-h-screen bg-white text-brand-navy", children: /* @__PURE__ */ jsxs34("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: [
+    /* @__PURE__ */ jsx44("section", { className: "overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]", children: /* @__PURE__ */ jsxs34("div", { className: "bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12", children: [
+      /* @__PURE__ */ jsx44("p", { className: "text-xs font-semibold uppercase tracking-[0.24em] text-white/70", children: "Contestant profile" }),
+      /* @__PURE__ */ jsx44("h1", { className: "mt-3 max-w-xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl", children: "Contests for profile" }),
+      /* @__PURE__ */ jsx44("p", { className: "mt-4 max-w-2xl text-sm leading-6 text-white/75 sm:text-base", children: "These are the contests this profile is participating in, along with the contestant\u2019s performance." })
+    ] }) }),
+    /* @__PURE__ */ jsx44("main", { className: "py-8 sm:py-10 lg:py-12", children: isLoading ? /* @__PURE__ */ jsx44(ContestsSkeleton, {}) : contests.length > 0 ? /* @__PURE__ */ jsx44("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: contests.map((contest) => /* @__PURE__ */ jsx44(ContestResultCard, { contest }, contest._id)) }) : /* @__PURE__ */ jsx44(EmptyState, {}) })
+  ] }) });
+}
+function ContestResultCard({ contest }) {
+  let result = contest.final_result_scores?.[0], fullName = result ? `${result.contestant_biodata.first_name} ${result.contestant_biodata.last_name}`.trim() : "", image = result?.contestant_image_url || no_image_default;
+  return /* @__PURE__ */ jsxs34("article", { className: "group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition-transform duration-300 hover:-translate-y-1", children: [
+    /* @__PURE__ */ jsxs34("div", { className: "relative", children: [
+      /* @__PURE__ */ jsx44(
+        "img",
+        {
+          src: image,
+          alt: fullName || contest.name,
+          className: "aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        }
+      ),
+      /* @__PURE__ */ jsx44("div", { className: "absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-navy/45 to-transparent" }),
+      result && /* @__PURE__ */ jsxs34("div", { className: "absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-navy shadow-[0_8px_24px_rgba(14,42,77,0.12)]", children: [
+        "Position ",
+        result.position
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs34("div", { className: "flex flex-1 flex-col gap-4 px-5 py-5 sm:px-6", children: [
+      /* @__PURE__ */ jsxs34("div", { children: [
+        /* @__PURE__ */ jsx44("p", { className: "text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate", children: contest.name }),
+        /* @__PURE__ */ jsx44("h3", { className: "mt-2 text-xl font-black tracking-tight text-brand-navy", children: fullName || "Contestant" }),
+        result?.contestant_biodata.email && /* @__PURE__ */ jsx44("p", { className: "mt-1 text-sm text-brand-slate", children: result.contestant_biodata.email })
+      ] }),
+      result && /* @__PURE__ */ jsxs34("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
+        /* @__PURE__ */ jsxs34("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
+          /* @__PURE__ */ jsx44("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Position" }),
+          /* @__PURE__ */ jsx44("p", { className: "mt-1 text-lg font-black text-brand-navy", children: toOrdinal(result.position) })
+        ] }),
+        /* @__PURE__ */ jsxs34("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
+          /* @__PURE__ */ jsx44("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Total votes Percent" }),
+          /* @__PURE__ */ jsxs34("p", { className: "mt-1 text-lg font-black text-brand-pink", children: [
+            result.total_votes?.toFixed(2),
+            "%"
+          ] })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+function ContestsSkeleton() {
+  return /* @__PURE__ */ jsx44("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxs34(
+    "div",
+    {
+      className: "animate-pulse overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)]",
+      children: [
+        /* @__PURE__ */ jsx44("div", { className: "aspect-[4/5] bg-slate-200" }),
+        /* @__PURE__ */ jsxs34("div", { className: "flex flex-col gap-4 px-5 py-5 sm:px-6", children: [
+          /* @__PURE__ */ jsxs34("div", { className: "space-y-2", children: [
+            /* @__PURE__ */ jsx44("div", { className: "h-3 w-1/2 rounded-full bg-slate-200" }),
+            /* @__PURE__ */ jsx44("div", { className: "h-5 w-3/4 rounded-full bg-slate-200" }),
+            /* @__PURE__ */ jsx44("div", { className: "h-4 w-1/2 rounded-full bg-slate-200" })
+          ] }),
+          /* @__PURE__ */ jsxs34("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
+            /* @__PURE__ */ jsx44("div", { className: "h-16 rounded-2xl bg-slate-200" }),
+            /* @__PURE__ */ jsx44("div", { className: "h-16 rounded-2xl bg-slate-200" })
+          ] })
+        ] })
+      ]
+    },
+    index
+  )) });
+}
+function EmptyState() {
+  return /* @__PURE__ */ jsxs34("section", { className: "rounded-[2rem] border border-dashed border-brand-grey bg-secondary px-6 py-14 text-center sm:px-10", children: [
+    /* @__PURE__ */ jsx44("div", { className: "mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-brand-grey bg-white shadow-[0_10px_24px_rgba(14,42,77,0.06)]", children: /* @__PURE__ */ jsxs34("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", className: "h-7 w-7 text-brand-pink", fill: "none", children: [
+      /* @__PURE__ */ jsx44("path", { d: "M12 8v8M8 12h8", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round" }),
+      /* @__PURE__ */ jsx44("circle", { cx: "12", cy: "12", r: "9", stroke: "currentColor", strokeWidth: "1.8" })
+    ] }) }),
+    /* @__PURE__ */ jsx44("h2", { className: "mt-6 text-2xl font-black tracking-tight text-brand-navy", children: "No contests for this profile" }),
+    /* @__PURE__ */ jsx44("p", { className: "mx-auto mt-3 max-w-xl text-sm leading-6 text-brand-slate", children: "This profile is not participating in any contests at the moment." }),
+    /* @__PURE__ */ jsx44(
+      Link10,
+      {
+        to: "/user/contestantprofiles",
+        className: "mt-6 inline-flex items-center rounded-full bg-brand-pink px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-pink/90",
+        children: "Back to profiles"
+      }
+    )
+  ] });
+}
+
+// app/routes/admin.transactions.contest-registrations.tsx
+var admin_transactions_contest_registrations_exports = {};
+__export(admin_transactions_contest_registrations_exports, {
+  action: () => action6,
+  default: () => ContestRegistrations,
+  loader: () => loader11
+});
+import { json as json12 } from "@remix-run/node";
+import { useLoaderData as useLoaderData8 } from "@remix-run/react";
+
+// app/components/reusables/DataTable.tsx
+import React10 from "react";
+import {
+  flexRender,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getSortedRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import { jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
+function DataTable({
+  data,
+  columns: columns5,
+  className = "",
+  TableActions,
+  expandRows,
+  getRowCanExpand,
+  SubComponent
+}) {
+  let [sorting, setSorting] = React10.useState([]), expandOptions = expandRows ? { getRowCanExpand, getExpandedRowModel: getExpandedRowModel() } : {}, [rowSelection, setRowSelection] = React10.useState({}), table = useReactTable({
+    data,
+    columns: columns5,
+    getCoreRowModel: getCoreRowModel(),
+    state: { sorting, rowSelection },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    onRowSelectionChange: setRowSelection,
+    ...expandOptions
+  });
+  return /* @__PURE__ */ jsxs35("div", { className: "", children: [
+    TableActions ? /* @__PURE__ */ jsx45(TableActions, { table }) : null,
+    /* @__PURE__ */ jsxs35("table", { className: `w-full ${className}`, children: [
+      /* @__PURE__ */ jsx45("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsx45("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsx45("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id)) }, headerGroup.id)) }),
+      /* @__PURE__ */ jsx45("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxs35(React10.Fragment, { children: [
+        /* @__PURE__ */ jsx45(
+          "tr",
+          {
+            className: "border-b border-secondary hover:bg-secondary",
+            "data-state": row.getIsSelected() && "selected",
+            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx45("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
+          },
+          row.id
+        ),
+        /* @__PURE__ */ jsx45("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsx45("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsx45(SubComponent, { row }) }) })
+      ] }, row.id)) : /* @__PURE__ */ jsx45("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsx45("td", { className: "p-3 text-center", colSpan: columns5.length, children: "No data to display" }) }) })
+    ] })
+  ] });
+}
+
+// app/components/reusables/DataTableColumnHeader.tsx
+import { jsx as jsx46, jsxs as jsxs36 } from "react/jsx-runtime";
+function DataTableColumnHeader({
+  column,
+  title,
+  className
+}) {
+  return column.getCanSort() ? /* @__PURE__ */ jsxs36(
+    "span",
+    {
+      "data-sortable": !0,
+      className: `flex items-center ${className}`,
+      onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      children: [
+        /* @__PURE__ */ jsx46("span", { children: title }),
+        /* @__PURE__ */ jsx46(Svg, { src: icons.arrowUpDownIcon })
+      ]
+    }
+  ) : title;
+}
+
+// app/lib/dates.utils.ts
+function parseDateForInput(date = (/* @__PURE__ */ new Date()).toISOString()) {
+  return date.split("T")[0];
+}
+function parseDateTimeForInput(_date = (/* @__PURE__ */ new Date()).toISOString()) {
+  let date = new Date(_date), year = date.getFullYear(), month = String(date.getMonth() + 1).padStart(2, "0"), day = String(date.getDate()).padStart(2, "0"), hours = String(date.getHours()).padStart(2, "0"), minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+function formatDate(date, options = {}) {
+  return new Intl.DateTimeFormat("en-NG", options).format(date);
+}
+
+// app/components/admin/transactions/ContestRegistrationsTable.tsx
+import { Fragment as Fragment8, jsx as jsx47, jsxs as jsxs37 } from "react/jsx-runtime";
+var numberFormatterOptions = { style: "currency", currency: "NGN" }, dateOptions = {
+  year: "numeric",
+  month: "short",
+  day: "numeric"
+}, timeOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit"
+}, columns = [
+  {
+    header: "S/N",
+    cell: ({ row }) => +row.id + 1
+  },
+  {
+    accessorKey: "tx_ref",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "trx ref" })
+  },
+  {
+    accessorKey: "contest",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "contest" })
+  },
+  {
+    accessorKey: "contestant",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "contestant" })
+  },
+  {
+    accessorKey: "sender",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "sender" })
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
+    cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions)
+  },
+  {
+    accessorKey: "date",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "date" }),
+    cell: ({ getValue }) => /* @__PURE__ */ jsxs37("span", { children: [
+      /* @__PURE__ */ jsx47("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions) }),
+      /* @__PURE__ */ jsx47("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions) })
+    ] })
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => /* @__PURE__ */ jsx47(DataTableColumnHeader, { column, title: "status" }),
+    cell: ({ getValue }) => {
+      let status = getValue();
+      return /* @__PURE__ */ jsx47(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" });
+    }
+  }
+];
+function ContestRegistrationsTable({ data }) {
+  return /* @__PURE__ */ jsxs37(Fragment8, { children: [
+    /* @__PURE__ */ jsx47("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx47(DataTable, { data, columns, className: "text-xs" }) }),
+    /* @__PURE__ */ jsxs37("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
+      /* @__PURE__ */ jsxs37("label", { className: "flex gap-2", children: [
+        "Rows per page",
+        /* @__PURE__ */ jsx47("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
+      ] }),
+      /* @__PURE__ */ jsx47(Pagination, {})
+    ] })
+  ] });
+}
+
+// app/routes/admin.transactions.contest-registrations.tsx
+import { jsx as jsx48, jsxs as jsxs38 } from "react/jsx-runtime";
+async function loader11({}) {
+  let tranasctions = [{
+    tx_ref: "KCRUSHIP4HIYGM72VL",
+    sender: "payments@nefworld.com",
+    contest: "My Kid Crush of December",
+    contestant: "John Wick",
+    amount: 53e3,
+    date: (/* @__PURE__ */ new Date()).toISOString(),
+    status: "verified"
+  }, {
+    tx_ref: "KCRUSHIP4HIYGM72VL",
+    sender: "payments@nefworld.com",
+    contest: "My Kid Crush of December",
+    contestant: "John Wick",
+    amount: 1e3,
+    date: (/* @__PURE__ */ new Date()).toISOString(),
+    status: "pending"
+  }, {
+    tx_ref: "KCRUSHIP4HIYGM72VL",
+    sender: "payments@nefworld.com",
+    contest: "My Kid Crush of December",
+    contestant: "John Wick",
+    amount: 2e3,
+    date: (/* @__PURE__ */ new Date()).toISOString(),
+    status: "revoked"
+  }];
+  return json12({ tranasctions });
+}
+async function action6({ request }) {
+  let formData = await request.formData();
+  console.log(...formData);
+  let { headers } = await setToast({ request, toast: `success::The transaction has been created::${Date.now()}` });
+  return json12(null, { headers });
+}
+function ContestRegistrations() {
+  let { tranasctions } = useLoaderData8();
+  return /* @__PURE__ */ jsxs38("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsx48("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsx48("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Registration Transactions" }) }),
+    /* @__PURE__ */ jsx48("section", { className: "my-12", children: /* @__PURE__ */ jsx48(ContestRegistrationsTable, { data: tranasctions }) })
+  ] });
+}
+
+// app/routes/partners.addwithdrawalaccount.$walletid.tsx
+var partners_addwithdrawalaccount_walletid_exports = {};
+__export(partners_addwithdrawalaccount_walletid_exports, {
+  default: () => AccountTypePage3,
+  loader: () => loader12,
+  useAccountTypePage: () => useAccountTypePage3
+});
+import { redirect as redirect12 } from "@remix-run/node";
+import { Form as Form10, Link as Link11, useNavigate as useNavigate12, useParams as useParams3 } from "@remix-run/react";
+import { useState as useState21 } from "react";
+import { jsx as jsx49, jsxs as jsxs39 } from "react/jsx-runtime";
+async function loader12({ request, params }) {
+  let validateAuth = await requireAuth(request), walletid = params.walletid ?? "", { error, data, authRequired } = await walletRepo.getWalletWithdrawalAccounts(walletid, request);
+  return authRequired && redirect12("/login"), console.log("User wallets", data), { error, data, authRequired };
+}
+var UserIcon = () => /* @__PURE__ */ jsx49("div", { className: "w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center", children: /* @__PURE__ */ jsx49("div", { className: "w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx49("div", { className: "w-4 h-4 bg-white rounded-full mt-[-4px]" }) }) }), BriefcaseIcon3 = () => /* @__PURE__ */ jsx49("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx49("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx49("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
+function useAccountTypePage3() {
+  let params = useParams3(), [selectedType, setSelectedType] = useState21(null), [accountRedirectUrl, setAccountRedirectUrl] = useState21("");
+  function updateSelectAccountType(accountType) {
+    setSelectedType(accountType), setAccountRedirectUrl(`/partners/addwithdrawalaccount/${accountType}/${params.walletid}`);
+  }
+  return { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl };
+}
+function AccountTypePage3() {
+  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage3(), navigate = useNavigate12();
+  return /* @__PURE__ */ jsx49("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs39("div", { className: "max-w-4xl w-full text-center", children: [
+    /* @__PURE__ */ jsx49(Link11, { to: "/partners/wallet", className: "mb-8 block text-left text-sm font-medium text-gray-600 transition-colors hover:text-gray-900", children: "\u2190 Back to wallet" }),
+    /* @__PURE__ */ jsxs39("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
+      "What type of account ",
+      /* @__PURE__ */ jsx49("br", {}),
+      " would you like to add?"
+    ] }),
+    /* @__PURE__ */ jsxs39(Form10, { method: "post", className: "mt-16", children: [
+      /* @__PURE__ */ jsxs39("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: [
+        /* @__PURE__ */ jsxs39(
+          "div",
+          {
+            onClick: () => updateSelectAccountType("personal"),
+            className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
+                ${selectedType === "personal" ? "border-blue-500 ring-4 ring-blue-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
+            children: [
+              /* @__PURE__ */ jsx49("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx49(UserIcon, {}) }),
+              /* @__PURE__ */ jsx49("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Personal account" }),
+              /* @__PURE__ */ jsx49("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Add any bank account of you or your loved one. You would pay a one time fee that would be taken from your earnings" }),
+              /* @__PURE__ */ jsx49("input", { type: "radio", name: "accountType", value: "personal", className: "hidden", checked: selectedType === "personal", readOnly: !0 })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs39(
+          "div",
+          {
+            onClick: () => updateSelectAccountType("partner"),
+            className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
+                ${selectedType === "partner" ? "border-green-500 ring-4 ring-green-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
+            children: [
+              /* @__PURE__ */ jsx49("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx49(BriefcaseIcon3, {}) }),
+              /* @__PURE__ */ jsx49("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
+              /* @__PURE__ */ jsx49("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
+              /* @__PURE__ */ jsx49("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx49("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx49(Link11, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx49(
+        Cta_default,
+        {
+          element: "button",
+          type: "submit",
+          disabled: !selectedType,
+          className: "w-full py-4 rounded-2xl text-lg font-semibold transition-colors",
+          children: "Continue"
+        }
+      ) }) })
+    ] })
+  ] }) });
+}
+
+// app/routes/_public.vtuservice.purchase.$reference.tsx
+var public_vtuservice_purchase_reference_exports = {};
+__export(public_vtuservice_purchase_reference_exports, {
+  default: () => VTUPurchaseReferencePage,
+  loader: () => loader13
+});
+import { json as json13 } from "@remix-run/node";
+import { useLoaderData as useLoaderData9, useNavigation as useNavigation7 } from "@remix-run/react";
+import { useEffect as useEffect18 } from "react";
 
 // app/services/vtu/vtu.server.ts
 var VTUServer = class {
@@ -5453,494 +5857,90 @@ var VTUProductStatus = /* @__PURE__ */ ((VTUProductStatus2) => (VTUProductStatus
 var VTUProductCategory = /* @__PURE__ */ ((VTUProductCategory2) => (VTUProductCategory2.PROMO = "Promo", VTUProductCategory2.SME = "SME", VTUProductCategory2.NORMAL = "Normal", VTUProductCategory2))(VTUProductCategory || {});
 var VTUDiscountType = /* @__PURE__ */ ((VTUDiscountType2) => (VTUDiscountType2.FIXED = "fixed", VTUDiscountType2.PERCENTAGE = "percentage", VTUDiscountType2))(VTUDiscountType || {}), VTUPurchaseStatus = /* @__PURE__ */ ((VTUPurchaseStatus2) => (VTUPurchaseStatus2.INITIATED = "initiated", VTUPurchaseStatus2.PENDING = "pending", VTUPurchaseStatus2.SUCCESSFUL = "successful", VTUPurchaseStatus2.SUCCESSFUL_PENDING_FULFILLMENT = "successful_pending_fulfillment", VTUPurchaseStatus2.FAILED = "failed", VTUPurchaseStatus2.MANUAL_REVIEW = "manual_review", VTUPurchaseStatus2.AWAITING_PROVIDER_WALLET_FUNDS = "awaiting_provider_funds", VTUPurchaseStatus2.REFUND_INITIATED = "refund_initiated", VTUPurchaseStatus2.REFUND_STATUS_UNKNOWN = "refund_status_unknown", VTUPurchaseStatus2.REFUND_FAILED = "refund_failed", VTUPurchaseStatus2.REFUND_PROCESSING = "refund_processing", VTUPurchaseStatus2.REFUNDED = "refunded", VTUPurchaseStatus2))(VTUPurchaseStatus || {});
 
-// app/routes/_public.vtuservice.vtupurchase.$reference.tsx
-import { jsx as jsx44, jsxs as jsxs34 } from "react/jsx-runtime";
-async function loader10({ request, params }) {
+// app/routes/_public.vtuservice.purchase.$reference.tsx
+import { jsx as jsx50, jsxs as jsxs40 } from "react/jsx-runtime";
+async function loader13({ request, params }) {
   let reference = params.reference?.trim() ?? "";
   if (!reference)
-    return json11({ purchase: null, error: "Purchase reference is missing." }, { status: 400 });
+    return json13({ purchase: null, error: "Purchase reference is missing." }, { status: 400 });
   let response = await vtuServer.getVTUPurchaseByReference(reference, request);
-  return response.error || !response.data ? json11({ purchase: null, error: getErrorMessage(response.error, "Unable to load this VTU purchase.") }, { status: 400 }) : json11({ purchase: response.data, error: null });
+  return response.error || !response.data ? json13({ purchase: null, error: getErrorMessage(response.error, "Unable to load this VTU purchase.") }, { status: 400 }) : json13({ purchase: response.data, error: null });
 }
 function PurchaseSkeleton() {
-  return /* @__PURE__ */ jsxs34("div", { "aria-hidden": "true", className: "animate-pulse space-y-4", children: [
-    /* @__PURE__ */ jsx44("div", { className: "h-44 rounded-[2rem] bg-slate-200" }),
-    /* @__PURE__ */ jsx44("div", { className: "h-72 rounded-[2rem] bg-slate-200" })
+  return /* @__PURE__ */ jsxs40("div", { "aria-hidden": "true", className: "animate-pulse space-y-4", children: [
+    /* @__PURE__ */ jsx50("div", { className: "h-44 rounded-[2rem] bg-slate-200" }),
+    /* @__PURE__ */ jsx50("div", { className: "h-72 rounded-[2rem] bg-slate-200" })
   ] });
 }
 function StatusBadge({ status }) {
-  return /* @__PURE__ */ jsx44("span", { className: "inline-flex rounded-full bg-brand-pink/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-pink", children: status.replaceAll("_", " ") });
+  return /* @__PURE__ */ jsx50("span", { className: "inline-flex rounded-full bg-brand-pink/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-pink", children: status.replaceAll("_", " ") });
 }
 function VTUPurchaseReferencePage() {
-  let data = useLoaderData7(), navigation = useNavigation6();
-  if (useEffect17(() => {
+  let data = useLoaderData9(), navigation = useNavigation7();
+  if (useEffect18(() => {
     data.error && toast({
       variant: "destructive",
       title: "Unable to load purchase",
       description: data.error
     });
   }, [data.error]), navigation.state !== "idle")
-    return /* @__PURE__ */ jsx44("main", { className: "grow bg-white px-4 py-10 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx44("div", { className: "mx-auto max-w-3xl", children: /* @__PURE__ */ jsx44(PurchaseSkeleton, {}) }) });
+    return /* @__PURE__ */ jsx50("main", { className: "grow bg-white px-4 py-10 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx50("div", { className: "mx-auto max-w-3xl", children: /* @__PURE__ */ jsx50(PurchaseSkeleton, {}) }) });
   if (!data.purchase)
-    return /* @__PURE__ */ jsxs34("main", { className: "grow bg-white px-4 py-16 text-center text-brand-navy", children: [
-      /* @__PURE__ */ jsx44("h1", { className: "text-2xl font-black", children: "Purchase details unavailable" }),
-      /* @__PURE__ */ jsx44("p", { className: "mt-3 text-sm text-slate-500", children: "We could not find the requested VTU purchase." })
+    return /* @__PURE__ */ jsxs40("main", { className: "grow bg-white px-4 py-16 text-center text-brand-navy", children: [
+      /* @__PURE__ */ jsx50("h1", { className: "text-2xl font-black", children: "Purchase details unavailable" }),
+      /* @__PURE__ */ jsx50("p", { className: "mt-3 text-sm text-slate-500", children: "We could not find the requested VTU purchase." })
     ] });
   let purchase = data.purchase, isAirtime = purchase.type === "Airtime" /* AIRTIME */ || purchase.type.toLowerCase() === "Airtime" /* AIRTIME */.toLowerCase();
-  return /* @__PURE__ */ jsx44("main", { className: "grow bg-white px-4 py-10 text-brand-navy sm:px-6 sm:py-16 lg:px-8", children: /* @__PURE__ */ jsxs34("section", { className: "mx-auto max-w-3xl space-y-6", children: [
-    /* @__PURE__ */ jsxs34("header", { className: "rounded-[2rem] bg-brand-navy px-6 py-8 text-white shadow-[0_18px_60px_rgba(14,42,77,0.16)] sm:px-8", children: [
-      /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.24em] text-white/70", children: "VTU purchase" }),
-      /* @__PURE__ */ jsx44("h1", { className: "mt-3 text-3xl font-black sm:text-4xl", children: "Purchase details" }),
-      /* @__PURE__ */ jsxs34("div", { className: "mt-5 flex flex-wrap items-center gap-3", children: [
-        /* @__PURE__ */ jsx44(StatusBadge, { status: purchase.status }),
-        /* @__PURE__ */ jsx44("span", { className: "break-all text-sm text-white/75", children: purchase.reference })
+  return /* @__PURE__ */ jsx50("main", { className: "grow bg-white px-4 py-10 text-brand-navy sm:px-6 sm:py-16 lg:px-8", children: /* @__PURE__ */ jsxs40("section", { className: "mx-auto max-w-3xl space-y-6", children: [
+    /* @__PURE__ */ jsxs40("header", { className: "rounded-[2rem] bg-brand-navy px-6 py-8 text-white shadow-[0_18px_60px_rgba(14,42,77,0.16)] sm:px-8", children: [
+      /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.24em] text-white/70", children: "VTU purchase" }),
+      /* @__PURE__ */ jsx50("h1", { className: "mt-3 text-3xl font-black sm:text-4xl", children: "Purchase details" }),
+      /* @__PURE__ */ jsxs40("div", { className: "mt-5 flex flex-wrap items-center gap-3", children: [
+        /* @__PURE__ */ jsx50(StatusBadge, { status: purchase.status }),
+        /* @__PURE__ */ jsx50("span", { className: "break-all text-sm text-white/75", children: purchase.reference })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs34("section", { className: "rounded-[2rem] border border-brand-grey bg-white p-6 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-8", children: [
-      /* @__PURE__ */ jsxs34("div", { className: "grid gap-5 sm:grid-cols-2", children: [
-        purchase.description && /* @__PURE__ */ jsxs34("div", { className: "sm:col-span-2", children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Description" }),
-          /* @__PURE__ */ jsx44("p", { className: "mt-1 font-bold", children: purchase.description })
+    /* @__PURE__ */ jsxs40("section", { className: "rounded-[2rem] border border-brand-grey bg-white p-6 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-8", children: [
+      /* @__PURE__ */ jsxs40("div", { className: "grid gap-5 sm:grid-cols-2", children: [
+        purchase.description && /* @__PURE__ */ jsxs40("div", { className: "sm:col-span-2", children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Description" }),
+          /* @__PURE__ */ jsx50("p", { className: "mt-1 font-bold", children: purchase.description })
         ] }),
-        /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Network" }),
-          /* @__PURE__ */ jsx44("p", { className: "mt-1 font-bold", children: purchase.network ?? "\u2014" })
+        /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Network" }),
+          /* @__PURE__ */ jsx50("p", { className: "mt-1 font-bold", children: purchase.network ?? "\u2014" })
         ] }),
-        /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Type" }),
-          /* @__PURE__ */ jsx44("p", { className: "mt-1 font-bold", children: purchase.type })
+        /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Type" }),
+          /* @__PURE__ */ jsx50("p", { className: "mt-1 font-bold", children: purchase.type })
         ] }),
-        /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Phone number" }),
-          /* @__PURE__ */ jsx44("p", { className: "mt-1 font-bold", children: purchase.phone_number })
+        /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Phone number" }),
+          /* @__PURE__ */ jsx50("p", { className: "mt-1 font-bold", children: purchase.phone_number })
         ] }),
-        /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Currency" }),
-          /* @__PURE__ */ jsx44("p", { className: "mt-1 font-bold", children: purchase.currency })
+        /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Currency" }),
+          /* @__PURE__ */ jsx50("p", { className: "mt-1 font-bold", children: purchase.currency })
         ] }),
-        /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Discounted amount" }),
-          /* @__PURE__ */ jsxs34("p", { className: "mt-1 font-bold", children: [
+        /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Discounted amount" }),
+          /* @__PURE__ */ jsxs40("p", { className: "mt-1 font-bold", children: [
             purchase.currency,
             formatAmount(purchase.discounted_retail_amount)
           ] })
         ] }),
-        isAirtime && /* @__PURE__ */ jsxs34("div", { children: [
-          /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Original airtime amount" }),
-          /* @__PURE__ */ jsxs34("p", { className: "mt-1 font-bold", children: [
+        isAirtime && /* @__PURE__ */ jsxs40("div", { children: [
+          /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-400", children: "Original airtime amount" }),
+          /* @__PURE__ */ jsxs40("p", { className: "mt-1 font-bold", children: [
             purchase.currency,
             formatAmount(purchase.original_retail_amount)
           ] })
         ] })
       ] }),
-      purchase.failure_reason && /* @__PURE__ */ jsxs34("div", { className: "mt-6 rounded-2xl border border-red-200 bg-red-50 p-4", children: [
-        /* @__PURE__ */ jsx44("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-red-500", children: "Failure reason" }),
-        /* @__PURE__ */ jsx44("p", { className: "mt-2 text-sm font-semibold text-red-700", children: purchase.failure_reason })
+      purchase.failure_reason && /* @__PURE__ */ jsxs40("div", { className: "mt-6 rounded-2xl border border-red-200 bg-red-50 p-4", children: [
+        /* @__PURE__ */ jsx50("p", { className: "text-xs font-bold uppercase tracking-[0.18em] text-red-500", children: "Failure reason" }),
+        /* @__PURE__ */ jsx50("p", { className: "mt-2 text-sm font-semibold text-red-700", children: purchase.failure_reason })
       ] })
-    ] })
-  ] }) });
-}
-
-// app/routes/user.contestantprofilecontests.$profileId.tsx
-var user_contestantprofilecontests_profileId_exports = {};
-__export(user_contestantprofilecontests_profileId_exports, {
-  default: () => UserContestantProfileContests,
-  loader: () => loader11
-});
-import { useEffect as useEffect18, useState as useState20 } from "react";
-import { Link as Link10, useLoaderData as useLoaderData8, useNavigation as useNavigation7 } from "@remix-run/react";
-import { json as json12, redirect as redirect11 } from "@remix-run/node";
-import { jsx as jsx45, jsxs as jsxs35 } from "react/jsx-runtime";
-async function loader11({ request, params }) {
-  await requireAuth(request);
-  let profileId = params.profileId;
-  if (!profileId)
-    throw new Error("Invalid profile id");
-  let { data, error, authRequired } = await contestantRepo.getContestsForContestantProfile(profileId, request);
-  return authRequired ? redirect11("/login") : json12({ data, error, authRequired });
-}
-function useContestantProfileContestsController() {
-  let { data, error } = useLoaderData8(), navigation = useNavigation7(), [contests, setContests] = useState20([]);
-  useEffect18(() => {
-    data && setContests(data);
-  }, [data]), useEffect18(() => {
-    error && toast({
-      variant: "destructive",
-      title: "An error occurred",
-      description: error?.detail?.toString() ?? "Error occurred"
-    });
-  }, [error]);
-  let isLoading = navigation.state === "loading" && contests.length === 0;
-  return { contests, isLoading };
-}
-function UserContestantProfileContests() {
-  let { contests, isLoading } = useContestantProfileContestsController();
-  return /* @__PURE__ */ jsx45("div", { className: "min-h-screen bg-white text-brand-navy", children: /* @__PURE__ */ jsxs35("div", { className: "mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10", children: [
-    /* @__PURE__ */ jsx45("section", { className: "overflow-hidden rounded-[2rem] border border-brand-grey bg-white shadow-[0_18px_60px_rgba(14,42,77,0.08)]", children: /* @__PURE__ */ jsxs35("div", { className: "bg-brand-navy px-6 py-8 text-white sm:px-8 sm:py-10 lg:px-10 lg:py-12", children: [
-      /* @__PURE__ */ jsx45("p", { className: "text-xs font-semibold uppercase tracking-[0.24em] text-white/70", children: "Contestant profile" }),
-      /* @__PURE__ */ jsx45("h1", { className: "mt-3 max-w-xl text-3xl font-black leading-tight sm:text-4xl lg:text-5xl", children: "Contests for profile" }),
-      /* @__PURE__ */ jsx45("p", { className: "mt-4 max-w-2xl text-sm leading-6 text-white/75 sm:text-base", children: "These are the contests this profile is participating in, along with the contestant\u2019s performance." })
-    ] }) }),
-    /* @__PURE__ */ jsx45("main", { className: "py-8 sm:py-10 lg:py-12", children: isLoading ? /* @__PURE__ */ jsx45(ContestsSkeleton, {}) : contests.length > 0 ? /* @__PURE__ */ jsx45("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: contests.map((contest) => /* @__PURE__ */ jsx45(ContestResultCard, { contest }, contest._id)) }) : /* @__PURE__ */ jsx45(EmptyState, {}) })
-  ] }) });
-}
-function ContestResultCard({ contest }) {
-  let result = contest.final_result_scores?.[0], fullName = result ? `${result.contestant_biodata.first_name} ${result.contestant_biodata.last_name}`.trim() : "", image = result?.contestant_image_url || no_image_default;
-  return /* @__PURE__ */ jsxs35("article", { className: "group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)] transition-transform duration-300 hover:-translate-y-1", children: [
-    /* @__PURE__ */ jsxs35("div", { className: "relative", children: [
-      /* @__PURE__ */ jsx45(
-        "img",
-        {
-          src: image,
-          alt: fullName || contest.name,
-          className: "aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-        }
-      ),
-      /* @__PURE__ */ jsx45("div", { className: "absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-navy/45 to-transparent" }),
-      result && /* @__PURE__ */ jsxs35("div", { className: "absolute left-4 top-4 rounded-full border border-white/70 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-navy shadow-[0_8px_24px_rgba(14,42,77,0.12)]", children: [
-        "Position ",
-        result.position
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs35("div", { className: "flex flex-1 flex-col gap-4 px-5 py-5 sm:px-6", children: [
-      /* @__PURE__ */ jsxs35("div", { children: [
-        /* @__PURE__ */ jsx45("p", { className: "text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-slate", children: contest.name }),
-        /* @__PURE__ */ jsx45("h3", { className: "mt-2 text-xl font-black tracking-tight text-brand-navy", children: fullName || "Contestant" }),
-        result?.contestant_biodata.email && /* @__PURE__ */ jsx45("p", { className: "mt-1 text-sm text-brand-slate", children: result.contestant_biodata.email })
-      ] }),
-      result && /* @__PURE__ */ jsxs35("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
-        /* @__PURE__ */ jsxs35("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
-          /* @__PURE__ */ jsx45("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Position" }),
-          /* @__PURE__ */ jsx45("p", { className: "mt-1 text-lg font-black text-brand-navy", children: toOrdinal(result.position) })
-        ] }),
-        /* @__PURE__ */ jsxs35("div", { className: "rounded-2xl bg-secondary px-4 py-3", children: [
-          /* @__PURE__ */ jsx45("p", { className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-slate", children: "Total votes Percent" }),
-          /* @__PURE__ */ jsxs35("p", { className: "mt-1 text-lg font-black text-brand-pink", children: [
-            result.total_votes?.toFixed(2),
-            "%"
-          ] })
-        ] })
-      ] })
-    ] })
-  ] });
-}
-function ContestsSkeleton() {
-  return /* @__PURE__ */ jsx45("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3", children: Array.from({ length: 6 }).map((_, index) => /* @__PURE__ */ jsxs35(
-    "div",
-    {
-      className: "animate-pulse overflow-hidden rounded-[1.75rem] border border-brand-grey bg-white shadow-[0_16px_48px_rgba(14,42,77,0.08)]",
-      children: [
-        /* @__PURE__ */ jsx45("div", { className: "aspect-[4/5] bg-slate-200" }),
-        /* @__PURE__ */ jsxs35("div", { className: "flex flex-col gap-4 px-5 py-5 sm:px-6", children: [
-          /* @__PURE__ */ jsxs35("div", { className: "space-y-2", children: [
-            /* @__PURE__ */ jsx45("div", { className: "h-3 w-1/2 rounded-full bg-slate-200" }),
-            /* @__PURE__ */ jsx45("div", { className: "h-5 w-3/4 rounded-full bg-slate-200" }),
-            /* @__PURE__ */ jsx45("div", { className: "h-4 w-1/2 rounded-full bg-slate-200" })
-          ] }),
-          /* @__PURE__ */ jsxs35("div", { className: "mt-auto grid grid-cols-2 gap-3 border-t border-brand-grey pt-4", children: [
-            /* @__PURE__ */ jsx45("div", { className: "h-16 rounded-2xl bg-slate-200" }),
-            /* @__PURE__ */ jsx45("div", { className: "h-16 rounded-2xl bg-slate-200" })
-          ] })
-        ] })
-      ]
-    },
-    index
-  )) });
-}
-function EmptyState() {
-  return /* @__PURE__ */ jsxs35("section", { className: "rounded-[2rem] border border-dashed border-brand-grey bg-secondary px-6 py-14 text-center sm:px-10", children: [
-    /* @__PURE__ */ jsx45("div", { className: "mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-brand-grey bg-white shadow-[0_10px_24px_rgba(14,42,77,0.06)]", children: /* @__PURE__ */ jsxs35("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", className: "h-7 w-7 text-brand-pink", fill: "none", children: [
-      /* @__PURE__ */ jsx45("path", { d: "M12 8v8M8 12h8", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round" }),
-      /* @__PURE__ */ jsx45("circle", { cx: "12", cy: "12", r: "9", stroke: "currentColor", strokeWidth: "1.8" })
-    ] }) }),
-    /* @__PURE__ */ jsx45("h2", { className: "mt-6 text-2xl font-black tracking-tight text-brand-navy", children: "No contests for this profile" }),
-    /* @__PURE__ */ jsx45("p", { className: "mx-auto mt-3 max-w-xl text-sm leading-6 text-brand-slate", children: "This profile is not participating in any contests at the moment." }),
-    /* @__PURE__ */ jsx45(
-      Link10,
-      {
-        to: "/user/contestantprofiles",
-        className: "mt-6 inline-flex items-center rounded-full bg-brand-pink px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-pink/90",
-        children: "Back to profiles"
-      }
-    )
-  ] });
-}
-
-// app/routes/admin.transactions.contest-registrations.tsx
-var admin_transactions_contest_registrations_exports = {};
-__export(admin_transactions_contest_registrations_exports, {
-  action: () => action6,
-  default: () => ContestRegistrations,
-  loader: () => loader12
-});
-import { json as json13 } from "@remix-run/node";
-import { useLoaderData as useLoaderData9 } from "@remix-run/react";
-
-// app/components/reusables/DataTable.tsx
-import React10 from "react";
-import {
-  flexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getSortedRowModel,
-  useReactTable
-} from "@tanstack/react-table";
-import { jsx as jsx46, jsxs as jsxs36 } from "react/jsx-runtime";
-function DataTable({
-  data,
-  columns: columns5,
-  className = "",
-  TableActions,
-  expandRows,
-  getRowCanExpand,
-  SubComponent
-}) {
-  let [sorting, setSorting] = React10.useState([]), expandOptions = expandRows ? { getRowCanExpand, getExpandedRowModel: getExpandedRowModel() } : {}, [rowSelection, setRowSelection] = React10.useState({}), table = useReactTable({
-    data,
-    columns: columns5,
-    getCoreRowModel: getCoreRowModel(),
-    state: { sorting, rowSelection },
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    onRowSelectionChange: setRowSelection,
-    ...expandOptions
-  });
-  return /* @__PURE__ */ jsxs36("div", { className: "", children: [
-    TableActions ? /* @__PURE__ */ jsx46(TableActions, { table }) : null,
-    /* @__PURE__ */ jsxs36("table", { className: `w-full ${className}`, children: [
-      /* @__PURE__ */ jsx46("thead", { children: table.getHeaderGroups().map((headerGroup) => /* @__PURE__ */ jsx46("tr", { className: "border-b border-secondary", children: headerGroup.headers.map((header) => /* @__PURE__ */ jsx46("th", { className: "text-left uppercase font-satoshi-black p-3 [&:has([data-sortable=true])]:cursor-pointer [&:has([data-sortable=true])]:hover:bg-secondary", children: header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext()) }, header.id)) }, headerGroup.id)) }),
-      /* @__PURE__ */ jsx46("tbody", { children: table.getRowModel().rows.length ? table.getRowModel().rows.map((row) => /* @__PURE__ */ jsxs36(React10.Fragment, { children: [
-        /* @__PURE__ */ jsx46(
-          "tr",
-          {
-            className: "border-b border-secondary hover:bg-secondary",
-            "data-state": row.getIsSelected() && "selected",
-            children: row.getVisibleCells().map((cell) => /* @__PURE__ */ jsx46("td", { className: "p-3", children: flexRender(cell.column.columnDef.cell, cell.getContext()) }, cell.id))
-          },
-          row.id
-        ),
-        /* @__PURE__ */ jsx46("tr", { className: "hover:bg-secondary focus-within:bg-secondary", children: /* @__PURE__ */ jsx46("td", { colSpan: row.getVisibleCells().length, children: expandRows && row.getIsExpanded() && /* @__PURE__ */ jsx46(SubComponent, { row }) }) })
-      ] }, row.id)) : /* @__PURE__ */ jsx46("tr", { className: "border-b border-secondary", children: /* @__PURE__ */ jsx46("td", { className: "p-3 text-center", colSpan: columns5.length, children: "No data to display" }) }) })
-    ] })
-  ] });
-}
-
-// app/components/reusables/DataTableColumnHeader.tsx
-import { jsx as jsx47, jsxs as jsxs37 } from "react/jsx-runtime";
-function DataTableColumnHeader({
-  column,
-  title,
-  className
-}) {
-  return column.getCanSort() ? /* @__PURE__ */ jsxs37(
-    "span",
-    {
-      "data-sortable": !0,
-      className: `flex items-center ${className}`,
-      onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-      children: [
-        /* @__PURE__ */ jsx47("span", { children: title }),
-        /* @__PURE__ */ jsx47(Svg, { src: icons.arrowUpDownIcon })
-      ]
-    }
-  ) : title;
-}
-
-// app/lib/dates.utils.ts
-function parseDateForInput(date = (/* @__PURE__ */ new Date()).toISOString()) {
-  return date.split("T")[0];
-}
-function parseDateTimeForInput(_date = (/* @__PURE__ */ new Date()).toISOString()) {
-  let date = new Date(_date), year = date.getFullYear(), month = String(date.getMonth() + 1).padStart(2, "0"), day = String(date.getDate()).padStart(2, "0"), hours = String(date.getHours()).padStart(2, "0"), minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-function formatDate(date, options = {}) {
-  return new Intl.DateTimeFormat("en-NG", options).format(date);
-}
-
-// app/components/admin/transactions/ContestRegistrationsTable.tsx
-import { Fragment as Fragment8, jsx as jsx48, jsxs as jsxs38 } from "react/jsx-runtime";
-var numberFormatterOptions = { style: "currency", currency: "NGN" }, dateOptions = {
-  year: "numeric",
-  month: "short",
-  day: "numeric"
-}, timeOptions = {
-  hour: "2-digit",
-  minute: "2-digit",
-  second: "2-digit"
-}, columns = [
-  {
-    header: "S/N",
-    cell: ({ row }) => +row.id + 1
-  },
-  {
-    accessorKey: "tx_ref",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "trx ref" })
-  },
-  {
-    accessorKey: "contest",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "contest" })
-  },
-  {
-    accessorKey: "contestant",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "contestant" })
-  },
-  {
-    accessorKey: "sender",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "sender" })
-  },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
-    cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions)
-  },
-  {
-    accessorKey: "date",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "date" }),
-    cell: ({ getValue }) => /* @__PURE__ */ jsxs38("span", { children: [
-      /* @__PURE__ */ jsx48("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions) }),
-      /* @__PURE__ */ jsx48("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions) })
-    ] })
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => /* @__PURE__ */ jsx48(DataTableColumnHeader, { column, title: "status" }),
-    cell: ({ getValue }) => {
-      let status = getValue();
-      return /* @__PURE__ */ jsx48(StatusTag, { status, color: status === "pending" ? "yellow" : status === "verified" ? "green" : status === "revoked" ? "red" : "gray" });
-    }
-  }
-];
-function ContestRegistrationsTable({ data }) {
-  return /* @__PURE__ */ jsxs38(Fragment8, { children: [
-    /* @__PURE__ */ jsx48("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx48(DataTable, { data, columns, className: "text-xs" }) }),
-    /* @__PURE__ */ jsxs38("div", { className: "max-sm:flex-col max-xs:text-xs sm:w-4/5 mx-auto flex gap-2 justify-between items-center my-5", children: [
-      /* @__PURE__ */ jsxs38("label", { className: "flex gap-2", children: [
-        "Rows per page",
-        /* @__PURE__ */ jsx48("input", { type: "number", name: "rows", id: "rows", className: "w-10 pl-2 rounded-md border", defaultValue: 10 })
-      ] }),
-      /* @__PURE__ */ jsx48(Pagination, {})
-    ] })
-  ] });
-}
-
-// app/routes/admin.transactions.contest-registrations.tsx
-import { jsx as jsx49, jsxs as jsxs39 } from "react/jsx-runtime";
-async function loader12({}) {
-  let tranasctions = [{
-    tx_ref: "KCRUSHIP4HIYGM72VL",
-    sender: "payments@nefworld.com",
-    contest: "My Kid Crush of December",
-    contestant: "John Wick",
-    amount: 53e3,
-    date: (/* @__PURE__ */ new Date()).toISOString(),
-    status: "verified"
-  }, {
-    tx_ref: "KCRUSHIP4HIYGM72VL",
-    sender: "payments@nefworld.com",
-    contest: "My Kid Crush of December",
-    contestant: "John Wick",
-    amount: 1e3,
-    date: (/* @__PURE__ */ new Date()).toISOString(),
-    status: "pending"
-  }, {
-    tx_ref: "KCRUSHIP4HIYGM72VL",
-    sender: "payments@nefworld.com",
-    contest: "My Kid Crush of December",
-    contestant: "John Wick",
-    amount: 2e3,
-    date: (/* @__PURE__ */ new Date()).toISOString(),
-    status: "revoked"
-  }];
-  return json13({ tranasctions });
-}
-async function action6({ request }) {
-  let formData = await request.formData();
-  console.log(...formData);
-  let { headers } = await setToast({ request, toast: `success::The transaction has been created::${Date.now()}` });
-  return json13(null, { headers });
-}
-function ContestRegistrations() {
-  let { tranasctions } = useLoaderData9();
-  return /* @__PURE__ */ jsxs39("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsx49("section", { className: "flex justify-between items-center mb-8 sm:mb-16", children: /* @__PURE__ */ jsx49("h1", { className: "text-xl xs:text-2xl font-black text-primary", children: "Registration Transactions" }) }),
-    /* @__PURE__ */ jsx49("section", { className: "my-12", children: /* @__PURE__ */ jsx49(ContestRegistrationsTable, { data: tranasctions }) })
-  ] });
-}
-
-// app/routes/partners.addwithdrawalaccount.$walletid.tsx
-var partners_addwithdrawalaccount_walletid_exports = {};
-__export(partners_addwithdrawalaccount_walletid_exports, {
-  default: () => AccountTypePage3,
-  loader: () => loader13,
-  useAccountTypePage: () => useAccountTypePage3
-});
-import { redirect as redirect12 } from "@remix-run/node";
-import { Form as Form10, Link as Link11, useNavigate as useNavigate12, useParams as useParams3 } from "@remix-run/react";
-import { useState as useState21 } from "react";
-import { jsx as jsx50, jsxs as jsxs40 } from "react/jsx-runtime";
-async function loader13({ request, params }) {
-  let validateAuth = await requireAuth(request), walletid = params.walletid ?? "", { error, data, authRequired } = await walletRepo.getWalletWithdrawalAccounts(walletid, request);
-  return authRequired && redirect12("/login"), console.log("User wallets", data), { error, data, authRequired };
-}
-var UserIcon = () => /* @__PURE__ */ jsx50("div", { className: "w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center", children: /* @__PURE__ */ jsx50("div", { className: "w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center", children: /* @__PURE__ */ jsx50("div", { className: "w-4 h-4 bg-white rounded-full mt-[-4px]" }) }) }), BriefcaseIcon3 = () => /* @__PURE__ */ jsx50("div", { className: "w-16 h-16 rounded-full bg-green-50 flex items-center justify-center", children: /* @__PURE__ */ jsx50("div", { className: "w-10 h-8 bg-green-500 rounded-lg flex items-center justify-center relative", children: /* @__PURE__ */ jsx50("div", { className: "w-4 h-2 border-2 border-white rounded-t-sm absolute -top-1" }) }) });
-function useAccountTypePage3() {
-  let params = useParams3(), [selectedType, setSelectedType] = useState21(null), [accountRedirectUrl, setAccountRedirectUrl] = useState21("");
-  function updateSelectAccountType(accountType) {
-    setSelectedType(accountType), setAccountRedirectUrl(`/partners/addwithdrawalaccount/${accountType}/${params.walletid}`);
-  }
-  return { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl };
-}
-function AccountTypePage3() {
-  let { selectedType, setSelectedType, updateSelectAccountType, accountRedirectUrl } = useAccountTypePage3(), navigate = useNavigate12();
-  return /* @__PURE__ */ jsx50("div", { className: "min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12", children: /* @__PURE__ */ jsxs40("div", { className: "max-w-4xl w-full text-center", children: [
-    /* @__PURE__ */ jsx50(Link11, { to: "/partners/wallet", className: "mb-8 block text-left text-sm font-medium text-gray-600 transition-colors hover:text-gray-900", children: "\u2190 Back to wallet" }),
-    /* @__PURE__ */ jsxs40("h1", { className: "text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight", children: [
-      "What type of account ",
-      /* @__PURE__ */ jsx50("br", {}),
-      " would you like to add?"
-    ] }),
-    /* @__PURE__ */ jsxs40(Form10, { method: "post", className: "mt-16", children: [
-      /* @__PURE__ */ jsxs40("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-8 mb-12", children: [
-        /* @__PURE__ */ jsxs40(
-          "div",
-          {
-            onClick: () => updateSelectAccountType("personal"),
-            className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
-                ${selectedType === "personal" ? "border-blue-500 ring-4 ring-blue-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
-            children: [
-              /* @__PURE__ */ jsx50("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx50(UserIcon, {}) }),
-              /* @__PURE__ */ jsx50("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Personal account" }),
-              /* @__PURE__ */ jsx50("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Add any bank account of you or your loved one. You would pay a one time fee that would be taken from your earnings" }),
-              /* @__PURE__ */ jsx50("input", { type: "radio", name: "accountType", value: "personal", className: "hidden", checked: selectedType === "personal", readOnly: !0 })
-            ]
-          }
-        ),
-        /* @__PURE__ */ jsxs40(
-          "div",
-          {
-            onClick: () => updateSelectAccountType("partner"),
-            className: `relative cursor-pointer transition-all duration-300 rounded-[40px] p-10 flex flex-col items-center text-center border-2 
-                ${selectedType === "partner" ? "border-green-500 ring-4 ring-green-50" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`,
-            children: [
-              /* @__PURE__ */ jsx50("div", { className: "mb-8 scale-125", children: /* @__PURE__ */ jsx50(BriefcaseIcon3, {}) }),
-              /* @__PURE__ */ jsx50("h3", { className: "text-2xl font-bold text-gray-900 mb-3", children: "Partner account" }),
-              /* @__PURE__ */ jsx50("p", { className: "text-gray-500 leading-relaxed max-w-[280px]", children: "Create an account with one of our partners. No creation fee charge attached" }),
-              /* @__PURE__ */ jsx50("input", { type: "radio", name: "accountType", value: "partner", className: "hidden", checked: selectedType === "partner", readOnly: !0 })
-            ]
-          }
-        )
-      ] }),
-      /* @__PURE__ */ jsx50("div", { className: "max-w-md mx-auto", children: /* @__PURE__ */ jsx50(Link11, { to: `${accountRedirectUrl}`, children: /* @__PURE__ */ jsx50(
-        Cta_default,
-        {
-          element: "button",
-          type: "submit",
-          disabled: !selectedType,
-          className: "w-full py-4 rounded-2xl text-lg font-semibold transition-colors",
-          children: "Continue"
-        }
-      ) }) })
     ] })
   ] }) });
 }
@@ -7587,138 +7587,6 @@ function EditContest() {
   ] });
 }
 
-// app/routes/_public.vtuservice.vtupurchases.tsx
-var public_vtuservice_vtupurchases_exports = {};
-__export(public_vtuservice_vtupurchases_exports, {
-  default: () => VTUPurchasesPage,
-  loader: () => loader21
-});
-import { json as json20 } from "@remix-run/node";
-import { Link as Link16, useLoaderData as useLoaderData17, useLocation as useLocation8 } from "@remix-run/react";
-import { useEffect as useEffect22 } from "react";
-import { Fragment as Fragment10, jsx as jsx71, jsxs as jsxs58 } from "react/jsx-runtime";
-var DEFAULT_PAGE_SIZE = 20;
-function syncCreatedAtParams(lastCreatedAt, firstCreatedAt) {
-  let url = new URL(window.location.href), timestamps = { last_created_at: lastCreatedAt, first_created_at: firstCreatedAt }, changed = !1;
-  for (let [key, value] of Object.entries(timestamps))
-    value && url.searchParams.get(key) !== value && (url.searchParams.set(key, value), changed = !0);
-  changed && window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-}
-async function loader21({ request }) {
-  await requireAuth(request);
-  let url = new URL(request.url), pageSizeValue = Number(url.searchParams.get("page_size") ?? DEFAULT_PAGE_SIZE), pageSize = Number.isFinite(pageSizeValue) && pageSizeValue > 0 ? pageSizeValue : DEFAULT_PAGE_SIZE, directionValue = url.searchParams.get("direction"), lastCreatedAt = url.searchParams.get("last_created_at"), firstCreatedAt = url.searchParams.get("first_created_at"), response = await vtuServer.getVTUPurchaseResponsePaged({
-    page_size: pageSize,
-    last_key_id: url.searchParams.get("last_key_id") ?? void 0,
-    first_key_id: url.searchParams.get("first_key_id") ?? void 0,
-    direction: directionValue === "previous" ? "previous" : "next",
-    last_created_at: lastCreatedAt ?? void 0,
-    first_created_at: firstCreatedAt ?? void 0
-  }, request);
-  return response.error || !response.data ? json20({
-    purchases: null,
-    error: getErrorMessage(response.error, "Unable to load your VTU purchases."),
-    pageSize
-  }, { status: 400 }) : json20({ purchases: response.data, error: null, pageSize });
-}
-function statusColor(status) {
-  let normalizedStatus = status.toLowerCase();
-  return normalizedStatus.includes("success") || normalizedStatus.includes("fulfilled") ? "green" : normalizedStatus.includes("pending") || normalizedStatus.includes("initiated") || normalizedStatus.includes("awaiting") || normalizedStatus.includes("review") ? "yellow" : normalizedStatus.includes("fail") || normalizedStatus.includes("revers") ? "red" : "gray";
-}
-function PurchaseCard({ purchase, paths }) {
-  let purchaseDate = purchase.last_retried_at ?? purchase.first_retried_at;
-  return /* @__PURE__ */ jsxs58("article", { className: "rounded-[1.75rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-6", children: [
-    /* @__PURE__ */ jsxs58("div", { className: "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between", children: [
-      /* @__PURE__ */ jsxs58("div", { className: "min-w-0", children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.2em] text-brand-slate", children: purchase.type }),
-        /* @__PURE__ */ jsx71("h2", { className: "mt-2 break-all text-lg font-black text-brand-navy", children: purchase.reference })
-      ] }),
-      /* @__PURE__ */ jsx71(StatusTag, { color: statusColor(purchase.status), status: purchase.status.replaceAll("_", " ") })
-    ] }),
-    purchase.description && /* @__PURE__ */ jsxs58("div", { className: "mt-5 rounded-2xl bg-secondary p-4", children: [
-      /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Description" }),
-      /* @__PURE__ */ jsx71("p", { className: "mt-1 text-sm font-semibold leading-6 text-brand-navy", children: purchase.description })
-    ] }),
-    /* @__PURE__ */ jsxs58("div", { className: "mt-5 grid gap-4 sm:grid-cols-2", children: [
-      /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Network" }),
-        /* @__PURE__ */ jsx71("p", { className: "mt-1 font-bold text-brand-navy", children: purchase.network ?? "\u2014" })
-      ] }),
-      /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Phone number" }),
-        /* @__PURE__ */ jsx71("p", { className: "mt-1 font-bold text-brand-navy", children: purchase.phone_number })
-      ] }),
-      /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Original amount" }),
-        /* @__PURE__ */ jsxs58("p", { className: "mt-1 font-bold text-brand-navy", children: [
-          purchase.currency,
-          formatAmount(purchase.original_retail_amount)
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Paid amount" }),
-        /* @__PURE__ */ jsxs58("p", { className: "mt-1 font-bold text-brand-navy", children: [
-          purchase.currency,
-          formatAmount(purchase.discounted_retail_amount)
-        ] })
-      ] }),
-      purchaseDate && /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Date" }),
-        /* @__PURE__ */ jsx71("p", { className: "mt-1 font-bold text-brand-navy", children: formatDate(new Date(purchaseDate), { dateStyle: "medium", timeStyle: "short" }) })
-      ] })
-    ] }),
-    purchase.failure_reason && /* @__PURE__ */ jsx71("p", { className: "mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700", children: purchase.failure_reason }),
-    /* @__PURE__ */ jsx71(
-      Link16,
-      {
-        className: "mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-brand-pink px-4 text-sm font-bold text-brand-pink transition hover:bg-brand-pink/5",
-        to: paths.purchase(purchase.reference),
-        children: "View purchase details"
-      }
-    )
-  ] });
-}
-function PurchaseSkeleton2() {
-  return /* @__PURE__ */ jsx71("div", { "aria-hidden": "true", className: "animate-pulse space-y-4", children: [1, 2, 3].map((item) => /* @__PURE__ */ jsx71("div", { className: "h-64 rounded-[1.75rem] bg-slate-200" }, item)) });
-}
-function VTUPurchasesPage() {
-  let { pathname } = useLocation8(), paths = getVtuPaths(pathname), data = useLoaderData17();
-  useEffect22(() => {
-    syncCreatedAtParams(data.purchases?.last_created_at, data.purchases?.first_created_at);
-  }, [data.purchases?.last_created_at, data.purchases?.first_created_at]), useEffect22(() => {
-    data.error && toast({
-      variant: "destructive",
-      title: "Purchases unavailable",
-      description: data.error
-    });
-  }, [data.error]);
-  let purchases = data.purchases?.items ?? [];
-  return /* @__PURE__ */ jsx71("main", { className: "grow bg-white px-4 py-10 text-brand-navy sm:px-6 sm:py-16 lg:px-8", children: /* @__PURE__ */ jsxs58("section", { className: "mx-auto max-w-5xl", children: [
-    /* @__PURE__ */ jsxs58("header", { className: "mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between", children: [
-      /* @__PURE__ */ jsxs58("div", { children: [
-        /* @__PURE__ */ jsx71("p", { className: "text-xs font-bold uppercase tracking-[0.24em] text-brand-pink", children: "VTUload" }),
-        /* @__PURE__ */ jsx71("h1", { className: "mt-2 text-3xl font-black tracking-tight sm:text-5xl", children: "My VTU purchases" }),
-        /* @__PURE__ */ jsx71("p", { className: "mt-3 max-w-2xl text-sm leading-6 text-brand-navy/70 sm:text-base", children: "Review your airtime and data purchases, their status, and payment details." })
-      ] }),
-      data.purchases && /* @__PURE__ */ jsxs58("p", { className: "text-sm font-semibold text-brand-slate", children: [
-        data.purchases.total_items,
-        " purchase",
-        data.purchases.total_items === 1 ? "" : "s"
-      ] })
-    ] }),
-    data.error ? /* @__PURE__ */ jsxs58("div", { className: "rounded-[1.75rem] border border-red-200 bg-red-50 p-8 text-center text-red-700", children: [
-      /* @__PURE__ */ jsx71("h2", { className: "text-xl font-black", children: "We could not load your purchases" }),
-      /* @__PURE__ */ jsx71("p", { className: "mt-2 text-sm", children: data.error })
-    ] }) : data.purchases && purchases.length > 0 ? /* @__PURE__ */ jsxs58(Fragment10, { children: [
-      /* @__PURE__ */ jsx71("div", { className: "grid gap-5", children: purchases.map((purchase) => /* @__PURE__ */ jsx71(PurchaseCard, { purchase, paths }, purchase._id)) }),
-      /* @__PURE__ */ jsx71(Pagination, { firstKey: data.purchases.first_key_id, lastKey: data.purchases.last_key_id, pageSize: data.purchases.items_per_page || data.pageSize })
-    ] }) : data.purchases ? /* @__PURE__ */ jsxs58("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-14 text-center", children: [
-      /* @__PURE__ */ jsx71("h2", { className: "text-xl font-black", children: "No VTU purchases yet" }),
-      /* @__PURE__ */ jsx71("p", { className: "mt-2 text-sm text-brand-slate", children: "Your completed airtime and data purchases will appear here." }),
-      /* @__PURE__ */ jsx71(Link16, { className: "mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white", to: paths.airtime, children: "Buy airtime" })
-    ] }) : /* @__PURE__ */ jsx71(PurchaseSkeleton2, {})
-  ] }) });
-}
-
 // app/routes/admin.transactions.tally-votes.tsx
 var admin_transactions_tally_votes_exports = {};
 __export(admin_transactions_tally_votes_exports, {
@@ -7726,10 +7594,10 @@ __export(admin_transactions_tally_votes_exports, {
   TallyTransactionsTable: () => TallyTransactionsTable,
   action: () => action11,
   default: () => TallyVotes,
-  loader: () => loader22
+  loader: () => loader21
 });
-import { json as json21, redirect as redirect20 } from "@remix-run/node";
-import { useLoaderData as useLoaderData18, useFetcher as useFetcher10, useActionData as useActionData6 } from "@remix-run/react";
+import { json as json20, redirect as redirect20 } from "@remix-run/node";
+import { useLoaderData as useLoaderData17, useFetcher as useFetcher10, useActionData as useActionData6 } from "@remix-run/react";
 
 // app/services/admin/admin.server.ts
 var AdminRepository = class {
@@ -7818,13 +7686,13 @@ var AdminRepository = class {
 }, adminRepo = new AdminRepository();
 
 // app/routes/admin.transactions.tally-votes.tsx
-import { useEffect as useEffect23, useState as useState30 } from "react";
+import { useEffect as useEffect22, useState as useState30 } from "react";
 
 // app/components/admin/transactions/VerifyTransactionDialog.tsx
-import { jsx as jsx72, jsxs as jsxs59 } from "react/jsx-runtime";
+import { jsx as jsx71, jsxs as jsxs58 } from "react/jsx-runtime";
 function VerifyTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxs59(Dialog, { children: [
-    /* @__PURE__ */ jsx72(
+  return /* @__PURE__ */ jsxs58(Dialog, { children: [
+    /* @__PURE__ */ jsx71(
       DialogTrigger,
       {
         disabled,
@@ -7832,24 +7700,24 @@ function VerifyTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-green-500 bg-green-50 text-green-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsx72(Svg, { src: icons.checkIcon, className: "w-3" })
+        children: /* @__PURE__ */ jsx71(Svg, { src: icons.checkIcon, className: "w-3" })
       }
     ),
-    /* @__PURE__ */ jsxs59(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxs59(DialogHeader, { children: [
-        /* @__PURE__ */ jsx72(DialogTitle, { children: "Verify this transaction" }),
-        /* @__PURE__ */ jsx72(DialogDescription, { children: "This transaction will be marked as verified. Are you sure you want to proceed?" })
+    /* @__PURE__ */ jsxs58(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs58(DialogHeader, { children: [
+        /* @__PURE__ */ jsx71(DialogTitle, { children: "Verify this transaction" }),
+        /* @__PURE__ */ jsx71(DialogDescription, { children: "This transaction will be marked as verified. Are you sure you want to proceed?" })
       ] }),
-      /* @__PURE__ */ jsx72(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx72(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+      /* @__PURE__ */ jsx71(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx71(Cta_default, { element: "button", type: "submit", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
     ] })
   ] });
 }
 
 // app/components/admin/transactions/RevokeTransactionDialog.tsx
-import { jsx as jsx73, jsxs as jsxs60 } from "react/jsx-runtime";
+import { jsx as jsx72, jsxs as jsxs59 } from "react/jsx-runtime";
 function RevokeTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxs60(Dialog, { children: [
-    /* @__PURE__ */ jsx73(
+  return /* @__PURE__ */ jsxs59(Dialog, { children: [
+    /* @__PURE__ */ jsx72(
       DialogTrigger,
       {
         disabled,
@@ -7857,24 +7725,24 @@ function RevokeTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsx73(Svg, { src: icons.doubleArrowDiagonalIcon, className: "w-3" })
+        children: /* @__PURE__ */ jsx72(Svg, { src: icons.doubleArrowDiagonalIcon, className: "w-3" })
       }
     ),
-    /* @__PURE__ */ jsxs60(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxs60(DialogHeader, { children: [
-        /* @__PURE__ */ jsx73(DialogTitle, { children: "Revoke this transaction" }),
-        /* @__PURE__ */ jsx73(DialogDescription, { children: "This transactoin will be marked as revoked. Are you sure you want to proceed?" })
+    /* @__PURE__ */ jsxs59(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs59(DialogHeader, { children: [
+        /* @__PURE__ */ jsx72(DialogTitle, { children: "Revoke this transaction" }),
+        /* @__PURE__ */ jsx72(DialogDescription, { children: "This transactoin will be marked as revoked. Are you sure you want to proceed?" })
       ] }),
-      /* @__PURE__ */ jsx73(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx73(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+      /* @__PURE__ */ jsx72(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx72(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
     ] })
   ] });
 }
 
 // app/components/admin/transactions/DeleteTransactionDialog.tsx
-import { jsx as jsx74, jsxs as jsxs61 } from "react/jsx-runtime";
+import { jsx as jsx73, jsxs as jsxs60 } from "react/jsx-runtime";
 function DeleteTransactionDialog({ disabled }) {
-  return /* @__PURE__ */ jsxs61(Dialog, { children: [
-    /* @__PURE__ */ jsx74(
+  return /* @__PURE__ */ jsxs60(Dialog, { children: [
+    /* @__PURE__ */ jsx73(
       DialogTrigger,
       {
         disabled,
@@ -7882,33 +7750,33 @@ function DeleteTransactionDialog({ disabled }) {
         className: cn("flex items-center justify-center border min-w-[32px] min-h-[32px] rounded-full border-red-500 bg-red-50 text-red-500", {
           "bg-slate-100 border-slate-400 text-slate-400 cursor-not-allowed": disabled
         }),
-        children: /* @__PURE__ */ jsx74(Svg, { src: icons.trashIcon, className: "w-3" })
+        children: /* @__PURE__ */ jsx73(Svg, { src: icons.trashIcon, className: "w-3" })
       }
     ),
-    /* @__PURE__ */ jsxs61(DialogContent, { className: "bg-secondary", children: [
-      /* @__PURE__ */ jsxs61(DialogHeader, { children: [
-        /* @__PURE__ */ jsx74(DialogTitle, { children: "Delete this transaction" }),
-        /* @__PURE__ */ jsx74(DialogDescription, { children: "This transactoin will be marked as deleted. Are you sure you want to proceed?" })
+    /* @__PURE__ */ jsxs60(DialogContent, { className: "bg-secondary", children: [
+      /* @__PURE__ */ jsxs60(DialogHeader, { children: [
+        /* @__PURE__ */ jsx73(DialogTitle, { children: "Delete this transaction" }),
+        /* @__PURE__ */ jsx73(DialogDescription, { children: "This transactoin will be marked as deleted. Are you sure you want to proceed?" })
       ] }),
-      /* @__PURE__ */ jsx74(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx74(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
+      /* @__PURE__ */ jsx73(DialogFooter, { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx73(Cta_default, { element: "button", type: "submit", kind: "danger", className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", children: "Proceed" }) })
     ] })
   ] });
 }
 
 // app/components/admin/transactions/TallyTableActions.tsx
-import { jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
+import { jsx as jsx74, jsxs as jsxs61 } from "react/jsx-runtime";
 function TallyTableActions({ table }) {
   let rowsSelected = table.getFilteredSelectedRowModel().rows.length >= 1, canVerify = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.payment_status !== "verified"), canRevoke = rowsSelected && table.getSelectedRowModel().rows.every(({ original }) => original.payment_status !== "revoked");
-  return /* @__PURE__ */ jsxs62("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
-    /* @__PURE__ */ jsx75(VerifyTransactionDialog, { disabled: !canVerify }),
-    /* @__PURE__ */ jsx75(RevokeTransactionDialog, { disabled: !canRevoke }),
-    /* @__PURE__ */ jsx75(DeleteTransactionDialog, { disabled: !rowsSelected })
+  return /* @__PURE__ */ jsxs61("div", { className: "flex gap-4 items-center px-3 mb-3", children: [
+    /* @__PURE__ */ jsx74(VerifyTransactionDialog, { disabled: !canVerify }),
+    /* @__PURE__ */ jsx74(RevokeTransactionDialog, { disabled: !canRevoke }),
+    /* @__PURE__ */ jsx74(DeleteTransactionDialog, { disabled: !rowsSelected })
   ] });
 }
 
 // app/routes/admin.transactions.tally-votes.tsx
-import { Fragment as Fragment11, jsx as jsx76, jsxs as jsxs63 } from "react/jsx-runtime";
-async function loader22({ request }) {
+import { Fragment as Fragment10, jsx as jsx75, jsxs as jsxs62 } from "react/jsx-runtime";
+async function loader21({ request }) {
   let validateAuth = await requireAuth(request), url = new URL(request.url), query = {};
   for (let [k, v] of url.searchParams.entries())
     query[k] = v;
@@ -7918,7 +7786,7 @@ async function loader22({ request }) {
 async function action11({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? "", formData = await request.formData();
   if (!formData.get("contest_id"))
-    return json21({ error: { detail: "Please use a valid contest" }, data: null });
+    return json20({ error: { detail: "Please use a valid contest" }, data: null });
   let payload = {
     email: formData.get("email") ?? "",
     phone_number: formData.get("phone_number") ?? "",
@@ -7930,64 +7798,64 @@ async function action11({ request }) {
     gateway_status: formData.get("gateway_status"),
     bank_ref: formData.get("bank_ref") ?? `BANKTXN_${Date.now()}`
   }, { data, error, authRequired } = await adminRepo.createBankTransaction(request, payload);
-  return json21({ error, data, authRequired });
+  return json20({ error, data, authRequired });
 }
 function AddTallyDialog({ ongoingContests }) {
   let fetcher = useFetcher10(), actionData = useActionData6(), [open, setOpen] = useState30(!1), isSubmitting = fetcher.state === "submitting", responseError = fetcher.data?.error ?? actionData?.error, errorMessage = responseError?.detail?.toString?.() ?? responseError?.toString?.() ?? null;
-  return useEffect23(() => {
+  return useEffect22(() => {
     let responseData = fetcher.data?.data ?? actionData?.data;
     (fetcher.data?.error ?? actionData?.error) || responseData && (toast({ variant: "default", title: "Tally created", description: "Successfully created tally transaction" }), setOpen(!1), setTimeout(() => window.location.reload(), 300));
-  }, [fetcher.data, actionData]), /* @__PURE__ */ jsxs63(Dialog, { open, onOpenChange: setOpen, children: [
-    /* @__PURE__ */ jsxs63(
+  }, [fetcher.data, actionData]), /* @__PURE__ */ jsxs62(Dialog, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsxs62(
       DialogTrigger,
       {
         title: "add tally transaction",
         className: cn("flex items-center justify-center gap-2 rounded-lg px-3 py-2 bg-accent text-secondary"),
         children: [
-          /* @__PURE__ */ jsx76(Svg, { src: icons.addIcon, width: ".9em" }),
+          /* @__PURE__ */ jsx75(Svg, { src: icons.addIcon, width: ".9em" }),
           "Add Payment"
         ]
       }
     ),
-    /* @__PURE__ */ jsx76(DialogContent, { className: "bg-secondary", children: /* @__PURE__ */ jsxs63(DialogHeader, { children: [
-      /* @__PURE__ */ jsx76(DialogTitle, { children: "Add Tally Transaction" }),
-      /* @__PURE__ */ jsxs63(DialogDescription, { children: [
-        errorMessage && /* @__PURE__ */ jsx76("div", { className: "mb-3 p-3 rounded-md bg-red-50 text-red-700 text-sm", children: errorMessage }),
-        /* @__PURE__ */ jsxs63(fetcher.Form, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
-          /* @__PURE__ */ jsxs63("fieldset", { className: "py-4 grid sm:grid-cols-3 gap-3", children: [
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", id: "email", name: "email", labelText: "Sender Email (Optional)" }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", id: "phone_number", name: "phone_number", labelText: "Sender Phone (Optional)" }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", id: "name", name: "name", labelText: "Sender Name" }),
-            /* @__PURE__ */ jsxs63(Select2, { label: "Contest", name: "contest_id", children: [
-              /* @__PURE__ */ jsx76("option", { value: "", children: "Select a contest" }),
+    /* @__PURE__ */ jsx75(DialogContent, { className: "bg-secondary", children: /* @__PURE__ */ jsxs62(DialogHeader, { children: [
+      /* @__PURE__ */ jsx75(DialogTitle, { children: "Add Tally Transaction" }),
+      /* @__PURE__ */ jsxs62(DialogDescription, { children: [
+        errorMessage && /* @__PURE__ */ jsx75("div", { className: "mb-3 p-3 rounded-md bg-red-50 text-red-700 text-sm", children: errorMessage }),
+        /* @__PURE__ */ jsxs62(fetcher.Form, { method: "POST", className: "text-primary text-xs flex flex-col gap-4", children: [
+          /* @__PURE__ */ jsxs62("fieldset", { className: "py-4 grid sm:grid-cols-3 gap-3", children: [
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", id: "email", name: "email", labelText: "Sender Email (Optional)" }),
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", id: "phone_number", name: "phone_number", labelText: "Sender Phone (Optional)" }),
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", id: "name", name: "name", labelText: "Sender Name" }),
+            /* @__PURE__ */ jsxs62(Select2, { label: "Contest", name: "contest_id", children: [
+              /* @__PURE__ */ jsx75("option", { value: "", children: "Select a contest" }),
               (ongoingContests ?? []).map(
-                (c) => /* @__PURE__ */ jsx76("option", { value: c._id, children: c.name })
+                (c) => /* @__PURE__ */ jsx75("option", { value: c._id, children: c.name })
               )
             ] }),
-            /* @__PURE__ */ jsxs63(Select2, { label: "Bank Status", name: "gateway_status", children: [
-              /* @__PURE__ */ jsx76("option", { value: "successful", children: "Successful" }),
-              /* @__PURE__ */ jsx76("option", { value: "pending", children: "Pending" }),
-              /* @__PURE__ */ jsx76("option", { value: "failed", children: "Failed" })
+            /* @__PURE__ */ jsxs62(Select2, { label: "Bank Status", name: "gateway_status", children: [
+              /* @__PURE__ */ jsx75("option", { value: "successful", children: "Successful" }),
+              /* @__PURE__ */ jsx75("option", { value: "pending", children: "Pending" }),
+              /* @__PURE__ */ jsx75("option", { value: "failed", children: "Failed" })
             ] }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", id: "contestant_code", name: "contestant_code", labelText: "Contestant Code" }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", type: "number", id: "amount", name: "amount", labelText: "Amount (NGN)", min: 0, defaultValue: 0 }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", type: "number", id: "fee", name: "fee", labelText: "Fee (NGN)", min: 0, defaultValue: 0 }),
-            /* @__PURE__ */ jsx76(FormControl, { as: "input", id: "bank_ref", name: "bank_ref", labelText: "Transaction Reference" })
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", id: "contestant_code", name: "contestant_code", labelText: "Contestant Code" }),
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", type: "number", id: "amount", name: "amount", labelText: "Amount (NGN)", min: 0, defaultValue: 0 }),
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", type: "number", id: "fee", name: "fee", labelText: "Fee (NGN)", min: 0, defaultValue: 0 }),
+            /* @__PURE__ */ jsx75(FormControl, { as: "input", id: "bank_ref", name: "bank_ref", labelText: "Transaction Reference" })
           ] }),
-          /* @__PURE__ */ jsx76("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx76(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", "aria-busy": isSubmitting, children: isSubmitting ? "Submitting..." : "Submit" }) })
+          /* @__PURE__ */ jsx75("div", { className: "flex justify-end gap-6", children: /* @__PURE__ */ jsx75(Cta_default, { element: "button", type: "submit", disabled: isSubmitting, className: "px-3 py-2 rounded-md font-bold min-w-[90px] text-white", "aria-busy": isSubmitting, children: isSubmitting ? "Submitting..." : "Submit" }) })
         ] })
       ] })
     ] }) })
   ] });
 }
 function TallyVotes() {
-  let { data, error, authRequired, ongoingContests } = useLoaderData18(), transactions = data?.items ?? [], lastKey = data?.last_key_id, pageSize = data?.items_per_page ?? 10, firstKey = data?.first_key_id;
-  return /* @__PURE__ */ jsxs63("main", { className: "w-full overflow-y-auto p-6", children: [
-    /* @__PURE__ */ jsxs63("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
-      /* @__PURE__ */ jsx76("h1", { className: "text-2xl font-black text-primary", children: "Tally Votes" }),
-      /* @__PURE__ */ jsx76(AddTallyDialog, { ongoingContests })
+  let { data, error, authRequired, ongoingContests } = useLoaderData17(), transactions = data?.items ?? [], lastKey = data?.last_key_id, pageSize = data?.items_per_page ?? 10, firstKey = data?.first_key_id;
+  return /* @__PURE__ */ jsxs62("main", { className: "w-full overflow-y-auto p-6", children: [
+    /* @__PURE__ */ jsxs62("section", { className: "flex max-sm:flex-col gap-10 justify-between sm:items-center mb-6 sm:mb-16", children: [
+      /* @__PURE__ */ jsx75("h1", { className: "text-2xl font-black text-primary", children: "Tally Votes" }),
+      /* @__PURE__ */ jsx75(AddTallyDialog, { ongoingContests })
     ] }),
-    /* @__PURE__ */ jsx76("section", { className: "my-12", children: /* @__PURE__ */ jsx76(TallyTransactionsTable, { data: transactions, lastKey: lastKey ?? "", pageSize, firstKey: firstKey ?? "" }) })
+    /* @__PURE__ */ jsx75("section", { className: "my-12", children: /* @__PURE__ */ jsx75(TallyTransactionsTable, { data: transactions, lastKey: lastKey ?? "", pageSize, firstKey: firstKey ?? "" }) })
   ] });
 }
 var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, dateOptions2 = {
@@ -8001,7 +7869,7 @@ var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, dateOption
 }, columns3 = [
   {
     id: "select",
-    header: ({ table }) => /* @__PURE__ */ jsx76("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx76(
+    header: ({ table }) => /* @__PURE__ */ jsx75("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx75(
       Checkbox,
       {
         className: "h-4 w-4",
@@ -8012,7 +7880,7 @@ var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, dateOption
         }
       }
     ) }),
-    cell: ({ row }) => /* @__PURE__ */ jsx76("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx76(
+    cell: ({ row }) => /* @__PURE__ */ jsx75("div", { className: "flex place-content-center", children: /* @__PURE__ */ jsx75(
       Checkbox,
       {
         className: "h-4 w-4",
@@ -8024,52 +7892,52 @@ var numberFormatterOptions2 = { style: "currency", currency: "NGN" }, dateOption
   },
   {
     accessorKey: "reference",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "trx ref" })
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "trx ref" })
   },
   {
     accessorKey: "customer",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "sender" }),
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "sender" }),
     cell: ({ getValue }) => getValue()?.email
   },
   {
     accessorKey: "contestant_code",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "code" })
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "code" })
   },
   {
     accessorKey: "number_of_votes",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "votes" })
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "votes" })
   },
   {
     accessorKey: "amount",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "amount" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions2)
   },
   {
     accessorKey: "app_fee",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "fee" }),
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { className: "whitespace-nowr", column, title: "fee" }),
     cell: ({ getValue }) => numberFormatter(getValue(), numberFormatterOptions2)
   },
   {
     accessorKey: "created_at",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "date" }),
-    cell: ({ getValue }) => /* @__PURE__ */ jsxs63("span", { children: [
-      /* @__PURE__ */ jsx76("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions2) }),
-      /* @__PURE__ */ jsx76("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions2) })
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "date" }),
+    cell: ({ getValue }) => /* @__PURE__ */ jsxs62("span", { children: [
+      /* @__PURE__ */ jsx75("span", { className: "block", children: formatDate(new Date(getValue()), dateOptions2) }),
+      /* @__PURE__ */ jsx75("span", { className: "block", children: formatDate(new Date(getValue()), timeOptions2) })
     ] })
   },
   {
     accessorKey: "payment_status",
-    header: ({ column }) => /* @__PURE__ */ jsx76(DataTableColumnHeader, { column, title: "status" }),
+    header: ({ column }) => /* @__PURE__ */ jsx75(DataTableColumnHeader, { column, title: "status" }),
     cell: ({ getValue }) => {
       let status = getValue();
-      return /* @__PURE__ */ jsx76(StatusTag, { status, color: status === "PENDING" ? "yellow" : status === "SUCCESS" ? "green" : status === "REFUNDED" ? "red" : "gray" });
+      return /* @__PURE__ */ jsx75(StatusTag, { status, color: status === "PENDING" ? "yellow" : status === "SUCCESS" ? "green" : status === "REFUNDED" ? "red" : "gray" });
     }
   }
 ];
 function TallyTransactionsTable({ data, lastKey, pageSize, firstKey }) {
-  return /* @__PURE__ */ jsxs63(Fragment11, { children: [
-    /* @__PURE__ */ jsx76("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx76(DataTable, { data, columns: columns3, className: "text-xs", TableActions: TallyTableActions }) }),
-    /* @__PURE__ */ jsx76(Pagination, { lastKey, pageSize, firstKey })
+  return /* @__PURE__ */ jsxs62(Fragment10, { children: [
+    /* @__PURE__ */ jsx75("div", { className: "w-full overflow-x-auto", children: /* @__PURE__ */ jsx75(DataTable, { data, columns: columns3, className: "text-xs", TableActions: TallyTableActions }) }),
+    /* @__PURE__ */ jsx75(Pagination, { lastKey, pageSize, firstKey })
   ] });
 }
 
@@ -8077,10 +7945,10 @@ function TallyTransactionsTable({ data, lastKey, pageSize, firstKey }) {
 var partners_settlements_payments_exports = {};
 __export(partners_settlements_payments_exports, {
   default: () => PartnerSettlementPaymentsRedirect,
-  loader: () => loader23
+  loader: () => loader22
 });
 import { redirect as redirect21 } from "@remix-run/node";
-async function loader23({ request }) {
+async function loader22({ request }) {
   let { headers } = await setToast({
     request,
     toast: `success::Your settlement payment is being processed::${Date.now()}`
@@ -8096,12 +7964,12 @@ var user_contestant_contestantId_exports = {};
 __export(user_contestant_contestantId_exports, {
   action: () => action12,
   default: () => RegistrationForm2,
-  loader: () => loader24,
+  loader: () => loader23,
   useRegistrationFormController: () => useRegistrationFormController
 });
-import { json as json22, redirect as redirect22 } from "@remix-run/node";
-import { Form as Form17, useActionData as useActionData7, useLoaderData as useLoaderData19 } from "@remix-run/react";
-import { useEffect as useEffect24, useState as useState31 } from "react";
+import { json as json21, redirect as redirect22 } from "@remix-run/node";
+import { Form as Form17, useActionData as useActionData7, useLoaderData as useLoaderData18 } from "@remix-run/react";
+import { useEffect as useEffect23, useState as useState31 } from "react";
 
 // app/services/user/userserver.ts
 var UserServer = class {
@@ -8145,8 +8013,8 @@ var UserServer = class {
 }, userServer = new UserServer(contestantRepo);
 
 // app/routes/user.contestant.$contestantId.tsx
-import { jsx as jsx77, jsxs as jsxs64 } from "react/jsx-runtime";
-async function loader24({ request, params }) {
+import { jsx as jsx76, jsxs as jsxs63 } from "react/jsx-runtime";
+async function loader23({ request, params }) {
   let validateAuth = await requireAuth(request), contestantId = params.contestantId ?? "", { error, data, authRequired } = await userServer.getContestantDetails(contestantId, request);
   return authRequired && redirect22("/login"), { error, data, authRequired };
 }
@@ -8162,17 +8030,17 @@ async function action12({ request }) {
       whatsapp_no: formData.get("state_of_residence")?.toString()
     }
   }, contestantId = formData.get("contestantId")?.toString() ?? "", { error, authRequired, data } = await userServer.updateUserContestant({ contestantId, formData, editContestantDTO }, request);
-  return authRequired && redirect22("/login"), json22({ error, authRequired, data });
+  return authRequired && redirect22("/login"), json21({ error, authRequired, data });
 }
 function useRegistrationFormController() {
-  let { error, data } = useLoaderData19(), actionData = useActionData7();
+  let { error, data } = useLoaderData18(), actionData = useActionData7();
   console.log({ data });
   let [contest, setContest] = useState31(), [stage, setStage] = useState31(), [contestant, setContestant] = useState31();
   return error && toast({
     variant: "destructive",
     title: "An error occured",
     description: error?.detail.toString() ?? "Error occured"
-  }), useEffect24(() => {
+  }), useEffect23(() => {
     actionData && (actionData.error ? (console.error(actionData.error.detail), toast({
       variant: "destructive",
       title: "Update Failed",
@@ -8183,7 +8051,7 @@ function useRegistrationFormController() {
       title: "Update Successful!",
       description: "Your contestant details have been updated."
     }));
-  }, [actionData]), useEffect24(() => {
+  }, [actionData]), useEffect23(() => {
     if (data) {
       setContest(data);
       let _stage = data.stages?.[0];
@@ -8198,24 +8066,24 @@ function useRegistrationFormController() {
 }
 function RegistrationForm2() {
   let { contest, stage, contestant, actionData } = useRegistrationFormController();
-  return contest ? /* @__PURE__ */ jsxs64("section", { children: [
-    /* @__PURE__ */ jsx77("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: /* @__PURE__ */ jsx77("div", { className: "flex flex-col justify-around", children: /* @__PURE__ */ jsxs64("div", { className: "max-w-2xl", children: [
-      /* @__PURE__ */ jsx77("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
-      /* @__PURE__ */ jsx77("p", { className: "font-satoshi-medium", children: contest.desc })
+  return contest ? /* @__PURE__ */ jsxs63("section", { children: [
+    /* @__PURE__ */ jsx76("header", { className: "wrapper my-16 grid md:grid-cols-2 justify-between gap-6 md:gap-8", children: /* @__PURE__ */ jsx76("div", { className: "flex flex-col justify-around", children: /* @__PURE__ */ jsxs63("div", { className: "max-w-2xl", children: [
+      /* @__PURE__ */ jsx76("h1", { className: "text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3", children: contest.name }),
+      /* @__PURE__ */ jsx76("p", { className: "font-satoshi-medium", children: contest.desc })
     ] }) }) }),
-    /* @__PURE__ */ jsx77("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs64("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
-      /* @__PURE__ */ jsx77(ContestGuidelines, { contest }),
-      /* @__PURE__ */ jsxs64(Form17, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
-        /* @__PURE__ */ jsxs64("p", { className: "text-2xl font-satoshi-bold", children: [
+    /* @__PURE__ */ jsx76("section", { className: "sm:wrapper my-16", children: /* @__PURE__ */ jsxs63("div", { className: "flex flex-col sm:flex-row justify-between items-start gap-6 sm:gap-8", children: [
+      /* @__PURE__ */ jsx76(ContestGuidelines, { contest }),
+      /* @__PURE__ */ jsxs63(Form17, { method: "POST", encType: "multipart/form-data", className: "bg-secondary p-[5%] sm:p-10 sm:rounded-3xl flex flex-col w-full max-w-xl gap-6", children: [
+        /* @__PURE__ */ jsxs63("p", { className: "text-2xl font-satoshi-bold", children: [
           "Welcome, ",
           contestant?.contestant_biodata.first_name,
           ". You can manage your profile for ",
           contest.name,
           " here"
         ] }),
-        /* @__PURE__ */ jsx77("img", { src: contestant?.image_url || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }),
-        /* @__PURE__ */ jsxs64("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsx77(
+        /* @__PURE__ */ jsx76("img", { src: contestant?.image_url || no_image_default, alt: "kid smiling", className: "w-full rounded-3xl h-[350px] object-cover" }),
+        /* @__PURE__ */ jsxs63("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx76(
             FormControl,
             {
               as: "input",
@@ -8227,7 +8095,7 @@ function RegistrationForm2() {
               required: !0
             }
           ),
-          /* @__PURE__ */ jsx77(
+          /* @__PURE__ */ jsx76(
             FormControl,
             {
               as: "input",
@@ -8240,8 +8108,8 @@ function RegistrationForm2() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs64("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsx77(
+        /* @__PURE__ */ jsxs63("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx76(
             FormControl,
             {
               as: "input",
@@ -8253,7 +8121,7 @@ function RegistrationForm2() {
               required: !0
             }
           ),
-          /* @__PURE__ */ jsx77(
+          /* @__PURE__ */ jsx76(
             FormControl,
             {
               as: "input",
@@ -8268,27 +8136,27 @@ function RegistrationForm2() {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs64("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsxs64("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
+        /* @__PURE__ */ jsxs63("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsxs63("label", { htmlFor: "gender", className: "font-bold flex flex-col", children: [
             "Gender",
-            /* @__PURE__ */ jsxs64(Select, { name: "sex", required: !0, defaultValue: contestant?.contestant_biodata?.sex, children: [
-              /* @__PURE__ */ jsx77(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx77(SelectValue, { placeholder: "Gender" }) }),
-              /* @__PURE__ */ jsxs64(SelectContent, { children: [
-                /* @__PURE__ */ jsx77(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
-                /* @__PURE__ */ jsx77(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
+            /* @__PURE__ */ jsxs63(Select, { name: "sex", required: !0, defaultValue: contestant?.contestant_biodata?.sex, children: [
+              /* @__PURE__ */ jsx76(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx76(SelectValue, { placeholder: "Gender" }) }),
+              /* @__PURE__ */ jsxs63(SelectContent, { children: [
+                /* @__PURE__ */ jsx76(SelectItem, { value: "MALE", className: "focus:bg-blue-700/25", children: "Male" }),
+                /* @__PURE__ */ jsx76(SelectItem, { value: "FEMALE", className: "focus:bg-blue-700/25", children: "Female" })
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs64("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
+          /* @__PURE__ */ jsxs63("label", { htmlFor: "state_of_residence", className: "font-bold flex flex-col", children: [
             "State of Residence",
-            /* @__PURE__ */ jsxs64(Select, { name: "state_of_residence", required: !0, defaultValue: contestant?.contestant_biodata?.state_of_residence, children: [
-              /* @__PURE__ */ jsx77(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx77(SelectValue, { placeholder: "Select a state" }) }),
-              /* @__PURE__ */ jsx77(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx77(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
+            /* @__PURE__ */ jsxs63(Select, { name: "state_of_residence", required: !0, defaultValue: contestant?.contestant_biodata?.state_of_residence, children: [
+              /* @__PURE__ */ jsx76(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx76(SelectValue, { placeholder: "Select a state" }) }),
+              /* @__PURE__ */ jsx76(SelectContent, { children: Object.entries(nigerianStates).map(([key, val]) => /* @__PURE__ */ jsx76(SelectItem, { value: key, className: "focus:bg-blue-700/25", children: val }, key)) })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs64("div", { className: "grid gap-6 lg:grid-cols-2", children: [
-          /* @__PURE__ */ jsx77(
+        /* @__PURE__ */ jsxs63("div", { className: "grid gap-6 lg:grid-cols-2", children: [
+          /* @__PURE__ */ jsx76(
             FormControl,
             {
               as: "input",
@@ -8301,21 +8169,21 @@ function RegistrationForm2() {
               defaultValue: contestant?.contestant_biodata?.whatsapp_no
             }
           ),
-          /* @__PURE__ */ jsxs64("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
+          /* @__PURE__ */ jsxs63("label", { htmlFor: "category", className: "font-bold flex flex-col", children: [
             "Category",
-            /* @__PURE__ */ jsxs64(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, children: [
-              /* @__PURE__ */ jsx77(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx77(SelectValue, { placeholder: "Select a category" }) }),
-              /* @__PURE__ */ jsx77(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx77(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
+            /* @__PURE__ */ jsxs63(Select, { name: "category", required: !!contest.categories.length, defaultValue: contestant?.category, children: [
+              /* @__PURE__ */ jsx76(SelectTrigger, { className: "h-10 font-normal rounded-lg shadow-none hover:border-accent", children: /* @__PURE__ */ jsx76(SelectValue, { placeholder: "Select a category" }) }),
+              /* @__PURE__ */ jsx76(SelectContent, { children: contest.categories.map((category) => /* @__PURE__ */ jsx76(SelectItem, { value: category, className: "focus:bg-blue-700/25", children: category }, category)) })
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx77(DragnDrop, { labelText: "Upload Image", name: "media", multiple: !0, required: !1 }),
-        /* @__PURE__ */ jsx77("input", { type: "hidden", name: "contestId", value: contest._id }),
-        /* @__PURE__ */ jsx77("input", { type: "hidden", name: "contestantId", value: contestant?._id }),
-        /* @__PURE__ */ jsx77(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Update contestant details" })
+        /* @__PURE__ */ jsx76(DragnDrop, { labelText: "Upload Image", name: "media", multiple: !0, required: !1 }),
+        /* @__PURE__ */ jsx76("input", { type: "hidden", name: "contestId", value: contest._id }),
+        /* @__PURE__ */ jsx76("input", { type: "hidden", name: "contestantId", value: contestant?._id }),
+        /* @__PURE__ */ jsx76(Button, { element: "button", type: "submit", name: "intent", value: "register", className: "md:self-end", children: "Update contestant details" })
       ] })
     ] }) })
-  ] }) : /* @__PURE__ */ jsx77("div", { children: " Not found" });
+  ] }) : /* @__PURE__ */ jsx76("div", { children: " Not found" });
 }
 
 // app/routes/_public.marketplace.checkout.tsx
@@ -8323,13 +8191,13 @@ var public_marketplace_checkout_exports = {};
 __export(public_marketplace_checkout_exports, {
   action: () => action13,
   default: () => MarketplaceCheckout,
-  loader: () => loader25
+  loader: () => loader24
 });
-import { json as json23, redirect as redirect23 } from "@remix-run/node";
-import { Form as Form18, Link as Link17, useActionData as useActionData8, useFetcher as useFetcher11, useLoaderData as useLoaderData20, useLocation as useLocation9, useNavigation as useNavigation10 } from "@remix-run/react";
+import { json as json22, redirect as redirect23 } from "@remix-run/node";
+import { Form as Form18, Link as Link16, useActionData as useActionData8, useFetcher as useFetcher11, useLoaderData as useLoaderData19, useLocation as useLocation8, useNavigation as useNavigation10 } from "@remix-run/react";
 import { ArrowLeft, CheckCircle2, CreditCard, Loader2, MapPin, Package, Plus } from "lucide-react";
-import { useEffect as useEffect25, useRef as useRef9, useState as useState32 } from "react";
-import { Fragment as Fragment12, jsx as jsx78, jsxs as jsxs65 } from "react/jsx-runtime";
+import { useEffect as useEffect24, useRef as useRef9, useState as useState32 } from "react";
+import { Fragment as Fragment11, jsx as jsx77, jsxs as jsxs64 } from "react/jsx-runtime";
 function buildDeliveryDetailsPayload(formData) {
   let name = String(formData.get("name") ?? "").trim(), email = String(formData.get("email") ?? "").trim(), phone_number = String(formData.get("phone_number") ?? "").trim(), street = String(formData.get("location_street") ?? "").trim(), city = String(formData.get("location_city") ?? "").trim(), state = String(formData.get("location_state") ?? "").trim(), country = String(formData.get("location_country") ?? "").trim();
   return {
@@ -8358,23 +8226,23 @@ function buildLoaderData(data, error) {
     error: error ?? null
   };
 }
-async function loader25({ request }) {
+async function loader24({ request }) {
   let cookieHeader = request.headers.get("Cookie") ?? void 0, checkoutRes = await partnerServer.getCartDeliveryAndPaymentOptions(request);
-  return checkoutRes.error ? json23(
+  return checkoutRes.error ? json22(
     buildLoaderData(void 0, typeof checkoutRes.error.detail == "string" ? checkoutRes.error.detail : "Unable to load checkout details")
-  ) : json23(buildLoaderData(checkoutRes.data));
+  ) : json22(buildLoaderData(checkoutRes.data));
 }
 async function action13({ request }) {
   let paths = getMarketplacePaths(new URL(request.url).pathname), formData = await request.formData(), intent = String(formData.get("intent") ?? ""), cookieHeader = request.headers.get("Cookie") ?? void 0;
   if (intent === "create-delivery-details") {
     let payload = buildDeliveryDetailsPayload(formData);
     if (!payload.phone_number)
-      return json23({ error: "Phone number is required" }, { status: 400 });
+      return json22({ error: "Phone number is required" }, { status: 400 });
     if (!payload.location || !payload.location.street || !payload.location.city || !payload.location.state || !payload.location.country)
-      return json23({ error: "Delivery address is required" }, { status: 400 });
+      return json22({ error: "Delivery address is required" }, { status: 400 });
     let detailsRes = await partnerServer.createDeliveryDetails(payload, request);
     if (detailsRes.error)
-      return json23(
+      return json22(
         {
           error: typeof detailsRes.error.detail == "string" ? detailsRes.error.detail : "Unable to save delivery details"
         },
@@ -8384,7 +8252,7 @@ async function action13({ request }) {
       request,
       toast: `success::Delivery details saved successfully::${Date.now()}`
     });
-    return json23(
+    return json22(
       {
         delivery_details: detailsRes.data
       },
@@ -8394,9 +8262,9 @@ async function action13({ request }) {
   if (intent === "place-order") {
     let delivery_details_id = String(formData.get("delivery_details_id") ?? "").trim(), payment_option_raw = String(formData.get("payment_option") ?? "").trim();
     if (!delivery_details_id)
-      return json23({ error: "Please select a delivery address" }, { status: 400 });
+      return json22({ error: "Please select a delivery address" }, { status: 400 });
     if (!payment_option_raw)
-      return json23({ error: "Please select a payment option" }, { status: 400 });
+      return json22({ error: "Please select a payment option" }, { status: 400 });
     let payment_option = payment_option_raw, payload = {
       delivery_details_id,
       payment_option
@@ -8404,7 +8272,7 @@ async function action13({ request }) {
     payment_option === "prepay" /* prepay */ && (payload.prepay_redirect_url = new URL(paths.orders, request.url).toString());
     let ordersRes = await partnerServer.placeOrder(payload, request);
     if (ordersRes.error)
-      return json23(
+      return json22(
         {
           error: typeof ordersRes.error.detail == "string" ? ordersRes.error.detail : "Unable to place order"
         },
@@ -8419,36 +8287,36 @@ async function action13({ request }) {
     });
     return redirect23(paths.orders, { headers });
   }
-  return json23({ error: "Unsupported checkout action" }, { status: 400 });
+  return json22({ error: "Unsupported checkout action" }, { status: 400 });
 }
 function SkeletonCard() {
-  return /* @__PURE__ */ jsxs65("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsx78("div", { className: "h-4 w-24 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx78("div", { className: "mt-4 h-5 w-2/3 rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx78("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
-    /* @__PURE__ */ jsx78("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
+  return /* @__PURE__ */ jsxs64("div", { className: "animate-pulse rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsx77("div", { className: "h-4 w-24 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx77("div", { className: "mt-4 h-5 w-2/3 rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx77("div", { className: "mt-3 h-4 w-full rounded-full bg-slate-200" }),
+    /* @__PURE__ */ jsx77("div", { className: "mt-3 h-4 w-5/6 rounded-full bg-slate-200" })
   ] });
 }
 function CheckoutSkeleton() {
-  return /* @__PURE__ */ jsxs65("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsx78("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: /* @__PURE__ */ jsxs65("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx78("div", { className: "h-10 w-40 rounded-full bg-slate-200" }),
-        /* @__PURE__ */ jsx78("div", { className: "h-12 w-full max-w-2xl rounded-full bg-slate-200" }),
-        /* @__PURE__ */ jsx78("div", { className: "h-5 w-full max-w-xl rounded-full bg-slate-200" })
+  return /* @__PURE__ */ jsxs64("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsx77("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: /* @__PURE__ */ jsxs64("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsx77("div", { className: "h-10 w-40 rounded-full bg-slate-200" }),
+        /* @__PURE__ */ jsx77("div", { className: "h-12 w-full max-w-2xl rounded-full bg-slate-200" }),
+        /* @__PURE__ */ jsx77("div", { className: "h-5 w-full max-w-xl rounded-full bg-slate-200" })
       ] }),
-      /* @__PURE__ */ jsxs65("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-        /* @__PURE__ */ jsx78(SkeletonCard, {}),
-        /* @__PURE__ */ jsx78(SkeletonCard, {}),
-        /* @__PURE__ */ jsx78(SkeletonCard, {})
+      /* @__PURE__ */ jsxs64("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+        /* @__PURE__ */ jsx77(SkeletonCard, {}),
+        /* @__PURE__ */ jsx77(SkeletonCard, {}),
+        /* @__PURE__ */ jsx77(SkeletonCard, {})
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxs65("section", { className: "mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx78(SkeletonCard, {}),
-        /* @__PURE__ */ jsx78(SkeletonCard, {})
+    /* @__PURE__ */ jsxs64("section", { className: "mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsx77(SkeletonCard, {}),
+        /* @__PURE__ */ jsx77(SkeletonCard, {})
       ] }),
-      /* @__PURE__ */ jsx78(SkeletonCard, {})
+      /* @__PURE__ */ jsx77(SkeletonCard, {})
     ] })
   ] });
 }
@@ -8457,30 +8325,30 @@ function SectionTitle({
   title,
   description
 }) {
-  return /* @__PURE__ */ jsxs65("div", { className: "space-y-2", children: [
-    /* @__PURE__ */ jsx78("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: eyebrow }),
-    /* @__PURE__ */ jsx78("h2", { className: "text-2xl font-black text-slate-950", children: title }),
-    /* @__PURE__ */ jsx78("p", { className: "max-w-2xl text-sm leading-6 text-slate-600", children: description })
+  return /* @__PURE__ */ jsxs64("div", { className: "space-y-2", children: [
+    /* @__PURE__ */ jsx77("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: eyebrow }),
+    /* @__PURE__ */ jsx77("h2", { className: "text-2xl font-black text-slate-950", children: title }),
+    /* @__PURE__ */ jsx77("p", { className: "max-w-2xl text-sm leading-6 text-slate-600", children: description })
   ] });
 }
 function CartItemCard({ item }) {
   let product = item.product, imageSrc = product.main_image_url || product.image_urls?.[0] || no_image_default, locationLabel = product.product_locations?.find((location) => location.str_id === item.product_location_id)?.name ?? product.product_locations?.find((location) => location.is_primary)?.name ?? product.product_locations?.[0]?.name ?? "Default location";
-  return /* @__PURE__ */ jsxs65("article", { className: "grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr] sm:p-5", children: [
-    /* @__PURE__ */ jsx78("div", { className: "overflow-hidden rounded-2xl bg-slate-100", children: /* @__PURE__ */ jsx78("img", { src: imageSrc, alt: product.name, className: "aspect-square h-full w-full object-cover", loading: "lazy" }) }),
-    /* @__PURE__ */ jsxs65("div", { className: "space-y-3", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
-        /* @__PURE__ */ jsxs65("div", { children: [
-          /* @__PURE__ */ jsx78("h3", { className: "text-lg font-black text-slate-950", children: product.name }),
-          /* @__PURE__ */ jsx78("p", { className: "mt-1 text-sm leading-6 text-slate-500 line-clamp-2", children: product.description })
+  return /* @__PURE__ */ jsxs64("article", { className: "grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-[120px_1fr] sm:p-5", children: [
+    /* @__PURE__ */ jsx77("div", { className: "overflow-hidden rounded-2xl bg-slate-100", children: /* @__PURE__ */ jsx77("img", { src: imageSrc, alt: product.name, className: "aspect-square h-full w-full object-cover", loading: "lazy" }) }),
+    /* @__PURE__ */ jsxs64("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+        /* @__PURE__ */ jsxs64("div", { children: [
+          /* @__PURE__ */ jsx77("h3", { className: "text-lg font-black text-slate-950", children: product.name }),
+          /* @__PURE__ */ jsx77("p", { className: "mt-1 text-sm leading-6 text-slate-500 line-clamp-2", children: product.description })
         ] }),
-        /* @__PURE__ */ jsx78("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" })
+        /* @__PURE__ */ jsx77("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: product.category || "Uncategorized" })
       ] }),
-      /* @__PURE__ */ jsxs65("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
-        /* @__PURE__ */ jsx78("span", { className: "font-bold text-slate-900", children: product.price_min === 0 && product.price_max === 0 ? "Free" : product.price_min === product.price_max ? formatMoney(product.currency, product.price_min) : `${formatMoney(product.currency, product.price_min)} - ${formatMoney(product.currency, product.price_max)}` }),
-        /* @__PURE__ */ jsx78("span", { className: "text-slate-400", children: "\u2022" }),
-        /* @__PURE__ */ jsx78("span", { className: "text-slate-500", children: locationLabel })
+      /* @__PURE__ */ jsxs64("div", { className: "flex flex-wrap items-center gap-3 text-sm", children: [
+        /* @__PURE__ */ jsx77("span", { className: "font-bold text-slate-900", children: product.price_min === 0 && product.price_max === 0 ? "Free" : product.price_min === product.price_max ? formatMoney(product.currency, product.price_min) : `${formatMoney(product.currency, product.price_min)} - ${formatMoney(product.currency, product.price_max)}` }),
+        /* @__PURE__ */ jsx77("span", { className: "text-slate-400", children: "\u2022" }),
+        /* @__PURE__ */ jsx77("span", { className: "text-slate-500", children: locationLabel })
       ] }),
-      /* @__PURE__ */ jsx78("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsx78("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`)) })
+      /* @__PURE__ */ jsx77("div", { className: "flex flex-wrap gap-2", children: (product.tags ?? []).slice(0, 4).map((tag) => /* @__PURE__ */ jsx77("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: tag.trim() }, `${product._id}-${tag}`)) })
     ] })
   ] });
 }
@@ -8490,8 +8358,8 @@ function DeliveryCard({
   onSelect
 }) {
   let location = deliveryDetails.location;
-  return /* @__PURE__ */ jsx78("label", { className: `cursor-pointer rounded-[1.5rem] border p-4 shadow-sm transition hover:-translate-y-0.5 ${checked ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`, children: /* @__PURE__ */ jsxs65("div", { className: "flex items-start gap-3", children: [
-    /* @__PURE__ */ jsx78(
+  return /* @__PURE__ */ jsx77("label", { className: `cursor-pointer rounded-[1.5rem] border p-4 shadow-sm transition hover:-translate-y-0.5 ${checked ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`, children: /* @__PURE__ */ jsxs64("div", { className: "flex items-start gap-3", children: [
+    /* @__PURE__ */ jsx77(
       "input",
       {
         type: "radio",
@@ -8503,15 +8371,15 @@ function DeliveryCard({
         required: !0
       }
     ),
-    /* @__PURE__ */ jsxs65("div", { className: "min-w-0 flex-1", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
-        /* @__PURE__ */ jsxs65("div", { children: [
-          /* @__PURE__ */ jsx78("h3", { className: "text-base font-bold text-slate-950", children: deliveryDetails.name || "Saved delivery details" }),
-          /* @__PURE__ */ jsx78("p", { className: "text-sm text-slate-500", children: deliveryDetails.phone_number })
+    /* @__PURE__ */ jsxs64("div", { className: "min-w-0 flex-1", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
+        /* @__PURE__ */ jsxs64("div", { children: [
+          /* @__PURE__ */ jsx77("h3", { className: "text-base font-bold text-slate-950", children: deliveryDetails.name || "Saved delivery details" }),
+          /* @__PURE__ */ jsx77("p", { className: "text-sm text-slate-500", children: deliveryDetails.phone_number })
         ] }),
-        deliveryDetails.email ? /* @__PURE__ */ jsx78("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: deliveryDetails.email }) : null
+        deliveryDetails.email ? /* @__PURE__ */ jsx77("span", { className: "rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600", children: deliveryDetails.email }) : null
       ] }),
-      location ? /* @__PURE__ */ jsxs65("p", { className: "mt-3 text-sm leading-6 text-slate-600", children: [
+      location ? /* @__PURE__ */ jsxs64("p", { className: "mt-3 text-sm leading-6 text-slate-600", children: [
         location.street,
         ", ",
         location.city,
@@ -8528,8 +8396,8 @@ function PaymentOptionCard({
   checked,
   onSelect
 }) {
-  return /* @__PURE__ */ jsx78("label", { className: `cursor-pointer rounded-[1.5rem] border p-4 shadow-sm transition hover:-translate-y-0.5 ${checked ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`, children: /* @__PURE__ */ jsxs65("div", { className: "flex items-start gap-3", children: [
-    /* @__PURE__ */ jsx78(
+  return /* @__PURE__ */ jsx77("label", { className: `cursor-pointer rounded-[1.5rem] border p-4 shadow-sm transition hover:-translate-y-0.5 ${checked ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`, children: /* @__PURE__ */ jsxs64("div", { className: "flex items-start gap-3", children: [
+    /* @__PURE__ */ jsx77(
       "input",
       {
         type: "radio",
@@ -8541,12 +8409,12 @@ function PaymentOptionCard({
         required: !0
       }
     ),
-    /* @__PURE__ */ jsx78("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsxs65("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
-      /* @__PURE__ */ jsxs65("div", { children: [
-        /* @__PURE__ */ jsx78("h3", { className: "text-base font-bold text-slate-950", children: paymentOption.name }),
-        /* @__PURE__ */ jsx78("p", { className: "text-sm text-slate-500", children: paymentOption.description })
+    /* @__PURE__ */ jsx77("div", { className: "min-w-0 flex-1", children: /* @__PURE__ */ jsxs64("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
+      /* @__PURE__ */ jsxs64("div", { children: [
+        /* @__PURE__ */ jsx77("h3", { className: "text-base font-bold text-slate-950", children: paymentOption.name }),
+        /* @__PURE__ */ jsx77("p", { className: "text-sm text-slate-500", children: paymentOption.description })
       ] }),
-      /* @__PURE__ */ jsx78("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: paymentOption.key === "prepay" /* prepay */ ? "Prepay" : "Pay in person" })
+      /* @__PURE__ */ jsx77("span", { className: "rounded-full bg-[#EEF0FF] px-3 py-1 text-xs font-semibold text-accent", children: paymentOption.key === "prepay" /* prepay */ ? "Prepay" : "Pay in person" })
     ] }) })
   ] }) });
 }
@@ -8554,51 +8422,51 @@ function DeliveryDetailsForm({
   fetcher,
   formRef
 }) {
-  return /* @__PURE__ */ jsxs65(fetcher.Form, { ref: formRef, method: "post", className: "grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-    /* @__PURE__ */ jsx78("input", { type: "hidden", name: "intent", value: "create-delivery-details" }),
-    /* @__PURE__ */ jsxs65("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
-      /* @__PURE__ */ jsx78(Plus, { className: "h-4 w-4" }),
+  return /* @__PURE__ */ jsxs64(fetcher.Form, { ref: formRef, method: "post", className: "grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+    /* @__PURE__ */ jsx77("input", { type: "hidden", name: "intent", value: "create-delivery-details" }),
+    /* @__PURE__ */ jsxs64("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
+      /* @__PURE__ */ jsx77(Plus, { className: "h-4 w-4" }),
       "Add delivery details"
     ] }),
-    /* @__PURE__ */ jsxs65("div", { className: "grid gap-4 md:grid-cols-2", children: [
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Name" }),
-        /* @__PURE__ */ jsx78("input", { name: "name", className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Full name" })
+    /* @__PURE__ */ jsxs64("div", { className: "grid gap-4 md:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Name" }),
+        /* @__PURE__ */ jsx77("input", { name: "name", className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Full name" })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Email" }),
-        /* @__PURE__ */ jsx78("input", { name: "email", type: "email", className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "email@example.com" })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Email" }),
+        /* @__PURE__ */ jsx77("input", { name: "email", type: "email", className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "email@example.com" })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2 md:col-span-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Phone number" }),
-        /* @__PURE__ */ jsx78("input", { name: "phone_number", type: "tel", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "+234..." })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2 md:col-span-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Phone number" }),
+        /* @__PURE__ */ jsx77("input", { name: "phone_number", type: "tel", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "+234..." })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2 md:col-span-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Street" }),
-        /* @__PURE__ */ jsx78("input", { name: "location_street", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Street address" })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2 md:col-span-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Street" }),
+        /* @__PURE__ */ jsx77("input", { name: "location_street", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Street address" })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "City" }),
-        /* @__PURE__ */ jsx78("input", { name: "location_city", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "City" })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "City" }),
+        /* @__PURE__ */ jsx77("input", { name: "location_city", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "City" })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "State" }),
-        /* @__PURE__ */ jsx78("input", { name: "location_state", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "State" })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "State" }),
+        /* @__PURE__ */ jsx77("input", { name: "location_state", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "State" })
       ] }),
-      /* @__PURE__ */ jsxs65("label", { className: "grid gap-2 md:col-span-2", children: [
-        /* @__PURE__ */ jsx78("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Country" }),
-        /* @__PURE__ */ jsx78("input", { name: "location_country", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Country" })
+      /* @__PURE__ */ jsxs64("label", { className: "grid gap-2 md:col-span-2", children: [
+        /* @__PURE__ */ jsx77("span", { className: "text-xs font-bold uppercase tracking-[0.18em] text-slate-500", children: "Country" }),
+        /* @__PURE__ */ jsx77("input", { name: "location_country", required: !0, className: "h-12 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none transition focus:border-slate-950 focus:bg-white", placeholder: "Country" })
       ] })
     ] }),
-    fetcher.data?.error ? /* @__PURE__ */ jsx78("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800", children: fetcher.data.error }) : null,
-    /* @__PURE__ */ jsx78(
+    fetcher.data?.error ? /* @__PURE__ */ jsx77("div", { className: "rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800", children: fetcher.data.error }) : null,
+    /* @__PURE__ */ jsx77(
       "button",
       {
         type: "submit",
         disabled: fetcher.state !== "idle",
         className: "inline-flex items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-wait disabled:opacity-70",
-        children: fetcher.state !== "idle" ? /* @__PURE__ */ jsxs65(Fragment12, { children: [
-          /* @__PURE__ */ jsx78(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+        children: fetcher.state !== "idle" ? /* @__PURE__ */ jsxs64(Fragment11, { children: [
+          /* @__PURE__ */ jsx77(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
           "Saving..."
         ] }) : "Save delivery details"
       }
@@ -8606,54 +8474,54 @@ function DeliveryDetailsForm({
   ] });
 }
 function MarketplaceCheckout() {
-  let { pathname } = useLocation9(), paths = getMarketplacePaths(pathname), { cart, saved_delivery_details, payment_options, error } = useLoaderData20(), actionData = useActionData8(), navigation = useNavigation10(), deliveryFetcher = useFetcher11(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
-  return useEffect25(() => {
+  let { pathname } = useLocation8(), paths = getMarketplacePaths(pathname), { cart, saved_delivery_details, payment_options, error } = useLoaderData19(), actionData = useActionData8(), navigation = useNavigation10(), deliveryFetcher = useFetcher11(), deliveryFormRef = useRef9(null), [deliveryDetails, setDeliveryDetails] = useState32(saved_delivery_details), [selectedDeliveryDetailsId, setSelectedDeliveryDetailsId] = useState32(saved_delivery_details[0]?.str_id ?? ""), [selectedPaymentOption, setSelectedPaymentOption] = useState32(""), cartItems = cart?.cart_items ?? [], availablePaymentOptions = payment_options.filter((option) => option.is_available), isPlacingOrder = navigation.state === "submitting" && navigation.formData?.get("intent") === "place-order", canPlaceOrder = cartItems.length > 0 && Boolean(selectedDeliveryDetailsId) && Boolean(selectedPaymentOption);
+  return useEffect24(() => {
     saved_delivery_details.length > 0 && deliveryDetails.length === 0 && (setDeliveryDetails(saved_delivery_details), setSelectedDeliveryDetailsId(saved_delivery_details[0]?.str_id ?? ""));
-  }, [deliveryDetails.length, saved_delivery_details]), useEffect25(() => {
+  }, [deliveryDetails.length, saved_delivery_details]), useEffect24(() => {
     deliveryFetcher.state === "idle" && deliveryFetcher.data?.delivery_details && (setDeliveryDetails((prev) => [deliveryFetcher.data.delivery_details, ...prev.filter((item) => item.str_id !== deliveryFetcher.data.delivery_details.str_id)]), setSelectedDeliveryDetailsId(deliveryFetcher.data.delivery_details.str_id), deliveryFormRef.current?.reset());
-  }, [deliveryFetcher.data, deliveryFetcher.state]), !cart && !error && !saved_delivery_details.length && !payment_options.length && navigation.state === "loading" ? /* @__PURE__ */ jsx78(CheckoutSkeleton, {}) : /* @__PURE__ */ jsxs65("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
-    /* @__PURE__ */ jsxs65("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
-        /* @__PURE__ */ jsxs65("div", { className: "max-w-3xl space-y-4", children: [
-          /* @__PURE__ */ jsxs65(
-            Link17,
+  }, [deliveryFetcher.data, deliveryFetcher.state]), !cart && !error && !saved_delivery_details.length && !payment_options.length && navigation.state === "loading" ? /* @__PURE__ */ jsx77(CheckoutSkeleton, {}) : /* @__PURE__ */ jsxs64("main", { className: "w-full overflow-y-auto bg-[#f7f7f4] p-4 sm:p-6 lg:p-8", children: [
+    /* @__PURE__ */ jsxs64("section", { className: "rounded-[2rem] border border-slate-200 bg-white px-6 py-8 shadow-[0_16px_50px_rgba(15,23,42,0.05)] sm:px-8 sm:py-10", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between", children: [
+        /* @__PURE__ */ jsxs64("div", { className: "max-w-3xl space-y-4", children: [
+          /* @__PURE__ */ jsxs64(
+            Link16,
             {
               to: paths.cart,
               className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white",
               children: [
-                /* @__PURE__ */ jsx78(ArrowLeft, { className: "h-4 w-4" }),
+                /* @__PURE__ */ jsx77(ArrowLeft, { className: "h-4 w-4" }),
                 "Back to cart"
               ]
             }
           ),
-          /* @__PURE__ */ jsxs65("div", { className: "space-y-3", children: [
-            /* @__PURE__ */ jsx78("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Checkout" }),
-            /* @__PURE__ */ jsx78("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Confirm delivery details and choose how you want to pay." }),
-            /* @__PURE__ */ jsx78("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Review your cart, select a saved delivery address, or create a new one before placing your order." })
+          /* @__PURE__ */ jsxs64("div", { className: "space-y-3", children: [
+            /* @__PURE__ */ jsx77("div", { className: "inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500", children: "Checkout" }),
+            /* @__PURE__ */ jsx77("h1", { className: "text-4xl font-black leading-tight text-slate-950 sm:text-5xl", children: "Confirm delivery details and choose how you want to pay." }),
+            /* @__PURE__ */ jsx77("p", { className: "max-w-2xl text-base leading-7 text-slate-600 sm:text-lg", children: "Review your cart, select a saved delivery address, or create a new one before placing your order." })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs65("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
-          /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Items" }),
-            /* @__PURE__ */ jsx78("div", { className: "mt-2 text-3xl font-black text-slate-950", children: cartItems.reduce((total, item) => total + item.quantity, 0) })
+        /* @__PURE__ */ jsxs64("div", { className: "grid gap-4 sm:grid-cols-3 lg:w-[420px] lg:grid-cols-1 xl:w-[520px] xl:grid-cols-3", children: [
+          /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Items" }),
+            /* @__PURE__ */ jsx77("div", { className: "mt-2 text-3xl font-black text-slate-950", children: cartItems.reduce((total, item) => total + item.quantity, 0) })
           ] }),
-          /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery options" }),
-            /* @__PURE__ */ jsx78("div", { className: "mt-2 text-3xl font-black text-slate-950", children: deliveryDetails.length })
+          /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery options" }),
+            /* @__PURE__ */ jsx77("div", { className: "mt-2 text-3xl font-black text-slate-950", children: deliveryDetails.length })
           ] }),
-          /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
-            /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Payment options" }),
-            /* @__PURE__ */ jsx78("div", { className: "mt-2 text-3xl font-black text-slate-950", children: availablePaymentOptions.length })
+          /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5", children: [
+            /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Payment options" }),
+            /* @__PURE__ */ jsx77("div", { className: "mt-2 text-3xl font-black text-slate-950", children: availablePaymentOptions.length })
           ] })
         ] })
       ] }),
-      error ? /* @__PURE__ */ jsx78("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null,
-      actionData?.error ? /* @__PURE__ */ jsx78("div", { className: "mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800", children: actionData.error }) : null
+      error ? /* @__PURE__ */ jsx77("div", { className: "mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: error }) : null,
+      actionData?.error ? /* @__PURE__ */ jsx77("div", { className: "mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800", children: actionData.error }) : null
     ] }),
-    /* @__PURE__ */ jsxs65("section", { className: "mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]", children: [
-      /* @__PURE__ */ jsxs65("div", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-          /* @__PURE__ */ jsx78(
+    /* @__PURE__ */ jsxs64("section", { className: "mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]", children: [
+      /* @__PURE__ */ jsxs64("div", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx77(
             SectionTitle,
             {
               eyebrow: "Cart",
@@ -8661,12 +8529,12 @@ function MarketplaceCheckout() {
               description: "These are the products currently in your cart and ready to be ordered."
             }
           ),
-          /* @__PURE__ */ jsx78("div", { className: "mt-5 space-y-4", children: cartItems.length > 0 ? cartItems.map((item) => /* @__PURE__ */ jsx78(CartItemCard, { item }, `${item.product_id}-${item.product_location_id ?? "default"}`)) : /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center", children: [
-            /* @__PURE__ */ jsx78(Package, { className: "mx-auto h-10 w-10 text-slate-300" }),
-            /* @__PURE__ */ jsx78("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "Your cart is empty" }),
-            /* @__PURE__ */ jsx78("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Add products from the marketplace before continuing to checkout." }),
-            /* @__PURE__ */ jsx78(
-              Link17,
+          /* @__PURE__ */ jsx77("div", { className: "mt-5 space-y-4", children: cartItems.length > 0 ? cartItems.map((item) => /* @__PURE__ */ jsx77(CartItemCard, { item }, `${item.product_id}-${item.product_location_id ?? "default"}`)) : /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center", children: [
+            /* @__PURE__ */ jsx77(Package, { className: "mx-auto h-10 w-10 text-slate-300" }),
+            /* @__PURE__ */ jsx77("h3", { className: "mt-4 text-xl font-black text-slate-950", children: "Your cart is empty" }),
+            /* @__PURE__ */ jsx77("p", { className: "mx-auto mt-2 max-w-lg text-sm leading-6 text-slate-500", children: "Add products from the marketplace before continuing to checkout." }),
+            /* @__PURE__ */ jsx77(
+              Link16,
               {
                 to: paths.shop,
                 className: "mt-6 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800",
@@ -8675,8 +8543,8 @@ function MarketplaceCheckout() {
             )
           ] }) })
         ] }),
-        /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-          /* @__PURE__ */ jsx78(
+        /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx77(
             SectionTitle,
             {
               eyebrow: "Delivery",
@@ -8684,7 +8552,7 @@ function MarketplaceCheckout() {
               description: "Select an existing delivery profile or add a new one for this order."
             }
           ),
-          /* @__PURE__ */ jsx78("div", { className: "mt-5 grid gap-4", children: deliveryDetails.length > 0 ? deliveryDetails.map((detail) => /* @__PURE__ */ jsx78(
+          /* @__PURE__ */ jsx77("div", { className: "mt-5 grid gap-4", children: deliveryDetails.length > 0 ? deliveryDetails.map((detail) => /* @__PURE__ */ jsx77(
             DeliveryCard,
             {
               deliveryDetails: detail,
@@ -8692,11 +8560,11 @@ function MarketplaceCheckout() {
               onSelect: setSelectedDeliveryDetailsId
             },
             detail.str_id
-          )) : /* @__PURE__ */ jsx78("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-sm text-slate-500", children: "No delivery details have been saved yet." }) }),
-          /* @__PURE__ */ jsx78("div", { className: "mt-6", children: /* @__PURE__ */ jsx78(DeliveryDetailsForm, { fetcher: deliveryFetcher, formRef: deliveryFormRef }) })
+          )) : /* @__PURE__ */ jsx77("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-sm text-slate-500", children: "No delivery details have been saved yet." }) }),
+          /* @__PURE__ */ jsx77("div", { className: "mt-6", children: /* @__PURE__ */ jsx77(DeliveryDetailsForm, { fetcher: deliveryFetcher, formRef: deliveryFormRef }) })
         ] }),
-        /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-          /* @__PURE__ */ jsx78(
+        /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx77(
             SectionTitle,
             {
               eyebrow: "Payment",
@@ -8704,7 +8572,7 @@ function MarketplaceCheckout() {
               description: "Only available payment options are shown here."
             }
           ),
-          /* @__PURE__ */ jsx78("div", { className: "mt-5 grid gap-4", children: availablePaymentOptions.length > 0 ? availablePaymentOptions.map((option) => /* @__PURE__ */ jsx78(
+          /* @__PURE__ */ jsx77("div", { className: "mt-5 grid gap-4", children: availablePaymentOptions.length > 0 ? availablePaymentOptions.map((option) => /* @__PURE__ */ jsx77(
             PaymentOptionCard,
             {
               paymentOption: option,
@@ -8712,12 +8580,12 @@ function MarketplaceCheckout() {
               onSelect: setSelectedPaymentOption
             },
             option.key
-          )) : /* @__PURE__ */ jsx78("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-sm text-slate-500", children: "No payment options are currently available." }) })
+          )) : /* @__PURE__ */ jsx77("div", { className: "rounded-[1.5rem] border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-sm text-slate-500", children: "No payment options are currently available." }) })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs65("aside", { className: "space-y-6", children: [
-        /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-          /* @__PURE__ */ jsx78(
+      /* @__PURE__ */ jsxs64("aside", { className: "space-y-6", children: [
+        /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsx77(
             SectionTitle,
             {
               eyebrow: "Summary",
@@ -8725,33 +8593,33 @@ function MarketplaceCheckout() {
               description: "Final check before we submit your order to the backend."
             }
           ),
-          /* @__PURE__ */ jsxs65("div", { className: "mt-5 space-y-4", children: [
-            /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.25rem] bg-slate-50 p-4", children: [
-              /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery" }),
-              /* @__PURE__ */ jsx78("div", { className: "mt-2 text-sm font-medium text-slate-900", children: selectedDeliveryDetailsId ? deliveryDetails.find((detail) => detail.str_id === selectedDeliveryDetailsId)?.name ?? "Selected delivery details" : "No delivery details selected" })
+          /* @__PURE__ */ jsxs64("div", { className: "mt-5 space-y-4", children: [
+            /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.25rem] bg-slate-50 p-4", children: [
+              /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Delivery" }),
+              /* @__PURE__ */ jsx77("div", { className: "mt-2 text-sm font-medium text-slate-900", children: selectedDeliveryDetailsId ? deliveryDetails.find((detail) => detail.str_id === selectedDeliveryDetailsId)?.name ?? "Selected delivery details" : "No delivery details selected" })
             ] }),
-            /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.25rem] bg-slate-50 p-4", children: [
-              /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Payment" }),
-              /* @__PURE__ */ jsx78("div", { className: "mt-2 text-sm font-medium text-slate-900", children: selectedPaymentOption ? availablePaymentOptions.find((option) => option.key === selectedPaymentOption)?.name ?? "Selected payment option" : "No payment option selected" })
+            /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.25rem] bg-slate-50 p-4", children: [
+              /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-500", children: "Payment" }),
+              /* @__PURE__ */ jsx77("div", { className: "mt-2 text-sm font-medium text-slate-900", children: selectedPaymentOption ? availablePaymentOptions.find((option) => option.key === selectedPaymentOption)?.name ?? "Selected payment option" : "No payment option selected" })
             ] }),
-            /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.25rem] bg-slate-950 p-4 text-white", children: [
-              /* @__PURE__ */ jsx78("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-300", children: "Estimated total" }),
-              /* @__PURE__ */ jsx78("div", { className: "mt-2 text-2xl font-black", children: cart ? `${formatMoney(cart.currency, cart.minimum_total_amount)}${cart.maximum_total_amount !== cart.minimum_total_amount ? ` - ${formatMoney(cart.currency, cart.maximum_total_amount)}` : ""}` : "NGN 0" })
+            /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.25rem] bg-slate-950 p-4 text-white", children: [
+              /* @__PURE__ */ jsx77("div", { className: "text-xs font-semibold uppercase tracking-[0.18em] text-slate-300", children: "Estimated total" }),
+              /* @__PURE__ */ jsx77("div", { className: "mt-2 text-2xl font-black", children: cart ? `${formatMoney(cart.currency, cart.minimum_total_amount)}${cart.maximum_total_amount !== cart.minimum_total_amount ? ` - ${formatMoney(cart.currency, cart.maximum_total_amount)}` : ""}` : "NGN 0" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs65(Form18, { method: "post", className: "mt-6 space-y-4", children: [
-            /* @__PURE__ */ jsx78("input", { type: "hidden", name: "intent", value: "place-order" }),
-            /* @__PURE__ */ jsxs65("div", { className: "grid gap-3", children: [
-              /* @__PURE__ */ jsxs65("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
-                /* @__PURE__ */ jsx78(MapPin, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsxs64(Form18, { method: "post", className: "mt-6 space-y-4", children: [
+            /* @__PURE__ */ jsx77("input", { type: "hidden", name: "intent", value: "place-order" }),
+            /* @__PURE__ */ jsxs64("div", { className: "grid gap-3", children: [
+              /* @__PURE__ */ jsxs64("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
+                /* @__PURE__ */ jsx77(MapPin, { className: "h-4 w-4" }),
                 "Delivery selection"
               ] }),
-              deliveryDetails.length > 0 ? /* @__PURE__ */ jsx78("div", { className: "grid gap-3", children: deliveryDetails.map((detail) => /* @__PURE__ */ jsxs65(
+              deliveryDetails.length > 0 ? /* @__PURE__ */ jsx77("div", { className: "grid gap-3", children: deliveryDetails.map((detail) => /* @__PURE__ */ jsxs64(
                 "label",
                 {
                   className: `cursor-pointer rounded-2xl border p-3 transition hover:-translate-y-0.5 ${selectedDeliveryDetailsId === detail.str_id ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`,
                   children: [
-                    /* @__PURE__ */ jsx78(
+                    /* @__PURE__ */ jsx77(
                       "input",
                       {
                         type: "radio",
@@ -8763,24 +8631,24 @@ function MarketplaceCheckout() {
                         required: !0
                       }
                     ),
-                    /* @__PURE__ */ jsx78("div", { className: "text-sm font-semibold text-slate-950", children: detail.name || "Saved delivery details" }),
-                    /* @__PURE__ */ jsx78("div", { className: "text-xs text-slate-500", children: detail.phone_number })
+                    /* @__PURE__ */ jsx77("div", { className: "text-sm font-semibold text-slate-950", children: detail.name || "Saved delivery details" }),
+                    /* @__PURE__ */ jsx77("div", { className: "text-xs text-slate-500", children: detail.phone_number })
                   ]
                 },
                 detail.str_id
-              )) }) : /* @__PURE__ */ jsx78("p", { className: "text-sm text-slate-500", children: "Add a delivery profile before placing an order." })
+              )) }) : /* @__PURE__ */ jsx77("p", { className: "text-sm text-slate-500", children: "Add a delivery profile before placing an order." })
             ] }),
-            /* @__PURE__ */ jsxs65("div", { className: "grid gap-3", children: [
-              /* @__PURE__ */ jsxs65("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
-                /* @__PURE__ */ jsx78(CreditCard, { className: "h-4 w-4" }),
+            /* @__PURE__ */ jsxs64("div", { className: "grid gap-3", children: [
+              /* @__PURE__ */ jsxs64("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
+                /* @__PURE__ */ jsx77(CreditCard, { className: "h-4 w-4" }),
                 "Payment selection"
               ] }),
-              availablePaymentOptions.length > 0 ? /* @__PURE__ */ jsx78("div", { className: "grid gap-3", children: availablePaymentOptions.map((option) => /* @__PURE__ */ jsxs65(
+              availablePaymentOptions.length > 0 ? /* @__PURE__ */ jsx77("div", { className: "grid gap-3", children: availablePaymentOptions.map((option) => /* @__PURE__ */ jsxs64(
                 "label",
                 {
                   className: `cursor-pointer rounded-2xl border p-3 transition hover:-translate-y-0.5 ${selectedPaymentOption === option.key ? "border-slate-950 bg-slate-50" : "border-slate-200 bg-white"}`,
                   children: [
-                    /* @__PURE__ */ jsx78(
+                    /* @__PURE__ */ jsx77(
                       "input",
                       {
                         type: "radio",
@@ -8792,42 +8660,174 @@ function MarketplaceCheckout() {
                         required: !0
                       }
                     ),
-                    /* @__PURE__ */ jsx78("div", { className: "text-sm font-semibold text-slate-950", children: option.name }),
-                    /* @__PURE__ */ jsx78("div", { className: "text-xs text-slate-500", children: option.description })
+                    /* @__PURE__ */ jsx77("div", { className: "text-sm font-semibold text-slate-950", children: option.name }),
+                    /* @__PURE__ */ jsx77("div", { className: "text-xs text-slate-500", children: option.description })
                   ]
                 },
                 option.key
-              )) }) : /* @__PURE__ */ jsx78("p", { className: "text-sm text-slate-500", children: "No available payment methods were returned." })
+              )) }) : /* @__PURE__ */ jsx77("p", { className: "text-sm text-slate-500", children: "No available payment methods were returned." })
             ] }),
-            /* @__PURE__ */ jsx78(
+            /* @__PURE__ */ jsx77(
               "button",
               {
                 type: "submit",
                 disabled: !canPlaceOrder || isPlacingOrder,
                 className: "inline-flex w-full items-center justify-center rounded-full border border-slate-900 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-70",
-                children: isPlacingOrder ? /* @__PURE__ */ jsxs65(Fragment12, { children: [
-                  /* @__PURE__ */ jsx78(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                children: isPlacingOrder ? /* @__PURE__ */ jsxs64(Fragment11, { children: [
+                  /* @__PURE__ */ jsx77(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
                   "Placing order..."
                 ] }) : "Place order"
               }
             ),
-            canPlaceOrder ? null : /* @__PURE__ */ jsx78("div", { className: "rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: "Select a delivery detail and a payment option before placing your order." })
+            canPlaceOrder ? null : /* @__PURE__ */ jsx77("div", { className: "rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900", children: "Select a delivery detail and a payment option before placing your order." })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
-          /* @__PURE__ */ jsxs65("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
-            /* @__PURE__ */ jsx78(CheckCircle2, { className: "h-4 w-4" }),
+        /* @__PURE__ */ jsxs64("div", { className: "rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm", children: [
+          /* @__PURE__ */ jsxs64("div", { className: "flex items-center gap-2 text-sm font-bold text-slate-950", children: [
+            /* @__PURE__ */ jsx77(CheckCircle2, { className: "h-4 w-4" }),
             "Checkout notes"
           ] }),
-          /* @__PURE__ */ jsxs65("ul", { className: "mt-4 space-y-3 text-sm leading-6 text-slate-600", children: [
-            /* @__PURE__ */ jsx78("li", { children: "Only payment options marked available are shown." }),
-            /* @__PURE__ */ jsx78("li", { children: "If you choose prepay, we will hand you off to the payment link returned by the backend." }),
-            /* @__PURE__ */ jsx78("li", { children: "Delivery details saved here can be reused on future orders." })
+          /* @__PURE__ */ jsxs64("ul", { className: "mt-4 space-y-3 text-sm leading-6 text-slate-600", children: [
+            /* @__PURE__ */ jsx77("li", { children: "Only payment options marked available are shown." }),
+            /* @__PURE__ */ jsx77("li", { children: "If you choose prepay, we will hand you off to the payment link returned by the backend." }),
+            /* @__PURE__ */ jsx77("li", { children: "Delivery details saved here can be reused on future orders." })
           ] })
         ] })
       ] })
     ] })
   ] });
+}
+
+// app/routes/_public.vtuservice.purchases.tsx
+var public_vtuservice_purchases_exports = {};
+__export(public_vtuservice_purchases_exports, {
+  default: () => VTUPurchasesPage,
+  loader: () => loader25
+});
+import { json as json23 } from "@remix-run/node";
+import { Link as Link17, useLoaderData as useLoaderData20, useLocation as useLocation9 } from "@remix-run/react";
+import { useEffect as useEffect25 } from "react";
+import { Fragment as Fragment12, jsx as jsx78, jsxs as jsxs65 } from "react/jsx-runtime";
+var DEFAULT_PAGE_SIZE = 20;
+function syncCreatedAtParams(lastCreatedAt, firstCreatedAt) {
+  let url = new URL(window.location.href), timestamps = { last_created_at: lastCreatedAt, first_created_at: firstCreatedAt }, changed = !1;
+  for (let [key, value] of Object.entries(timestamps))
+    value && url.searchParams.get(key) !== value && (url.searchParams.set(key, value), changed = !0);
+  changed && window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+}
+async function loader25({ request }) {
+  await requireAuth(request);
+  let url = new URL(request.url), pageSizeValue = Number(url.searchParams.get("page_size") ?? DEFAULT_PAGE_SIZE), pageSize = Number.isFinite(pageSizeValue) && pageSizeValue > 0 ? pageSizeValue : DEFAULT_PAGE_SIZE, directionValue = url.searchParams.get("direction"), lastCreatedAt = url.searchParams.get("last_created_at"), firstCreatedAt = url.searchParams.get("first_created_at"), response = await vtuServer.getVTUPurchaseResponsePaged({
+    page_size: pageSize,
+    last_key_id: url.searchParams.get("last_key_id") ?? void 0,
+    first_key_id: url.searchParams.get("first_key_id") ?? void 0,
+    direction: directionValue === "previous" ? "previous" : "next",
+    last_created_at: lastCreatedAt ?? void 0,
+    first_created_at: firstCreatedAt ?? void 0
+  }, request);
+  return response.error || !response.data ? json23({
+    purchases: null,
+    error: getErrorMessage(response.error, "Unable to load your VTU purchases."),
+    pageSize
+  }, { status: 400 }) : json23({ purchases: response.data, error: null, pageSize });
+}
+function statusColor(status) {
+  let normalizedStatus = status.toLowerCase();
+  return normalizedStatus.includes("success") || normalizedStatus.includes("fulfilled") ? "green" : normalizedStatus.includes("pending") || normalizedStatus.includes("initiated") || normalizedStatus.includes("awaiting") || normalizedStatus.includes("review") ? "yellow" : normalizedStatus.includes("fail") || normalizedStatus.includes("revers") ? "red" : "gray";
+}
+function PurchaseCard({ purchase, paths }) {
+  let purchaseDate = purchase.last_retried_at ?? purchase.first_retried_at;
+  return /* @__PURE__ */ jsxs65("article", { className: "rounded-[1.75rem] border border-brand-grey bg-white p-5 shadow-[0_16px_48px_rgba(14,42,77,0.08)] sm:p-6", children: [
+    /* @__PURE__ */ jsxs65("div", { className: "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between", children: [
+      /* @__PURE__ */ jsxs65("div", { className: "min-w-0", children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.2em] text-brand-slate", children: purchase.type }),
+        /* @__PURE__ */ jsx78("h2", { className: "mt-2 break-all text-lg font-black text-brand-navy", children: purchase.reference })
+      ] }),
+      /* @__PURE__ */ jsx78(StatusTag, { color: statusColor(purchase.status), status: purchase.status.replaceAll("_", " ") })
+    ] }),
+    purchase.description && /* @__PURE__ */ jsxs65("div", { className: "mt-5 rounded-2xl bg-secondary p-4", children: [
+      /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Description" }),
+      /* @__PURE__ */ jsx78("p", { className: "mt-1 text-sm font-semibold leading-6 text-brand-navy", children: purchase.description })
+    ] }),
+    /* @__PURE__ */ jsxs65("div", { className: "mt-5 grid gap-4 sm:grid-cols-2", children: [
+      /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Network" }),
+        /* @__PURE__ */ jsx78("p", { className: "mt-1 font-bold text-brand-navy", children: purchase.network ?? "\u2014" })
+      ] }),
+      /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Phone number" }),
+        /* @__PURE__ */ jsx78("p", { className: "mt-1 font-bold text-brand-navy", children: purchase.phone_number })
+      ] }),
+      /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Original amount" }),
+        /* @__PURE__ */ jsxs65("p", { className: "mt-1 font-bold text-brand-navy", children: [
+          purchase.currency,
+          formatAmount(purchase.original_retail_amount)
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Paid amount" }),
+        /* @__PURE__ */ jsxs65("p", { className: "mt-1 font-bold text-brand-navy", children: [
+          purchase.currency,
+          formatAmount(purchase.discounted_retail_amount)
+        ] })
+      ] }),
+      purchaseDate && /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.16em] text-slate-400", children: "Date" }),
+        /* @__PURE__ */ jsx78("p", { className: "mt-1 font-bold text-brand-navy", children: formatDate(new Date(purchaseDate), { dateStyle: "medium", timeStyle: "short" }) })
+      ] })
+    ] }),
+    purchase.failure_reason && /* @__PURE__ */ jsx78("p", { className: "mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700", children: purchase.failure_reason }),
+    /* @__PURE__ */ jsx78(
+      Link17,
+      {
+        className: "mt-5 inline-flex min-h-11 items-center justify-center rounded-xl border-2 border-brand-pink px-4 text-sm font-bold text-brand-pink transition hover:bg-brand-pink/5",
+        to: paths.purchase(purchase.reference),
+        children: "View purchase details"
+      }
+    )
+  ] });
+}
+function PurchaseSkeleton2() {
+  return /* @__PURE__ */ jsx78("div", { "aria-hidden": "true", className: "animate-pulse space-y-4", children: [1, 2, 3].map((item) => /* @__PURE__ */ jsx78("div", { className: "h-64 rounded-[1.75rem] bg-slate-200" }, item)) });
+}
+function VTUPurchasesPage() {
+  let { pathname } = useLocation9(), paths = getVtuPaths(pathname), data = useLoaderData20();
+  useEffect25(() => {
+    syncCreatedAtParams(data.purchases?.last_created_at, data.purchases?.first_created_at);
+  }, [data.purchases?.last_created_at, data.purchases?.first_created_at]), useEffect25(() => {
+    data.error && toast({
+      variant: "destructive",
+      title: "Purchases unavailable",
+      description: data.error
+    });
+  }, [data.error]);
+  let purchases = data.purchases?.items ?? [];
+  return /* @__PURE__ */ jsx78("main", { className: "grow bg-white px-4 py-10 text-brand-navy sm:px-6 sm:py-16 lg:px-8", children: /* @__PURE__ */ jsxs65("section", { className: "mx-auto max-w-5xl", children: [
+    /* @__PURE__ */ jsxs65("header", { className: "mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between", children: [
+      /* @__PURE__ */ jsxs65("div", { children: [
+        /* @__PURE__ */ jsx78("p", { className: "text-xs font-bold uppercase tracking-[0.24em] text-brand-pink", children: "VTUload" }),
+        /* @__PURE__ */ jsx78("h1", { className: "mt-2 text-3xl font-black tracking-tight sm:text-5xl", children: "My VTU purchases" }),
+        /* @__PURE__ */ jsx78("p", { className: "mt-3 max-w-2xl text-sm leading-6 text-brand-navy/70 sm:text-base", children: "Review your airtime and data purchases, their status, and payment details." })
+      ] }),
+      data.purchases && /* @__PURE__ */ jsxs65("p", { className: "text-sm font-semibold text-brand-slate", children: [
+        data.purchases.total_items,
+        " purchase",
+        data.purchases.total_items === 1 ? "" : "s"
+      ] })
+    ] }),
+    data.error ? /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-red-200 bg-red-50 p-8 text-center text-red-700", children: [
+      /* @__PURE__ */ jsx78("h2", { className: "text-xl font-black", children: "We could not load your purchases" }),
+      /* @__PURE__ */ jsx78("p", { className: "mt-2 text-sm", children: data.error })
+    ] }) : data.purchases && purchases.length > 0 ? /* @__PURE__ */ jsxs65(Fragment12, { children: [
+      /* @__PURE__ */ jsx78("div", { className: "grid gap-5", children: purchases.map((purchase) => /* @__PURE__ */ jsx78(PurchaseCard, { purchase, paths }, purchase._id)) }),
+      /* @__PURE__ */ jsx78(Pagination, { firstKey: data.purchases.first_key_id, lastKey: data.purchases.last_key_id, pageSize: data.purchases.items_per_page || data.pageSize })
+    ] }) : data.purchases ? /* @__PURE__ */ jsxs65("div", { className: "rounded-[1.75rem] border border-dashed border-slate-300 bg-secondary px-5 py-14 text-center", children: [
+      /* @__PURE__ */ jsx78("h2", { className: "text-xl font-black", children: "No VTU purchases yet" }),
+      /* @__PURE__ */ jsx78("p", { className: "mt-2 text-sm text-brand-slate", children: "Your completed airtime and data purchases will appear here." }),
+      /* @__PURE__ */ jsx78(Link17, { className: "mt-6 inline-flex min-h-12 items-center rounded-2xl bg-brand-pink px-5 font-bold text-white", to: paths.airtime, children: "Buy airtime" })
+    ] }) : /* @__PURE__ */ jsx78(PurchaseSkeleton2, {})
+  ] }) });
 }
 
 // app/routes/admin.tournaments.$ID._index.tsx
@@ -9215,7 +9215,7 @@ function Tournament() {
 var user_vtu_purchase_reference_exports = {};
 __export(user_vtu_purchase_reference_exports, {
   default: () => VTUPurchaseReferencePage,
-  loader: () => loader10
+  loader: () => loader13
 });
 
 // app/routes/partners.orders.leaderboard.tsx
@@ -18230,14 +18230,14 @@ var user_cart_checkout_exports = {};
 __export(user_cart_checkout_exports, {
   action: () => action13,
   default: () => MarketplaceCheckout,
-  loader: () => loader25
+  loader: () => loader24
 });
 
 // app/routes/user.vtu.purchases.tsx
 var user_vtu_purchases_exports = {};
 __export(user_vtu_purchases_exports, {
   default: () => VTUPurchasesPage,
-  loader: () => loader21
+  loader: () => loader25
 });
 
 // app/routes/partners.location.tsx
@@ -25230,7 +25230,7 @@ function ErrorBoundary4() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-ETP7RXPD.js", imports: ["/build/_shared/chunk-ZBBV32P5.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-SPFZ3PFM.js", imports: ["/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-56OMRNFL.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-SWDOSRKI.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-JVP7FPZP.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-M5AMD5DM.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-CZREOMSI.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-7AYTMS2W.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-XZTMY3GK.js", imports: ["/build/_shared/chunk-M5AMD5DM.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-CZREOMSI.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-ZZ6F2ZMT.js", imports: ["/build/_shared/chunk-CZREOMSI.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-XJ53NEXQ.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-QDQL4TH7.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-RN643W56.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-P2WGJMUW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-4E27XIWJ.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-LTJRP26C.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-EEW4UDVS.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-CC2OYTZ7.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-3APRZYEN.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-6DD6LWVJ.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.airtime": { id: "routes/_public.vtuservice.airtime", parentId: "routes/_public", path: "vtuservice/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.airtime-BZH5J5GA.js", imports: ["/build/_shared/chunk-O5IVV3JE.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.data": { id: "routes/_public.vtuservice.data", parentId: "routes/_public", path: "vtuservice/data", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.data-LXHXAWXC.js", imports: ["/build/_shared/chunk-OWR4JFMW.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.provider_payment_redirect": { id: "routes/_public.vtuservice.provider_payment_redirect", parentId: "routes/_public", path: "vtuservice/provider_payment_redirect", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.provider_payment_redirect-QI246J25.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchase.$reference": { id: "routes/_public.vtuservice.vtupurchase.$reference", parentId: "routes/_public", path: "vtuservice/vtupurchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchase.$reference-EZI2IDEY.js", imports: ["/build/_shared/chunk-6DNMIRSO.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.vtupurchases": { id: "routes/_public.vtuservice.vtupurchases", parentId: "routes/_public", path: "vtuservice/vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.vtupurchases-A2DJKDU2.js", imports: ["/build/_shared/chunk-23LF52JJ.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservices._index": { id: "routes/_public.vtuservices._index", parentId: "routes/_public", path: "vtuservices", index: !0, caseSensitive: void 0, module: "/build/routes/_public.vtuservices._index-WK74IHNT.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-BG4JRLKU.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-OXIU3FUD.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-YYP2HGPU.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-DEYC3PWY.js", imports: ["/build/_shared/chunk-HRQMYKWZ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-E3CIY5C7.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-43T4RS7F.js", imports: ["/build/_shared/chunk-HRQMYKWZ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-QAT6M76R.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.configurations": { id: "routes/admin.configurations", parentId: "routes/admin", path: "configurations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.configurations-HFQXFRRI.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-M7UV24ZD.js", imports: ["/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-32472MNK.js", imports: ["/build/_shared/chunk-Q4A5GUHO.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-QIL2N24F.js", imports: ["/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-BJLAKS7N.js", imports: ["/build/_shared/chunk-Q4A5GUHO.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-BTP3AGWI.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-7WVU2YMU.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-5KRUP6UM.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-VAUTAKFZ.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-FYLQIBYX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-SMVOJMXW.js", imports: ["/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-GLJNWPSI.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-N5NRGZPH.js", imports: ["/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-YEQBBIDU.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-KR26FWFR.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-3KNIUGGL.js", imports: ["/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-HVRI32RN.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-2YBPTP7S.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtudata": { id: "routes/admin.vtudata", parentId: "routes/admin", path: "vtudata", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtudata-VYNF7RGN.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtupurchases": { id: "routes/admin.vtupurchases", parentId: "routes/admin", path: "vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtupurchases-XR7LJZUM.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-XM4JRVOI.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-53DI7VNP.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-ECSMEW5F.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-35PEXPVR.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-VUZRIKXW.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-LO6BQNS4.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-TLGLRH4Z.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-XENIMZDL.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-SRYREFQT.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-UL6EMWNH.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-VI6AM57H.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-6ICIMBHD.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-GCGJVZOW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-WHAMILAE.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-P6ENQFHX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-LPUXVPKK.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-TS2RQ3P6.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-JOZYGFWF.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-3N3B25RV.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-YSWAWTZY.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-7BFKUAUA.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-WBLRFZC2.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-67PDBNVL.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-XR53XVCH.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-IK347573.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-TRCAEZPA.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-BLYX3GMC.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MUXCLZ7C.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-TGNQP3CC.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart": { id: "routes/user.cart", parentId: "routes/user", path: "cart", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart-5B2K3KQ4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart._index": { id: "routes/user.cart._index", parentId: "routes/user.cart", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/user.cart._index-LHDTBH6D.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart.checkout": { id: "routes/user.cart.checkout", parentId: "routes/user.cart", path: "checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart.checkout-RMULUCEK.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-MDAL7SV2.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-VENZ5VQL.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-US4N3FF6.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-AQVLMLDI.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-6J3KQXRV.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-V3YWBGTL.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-YZGZYHIT.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-WIJIUDFX.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.shop._index": { id: "routes/user.shop._index", parentId: "routes/user", path: "shop", index: !0, caseSensitive: void 0, module: "/build/routes/user.shop._index-QVON5AUP.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu._index": { id: "routes/user.vtu._index", parentId: "routes/user", path: "vtu", index: !0, caseSensitive: void 0, module: "/build/routes/user.vtu._index-3OACGULK.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.airtime": { id: "routes/user.vtu.airtime", parentId: "routes/user", path: "vtu/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.airtime-NUQZZCDG.js", imports: ["/build/_shared/chunk-O5IVV3JE.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.data": { id: "routes/user.vtu.data", parentId: "routes/user", path: "vtu/data", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.data-SMIGN23A.js", imports: ["/build/_shared/chunk-OWR4JFMW.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.payment-return": { id: "routes/user.vtu.payment-return", parentId: "routes/user", path: "vtu/payment-return", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.payment-return-GBTDHHFD.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchase.$reference": { id: "routes/user.vtu.purchase.$reference", parentId: "routes/user", path: "vtu/purchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchase.$reference-L7VEXWLL.js", imports: ["/build/_shared/chunk-6DNMIRSO.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchases": { id: "routes/user.vtu.purchases", parentId: "routes/user", path: "vtu/purchases", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchases-ZHWRBJ6X.js", imports: ["/build/_shared/chunk-23LF52JJ.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-6ISA2MKC.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-BUMOFOZU.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "90c9c25d", hmr: void 0, url: "/build/manifest-90C9C25D.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-ETP7RXPD.js", imports: ["/build/_shared/chunk-ZBBV32P5.js", "/build/_shared/chunk-GDLBX7ER.js", "/build/_shared/chunk-Q3IECNXJ.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-SPFZ3PFM.js", imports: ["/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/_public": { id: "routes/_public", parentId: "root", path: void 0, index: void 0, caseSensitive: void 0, module: "/build/routes/_public-56OMRNFL.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public._index": { id: "routes/_public._index", parentId: "routes/_public", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public._index-SWDOSRKI.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contest.contestant.$contestantId._index": { id: "routes/_public.contest.contestant.$contestantId._index", parentId: "routes/_public", path: "contest/contestant/:contestantId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contest.contestant.$contestantId._index-DM4DQ3II.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-CINHUJM3.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-6FH5PQ6X.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId": { id: "routes/_public.contests.$tournamentId.$contestId", parentId: "routes/_public", path: "contests/:tournamentId/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId-7AYTMS2W.js", imports: ["/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId._index": { id: "routes/_public.contests.$tournamentId.$contestId._index", parentId: "routes/_public.contests.$tournamentId.$contestId", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId._index-DQ44C7S7.js", imports: ["/build/_shared/chunk-CINHUJM3.js", "/build/_shared/chunk-SUH7MKSL.js", "/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-6FH5PQ6X.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.scoreboard": { id: "routes/_public.contests.$tournamentId.$contestId.scoreboard", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "scoreboard", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.scoreboard-HXUSLNGM.js", imports: ["/build/_shared/chunk-6FH5PQ6X.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId.$contestId.stage_upload": { id: "routes/_public.contests.$tournamentId.$contestId.stage_upload", parentId: "routes/_public.contests.$tournamentId.$contestId", path: "stage_upload", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId.$contestId.stage_upload-XJ53NEXQ.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-DNVIPFFN.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-UDB6AWW5.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests.$tournamentId._index": { id: "routes/_public.contests.$tournamentId._index", parentId: "routes/_public", path: "contests/:tournamentId", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests.$tournamentId._index-QDQL4TH7.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.contests._index": { id: "routes/_public.contests._index", parentId: "routes/_public", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/_public.contests._index-RN643W56.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.faq": { id: "routes/_public.faq", parentId: "routes/_public", path: "faq", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.faq-BYQ7F4QC.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.givaah-credits": { id: "routes/_public.givaah-credits", parentId: "routes/_public", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.givaah-credits-TW4JL3UM.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.leaderboard.orders": { id: "routes/_public.leaderboard.orders", parentId: "routes/_public", path: "leaderboard/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.leaderboard.orders-P2WGJMUW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace._index": { id: "routes/_public.marketplace._index", parentId: "routes/_public", path: "marketplace", index: !0, caseSensitive: void 0, module: "/build/routes/_public.marketplace._index-4E27XIWJ.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.cart": { id: "routes/_public.marketplace.cart", parentId: "routes/_public", path: "marketplace/cart", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.cart-LTJRP26C.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.checkout": { id: "routes/_public.marketplace.checkout", parentId: "routes/_public", path: "marketplace/checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.checkout-EEW4UDVS.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.marketplace.orders": { id: "routes/_public.marketplace.orders", parentId: "routes/_public", path: "marketplace/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.marketplace.orders-CC2OYTZ7.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.privacy": { id: "routes/_public.privacy", parentId: "routes/_public", path: "privacy", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.privacy-VTZS3WBX.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results.$contestId": { id: "routes/_public.results.$contestId", parentId: "routes/_public", path: "results/:contestId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.results.$contestId-3APRZYEN.js", imports: ["/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.results._index": { id: "routes/_public.results._index", parentId: "routes/_public", path: "results", index: !0, caseSensitive: void 0, module: "/build/routes/_public.results._index-6DD6LWVJ.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.terms": { id: "routes/_public.terms", parentId: "routes/_public", path: "terms", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.terms-IDBEZ5WO.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.airtime": { id: "routes/_public.vtuservice.airtime", parentId: "routes/_public", path: "vtuservice/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.airtime-5Q3INHF2.js", imports: ["/build/_shared/chunk-5NKJGEW5.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.data": { id: "routes/_public.vtuservice.data", parentId: "routes/_public", path: "vtuservice/data", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.data-GQGGI44B.js", imports: ["/build/_shared/chunk-IJMOI2RM.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.provider_payment_redirect": { id: "routes/_public.vtuservice.provider_payment_redirect", parentId: "routes/_public", path: "vtuservice/provider_payment_redirect", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.provider_payment_redirect-QI246J25.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.purchase.$reference": { id: "routes/_public.vtuservice.purchase.$reference", parentId: "routes/_public", path: "vtuservice/purchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.purchase.$reference-J4DMPGWV.js", imports: ["/build/_shared/chunk-6OQR7EBP.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservice.purchases": { id: "routes/_public.vtuservice.purchases", parentId: "routes/_public", path: "vtuservice/purchases", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.vtuservice.purchases-LOPFUONH.js", imports: ["/build/_shared/chunk-7F657UKC.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.vtuservices._index": { id: "routes/_public.vtuservices._index", parentId: "routes/_public", path: "vtuservices", index: !0, caseSensitive: void 0, module: "/build/routes/_public.vtuservices._index-WK74IHNT.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winner.$winnerId": { id: "routes/_public.winner.$winnerId", parentId: "routes/_public", path: "winner/:winnerId", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winner.$winnerId-BG4JRLKU.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_public.winners": { id: "routes/_public.winners", parentId: "routes/_public", path: "winners", index: void 0, caseSensitive: void 0, module: "/build/routes/_public.winners-OXIU3FUD.js", imports: ["/build/_shared/chunk-KGORBVOA.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-YYP2HGPU.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/admin._index": { id: "routes/admin._index", parentId: "routes/admin", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/admin._index-Y7JJIBA2.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.$userId": { id: "routes/admin.accounts.$userId", parentId: "routes/admin", path: "accounts/:userId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.$userId-BR3PCSH6.js", imports: ["/build/_shared/chunk-HRQMYKWZ.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts._index": { id: "routes/admin.accounts._index", parentId: "routes/admin", path: "accounts", index: !0, caseSensitive: void 0, module: "/build/routes/admin.accounts._index-DG2BD5LZ.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.add": { id: "routes/admin.accounts.add", parentId: "routes/admin", path: "accounts/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.add-VY6YPJNR.js", imports: ["/build/_shared/chunk-HRQMYKWZ.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.accounts.allusers": { id: "routes/admin.accounts.allusers", parentId: "routes/admin", path: "accounts/allusers", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.accounts.allusers-NBDUHQQE.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.configurations": { id: "routes/admin.configurations", parentId: "routes/admin", path: "configurations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.configurations-HFQXFRRI.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId.$stageId": { id: "routes/admin.contests.$contestId.$stageId", parentId: "routes/admin", path: "contests/:contestId/:stageId", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId.$stageId-HBONSXGV.js", imports: ["/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-QXBKJAER.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.$contestId._index": { id: "routes/admin.contests.$contestId._index", parentId: "routes/admin", path: "contests/:contestId", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests.$contestId._index-32472MNK.js", imports: ["/build/_shared/chunk-Q4A5GUHO.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests._index": { id: "routes/admin.contests._index", parentId: "routes/admin", path: "contests", index: !0, caseSensitive: void 0, module: "/build/routes/admin.contests._index-QIL2N24F.js", imports: ["/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.contests.add": { id: "routes/admin.contests.add", parentId: "routes/admin", path: "contests/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.contests.add-BJLAKS7N.js", imports: ["/build/_shared/chunk-Q4A5GUHO.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-E4WQK63X.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.overview": { id: "routes/admin.overview", parentId: "routes/admin", path: "overview", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.overview-VBDON4E5.js", imports: ["/build/_shared/chunk-EWUZAO4S.js", "/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners._index": { id: "routes/admin.partners._index", parentId: "routes/admin", path: "partners", index: !0, caseSensitive: void 0, module: "/build/routes/admin.partners._index-7WVU2YMU.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.details.$id": { id: "routes/admin.partners.details.$id", parentId: "routes/admin", path: "partners/details/:id", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.details.$id-5KRUP6UM.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.orders": { id: "routes/admin.partners.orders", parentId: "routes/admin", path: "partners/orders", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.orders-VAUTAKFZ.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.partners.settlements": { id: "routes/admin.partners.settlements", parentId: "routes/admin", path: "partners/settlements", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.partners.settlements-FYLQIBYX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID._index": { id: "routes/admin.tournaments.$ID._index", parentId: "routes/admin", path: "tournaments/:ID", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID._index-SMVOJMXW.js", imports: ["/build/_shared/chunk-7JLL45ML.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.$ID.edit": { id: "routes/admin.tournaments.$ID.edit", parentId: "routes/admin", path: "tournaments/:ID/edit", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.$ID.edit-GLJNWPSI.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-6RBS4LE2.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments._index": { id: "routes/admin.tournaments._index", parentId: "routes/admin", path: "tournaments", index: !0, caseSensitive: void 0, module: "/build/routes/admin.tournaments._index-N5NRGZPH.js", imports: ["/build/_shared/chunk-JGYZ7GZJ.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.tournaments.add": { id: "routes/admin.tournaments.add", parentId: "routes/admin", path: "tournaments/add", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.tournaments.add-YEQBBIDU.js", imports: ["/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-EOXCVXJQ.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.affiliate-board": { id: "routes/admin.transactions.affiliate-board", parentId: "routes/admin", path: "transactions/affiliate-board", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.affiliate-board-KR26FWFR.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.contest-registrations": { id: "routes/admin.transactions.contest-registrations", parentId: "routes/admin", path: "transactions/contest-registrations", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.contest-registrations-3KNIUGGL.js", imports: ["/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.income-history": { id: "routes/admin.transactions.income-history", parentId: "routes/admin", path: "transactions/income-history", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.income-history-HVRI32RN.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.transactions.tally-votes": { id: "routes/admin.transactions.tally-votes", parentId: "routes/admin", path: "transactions/tally-votes", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.transactions.tally-votes-2YBPTP7S.js", imports: ["/build/_shared/chunk-AG3C6J77.js", "/build/_shared/chunk-YEQSMFD2.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-KGORBVOA.js", "/build/_shared/chunk-YODMYACN.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtudata": { id: "routes/admin.vtudata", parentId: "routes/admin", path: "vtudata", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtudata-VYNF7RGN.js", imports: ["/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.vtupurchases": { id: "routes/admin.vtupurchases", parentId: "routes/admin", path: "vtupurchases", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.vtupurchases-RIVDEE6R.js", imports: ["/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/completeregistration": { id: "routes/completeregistration", parentId: "root", path: "completeregistration", index: void 0, caseSensitive: void 0, module: "/build/routes/completeregistration-XM4JRVOI.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/forgotpassword": { id: "routes/forgotpassword", parentId: "root", path: "forgotpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/forgotpassword-53DI7VNP.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/login": { id: "routes/login", parentId: "root", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/login-ECSMEW5F.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/logout": { id: "routes/logout", parentId: "root", path: "logout", index: void 0, caseSensitive: void 0, module: "/build/routes/logout-35PEXPVR.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js", "/build/_shared/chunk-OWHGGQXZ.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.account": { id: "routes/partner.account", parentId: "root", path: "partner/account", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.account-VUZRIKXW.js", imports: ["/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partner.partner": { id: "routes/partner.partner", parentId: "root", path: "partner/partner", index: void 0, caseSensitive: void 0, module: "/build/routes/partner.partner-LO6BQNS4.js", imports: ["/build/_shared/chunk-MVMPD6CV.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners": { id: "routes/partners", parentId: "root", path: "partners", index: void 0, caseSensitive: void 0, module: "/build/routes/partners-TLGLRH4Z.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/partners.add": { id: "routes/partners.add", parentId: "routes/partners", path: "add", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.add-XENIMZDL.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.$walletid": { id: "routes/partners.addwithdrawalaccount.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.$walletid-SRYREFQT.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.partner.$walletid": { id: "routes/partners.addwithdrawalaccount.partner.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.partner.$walletid-UL6EMWNH.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.addwithdrawalaccount.personal.$walletid": { id: "routes/partners.addwithdrawalaccount.personal.$walletid", parentId: "routes/partners", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.addwithdrawalaccount.personal.$walletid-VI6AM57H.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.home": { id: "routes/partners.home", parentId: "routes/partners", path: "home", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.home-6ICIMBHD.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.location": { id: "routes/partners.location", parentId: "routes/partners", path: "location", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.location-GCGJVZOW.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.$orderId": { id: "routes/partners.orders.$orderId", parentId: "routes/partners", path: "orders/:orderId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.$orderId-WHAMILAE.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders._Index": { id: "routes/partners.orders._Index", parentId: "routes/partners", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders._Index-P6ENQFHX.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.orders.leaderboard": { id: "routes/partners.orders.leaderboard", parentId: "routes/partners", path: "orders/leaderboard", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.orders.leaderboard-LPUXVPKK.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.product.update.$productId": { id: "routes/partners.product.update.$productId", parentId: "routes/partners", path: "product/update/:productId", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.product.update.$productId-TS2RQ3P6.js", imports: ["/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-PHWTQ2OR.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements._index": { id: "routes/partners.settlements._index", parentId: "routes/partners", path: "settlements", index: !0, caseSensitive: void 0, module: "/build/routes/partners.settlements._index-JOZYGFWF.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.settlements.payments": { id: "routes/partners.settlements.payments", parentId: "routes/partners", path: "settlements/payments", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.settlements.payments-IZQ7XPGY.js", imports: ["/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.setwithdrawalpin": { id: "routes/partners.setwithdrawalpin", parentId: "routes/partners", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.setwithdrawalpin-YXJYJL35.js", imports: ["/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.wallet": { id: "routes/partners.wallet", parentId: "routes/partners", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.wallet-6JYAQJEY.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/partners.withdraw.$walletid": { id: "routes/partners.withdraw.$walletid", parentId: "routes/partners", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/partners.withdraw.$walletid-7BFKUAUA.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/resetpassword": { id: "routes/resetpassword", parentId: "root", path: "resetpassword", index: void 0, caseSensitive: void 0, module: "/build/routes/resetpassword-WBLRFZC2.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/signup": { id: "routes/signup", parentId: "root", path: "signup", index: void 0, caseSensitive: void 0, module: "/build/routes/signup-67PDBNVL.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user": { id: "routes/user", parentId: "root", path: "user", index: void 0, caseSensitive: void 0, module: "/build/routes/user-XR53XVCH.js", imports: ["/build/_shared/chunk-BT4IX73P.js", "/build/_shared/chunk-VXBDZZJG.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-4CRBMHMD.js", "/build/_shared/chunk-XJ3VUE35.js", "/build/_shared/chunk-ZWHJDOHR.js", "/build/_shared/chunk-L5KBULMU.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-WYLHP7BU.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !0 }, "routes/user.addwithdrawalaccount.$walletid": { id: "routes/user.addwithdrawalaccount.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.$walletid-IK347573.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.partner.$walletid": { id: "routes/user.addwithdrawalaccount.partner.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/partner/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.partner.$walletid-TRCAEZPA.js", imports: ["/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.addwithdrawalaccount.personal.$walletid": { id: "routes/user.addwithdrawalaccount.personal.$walletid", parentId: "routes/user", path: "addwithdrawalaccount/personal/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.addwithdrawalaccount.personal.$walletid-BLYX3GMC.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.affiliate": { id: "routes/user.affiliate", parentId: "routes/user", path: "affiliate", index: void 0, caseSensitive: void 0, module: "/build/routes/user.affiliate-MUXCLZ7C.js", imports: ["/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.all-tournaments": { id: "routes/user.all-tournaments", parentId: "routes/user", path: "all-tournaments", index: void 0, caseSensitive: void 0, module: "/build/routes/user.all-tournaments-TGNQP3CC.js", imports: ["/build/_shared/chunk-TE37YVRY.js", "/build/_shared/chunk-4CUT6I4Y.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart": { id: "routes/user.cart", parentId: "routes/user", path: "cart", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart-5B2K3KQ4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart._index": { id: "routes/user.cart._index", parentId: "routes/user.cart", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/user.cart._index-LHDTBH6D.js", imports: ["/build/_shared/chunk-LHHCKBO4.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.cart.checkout": { id: "routes/user.cart.checkout", parentId: "routes/user.cart", path: "checkout", index: void 0, caseSensitive: void 0, module: "/build/routes/user.cart.checkout-RMULUCEK.js", imports: ["/build/_shared/chunk-OFVOEOB6.js", "/build/_shared/chunk-3H4S4Z7B.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LH4XMKT3.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestant.$contestantId": { id: "routes/user.contestant.$contestantId", parentId: "routes/user", path: "contestant/:contestantId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestant.$contestantId-MDAL7SV2.js", imports: ["/build/_shared/chunk-D2I4FA3J.js", "/build/_shared/chunk-MPFSB7BL.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-PQKLF6AQ.js", "/build/_shared/chunk-XWG5XKTC.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-H3D77WZ7.js", "/build/_shared/chunk-VROIN3AX.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofilecontests.$profileId": { id: "routes/user.contestantprofilecontests.$profileId", parentId: "routes/user", path: "contestantprofilecontests/:profileId", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofilecontests.$profileId-VENZ5VQL.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-AMWZIAMF.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.contestantprofiles": { id: "routes/user.contestantprofiles", parentId: "routes/user", path: "contestantprofiles", index: void 0, caseSensitive: void 0, module: "/build/routes/user.contestantprofiles-US4N3FF6.js", imports: ["/build/_shared/chunk-NM3XR3ZJ.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.givaah-credits": { id: "routes/user.givaah-credits", parentId: "routes/user", path: "givaah-credits", index: void 0, caseSensitive: void 0, module: "/build/routes/user.givaah-credits-AQVLMLDI.js", imports: ["/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.orders": { id: "routes/user.orders", parentId: "routes/user", path: "orders", index: void 0, caseSensitive: void 0, module: "/build/routes/user.orders-6J3KQXRV.js", imports: ["/build/_shared/chunk-RBUA2GXW.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.pending-uploads": { id: "routes/user.pending-uploads", parentId: "routes/user", path: "pending-uploads", index: void 0, caseSensitive: void 0, module: "/build/routes/user.pending-uploads-V3YWBGTL.js", imports: ["/build/_shared/chunk-APURLEBB.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.profile": { id: "routes/user.profile", parentId: "routes/user", path: "profile", index: void 0, caseSensitive: void 0, module: "/build/routes/user.profile-YZGZYHIT.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-RKYU7M57.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.setwithdrawalpin": { id: "routes/user.setwithdrawalpin", parentId: "routes/user", path: "setwithdrawalpin", index: void 0, caseSensitive: void 0, module: "/build/routes/user.setwithdrawalpin-NLL7VB2D.js", imports: ["/build/_shared/chunk-ZYO3LTNC.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.shop._index": { id: "routes/user.shop._index", parentId: "routes/user", path: "shop", index: !0, caseSensitive: void 0, module: "/build/routes/user.shop._index-QVON5AUP.js", imports: ["/build/_shared/chunk-R2XVS6K4.js", "/build/_shared/chunk-MVMPD6CV.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu._index": { id: "routes/user.vtu._index", parentId: "routes/user", path: "vtu", index: !0, caseSensitive: void 0, module: "/build/routes/user.vtu._index-3OACGULK.js", imports: ["/build/_shared/chunk-NQRZYINU.js", "/build/_shared/chunk-IZBIAY7C.js"], hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.airtime": { id: "routes/user.vtu.airtime", parentId: "routes/user", path: "vtu/airtime", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.airtime-ND363Q5H.js", imports: ["/build/_shared/chunk-5NKJGEW5.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.data": { id: "routes/user.vtu.data", parentId: "routes/user", path: "vtu/data", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.data-XQAPPA2Z.js", imports: ["/build/_shared/chunk-IJMOI2RM.js", "/build/_shared/chunk-IMXYTTTD.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.payment-return": { id: "routes/user.vtu.payment-return", parentId: "routes/user", path: "vtu/payment-return", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.payment-return-GBTDHHFD.js", imports: ["/build/_shared/chunk-ZJLEVAAA.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchase.$reference": { id: "routes/user.vtu.purchase.$reference", parentId: "routes/user", path: "vtu/purchase/:reference", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchase.$reference-F3W2IMKG.js", imports: ["/build/_shared/chunk-6OQR7EBP.js", "/build/_shared/chunk-PELDYT5S.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.vtu.purchases": { id: "routes/user.vtu.purchases", parentId: "routes/user", path: "vtu/purchases", index: void 0, caseSensitive: void 0, module: "/build/routes/user.vtu.purchases-IIU7HTF4.js", imports: ["/build/_shared/chunk-7F657UKC.js", "/build/_shared/chunk-IZBIAY7C.js", "/build/_shared/chunk-EHYIQE7U.js", "/build/_shared/chunk-BCQNH3RS.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-PCWVHL7L.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.wallet": { id: "routes/user.wallet", parentId: "routes/user", path: "wallet", index: void 0, caseSensitive: void 0, module: "/build/routes/user.wallet-OEIFTUZ5.js", imports: ["/build/_shared/chunk-2TUKLO5S.js", "/build/_shared/chunk-LK4CIPLC.js", "/build/_shared/chunk-TJ5CPXDV.js", "/build/_shared/chunk-MPZMJDFK.js", "/build/_shared/chunk-YBN6QJS2.js", "/build/_shared/chunk-2NQPGWER.js", "/build/_shared/chunk-F5AM2ERS.js", "/build/_shared/chunk-OMEFFHJX.js", "/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/user.withdraw.$walletid": { id: "routes/user.withdraw.$walletid", parentId: "routes/user", path: "withdraw/:walletid", index: void 0, caseSensitive: void 0, module: "/build/routes/user.withdraw.$walletid-BUMOFOZU.js", imports: ["/build/_shared/chunk-ZYWVDPL2.js", "/build/_shared/chunk-CXJHSFWB.js", "/build/_shared/chunk-KZBJIBON.js", "/build/_shared/chunk-OWHGGQXZ.js", "/build/_shared/chunk-UDB6AWW5.js", "/build/_shared/chunk-PGOH7JLP.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "be8afbf8", hmr: void 0, url: "/build/manifest-BE8AFBF8.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_exports }, routes = {
@@ -25322,14 +25322,6 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: public_contests_tournamentId_contestId_exports
   },
-  "routes/_public.vtuservice.vtupurchase.$reference": {
-    id: "routes/_public.vtuservice.vtupurchase.$reference",
-    parentId: "routes/_public",
-    path: "vtuservice/vtupurchase/:reference",
-    index: void 0,
-    caseSensitive: void 0,
-    module: public_vtuservice_vtupurchase_reference_exports
-  },
   "routes/user.contestantprofilecontests.$profileId": {
     id: "routes/user.contestantprofilecontests.$profileId",
     parentId: "routes/user",
@@ -25353,6 +25345,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: partners_addwithdrawalaccount_walletid_exports
+  },
+  "routes/_public.vtuservice.purchase.$reference": {
+    id: "routes/_public.vtuservice.purchase.$reference",
+    parentId: "routes/_public",
+    path: "vtuservice/purchase/:reference",
+    index: void 0,
+    caseSensitive: void 0,
+    module: public_vtuservice_purchase_reference_exports
   },
   "routes/_public.contests.$tournamentId._index": {
     id: "routes/_public.contests.$tournamentId._index",
@@ -25410,14 +25410,6 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     caseSensitive: void 0,
     module: admin_contests_contestId_index_exports
   },
-  "routes/_public.vtuservice.vtupurchases": {
-    id: "routes/_public.vtuservice.vtupurchases",
-    parentId: "routes/_public",
-    path: "vtuservice/vtupurchases",
-    index: void 0,
-    caseSensitive: void 0,
-    module: public_vtuservice_vtupurchases_exports
-  },
   "routes/admin.transactions.tally-votes": {
     id: "routes/admin.transactions.tally-votes",
     parentId: "routes/admin",
@@ -25449,6 +25441,14 @@ var mode = "production", assetsBuildDirectory = "public/build", future = { v3_fe
     index: void 0,
     caseSensitive: void 0,
     module: public_marketplace_checkout_exports
+  },
+  "routes/_public.vtuservice.purchases": {
+    id: "routes/_public.vtuservice.purchases",
+    parentId: "routes/_public",
+    path: "vtuservice/purchases",
+    index: void 0,
+    caseSensitive: void 0,
+    module: public_vtuservice_purchases_exports
   },
   "routes/admin.tournaments.$ID._index": {
     id: "routes/admin.tournaments.$ID._index",

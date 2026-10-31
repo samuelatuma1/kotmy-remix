@@ -1,1 +1,1 @@
-export { loader, default } from "./_public.vtuservice.vtupurchase.$reference";
+export { loader, default } from "./_public.vtuservice.purchase.$reference";
