@@ -39,6 +39,7 @@ export interface IContestDto {
     start_date: string
     end_date: string
     reg_deadline: string
+    late_reg_deadline?: string | null
     prizes: string
     sub_req: string
     terms_cond: string
@@ -65,6 +66,7 @@ export interface IContest {
     start_date: string
     end_date: string
     reg_deadline: string
+    late_reg_deadline?: string | null
     prizes: string
     sub_req: string
     terms_cond: string
@@ -156,6 +158,7 @@ export interface ICreateContestDTO {
     start_date: string
     end_date: string
     reg_deadline: string
+    late_reg_deadline: string | null
     categories: string // no longer a dict
     prizes: string
     sub_req: string
@@ -191,6 +194,7 @@ export function dtoToContest(contest: IContestDto): IContest | IContestWStage {
         start_date: contest.start_date,
         end_date: contest.end_date,
         reg_deadline: contest.reg_deadline,
+        late_reg_deadline: contest.late_reg_deadline ?? null,
         prizes: contest.prizes,
         sub_req: contest.sub_req,
         terms_cond: contest.terms_cond,

@@ -50,6 +50,7 @@ export default function EditContestForm({ tournaments, contest }: { tournaments:
                 <FormControl as='textarea' rows={3} labelClassNames='sm:col-span-2' labelText='Contest Description' placeholder='Enter contest description' id='description' name='description' defaultValue={contest.desc} required />
                 <FormControl as='input' labelText='Unique Contest ID' placeholder='Enter unique ID' id='uniqueId' name='uniqueId' defaultValue={contest.id} required />
                 <FormControl as='input' type='datetime-local' labelText='Registration Deadline' id='reg_deadline' name='reg_deadline' defaultValue={parseDateTimeForInput(contest.reg_deadline)} required />
+                <FormControl as='input' type='datetime-local' labelText='Late Registration Deadline (Optional)' id='late_reg_deadline' name='late_reg_deadline' defaultValue={contest.late_reg_deadline ? parseDateTimeForInput(contest.late_reg_deadline) : ''} />
                 <FormControl as='input' type='datetime-local' labelText='Contest Start Date' id='start_date' name='start_date' defaultValue={parseDateTimeForInput(contest.start_date)} required />
                 <FormControl as='input' type='datetime-local' labelText='Contest End Date' id='end_date' name='end_date' defaultValue={parseDateTimeForInput(contest.end_date)} required />
                 <FormControl as='textarea' rows={2} labelText='Contest Prizes' labelClassNames='sm:col-span-2' placeholder='Enter contest prizes' id='prizes' name='prizes' defaultValue={contest.prizes} required />

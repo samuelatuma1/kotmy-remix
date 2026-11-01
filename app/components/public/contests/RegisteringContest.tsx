@@ -9,7 +9,7 @@ import { hero1, hero2, hero3, noImage } from '~/assets/images'
 import { IContest } from '~/services/contest/types/contest.interface'
 import { RegisterAction } from '~/routes/_public.contests.$tournamentId.$contestId._index'
 
-export default function RegisteringContest({ contest }: { contest: IContest }) {
+export default function RegisteringContest({ contest, lateRegistration = false }: { contest: IContest, lateRegistration?: boolean }) {
     const actionRes = useActionData<RegisterAction>()
     return (
         <>
@@ -19,7 +19,15 @@ export default function RegisteringContest({ contest }: { contest: IContest }) {
                         <h1 className="text-accent text-2xl lg:text-4xl font-satoshi-black max-w-3xl mb-3">{contest.name}</h1>
                         <p className="font-satoshi-medium">{contest.desc}</p>
                     </div>
-                    <ContestTimer deadline={new Date(contest.reg_deadline)} title='registration ends in' />
+                    <ContestTimer
+                        deadline={new Date(lateRegistration && contest.late_reg_deadline ? contest.late_reg_deadline : contest.reg_deadline)}
+                        title={lateRegistration ? 'late registration ends in' : 'registration ends in'}
+                    />
+                    {lateRegistration && (
+                        <p role="status" className="mt-2 w-fit rounded-lg border border-brand-pink/20 bg-brand-pink/5 px-4 py-3 text-sm font-satoshi-medium text-primary">
+                            Late registration is open for this contest.
+                        </p>
+                    )}
                 </div>
                 <img src={contest.image || noImage} alt="kid smiling" className="w-full rounded-3xl h-[350px] object-contain" />
             </header>

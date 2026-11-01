@@ -254,6 +254,9 @@ export function prepareContestPayload(formData: FormData) {
         tournament_unique_id: formData.get('tournament') as string,
         desc: formData.get('description') as string,
         reg_deadline: new Date(formData.get('reg_deadline') as string).toISOString(),
+        late_reg_deadline: formData.get('late_reg_deadline')
+            ? new Date(formData.get('late_reg_deadline') as string).toISOString()
+            : null,
         start_date: new Date(formData.get('start_date') as string).toISOString(),
         end_date: new Date(formData.get('end_date') as string).toISOString(),
         prizes: formData.get('prizes') as string,

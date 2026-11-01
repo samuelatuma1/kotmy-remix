@@ -55,6 +55,11 @@ export default function OngoingContest({ contest, stage }: { contest: IContestWS
                         </div>
                     </div>
                     <ContestTimer deadline={new Date(contest.end_date)} title='contest ends in' />
+                    {status === 'ongoing' && contest.late_reg_deadline && Date.now() < new Date(contest.late_reg_deadline).getTime() && (
+                        <Link to="register" className="inline-flex w-fit items-center rounded-lg bg-brand-pink px-5 py-2.5 font-satoshi-bold text-white transition hover:bg-brand-pink/90">
+                            Want to participate? Register now
+                        </Link>
+                    )}
                 </div>
                 <img src={contest.image || noImage} alt="kid smiling" className="w-full rounded-3xl h-[350px] object-cover" />
             </header>

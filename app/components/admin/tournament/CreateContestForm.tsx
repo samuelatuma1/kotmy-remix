@@ -25,6 +25,7 @@ export default function CreateContestForm({ tournaments }: { tournaments: Pick<I
                 <FormControl as='textarea' rows={3} labelClassNames='sm:col-span-2' labelText='Contest Description' placeholder='Enter contest description' id='description' name='description' required />
                 <FormControl as='input' labelText='Unique Contest ID' placeholder='Enter unique ID' id='uniqueId' name='uniqueId' required />
                 <FormControl as='input' type='datetime-local' labelText='Registration Deadline' id='reg_deadline' name='reg_deadline' required />
+                <FormControl as='input' type='datetime-local' labelText='Late Registration Deadline (Optional)' id='late_reg_deadline' name='late_reg_deadline' />
                 <FormControl as='input' type='datetime-local' labelText='Contest Start Date' id='start_date' name='start_date' required />
                 <FormControl as='input' type='datetime-local' labelText='Contest End Date' id='end_date' name='end_date' required />
                 <FormControl as='textarea' rows={2} labelText='Contest Prizes' labelClassNames='sm:col-span-2' placeholder='Enter contest prizes' id='prizes' name='prizes' required />
