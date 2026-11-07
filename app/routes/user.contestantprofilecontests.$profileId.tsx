@@ -141,6 +141,16 @@ function ContestResultCard({ contest }: { contest: IContestWFinalResult }) {
             </div>
           </div>
         )}
+
+        {contest.tournament_unique_id && contest.contest_unique_id && (
+          <Link
+            to={`/contests/${contest.tournament_unique_id}/${contest.contest_unique_id}`}
+            className="mt-5 inline-flex w-fit items-center rounded-full bg-brand-pink px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand-pink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink focus-visible:ring-offset-2"
+            aria-label={`View ${contest.name} contest`}
+          >
+            View contest
+          </Link>
+        )}
       </div>
     </article>
   );
